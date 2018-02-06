@@ -1,0 +1,63 @@
+package wxpay
+
+type SignType int
+
+const (
+	SIGN_TYPE_MD5        SignType = iota
+	SIGN_TYPE_HMACSHA256 SignType = iota
+)
+
+func (t SignType) ToString() string {
+	if t == SIGN_TYPE_HMACSHA256 {
+		return HMACSHA256
+	}
+	return MD5
+
+}
+
+const DOMAIN_API = "api.mch.weixin.qq.com"
+const DOMAIN_API2 = "api2.mch.weixin.qq.com"
+const DOMAIN_APIHK = "apihk.mch.weixin.qq.com"
+const DOMAIN_APIUS = "apius.mch.weixin.qq.com"
+
+const FAIL = "FAIL"
+const SUCCESS = "SUCCESS"
+const HMACSHA256 = "HMAC-SHA256"
+const MD5 = "MD5"
+
+const SYSTEMERROR = "SYSTEMERROR"
+const BANKERROR = "BANKERROR"
+const USERPAYING = "USERPAYING"
+
+const FIELD_SIGN = "sign"
+const FIELD_SIGN_TYPE = "sign_type"
+
+const SSLCERT_PATH = "./cert/apiclient_cert.pem"
+const SSLKEY_PATH = "./cert/apiclient_key.pem"
+
+const MICROPAY_URL_SUFFIX = "/pay/micropay"
+const UNIFIEDORDER_URL_SUFFIX = "/pay/unifiedorder"
+const ORDERQUERY_URL_SUFFIX = "/pay/orderquery"
+const REVERSE_URL_SUFFIX = "/secapi/pay/reverse"
+const CLOSEORDER_URL_SUFFIX = "/pay/closeorder"
+const REFUND_URL_SUFFIX = "/secapi/pay/refund"
+const REFUNDQUERY_URL_SUFFIX = "/pay/refundquery"
+const DOWNLOADBILL_URL_SUFFIX = "/pay/downloadbill"
+const REPORT_URL_SUFFIX = "/payitil/report"
+const SHORTURL_URL_SUFFIX = "/tools/shorturl"
+const AUTHCODETOOPENID_URL_SUFFIX = "/tools/authcodetoopenid"
+
+const SANDBOX_URL_SUFFIX = "/sandboxnew"
+const SANDBOX_SIGNKEY_URL_SUFFIX = "/sandboxnew/pay/getsignkey"
+
+//const SANDBOX_MICROPAY_URL_SUFFIX = SANDBOX_URL_SUFFIX + MICROPAY_URL_SUFFIX
+//const SANDBOX_UNIFIEDORDER_URL_SUFFIX = SANDBOX_URL_SUFFIX + UNIFIEDORDER_URL_SUFFIX
+//const SANDBOX_ORDERQUERY_URL_SUFFIX = SANDBOX_URL_SUFFIX + ORDERQUERY_URL_SUFFIX
+//const SANDBOX_REVERSE_URL_SUFFIX = SANDBOX_URL_SUFFIX + REVERSE_URL_SUFFIX
+//const SANDBOX_CLOSEORDER_URL_SUFFIX = SANDBOX_URL_SUFFIX + CLOSEORDER_URL_SUFFIX
+//const SANDBOX_REFUND_URL_SUFFIX = SANDBOX_URL_SUFFIX + REFUND_URL_SUFFIX
+//const SANDBOX_REFUNDQUERY_URL_SUFFIX = SANDBOX_URL_SUFFIX + REFUNDQUERY_URL_SUFFIX
+//const SANDBOX_DOWNLOADBILL_URL_SUFFIX = SANDBOX_URL_SUFFIX + DOWNLOADBILL_URL_SUFFIX
+//const SANDBOX_REPORT_URL_SUFFIX = SANDBOX_URL_SUFFIX + REPORT_URL_SUFFIX
+//const SANDBOX_SHORTURL_URL_SUFFIX = SANDBOX_URL_SUFFIX + SHORTURL_URL_SUFFIX
+//const SANDBOX_AUTHCODETOOPENID_URL_SUFFIX = SANDBOX_URL_SUFFIX + AUTHCODETOOPENID_URL_SUFFIX
