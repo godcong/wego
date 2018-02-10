@@ -1,4 +1,4 @@
-package wxpay_test
+package wego_test
 
 import (
 	"bytes"

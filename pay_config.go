@@ -1,4 +1,4 @@
-package wxpay
+package wego
 
 import (
 	"io/ioutil"

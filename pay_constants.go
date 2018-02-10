@@ -1,4 +1,4 @@
-package wxpay
+package wego
 
 type SignType int
 

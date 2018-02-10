@@ -1,0 +1,5 @@
+package wego
+
+func ConfigLoader()  {
+	
+}

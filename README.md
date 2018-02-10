@@ -1,8 +1,8 @@
 # wego
-a wechat pay api for golang
-速度最快，性能最好的微信支付接口，没有之一
+a fashion fast wechat pay api for golang
+最时尚，速度快，性能好的微信支付接口
 
-获取包： go get github.com/godcong/wopay
+获取包： go get github.com/godcong/wego
 
 配置config.toml
 //TODO 暂通过SetPayConfig方法直接设定配置信息
