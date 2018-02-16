@@ -4,7 +4,6 @@ import (
 	"log"
 	"strings"
 	"time"
-
 	"github.com/godcong/wopay/util"
 )
 
