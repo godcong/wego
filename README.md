@@ -37,6 +37,7 @@ a. 统一下单： https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
 
 调用接口： wx.UnifiedOrder(data)
 
+
 b. 查询订单: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
 
 调用接口： wx.QueryOrder(data)

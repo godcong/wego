@@ -12,7 +12,6 @@ func (t SignType) ToString() string {
 		return HMACSHA256
 	}
 	return MD5
-
 }
 
 const DOMAIN_API = "api.mch.weixin.qq.com"
