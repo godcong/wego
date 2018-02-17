@@ -1,4 +1,5 @@
 package wego
+
 //
 //import (
 //	"log"
@@ -135,25 +136,27 @@ package wego
 //	return data, nil
 //}
 //
-//func NewPay(config PayConfig) *Pay {
-//	return newPay(config, "", true, false)
-//}
-//
-//func newPay(config PayConfig, notifyUrl string, autoReport bool, useSandbox bool) *Pay {
-//	pay := Pay{
-//		config:     config,
-//		notifyUrl:  notifyUrl,
-//		autoReport: autoReport,
-//		useSanBox:  useSandbox,
-//	}
-//	pay.signType = SIGN_TYPE_HMACSHA256
-//	if useSandbox {
-//		pay.signType = SIGN_TYPE_MD5
-//	}
-//	pay.payRequest = NewPayRequest(config)
-//	return &pay
-//}
-//
+
+type payment struct {
+	Config
+}
+
+func NewPayment(config Config) Application {
+	return newPay(config)
+}
+
+func newPay(config Config) *payment {
+	p := payment{
+		Config: config,
+	}
+	pay.signType = SIGN_TYPE_HMACSHA256
+	if useSandbox {
+		pay.signType = SIGN_TYPE_MD5
+	}
+	pay.payRequest = NewPayRequest(config)
+	return &pay
+}
+
 //func (pay *Pay) SetSandBox(useSandbox bool) *Pay {
 //	pay.signType = SIGN_TYPE_HMACSHA256
 //	if useSandbox {

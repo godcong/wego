@@ -13,16 +13,20 @@ const ConfigReadError = "cannot read config file"
 type Tree = toml.Tree
 
 var f = flag.String("f", "config.toml", "config file path")
+
+//var useCache = false
+var system System
 var useCache = false
-var configCache config
+var configCache *Tree
 
 func init() {
 	flag.Parse()
 	config := initLoader()
-	useCache = config.UseCache()
-	if useCache {
+	useCache = system.UseCache
+	if UseCache() {
 		configCache = config
 	}
+	initLog(system)
 	log.Println(config)
 }
 
@@ -44,7 +48,7 @@ type Log struct {
 }
 
 type config struct {
-	System  `toml:"system"`
+	//System  `toml:"system"`
 	Content *Tree
 	//OfficialAccount map[string]ConfigMap `toml:"official_account"`
 	//OpenPlatform    map[string]ConfigMap `toml:"open_platform"`
@@ -53,17 +57,16 @@ type config struct {
 	//Work            map[string]ConfigMap `toml:"work"`
 }
 
-func (c *config) UseCache() bool {
-	if c == nil {
-		return false
-	}
-	return c.System.UseCache
-}
+//func (c *config) UseCache() bool {
+//	if c == nil {
+//		return false
+//	}
+//	return c.System.UseCache
+//}
 
 type Config interface {
-	//UseCache() bool
-	//Debug() bool
-
+	Get(s string) string
+	New(s string) Application
 }
 
 func ConfigTree() *Tree {
@@ -76,13 +79,10 @@ func ConfigTree() *Tree {
 	return t
 }
 
-func initLoader() config {
-	c := config{}
+func initLoader() *Tree {
 	t := ConfigTree()
-	t.Get("system").(*Tree).Unmarshal(&c.System)
-
-	c.Content = t
-	return c
+	t.Get("system").(*Tree).Unmarshal(&system)
+	return t
 }
 
 //
@@ -95,9 +95,21 @@ func initLoader() config {
 //	return cm
 //}
 
-func ConfigLoader(s string) *Tree {
-	if useCache {
-		return configCache.Content
+func ConfigLoader() *Tree {
+	if system.UseCache {
+		return configCache
 	}
 	return ConfigTree()
+}
+
+func CacheOn() {
+	useCache = true
+}
+
+func CacheOff() {
+	useCache = false
+}
+
+func UseCache() bool {
+	return useCache
 }

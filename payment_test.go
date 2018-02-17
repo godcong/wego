@@ -1,4 +1,5 @@
 package wego_test
+
 //
 //import (
 //	"log"

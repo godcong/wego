@@ -1,4 +1,5 @@
 package wego
+
 //
 //import (
 //	"crypto/tls"
@@ -46,6 +47,14 @@ package wego
 //	return request.requestOnce(domain, urlSuffix, uuid, data, connectTimeoutMs, readTimeoutMs, useCert)
 //}
 //
+func request() {
+
+}
+
+func safeRequest() {
+
+}
+
 //func (request *PayRequest) requestOnce(domain, urlSuffix, uuid, data string, connectTimeoutMs, readTimeoutMs int, useCert bool) (string, error) {
 //	var tr *http.Transport
 //
