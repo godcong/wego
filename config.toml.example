@@ -11,6 +11,9 @@
         [route.open_platform]
             uri=  '/server'
 
+[domain]
+        primary = 'https://api.mch.weixin.qq.com/
+
 [official_account]
         [official_account.default]
             app_id ='wx426b3015555a46be'                    #AppID

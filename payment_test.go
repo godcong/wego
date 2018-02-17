@@ -1,5 +1,12 @@
 package wego_test
 
+import (
+	"log"
+	"testing"
+
+	"github.com/godcong/wego"
+)
+
 //
 //import (
 //	"log"
@@ -10,7 +17,8 @@ package wego_test
 //	"github.com/godcong/wopay/wxpay"
 //)
 //
-//var out_trade_no = "201613091059590000003433-asd002"
+var out_trade_no = "201613091059590000003433-asd002"
+
 //var total_fee = "1"
 //var data wxpay.PayData = map[string]string{
 //	"first":  "1",
@@ -33,22 +41,23 @@ package wego_test
 //	log.Println(data.IsExist("first"))
 //}
 //
-//func TestUnifiedOrder(t *testing.T) {
-//	data := make(wxpay.PayData)
-//	data.Set("body", "腾讯充值中心-QQ会员充值")
-//	data.Set("out_trade_no", out_trade_no)
-//	data.Set("device_info", "")
-//	data.Set("fee_type", "CNY")
-//	data.Set("total_fee", "1")
-//	data.Set("spbill_create_ip", "123.12.12.123")
-//	data.Set("notify_url", "http://test.letiantian.me/wxpay/notify")
-//	data.Set("trade_type", "NATIVE")
-//	data.Set("product_id", "12")
-//
-//	rdata, err := wxpay.UnifiedOrder(data)
-//	log.Println(rdata, err)
-//
-//}
+func TestUnifiedOrder(t *testing.T) {
+	data := make(wego.Map)
+	data.Set("body", "腾讯充值中心-QQ会员充值")
+	data.Set("out_trade_no", out_trade_no)
+	data.Set("device_info", "")
+	data.Set("fee_type", "CNY")
+	data.Set("total_fee", "1")
+	data.Set("spbill_create_ip", "123.12.12.123")
+	data.Set("notify_url", "http://test.letiantian.me/wxpay/notify")
+	data.Set("trade_type", "NATIVE")
+	data.Set("product_id", "12")
+
+	rdata, err := wego.UnifiedOrder(data)
+	log.Println(rdata, err)
+
+}
+
 //
 //func TestCloseOrder(t *testing.T) {
 //	data := make(wxpay.PayData)

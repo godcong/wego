@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -12,7 +13,12 @@ var debug = false
 func initLog(system System) {
 	debug = system.Debug
 	if Debug() {
-		os.Rename(system.Log.File, system.Log.File+"_"+time.Now().Format("060102150405"))
+		os.Rename(system.Log.File, time.Now().Format("060102150405")+"_"+system.Log.File)
+
+		i := strings.LastIndexAny(system.Log.File, "/")
+		r := []rune(system.Log.File)
+		os.MkdirAll(string(r[:i]), os.ModePerm)
+
 		f, e := os.OpenFile(system.Log.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if e != nil {
 			log.Println("cannot open file: " + system.Log.File)

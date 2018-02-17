@@ -7,5 +7,5 @@ import (
 )
 
 func TestConfigLoader(t *testing.T) {
-	wego.ConfigLoader("")
+	wego.ConfigLoader()
 }

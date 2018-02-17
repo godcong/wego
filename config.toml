@@ -11,6 +11,9 @@
         [route.open_platform]
             uri=  '/server'
 
+[domain]
+            url = 'https://api.mch.weixin.qq.com/
+
 [official_account]
         [official_account.default]
             app_id ='wx426b3015555a46be'                    #AppID
@@ -47,6 +50,7 @@
             notify_url ='wxpay/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
+            rootca_path = 'cert/rootca.pem'
 
 [work]
         [work.default]

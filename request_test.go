@@ -1,5 +1,11 @@
 package wego_test
 
+import (
+	"testing"
+
+	"github.com/godcong/wego"
+)
+
 //
 //import (
 //	"io/ioutil"
@@ -66,3 +72,12 @@ package wego_test
 //	}
 //	log.Println(resp)
 //}
+
+func TestNewReqeust(t *testing.T) {
+	wego.NewRequest(wego.GetConfig("payment.default"))
+}
+
+func TestRequest_SafeRequest(t *testing.T) {
+	r := wego.NewRequest(wego.GetConfig("payment.default"))
+	r.SafeRequest("hello")
+}

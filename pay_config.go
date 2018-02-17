@@ -16,19 +16,19 @@ package wego
 //	cert               []byte
 //}
 //
-type PayConfig interface {
-	AppID() string
-	MchID() string
-	Key() string
-	Cert() []byte
-	ConnectTimeoutMs() int
-	ReadTimeoutMs() int
-	PayDomainInstance() PayDomain
-	AutoReport() bool
-	ReportWorkNum() int
-	ReportQueueMaxSize() int
-	ReportBatchSize() int
-}
+//type PayConfig interface {
+//	AppID() string
+//	MchID() string
+//	Key() string
+//	Cert() []byte
+//	ConnectTimeoutMs() int
+//	ReadTimeoutMs() int
+//	PayDomainInstance()
+//	AutoReport() bool
+//	ReportWorkNum() int
+//	ReportQueueMaxSize() int
+//	ReportBatchSize() int
+//}
 
 //
 //var config PayConfig

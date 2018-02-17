@@ -1,6 +1,9 @@
 package wego
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"sort"
+)
 
 type Map map[string]string
 
@@ -21,4 +24,21 @@ func (m *Map) Get(s string) string {
 		return v
 	}
 	return ""
+}
+
+func (m *Map) SortKeys() []string {
+	var keys sort.StringSlice
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Sort(keys)
+	return keys
+}
+
+func (m *Map) ToXml() string {
+	if v, e := MapToXml(*m); e == nil {
+		return v
+	}
+	return ""
+
 }

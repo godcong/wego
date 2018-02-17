@@ -3,6 +3,7 @@ package wego
 import (
 	"flag"
 	"log"
+	"strconv"
 
 	"github.com/pelletier/go-toml"
 )
@@ -10,7 +11,7 @@ import (
 const FileLoadError = "cannot find config file"
 const ConfigReadError = "cannot read config file"
 
-type Tree = toml.Tree
+type Tree toml.Tree
 
 var f = flag.String("f", "config.toml", "config file path")
 
@@ -27,7 +28,8 @@ func init() {
 		configCache = config
 	}
 	initLog(system)
-	log.Println(config)
+	initDomain(GetConfig("domain"))
+	Println(config)
 }
 
 type System struct {
@@ -66,7 +68,7 @@ type config struct {
 
 type Config interface {
 	Get(s string) string
-	New(s string) Application
+	GetBool(s string) bool
 }
 
 func ConfigTree() *Tree {
@@ -76,12 +78,12 @@ func ConfigTree() *Tree {
 		log.Println(e.Error())
 		panic(FileLoadError)
 	}
-	return t
+	return (*Tree)(t)
 }
 
 func initLoader() *Tree {
 	t := ConfigTree()
-	t.Get("system").(*Tree).Unmarshal(&system)
+	t.GetTree("system").(*toml.Tree).Unmarshal(&system)
 	return t
 }
 
@@ -100,6 +102,36 @@ func ConfigLoader() *Tree {
 		return configCache
 	}
 	return ConfigTree()
+}
+
+func GetConfig(s string) Config {
+	c := ConfigLoader()
+	if v, b := c.GetTree(s).(*toml.Tree); b {
+		return (*Tree)(v)
+	}
+	return nil
+}
+
+func (t *Tree) GetTree(s string) interface{} {
+	return (*toml.Tree)(t).Get(s)
+}
+
+func (t *Tree) Get(s string) string {
+	v := t.GetTree(s)
+	if v, b := v.(string); b {
+		return v
+	}
+
+	return strconv.Itoa(ParseInt(v))
+}
+
+func (t *Tree) GetBool(s string) bool {
+	v := t.GetTree(s)
+	if v, b := v.(bool); b {
+		return v
+	}
+
+	return false
 }
 
 func CacheOn() {

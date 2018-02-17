@@ -139,23 +139,42 @@ package wego
 
 type payment struct {
 	Config
+	request Request
+}
+
+func (p *payment) GetRequest() Request {
+	return p.request
+}
+
+func (p *payment) Link(url string) string {
+	if p.GetBool("sandbox") {
+		return DomainUrl() + SANDBOX_URL_SUFFIX + url
+	}
+	return DomainUrl() + url
 }
 
 func NewPayment(config Config) Application {
-	return newPay(config)
+	c := config
+	if config == nil {
+		c = GetConfig("payment")
+	}
+	return &payment{
+		Config:  c,
+		request: NewRequest(c),
+	}
 }
 
-func newPay(config Config) *payment {
-	p := payment{
-		Config: config,
-	}
-	pay.signType = SIGN_TYPE_HMACSHA256
-	if useSandbox {
-		pay.signType = SIGN_TYPE_MD5
-	}
-	pay.payRequest = NewPayRequest(config)
-	return &pay
-}
+//func newPay(config Config) *payment {
+//	p := payment{
+//		Config: config,
+//	}
+//	pay.signType = SIGN_TYPE_HMACSHA256
+//	if useSandbox {
+//		pay.signType = SIGN_TYPE_MD5
+//	}
+//	pay.payRequest = NewPayRequest(config)
+//	return &pay
+//}
 
 //func (pay *Pay) SetSandBox(useSandbox bool) *Pay {
 //	pay.signType = SIGN_TYPE_HMACSHA256

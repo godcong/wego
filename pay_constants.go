@@ -14,10 +14,10 @@ func (t SignType) ToString() string {
 	return MD5
 }
 
-const DOMAIN_API = "api.mch.weixin.qq.com"
-const DOMAIN_API2 = "api2.mch.weixin.qq.com"
-const DOMAIN_APIHK = "apihk.mch.weixin.qq.com"
-const DOMAIN_APIUS = "apius.mch.weixin.qq.com"
+const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
+const BACK_DOMAIN = "api2.mch.weixin.qq.com"
+const HK_DOMAIN = "apihk.mch.weixin.qq.com"
+const US_DOMAIN = "apius.mch.weixin.qq.com"
 
 const FAIL = "FAIL"
 const SUCCESS = "SUCCESS"
@@ -31,8 +31,8 @@ const USERPAYING = "USERPAYING"
 const FIELD_SIGN = "sign"
 const FIELD_SIGN_TYPE = "sign_type"
 
-const SSLCERT_PATH = "./cert/apiclient_cert.pem"
-const SSLKEY_PATH = "./cert/apiclient_key.pem"
+//const SSLCERT_PATH = "./cert/apiclient_cert.pem"
+//const SSLKEY_PATH = "./cert/apiclient_key.pem"
 
 const MICROPAY_URL_SUFFIX = "/pay/micropay"
 const UNIFIEDORDER_URL_SUFFIX = "/pay/unifiedorder"

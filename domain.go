@@ -14,10 +14,42 @@ package wego
 //	ErrorUnknownHost    = errors.New("ErrorUnknownHostException")
 //)
 //
-//type PayDomain interface {
-//	Report(string, int64, error)
-//	GetDomainInfo() *DomainInfo
-//}
+var domainInfo Domain
+
+type Domain interface {
+	URL() string
+}
+
+type domain struct {
+	Config
+}
+
+func (d *domain) URL() string {
+	url := d.Get("url")
+	if url == "" {
+		return BASE_DOMAIN
+	}
+	return url
+}
+
+func NewDomain(config Config) Domain {
+	c := config
+	if config == nil {
+		c = GetConfig("domain")
+	}
+	return &domain{
+		Config: c,
+	}
+}
+
+func initDomain(config Config) {
+	domainInfo = NewDomain(config)
+}
+
+func DomainUrl() string {
+	return domainInfo.URL()
+}
+
 //
 //type DomainInfo struct {
 //	Domain        string //域名
