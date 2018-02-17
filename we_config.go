@@ -28,6 +28,7 @@ func init() {
 		configCache = config
 	}
 	initLog(system)
+	initSandbox(GetConfig("payment.default"))
 	initDomain(GetConfig("domain"))
 	Println(config)
 }

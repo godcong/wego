@@ -38,7 +38,7 @@ import (
 //func NewPayRequest(config PayConfig) *PayRequest {
 //	return &PayRequest{config: config}
 //}
-var requestInfo Request
+var requestInst Request
 
 type Request interface {
 	SafeRequest(string, Map) ([]byte, error)
@@ -117,15 +117,15 @@ func request(transport *http.Transport, url string, m Map) ([]byte, error) {
 		Transport: transport,
 		//Timeout:   time.Duration((connectTimeoutMs + readTimeoutMs) * 1000000),
 	}
-	//log.Println(data)
+	Println(url)
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(m.ToXml()))
 	if err != nil {
 		Println(err)
 		return []byte(nil), err
 	}
 	req.Header.Set("Content-Type", "text/xml")
-	//req.Header.Set("User-Agent", "wxpay sdk go v1.0 "+request.config.MchID())
-	//
+	//req.Header.Set("User-Agent", "wxpay sdk go v1.0 ")
+
 	resp, err := client.Do(req)
 	if err != nil {
 		Println(err)

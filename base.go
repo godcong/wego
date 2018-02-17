@@ -7,6 +7,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -19,6 +20,12 @@ import (
 )
 
 const CUSTOM_HEADER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
+
+var (
+	ErrorSignType  = errors.New("sign type error")
+	ErrorParameter = errors.New("JsonApiParameters() check error")
+	ErrorToken     = errors.New("EditAddressParameters() token is nil")
+)
 
 type CDATA struct {
 	Value string `xml:",cdata"`
@@ -119,13 +126,13 @@ func mapToXml(m Map, needHeader bool) (string, error) {
 }
 
 // XmlToMap Convert XML to MAP
-func XmlToMap(contentXml string) Map {
+func XmlToMap(contentXml []byte) Map {
 	return xmlToMap(contentXml, false)
 }
 
-func xmlToMap(contentXml string, hasHeader bool) Map {
+func xmlToMap(contentXml []byte, hasHeader bool) Map {
 	m := make(Map)
-	dec := xml.NewDecoder(strings.NewReader(contentXml))
+	dec := xml.NewDecoder(bytes.NewReader(contentXml))
 	ele, val := "", ""
 
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
@@ -200,4 +207,42 @@ func ParseInt(v interface{}) int {
 		return 0
 	}
 	return t
+}
+
+//GenerateSignature make sign from map data
+func GenerateSignature(m Map, key string, signType SignType) (string, error) {
+	keys := m.SortKeys()
+	var sign []string
+
+	for _, k := range keys {
+		if k == FIELD_SIGN {
+			continue
+		}
+		v := strings.TrimSpace(m[k])
+		if len(v) > 0 {
+			sign = append(sign, strings.Join([]string{k, v}, "="))
+		}
+	}
+	sign = append(sign, strings.Join([]string{"key", key}, "="))
+	sb := strings.Join(sign, "&")
+	if signType == SIGN_TYPE_MD5 {
+		sb = MakeSignMD5(sb)
+		return sb, nil
+	} else if signType == SIGN_TYPE_HMACSHA256 {
+		sb = MakeSignHMACSHA256(sb, key)
+		return sb, nil
+	} else {
+		return "", ErrorSignType
+	}
+}
+
+//SandboxSignKey get wechat sandbox sign key
+func SandboxSignKey(config Config) ([]byte, error) {
+	m := make(Map)
+	m.Set("mch_id", config.Get("mch_id"))
+	m.Set("nonce_str", GenerateNonceStr())
+	sign, _ := GenerateSignature(m, config.Get("aes_key"), SIGN_TYPE_MD5)
+	m.Set("sign", sign)
+	app := NewApplication(config)
+	return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
 }

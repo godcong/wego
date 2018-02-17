@@ -12,7 +12,8 @@
             uri=  '/server'
 
 [domain]
-            url = 'https://api.mch.weixin.qq.com/
+#        [domain.primary]
+            url = 'https://api.mch.weixin.qq.com'
 
 [official_account]
         [official_account.default]
@@ -20,7 +21,6 @@
             secret = '7813490da6f1265e4901ffb80afaa36f'     #AppSecret
             token = 'your-token'                            #Token
             aes_key = '8934e7d15453e97507ef794cf7b0519d'    #EncodingAESKey
-
 
         [official_account.oauth]
             scopes   = ['snsapi_userinfo']
@@ -47,7 +47,8 @@
             app_id ='wx426b3015555a46be'
             mch_id = '1900009851'
             aes_key = '8934e7d15453e97507ef794cf7b0519d'
-            notify_url ='wxpay/notify'
+#            secret = '7813490da6f1265e4901ffb80afaa36f'
+            notify_url ='wego/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
             rootca_path = 'cert/rootca.pem'

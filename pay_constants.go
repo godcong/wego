@@ -7,7 +7,7 @@ const (
 	SIGN_TYPE_HMACSHA256 SignType = iota
 )
 
-func (t SignType) ToString() string {
+func (t SignType) String() string {
 	if t == SIGN_TYPE_HMACSHA256 {
 		return HMACSHA256
 	}

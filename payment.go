@@ -140,11 +140,26 @@ package wego
 type payment struct {
 	Config
 	request Request
+	sandbox Sandbox
 }
 
-func (p *payment) GetRequest() Request {
-	return p.request
+func (p *payment) InSandbox() bool {
+	return p.Config.GetBool("sandbox")
 }
+
+func (p *payment) GetKey(s string) string {
+	if s == SANDBOX_SIGNKEY_URL_SUFFIX {
+		return p.Config.Get("aes_key")
+	}
+	if p.InSandbox() {
+		p.sandbox.GetKey()
+	}
+	return p.Config.Get("aes_key")
+}
+
+//func (p *payment) GetRequest() Request {
+//	return p.request
+//}
 
 func (p *payment) Link(url string) string {
 	if p.GetBool("sandbox") {
@@ -153,14 +168,22 @@ func (p *payment) Link(url string) string {
 	return DomainUrl() + url
 }
 
-func NewPayment(config Config) Application {
+type Payment interface {
+	UnifiedOrder(m Map) (Map, error)
+	Link(string) string
+	GetKey(s string) string
+	InSandbox() bool
+}
+
+func NewPayment(config Config) Payment {
 	c := config
 	if config == nil {
-		c = GetConfig("payment")
+		c = GetConfig("payment.default")
 	}
 	return &payment{
 		Config:  c,
 		request: NewRequest(c),
+		sandbox: NewSandbox(c),
 	}
 }
 
@@ -244,7 +267,7 @@ func NewPayment(config Config) Application {
 //	}
 //	return requestFunc(usb, m, connectTimeoutMs, readTimeoutMs)
 //}
-//
+//perform
 //func (pay *Pay) FillRequestData(data PayData) (PayData, error) {
 //	data.Set("appid", pay.config.AppID())
 //	data.Set("mch_id", pay.config.MchID())
@@ -280,17 +303,43 @@ func NewPayment(config Config) Application {
 //	return pay.unifiedOrder(data, connectTimeoutMs, readTimeoutMs)
 //}
 //
-//func (pay *Pay) unifiedOrder(data PayData, connectTimeoutMs int, readTimeoutMs int) (PayData, error) {
-//
-//	if pay.notifyUrl != "" {
-//		data.Set("notify_url", pay.notifyUrl)
-//	}
-//	resp, err := pay.fillRequestTimeout(pay.RequestWithoutCertTimeout, UNIFIEDORDER_URL_SUFFIX, data, connectTimeoutMs, readTimeoutMs)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return util.XmlToMap(resp), nil
-//}
+func (p *payment) UnifiedOrder(m Map) (Map, error) {
+	//if (empty($params['spbill_create_ip'])) {
+	//$params['spbill_create_ip'] = ('NATIVE' === $params['trade_type']) ? Support\get_server_ip() : Support\get_client_ip();
+	//}
+	if !m.Has("pbill_create_ip") {
+
+	}
+
+	m.Set("appid", p.Config.Get("app_id"))
+	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
+	if !m.Has("notify_url") {
+		m.Set("notify_url", p.Config.Get("notify_url"))
+	}
+
+	resp, err := p.Request(p.Link(UNIFIEDORDER_URL_SUFFIX), m)
+	if err != nil {
+		return nil, err
+	}
+	return XmlToMap(resp), nil
+}
+
+func (p *payment) Request(url string, m Map) ([]byte, error) {
+	m.Set("mch_id", p.Config.Get("mch_id"))
+	m.Set("nonce_str", GenerateUUID())
+	//m.Set("sub_mch_id", p.Config.Get("sub_mch_id"))
+	//m.Set("sub_appid", p.Config.Get("sub_appid"))
+
+	m.Set("sign_type", SIGN_TYPE_MD5.String())
+	sign, e := GenerateSignature(m, p.Config.Get("aes_key"), SIGN_TYPE_MD5)
+	if e != nil {
+		return nil, e
+	}
+	m.Set("sign", sign)
+	Println(m)
+	return p.request.Request(url, m)
+}
+
 //
 ///**
 //* 作用：关闭订单

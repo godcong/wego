@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -23,7 +24,7 @@ func initLog(system System) {
 		if e != nil {
 			log.Println("cannot open file: " + system.Log.File)
 		}
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
+		log.SetFlags(log.LstdFlags)
 		log.SetOutput(io.MultiWriter(os.Stdout, f))
 	}
 
@@ -43,13 +44,15 @@ func Debug() bool {
 
 func Println(v ...interface{}) {
 	if Debug() {
-		log.Println(v)
+		_, f, l, _ := runtime.Caller(1)
+		log.Println(f, "|", l, "|", v)
 
 	}
 }
 
 func Print(v ...interface{}) {
 	if Debug() {
-		log.Print(v)
+		_, f, l, _ := runtime.Caller(1)
+		log.Print(f, "|", l, "|", v)
 	}
 }

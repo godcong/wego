@@ -26,6 +26,14 @@ func (m *Map) Get(s string) string {
 	return ""
 }
 
+func (m *Map) Delete(s string) {
+	delete(*m, s)
+}
+
+func (m *Map) Has(s string) bool {
+	_, b := (*m)[s]
+	return b
+}
 func (m *Map) SortKeys() []string {
 	var keys sort.StringSlice
 	for k := range *m {

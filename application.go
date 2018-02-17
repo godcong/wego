@@ -1,8 +1,9 @@
 package wego
 
 type Application interface {
-	Link(string) string
+	//Link(string) string
 	GetRequest() Request
+	GetPayment() Payment
 }
 
 //type application struct {
@@ -10,6 +11,6 @@ type Application interface {
 //	Reqeust
 //}
 
-//func NewApplication(config Config, reqeust Reqeust) Application {
-//	panic("s")
-//}
+func NewApplication(config Config) Application {
+	panic("s")
+}
