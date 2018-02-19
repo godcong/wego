@@ -6,17 +6,18 @@ type Sandbox interface {
 
 type sandbox struct {
 	Config
+	app Application
 }
 
 var sandboxInst Sandbox
 
-func initSandbox(config Config) {
-	sandboxInst = NewSandbox(config)
-}
+//func initSandbox(config Config) {
+//	sandboxInst = NewSandbox(config)
+//}
 
-func NewSandbox(config Config) Sandbox {
+func NewSandbox(application Application) Sandbox {
 	return &sandbox{
-		Config: config,
+		Config: application.Config(),
 	}
 }
 

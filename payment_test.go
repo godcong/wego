@@ -27,7 +27,8 @@ var out_trade_no = "201813091059590000003433-asd002"
 //	"aecond": "3",
 //	"becond": "4",
 //}
-//var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
+var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
+
 //
 //func TestPayData_Get(t *testing.T) {
 //	log.Println(data.Get("first"))
@@ -42,19 +43,19 @@ var out_trade_no = "201813091059590000003433-asd002"
 //	log.Println(data.IsExist("first"))
 //}
 //
-func TestUnifiedOrder(t *testing.T) {
+func TestUnify(t *testing.T) {
 	m := make(wego.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
 	m.Set("out_trade_no", out_trade_no)
 	//m.Set("device_info", "")
 	//m.Set("fee_type", "CNY")
 	m.Set("total_fee", "1")
-	m.Set("spbill_create_ip", "123.12.12.123")
+	//m.Set("spbill_create_ip", "123.12.12.123")
 	m.Set("notify_url", "https://test.letiantian.me/wxpay/notify")
 	m.Set("trade_type", "NATIVE")
 	//m.Set("product_id", "12")
 	p := wego.NewPayment(nil)
-	rdata, _ := p.UnifiedOrder(m)
+	rdata, _ := p.Unify(m)
 	v, _ := json.Marshal(rdata)
 	log.Println(string(v))
 	//{"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=3zBUNpw","mch_id":"1900009851","nonce_str":"nK2TLY1Kh5sNHmxC","prepay_id":"wx2018021723523407ff48a9cf0411073420","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"8D08FECF79B3572132A1CAF4A795AE50","trade_type":"NATIVE"}
@@ -62,12 +63,15 @@ func TestUnifiedOrder(t *testing.T) {
 }
 
 //
-//func TestCloseOrder(t *testing.T) {
-//	data := make(wxpay.PayData)
-//	data.Set("out_trade_no", out_trade_no)
-//	rdata, err := wxpay.CloseOrder(data)
-//	log.Println(rdata, err)
-//}
+func TestClose(t *testing.T) {
+	p := wego.NewPayment(nil)
+	rdata, _ := p.Close(out_trade_no)
+	v, _ := json.Marshal(rdata)
+	log.Println(string(v))
+	//{"appid":"wx426b3015555a46be","mch_id":"1900009851","nonce_str":"dw5cYxs1kntdsoyC","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"C5901659471C6D8A5DFF829FCA9A92FF","sub_mch_id":""}
+
+}
+
 //
 //func TestQueryOrder(t *testing.T) {
 //	data := make(wxpay.PayData)
@@ -75,6 +79,7 @@ func TestUnifiedOrder(t *testing.T) {
 //	rdata, err := wxpay.QueryOrder(data)
 //	log.Println(rdata, err)
 //}
+
 //
 //func TestReverseOrder(t *testing.T) {
 //	//cert, _ := ioutil.ReadFile(`D:\Godcong\Workspace\g7n3\src\github.com\godcong\wopay\wx\cert\apiclient_cert.p12`)
@@ -98,10 +103,11 @@ func TestUnifiedOrder(t *testing.T) {
 //}
 //
 //func TestShortUrl(t *testing.T) {
-//	data := make(wxpay.PayData)
+//	data := make(wego.Map)
 //	data.Set("long_url", long_url)
 //	log.Println(wxpay.ShortUrl(data))
 //}
+
 //
 //func TestUnifiedOrderSpeed(t *testing.T) {
 //	for i := 0; i < 100; i++ {

@@ -22,6 +22,7 @@ type Domain interface {
 
 type domain struct {
 	Config
+	app Application
 }
 
 func (d *domain) URL() string {
@@ -32,19 +33,16 @@ func (d *domain) URL() string {
 	return url
 }
 
-func NewDomain(config Config) Domain {
-	c := config
-	if config == nil {
-		c = GetConfig("domain")
-	}
+func NewDomain(application Application) Domain {
 	return &domain{
-		Config: c,
+		Config: application.Config(),
+		app:    application,
 	}
 }
 
-func initDomain(config Config) {
-	domainInfo = NewDomain(config)
-}
+//func initDomain(config Config) {
+//	domainInfo = NewDomain(config)
+//}
 
 func DomainUrl() string {
 	return domainInfo.URL()

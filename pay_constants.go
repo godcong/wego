@@ -18,6 +18,7 @@ const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
 const BACK_DOMAIN = "api2.mch.weixin.qq.com"
 const HK_DOMAIN = "apihk.mch.weixin.qq.com"
 const US_DOMAIN = "apius.mch.weixin.qq.com"
+const BIZPAYURL = "weixin://wxpay/bizpayurl?"
 
 const FAIL = "FAIL"
 const SUCCESS = "SUCCESS"

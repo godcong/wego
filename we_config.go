@@ -28,9 +28,9 @@ func init() {
 		configCache = config
 	}
 	initLog(system)
-	initSandbox(GetConfig("payment.default"))
-	initDomain(GetConfig("domain"))
-	Println(config)
+	//initSandbox(GetConfig("payment.default"))
+	//initDomain(GetConfig("domain"))
+	//Println(config)
 }
 
 type System struct {
@@ -69,6 +69,7 @@ type config struct {
 
 type Config interface {
 	Get(s string) string
+	Set(k, v string) Config
 	GetBool(s string) bool
 }
 
@@ -124,6 +125,12 @@ func (t *Tree) Get(s string) string {
 	}
 
 	return strconv.Itoa(ParseInt(v))
+}
+
+func (t *Tree) Set(k, v string) Config {
+	tt := (*toml.Tree)(t)
+	tt.Set(k, v)
+	return t
 }
 
 func (t *Tree) GetBool(s string) bool {

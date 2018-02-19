@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
@@ -29,6 +31,13 @@ var (
 
 type CDATA struct {
 	Value string `xml:",cdata"`
+}
+
+func Time(t *time.Time) string {
+	if t == nil {
+		return strconv.Itoa(time.Now().Nanosecond())
+	}
+	return strconv.Itoa(t.Nanosecond())
 }
 
 func GenerateNonceStr() string {
@@ -210,7 +219,7 @@ func ParseInt(v interface{}) int {
 }
 
 //GenerateSignature make sign from map data
-func GenerateSignature(m Map, key string, signType SignType) (string, error) {
+func GenerateSignature(m Map, key string, signType SignType) string {
 	keys := m.SortKeys()
 	var sign []string
 
@@ -225,15 +234,12 @@ func GenerateSignature(m Map, key string, signType SignType) (string, error) {
 	}
 	sign = append(sign, strings.Join([]string{"key", key}, "="))
 	sb := strings.Join(sign, "&")
-	if signType == SIGN_TYPE_MD5 {
-		sb = MakeSignMD5(sb)
-		return sb, nil
-	} else if signType == SIGN_TYPE_HMACSHA256 {
-		sb = MakeSignHMACSHA256(sb, key)
-		return sb, nil
+	if signType == SIGN_TYPE_HMACSHA256 {
+		return MakeSignHMACSHA256(sb, key)
 	} else {
-		return "", ErrorSignType
+		return MakeSignMD5(sb)
 	}
+
 }
 
 //SandboxSignKey get wechat sandbox sign key
@@ -241,8 +247,35 @@ func SandboxSignKey(config Config) ([]byte, error) {
 	m := make(Map)
 	m.Set("mch_id", config.Get("mch_id"))
 	m.Set("nonce_str", GenerateNonceStr())
-	sign, _ := GenerateSignature(m, config.Get("aes_key"), SIGN_TYPE_MD5)
+	sign := GenerateSignature(m, config.Get("aes_key"), SIGN_TYPE_MD5)
 	m.Set("sign", sign)
-	app := NewApplication(config)
-	return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
+	_ = NewApplication(config)
+	//return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
+	return []byte(nil), nil
+}
+
+func GetServerIp() string {
+	adds, err := net.InterfaceAddrs()
+	if err != nil {
+		return "127.0.0.1"
+	}
+
+	for _, address := range adds {
+		// 检查ip地址判断是否回环地址
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+
+		}
+	}
+	return "127.0.0.1"
+}
+
+func GetClientIp(r *http.Request) string {
+	ip := r.Header.Get("Remote_addr")
+	if ip == "" {
+		ip = r.RemoteAddr
+	}
+	return ip
 }

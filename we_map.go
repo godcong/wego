@@ -3,6 +3,7 @@ package wego
 import (
 	"encoding/json"
 	"sort"
+	"strings"
 )
 
 type Map map[string]string
@@ -49,4 +50,20 @@ func (m *Map) ToXml() string {
 	}
 	return ""
 
+}
+
+func (m *Map) ToJson() []byte {
+	v, e := json.Marshal(*m)
+	if e != nil {
+		return []byte(nil)
+	}
+	return v
+}
+
+func (m *Map) ToUrlQuery() string {
+	var varr []string
+	for k, v := range *m {
+		varr = append(varr, strings.Join([]string{k, v}, "="))
+	}
+	return strings.Join(varr, "&")
 }

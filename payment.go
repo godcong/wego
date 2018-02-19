@@ -139,22 +139,9 @@ package wego
 
 type payment struct {
 	Config
-	request Request
-	sandbox Sandbox
-}
-
-func (p *payment) InSandbox() bool {
-	return p.Config.GetBool("sandbox")
-}
-
-func (p *payment) GetKey(s string) string {
-	if s == SANDBOX_SIGNKEY_URL_SUFFIX {
-		return p.Config.Get("aes_key")
-	}
-	if p.InSandbox() {
-		p.sandbox.GetKey()
-	}
-	return p.Config.Get("aes_key")
+	app Application
+	//order  Order
+	//client Client
 }
 
 //func (p *payment) GetRequest() Request {
@@ -169,21 +156,19 @@ func (p *payment) Link(url string) string {
 }
 
 type Payment interface {
-	UnifiedOrder(m Map) (Map, error)
-	Link(string) string
-	GetKey(s string) string
-	InSandbox() bool
+	//Order
+	//Link(string) string
+	//GetKey(s string) string
 }
 
-func NewPayment(config Config) Payment {
-	c := config
-	if config == nil {
-		c = GetConfig("payment.default")
-	}
+func NewPayment(application Application) Payment {
+	//c := config
+	//if config == nil {
+	//	c = GetConfig("payment.default")
+	//}
 	return &payment{
-		Config:  c,
-		request: NewRequest(c),
-		sandbox: NewSandbox(c),
+		Config: application.Config(),
+		app:    application,
 	}
 }
 
@@ -303,54 +288,7 @@ func NewPayment(config Config) Payment {
 //	return pay.unifiedOrder(data, connectTimeoutMs, readTimeoutMs)
 //}
 //
-func (p *payment) UnifiedOrder(m Map) (Map, error) {
-	//if (empty($params['spbill_create_ip'])) {
-	//$params['spbill_create_ip'] = ('NATIVE' === $params['trade_type']) ? Support\get_server_ip() : Support\get_client_ip();
-	//}
-	if !m.Has("pbill_create_ip") {
 
-	}
-
-	m.Set("appid", p.Config.Get("app_id"))
-	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
-	if !m.Has("notify_url") {
-		m.Set("notify_url", p.Config.Get("notify_url"))
-	}
-
-	resp, err := p.Request(p.Link(UNIFIEDORDER_URL_SUFFIX), m)
-	if err != nil {
-		return nil, err
-	}
-	return XmlToMap(resp), nil
-}
-
-func (p *payment) Request(url string, m Map) ([]byte, error) {
-	m.Set("mch_id", p.Config.Get("mch_id"))
-	m.Set("nonce_str", GenerateUUID())
-	//m.Set("sub_mch_id", p.Config.Get("sub_mch_id"))
-	//m.Set("sub_appid", p.Config.Get("sub_appid"))
-
-	m.Set("sign_type", SIGN_TYPE_MD5.String())
-	sign, e := GenerateSignature(m, p.Config.Get("aes_key"), SIGN_TYPE_MD5)
-	if e != nil {
-		return nil, e
-	}
-	m.Set("sign", sign)
-	Println(m)
-	return p.request.Request(url, m)
-}
-
-//
-///**
-//* 作用：关闭订单
-//* 场景：公共号支付、扫码支付、APP支付
-//* @param data 向wxpay post的请求数据
-//* @return PayData, error API返回数据
-// */
-//func (pay *Pay) CloseOrder(data PayData) (PayData, error) {
-//	return pay.closeOrder(data, pay.config.ConnectTimeoutMs(), pay.config.ReadTimeoutMs())
-//}
-//
 ///** CloseOrderTimeout
 //* 作用：关闭订单
 //* 场景：公共号支付、扫码支付、APP支付
@@ -381,17 +319,7 @@ func (p *payment) Request(url string, m Map) ([]byte, error) {
 //	return pay.queryOrder(data, pay.config.ConnectTimeoutMs(), pay.config.ReadTimeoutMs())
 //}
 //
-///** QueryOrder
-//* 作用：查询订单
-//* 场景：刷卡支付、公共号支付、扫码支付、APP支付
-//* @param data 向wxpay post的请求数据
-//* @param connectTimeoutMs 连接超时时间，单位是毫秒
-//* @param readTimeoutMs 读超时时间，单位是毫秒
-//* @return PayData, error API返回数据
-// */
-//func (pay *Pay) QueryOrderTimeout(data PayData, connectTimeoutMs int, readTimeoutMs int) (PayData, error) {
-//	return pay.queryOrder(data, connectTimeoutMs, readTimeoutMs)
-//}
+
 //func (pay *Pay) queryOrder(data PayData, connectTimeoutMs int, readTimeoutMs int) (PayData, error) {
 //	resp, err := pay.fillRequestTimeout(pay.RequestWithoutCertTimeout, ORDERQUERY_URL_SUFFIX, data, connectTimeoutMs, readTimeoutMs)
 //	if err != nil {
