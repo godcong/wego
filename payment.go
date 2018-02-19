@@ -156,7 +156,7 @@ func (p *payment) Link(url string) string {
 }
 
 type Payment interface {
-	//Order
+	Sandbox() Sandbox
 	//Link(string) string
 	//GetKey(s string) string
 }

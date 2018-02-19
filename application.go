@@ -1,10 +1,10 @@
 package wego
 
 type Application interface {
-	Payment
-	Sandbox
-	Order
+	Payment() Payment
 	Config() Config
+	Scheme(id string) string
+	GetKey(s string) string
 	InSandbox() bool
 	SetSubMerchant(mchid, appid string) Application
 }
@@ -16,31 +16,38 @@ type application struct {
 	order   Order
 }
 
+func (a *application) Payment() Payment {
+	if a.payment == nil {
+		a.payment = NewPayment(a)
+	}
+	return a.payment
+}
+
 func (a *application) SetSubMerchant(mchid, appid string) Application {
 	a.config.Set("sub_mch_id", mchid)
 	a.config.Set("sub_appid", appid)
 	return a
 }
 
-func (a *application) Unify(m Map) (Map, error) {
-	return a.order.Unify(m)
-}
-
-func (a *application) Close(no string) (Map, error) {
-	return a.order.Close(no)
-}
-
-func (a *application) Query(m Map) (Map, error) {
-	return a.order.Query(m)
-}
+//func (a *application) Unify(m Map) (Map, error) {
+//	return a.order.Unify(m)
+//}
+//
+//func (a *application) Close(no string) (Map, error) {
+//	return a.order.Close(no)
+//}
+//
+//func (a *application) Query(m Map) (Map, error) {
+//	return a.order.Query(m)
+//}
 
 func NewApplication(config Config) Application {
 	app := &application{
 		config: config,
 	}
-	app.order = NewOrder(app)
-	app.payment = NewPayment(app)
-	app.sandbox = NewSandbox()
+	//app.order = NewOrder(app)
+	//app.payment = NewPayment(app)
+	//app.sandbox = NewSandbox()
 	return app
 }
 
@@ -52,7 +59,7 @@ func (a *application) InSandbox() bool {
 	return a.config.GetBool("sandbox")
 }
 
-func (a *application) GetKey() string {
+func (a *application) GetKey(s string) string {
 	if a.InSandbox() {
 		a.sandbox.GetKey()
 	}

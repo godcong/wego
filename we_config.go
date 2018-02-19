@@ -69,8 +69,10 @@ type config struct {
 
 type Config interface {
 	Get(s string) string
-	Set(k, v string) Config
+	Set(k, v string) *Tree
 	GetBool(s string) bool
+	GetConfig(s string) Config
+	GetTree(s string) interface{}
 }
 
 func ConfigTree() *Tree {
@@ -99,7 +101,7 @@ func initLoader() *Tree {
 //	return cm
 //}
 
-func ConfigLoader() *Tree {
+func treeLoader() *Tree {
 	if system.UseCache {
 		return configCache
 	}
@@ -107,8 +109,19 @@ func ConfigLoader() *Tree {
 }
 
 func GetConfig(s string) Config {
-	c := ConfigLoader()
+	c := treeLoader()
 	if v, b := c.GetTree(s).(*toml.Tree); b {
+		return (*Tree)(v)
+	}
+	return nil
+}
+
+func GetRootConfig() Config {
+	return treeLoader()
+}
+
+func (t *Tree) GetConfig(s string) Config {
+	if v, b := t.GetTree(s).(*toml.Tree); b {
 		return (*Tree)(v)
 	}
 	return nil
@@ -127,7 +140,7 @@ func (t *Tree) Get(s string) string {
 	return strconv.Itoa(ParseInt(v))
 }
 
-func (t *Tree) Set(k, v string) Config {
+func (t *Tree) Set(k, v string) *Tree {
 	tt := (*toml.Tree)(t)
 	tt.Set(k, v)
 	return t

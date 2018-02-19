@@ -34,7 +34,7 @@ func (o *order) Unify(m Map) (Map, error) {
 		m.Set("notify_url", o.Get("notify_url"))
 	}
 
-	resp, err := p.Request(o.app.Link(UNIFIEDORDER_URL_SUFFIX), m)
+	resp, err := o.app.Payment().Request(o.app.Link(UNIFIEDORDER_URL_SUFFIX), m)
 	if err != nil {
 		return nil, err
 	}
