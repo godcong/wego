@@ -46,8 +46,17 @@ func Println(v ...interface{}) {
 	if Debug() {
 		_, f, l, _ := runtime.Caller(1)
 		log.Println(f, "|", l, "|", v)
-
 	}
+}
+
+func Error(v ...interface{}) {
+	_, f, l, _ := runtime.Caller(1)
+	log.Println("ERROR:", f, "|", l, "|", v)
+}
+
+func Info(v ...interface{}) {
+	_, f, l, _ := runtime.Caller(1)
+	log.Println("INFO:", f, "|", l, "|", v)
 }
 
 func Print(v ...interface{}) {

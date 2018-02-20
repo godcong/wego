@@ -73,6 +73,7 @@ import (
 
 func TestNewReqeust(t *testing.T) {
 	//wego.NewRequest(wego.GetConfig("payment.default"))
+
 }
 
 func TestRequest_SafeRequest(t *testing.T) {

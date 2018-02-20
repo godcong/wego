@@ -21,48 +21,16 @@ type client struct {
 }
 
 func (c *client) Request(url string, params Map, method string, options map[string]Map) Map {
-	options = MakeOption(options)
-	params.Set("mch_id", c.Get("mch_id"))
-	params.Set("nonce_str", GenerateUUID())
-	params.Set("sub_mch_id", c.Get("sub_mch_id"))
-	params.Set("sub_appid", c.Get("sub_appid"))
-
-	params.Set("sign_type", SIGN_TYPE_MD5.String())
-
-	params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
-
-	options["body"] = params
-	resp, err := c.request.PerformRequest(c.buildTransport(), url, "post", options)
-	if err != nil {
-		Println(err)
-		return nil
-	}
+	resp := request(c, c.buildTransport(), url, params, "post", options)
 	return XmlToMap(resp)
 }
 
 func (c *client) RequestRaw(url string, params Map, method string, options map[string]Map) []byte {
-	m := c.Request(url, params, method, options)
-	if m != nil {
-		return m.ToJson()
-	}
-	return []byte(nil)
+	return request(c, c.buildTransport(), url, params, "post", options)
 }
 
 func (c *client) SafeRequest(url string, params Map, method string, options map[string]Map) Map {
-	options = MakeOption(options)
-	params.Set("mch_id", c.Get("mch_id"))
-	params.Set("nonce_str", GenerateUUID())
-	params.Set("sub_mch_id", c.Get("sub_mch_id"))
-	params.Set("sub_appid", c.Get("sub_appid"))
-	params.Set("sign_type", SIGN_TYPE_MD5.String())
-	params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
-
-	options["body"] = params
-	resp, err := c.request.PerformRequest(c.buildSafeTransport(), url, "post", options)
-	if err != nil {
-		Println(err)
-		return nil
-	}
+	resp := request(c, c.buildSafeTransport(), url, params, "post", options)
 	return XmlToMap(resp)
 }
 
@@ -73,9 +41,9 @@ func (c *client) Link(url string) string {
 	return DomainUrl() + url
 }
 
-func NewClient(application Application, request *Request) Client {
+func NewClient(application Application, config Config, request *Request) Client {
 	return &client{
-		Config:  application.Config().GetConfig("payment.default"),
+		Config:  config,
 		app:     application,
 		request: request,
 	}
@@ -127,4 +95,22 @@ func (c *client) buildSafeTransport() *http.Transport {
 		//ResponseHeaderTimeout: 10 * time.Second,
 		//ExpectContinueTimeout: 1 * time.Second,
 	}
+}
+
+func request(c *client, transport *http.Transport, url string, params Map, method string, op map[string]Map) []byte {
+	op = MakeOption(op)
+	params.Set("mch_id", c.Get("mch_id"))
+	params.Set("nonce_str", GenerateUUID())
+	params.Set("sub_mch_id", c.Get("sub_mch_id"))
+	params.Set("sub_appid", c.Get("sub_appid"))
+	params.Set("sign_type", SIGN_TYPE_MD5.String())
+	params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
+
+	op["body"] = params
+	resp, err := c.request.PerformRequest(transport, url, method, op)
+	if err != nil {
+		Error(err)
+		return []byte(nil)
+	}
+	return resp
 }

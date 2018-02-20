@@ -1,7 +1,6 @@
 package wego
 
 import (
-	"flag"
 	"log"
 	"strconv"
 
@@ -12,26 +11,6 @@ const FileLoadError = "cannot find config file"
 const ConfigReadError = "cannot read config file"
 
 type Tree toml.Tree
-
-var f = flag.String("f", "config.toml", "config file path")
-
-//var useCache = false
-var system System
-var useCache = false
-var configCache *Tree
-
-func init() {
-	flag.Parse()
-	config := initLoader()
-	useCache = system.UseCache
-	if UseCache() {
-		configCache = config
-	}
-	initLog(system)
-	//initSandbox(GetConfig("payment.default"))
-	//initDomain(GetConfig("domain"))
-	initApp(GetRootConfig())
-}
 
 type System struct {
 	//debug = true
@@ -83,12 +62,6 @@ func ConfigTree() *Tree {
 		panic(FileLoadError)
 	}
 	return (*Tree)(t)
-}
-
-func initLoader() *Tree {
-	t := ConfigTree()
-	t.GetTree("system").(*toml.Tree).Unmarshal(&system)
-	return t
 }
 
 //

@@ -3,8 +3,8 @@
 # Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
 # for detailed Gopkg.toml documentation.
 #
-# required = ["github.com/user/thing/cmd/thing"]
-# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+# required = ["golang.org/x/net"]
+# ignored = ["golang.org/x/net", "golang.org/x/net/context"]
 #
 # [[constraint]]
 #   name = "github.com/user/project"
@@ -28,6 +28,16 @@
 [[constraint]]
   name = "github.com/pelletier/go-toml"
   version = "1.1.0"
+
+[[constraint]]
+  name = "golang.org/x/oauth2"
+  branch = "master"
+  source = "github.com/golang/oauth2"
+
+[[constraint]]
+  name = "golang.org/x/net"
+  version ="release-branch.go1.10"
+  source = "github.com/golang/net"
 
 [prune]
   go-tests = true

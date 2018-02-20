@@ -33,11 +33,11 @@ type CDATA struct {
 	Value string `xml:",cdata"`
 }
 
-func Time(t *time.Time) string {
+func Time(t ...*time.Time) string {
 	if t == nil {
 		return strconv.Itoa(time.Now().Nanosecond())
 	}
-	return strconv.Itoa(t.Nanosecond())
+	return strconv.Itoa(t[0].Nanosecond())
 }
 
 func GenerateNonceStr() string {
@@ -243,7 +243,7 @@ func GenerateSignature(m Map, key string, signType SignType) string {
 }
 
 //SandboxSignKey get wechat sandbox sign key
-func SandboxSignKey(config Config) ([]byte, error) {
+func SandboxSignKey(config Config) []byte {
 	m := make(Map)
 	m.Set("mch_id", config.Get("mch_id"))
 	m.Set("nonce_str", GenerateNonceStr())
@@ -251,7 +251,7 @@ func SandboxSignKey(config Config) ([]byte, error) {
 	m.Set("sign", sign)
 	_ = NewApplication(config)
 	//return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
-	return []byte(nil), nil
+	return []byte(nil)
 }
 
 func GetServerIp() string {

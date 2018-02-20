@@ -39,19 +39,18 @@ import (
 //	return &PayRequest{config: config}
 //}
 
+type RequestInterface interface {
+}
+
 type Request struct {
-	Config
 	client  Client
 	app     Application
 	options map[string]Map
 	//Transport     *http.Transport
 }
 
-func NewRequest(application Application) *Request {
-	r := Request{
-		Config: application.Config(),
-		app:    application,
-	}
+func NewRequest() *Request {
+	r := Request{}
 	r.options = map[string]Map{
 		"header": {
 			"Content-Type": "text/xml",

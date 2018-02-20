@@ -1,9 +1,15 @@
 package wego
 
+import (
+	"flag"
+
+	"github.com/pelletier/go-toml"
+)
+
 type Application interface {
 	Payment() Payment
-	Client() Client
-	Config() Config
+	Client(config Config) Client
+	GetConfig(s string) Config
 	Scheme(id string) string
 	GetKey(s string) string
 	InSandbox() bool
@@ -11,15 +17,40 @@ type Application interface {
 }
 
 type application struct {
+	//cache   map[string]interface{}
 	config  Config
 	sandbox Sandbox
 	payment Payment
 	order   Order
-	client  Client
 	request *Request
 }
 
+var f = flag.String("f", "config.toml", "config file path")
+
+var system System
+var useCache = false
+var configCache *Tree
+
 var app *application
+
+func init() {
+	flag.Parse()
+	config := initLoader()
+	useCache = system.UseCache
+	if UseCache() {
+		configCache = config
+	}
+	initLog(system)
+	//initSandbox(GetConfig("payment.default"))
+	//initDomain(GetConfig("domain"))
+	initApp(GetRootConfig())
+}
+
+func initLoader() *Tree {
+	t := ConfigTree()
+	t.GetTree("system").(*toml.Tree).Unmarshal(&system)
+	return t
+}
 
 func initApp(config Config) {
 	if app == nil {
@@ -31,6 +62,14 @@ func GetOrder() Order {
 	return app.Payment().Order()
 }
 
+func GetRefund() Refund {
+	return app.Payment().Refund()
+}
+
+func GetBill() Bill {
+	return app.Payment().Bill()
+}
+
 func (a *application) Payment() Payment {
 	if a.payment == nil {
 		a.payment = NewPayment(a)
@@ -40,16 +79,13 @@ func (a *application) Payment() Payment {
 
 func (a *application) Request() *Request {
 	if a.request == nil {
-		a.request = NewRequest(a)
+		a.request = NewRequest()
 	}
 	return a.request
 }
 
-func (a *application) Client() Client {
-	if a.client == nil {
-		a.client = NewClient(a, a.Request())
-	}
-	return a.client
+func (a *application) Client(config Config) Client {
+	return NewClient(a, config, a.Request())
 }
 
 func (a *application) SetSubMerchant(mchid, appid string) Application {
@@ -58,17 +94,6 @@ func (a *application) SetSubMerchant(mchid, appid string) Application {
 	return a
 }
 
-//func (a *application) Unify(m Map) (Map, error) {
-//	return a.order.Unify(m)
-//}
-//
-//func (a *application) Close(no string) (Map, error) {
-//	return a.order.Close(no)
-//}
-//
-//func (a *application) Query(m Map) (Map, error) {
-//	return a.order.Query(m)
-//}
 func newApplication(v ...interface{}) *application {
 	app := &application{}
 	for _, value := range v {
@@ -87,8 +112,11 @@ func NewApplication(v ...interface{}) Application {
 	return newApplication(v)
 }
 
-func (a *application) Config() Config {
-	return a.config
+func (a *application) GetConfig(s string) Config {
+	if s == "" {
+		return a.config
+	}
+	return a.config.GetConfig(s)
 }
 
 func (a *application) InSandbox() bool {

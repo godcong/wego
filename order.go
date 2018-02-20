@@ -10,15 +10,14 @@ type Order interface {
 
 type order struct {
 	Config
-	app    Application
-	client Client
+	Payment
 }
 
-func NewOrder(application Application) Order {
+func NewOrder(application Application, config Config) Order {
 	return &order{
-		app:    application,
-		Config: application.Config().GetConfig("payment.default"),
-		client: application.Client(),
+		//app:    application,
+		Payment: application.Payment(),
+		Config:  config,
 	}
 }
 
@@ -35,12 +34,12 @@ func (o *order) Unify(m Map) Map {
 	if !m.Has("notify_url") {
 		m.Set("notify_url", o.Get("notify_url"))
 	}
-	return o.request(UNIFIEDORDER_URL_SUFFIX, m)
+	return o.Request(UNIFIEDORDER_URL_SUFFIX, m)
 }
 
-func (o *order) request(url string, m Map) Map {
-	return o.client.Request(o.client.Link(url), m, "post", nil)
-}
+//func (o *order) request(url string, m Map) Map {
+//	return o.Request(o.Link(url), m, "post", nil)
+//}
 
 /**
 * 作用：关闭订单
@@ -52,7 +51,7 @@ func (o *order) Close(no string) Map {
 	m := make(Map)
 	m.Set("appid", o.Get("app_id"))
 	m.Set("out_trade_no", no)
-	return o.request(CLOSEORDER_URL_SUFFIX, m)
+	return o.Request(CLOSEORDER_URL_SUFFIX, m)
 }
 
 /** QueryOrder
@@ -65,7 +64,7 @@ func (o *order) Close(no string) Map {
  */
 func (o *order) Query(m Map) Map {
 	m.Set("appid", o.Get("app_id"))
-	return o.request(ORDERQUERY_URL_SUFFIX, m)
+	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
 
 func (o *order) QueryByTransactionId(id string) Map {

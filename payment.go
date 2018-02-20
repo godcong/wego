@@ -1,169 +1,102 @@
 package wego
 
-//
-//import (
-//	"log"
-//	"strings"
-//	"time"
-//	"github.com/godcong/wopay/util"
-//)
-//
-//type PayData = util.PayData
-//
-//type Pay struct {
-//	config     PayConfig
-//	payRequest *PayRequest
-//	signType   SignType
-//	autoReport bool
-//	useSanBox  bool
-//	notifyUrl  string
-//}
-//
-//type RequestFunc func(url string, data PayData, connectTimeoutMs, readTimeoutMs int) (string, error)
-//
-//func MicroPay(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.MicroPay(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-//func MicroPayWithPos(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.MicroPayWithPos(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////UnifiedOrder
-//func UnifiedOrder(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.UnifiedOrder(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////CloseOrder
-//func CloseOrder(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.CloseOrder(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////QueryOrder
-//func QueryOrder(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.QueryOrder(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////ReverseOrder
-//func ReverseOrder(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.ReverseOrder(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////QueryRefund
-//func QueryRefund(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.QueryRefund(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////Refund
-//func Refund(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.Refund(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-////ShortUrl
-//func ShortUrl(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.ShortUrl(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-//func DownloadBill(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.DownloadBill(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-//func Report(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.Report(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
-//func AuthCodeToOpenid(data PayData) (PayData, error) {
-//	pay := NewPay(PayConfigInstance())
-//	data, err := pay.AuthCodeToOpenid(data)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return data, nil
-//}
-//
+type Payment interface {
+	Sandbox() Sandbox
+	Order() Order
+	Refund() Refund
+	Client() Client
+	RedPack() RedPack
+	Bill() Bill
+	Pay(Map) Map
+	Request(url string, m Map) Map
+	RequestRaw(url string, m Map) []byte
+	SafeRequest(url string, m Map) Map
+	AuthCodeToOpenid(string) Map
+}
 
 type payment struct {
 	Config
+	bill    Bill
+	redPack RedPack
+	client  Client
 	app     Application
 	order   Order
 	refund  Refund
+	jssdk   JSSDK
 	sandbox Sandbox
+}
+
+func (p *payment) Request(url string, m Map) Map {
+	return p.client.Request(p.client.Link(url), m, "post", nil)
+}
+
+func (p *payment) RequestRaw(url string, m Map) []byte {
+	return p.client.RequestRaw(p.client.Link(url), m, "post", nil)
+}
+
+func (p *payment) SafeRequest(url string, m Map) Map {
+	return p.client.SafeRequest(p.client.Link(url), m, "post", nil)
+}
+
+func (p *payment) Pay(m Map) Map {
+	m.Set("appid", p.Get("app_id"))
+	return p.client.Request(MICROPAY_URL_SUFFIX, m, "post", nil)
+}
+
+func (p *payment) AuthCodeToOpenid(authCode string) Map {
+	m := make(Map)
+	m.Set("appid", p.Get("app_id"))
+	m.Set("auth_code", authCode)
+
+	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil)
+}
+
+func (p *payment) Client() Client {
+	if p.client == nil {
+		p.client = app.Client(p.Config)
+	}
+	return p.client
+}
+func (p *payment) RedPack() RedPack {
+	if p.redPack == nil {
+		p.redPack = NewRedPack(p.app, p.Config)
+	}
+	return p.redPack
 }
 
 func (p *payment) Refund() Refund {
 	if p.refund == nil {
-		p.refund = NewRefund(p.app)
+		p.refund = NewRefund(p.app, p.Config)
 	}
 	return p.refund
 }
 
 func (p *payment) Sandbox() Sandbox {
 	if p.sandbox == nil {
-		p.sandbox = NewSandbox(p.app)
+		p.sandbox = NewSandbox(p.app, p.Config)
 	}
 	return p.sandbox
 }
 
+func (p *payment) Bill() Bill {
+	if p.bill == nil {
+		p.bill = NewBill(p.app, p.Config)
+	}
+	return p.bill
+}
+
 func (p *payment) Order() Order {
 	if p.order == nil {
-		p.order = NewOrder(p.app)
+		p.order = NewOrder(p.app, p.Config)
 	}
 	return p.order
+}
+
+func (p *payment) JSSDK() JSSDK {
+	if p.jssdk == nil {
+		p.jssdk = NewJSSDK(p.app, p.Config)
+	}
+	return p.jssdk
 }
 
 //func (p *payment) GetRequest() Request {
@@ -177,21 +110,12 @@ func (p *payment) Link(url string) string {
 	return DomainUrl() + url
 }
 
-type Payment interface {
-	Sandbox() Sandbox
-	Order() Order
-	Refund() Refund
-	//GetKey(s string) string
-}
-
 func NewPayment(application Application) Payment {
-	//c := config
-	//if config == nil {
-	//	c = GetConfig("payment.default")
-	//}
+	config := application.GetConfig("payment.default")
 	return &payment{
-		Config: application.Config(),
+		Config: config,
 		app:    application,
+		client: app.Client(config),
 	}
 }
 

@@ -6,20 +6,19 @@ type Sandbox interface {
 }
 
 type sandbox struct {
+	Config
 	app Application
 }
 
-func NewSandbox(application Application) Sandbox {
+func NewSandbox(application Application, config Config) Sandbox {
 	return &sandbox{
-		app: application,
+		Config: config,
+		app:    application,
 	}
 }
 
 func (s *sandbox) GetKey() string {
-	if v, e := SandboxSignKey(s.app.Config().GetConfig("payment.default")); e == nil {
-		return string(v)
-	}
-	return ""
+	return string(SandboxSignKey(s.Config))
 }
 
 func (s *sandbox) GetCacheKey() string {
