@@ -17,7 +17,7 @@ type Application interface {
 }
 
 type application struct {
-	//cache   map[string]interface{}
+	cache   Cache
 	config  Config
 	sandbox Sandbox
 	payment Payment
