@@ -64,22 +64,26 @@ func (r *Request) Options() map[string]Map {
 }
 
 func (r *Request) PerformRequest(transport *http.Transport, url string, method string, options map[string]Map) ([]byte, error) {
-	options = optionCheck(r, options)
+	op := optionCheck(r, options)
 	client := &http.Client{
 		Transport: transport,
 		//Timeout:   time.Duration((connectTimeoutMs + readTimeoutMs) * 1000000),
 	}
-	body, b := options["body"]
+	body, b := op["body"]
 	if !b {
 		body = Map{}
 	}
 	log.Println("body:", body)
-	req, err := http.NewRequest(strings.ToUpper(method), url, bytes.NewBufferString(body.ToXml()))
+	reqData := body.ToXml()
+	if _, b := options["json"]; b {
+		reqData = string(body.ToJson())
+	}
+	req, err := http.NewRequest(strings.ToUpper(method), url, bytes.NewBufferString(reqData))
 	if err != nil {
 		Println(err)
 		return []byte(nil), err
 	}
-	header, b := options["header"]
+	header, b := op["header"]
 	if b {
 		for k, v := range header {
 			//req.Header.Set("Content-Type", "text/xml")
@@ -105,6 +109,14 @@ func optionCheck(r *Request, options map[string]Map) map[string]Map {
 	for key, value := range options {
 		base[key] = value
 	}
+
+	if v, b := base["json"]; b {
+		base["headers"] = Map{"Content-Type": "application/json"}
+		//b, _ := json.Marshal(v)
+		base["body"] = v
+	}
+	delete(base, "json")
+
 	return base
 }
 

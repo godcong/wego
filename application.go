@@ -8,6 +8,7 @@ import (
 
 type Application interface {
 	Payment() Payment
+	MiniProgram() MiniProgram
 	Client(config Config) Client
 	GetConfig(s string) Config
 	Scheme(id string) string
