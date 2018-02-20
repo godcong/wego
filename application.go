@@ -58,6 +58,10 @@ func initApp(config Config) {
 	}
 }
 
+func GetSecurity() Security {
+	return app.Payment().Security()
+}
+
 func GetOrder() Order {
 	return app.Payment().Order()
 }

@@ -7,6 +7,7 @@ type Payment interface {
 	Client() Client
 	RedPack() RedPack
 	Bill() Bill
+	Security() Security
 	Pay(Map) Map
 	Request(url string, m Map) Map
 	RequestRaw(url string, m Map) []byte
@@ -16,14 +17,15 @@ type Payment interface {
 
 type payment struct {
 	Config
-	bill    Bill
-	redPack RedPack
-	client  Client
-	app     Application
-	order   Order
-	refund  Refund
-	jssdk   JSSDK
-	sandbox Sandbox
+	bill     Bill
+	redPack  RedPack
+	client   Client
+	app      Application
+	order    Order
+	refund   Refund
+	security Security
+	jssdk    JSSDK
+	sandbox  Sandbox
 }
 
 func (p *payment) Request(url string, m Map) Map {
@@ -56,6 +58,13 @@ func (p *payment) Client() Client {
 		p.client = app.Client(p.Config)
 	}
 	return p.client
+}
+
+func (p *payment) Security() Security {
+	if p.security == nil {
+		p.security = NewSecurity(p.app, p.Config)
+	}
+	return p.security
 }
 func (p *payment) RedPack() RedPack {
 	if p.redPack == nil {

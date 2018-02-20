@@ -68,13 +68,9 @@ func (o *order) query(m Map) Map {
 }
 
 func (o *order) QueryByTransactionId(id string) Map {
-	m := make(Map)
-	m.Set("transaction_id", id)
-	return o.query(m)
+	return o.query(Map{"transaction_id": id})
 }
 
 func (o *order) QueryByOutTradeNumber(no string) Map {
-	m := make(Map)
-	m.Set("out_trade_no", no)
-	return o.query(m)
+	return o.query(Map{"out_trade_no": no})
 }

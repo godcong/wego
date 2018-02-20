@@ -60,8 +60,8 @@ func (t *transfer) ToBankCard(m Map) Map {
 		}
 	}
 
-	m.Set("enc_bank_no", rsa.Encrypt(t.Get("public_key"), m.Get("enc_bank_no")))
-	m.Set("enc_true_name", rsa.Encrypt(t.Get("public_key"), m.Get("enc_true_name")))
+	m.Set("enc_bank_no", rsa.Encrypt(t.Get("pubkey_path"), m.Get("enc_bank_no")))
+	m.Set("enc_true_name", rsa.Encrypt(t.Get("pubkey_path"), m.Get("enc_true_name")))
 
 	return t.SafeRequest(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX, m)
 }

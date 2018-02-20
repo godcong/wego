@@ -57,3 +57,5 @@ const GETTRANSFERINFO_URL_SUFFIX = "/mmpaymkttransfers/gettransferinfo"
 const PROMOTION_TRANSFERS_URL_SUFFIX = "/mmpaymkttransfers/promotion/transfers"
 const MMPAYSPTRANS_QUERY_BANK_URL_SUFFIX = "/mmpaymkttransfers/mmpaysptrans/query_bank"
 const MMPAYSPTRANS_PAY_BANK_URL_SUFFIX = "/mmpaymkttransfers/mmpaysptrans/pay_bank"
+
+const RISK_GETPUBLICKEY_URL_SUFFIX = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
