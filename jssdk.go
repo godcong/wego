@@ -95,6 +95,5 @@ func NewJSSDK(application Application, config Config) JSSDK {
 	return &jssdk{
 		Config: config,
 		app:    application,
-		//client: application.Client(),
 	}
 }

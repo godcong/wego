@@ -52,6 +52,8 @@
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
             rootca_path = 'cert/rootca.pem'
+            public_key = "rsa/publickey.pem"
+            private_key = "rsa/privatekey.pem"
 
 [work]
         [work.default]

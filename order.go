@@ -3,7 +3,7 @@ package wego
 type Order interface {
 	Unify(m Map) Map
 	Close(no string) Map
-	Query(Map) Map
+	//Query(Map) Map
 	QueryByTransactionId(id string) Map
 	QueryByOutTradeNumber(no string) Map
 }
@@ -62,7 +62,7 @@ func (o *order) Close(no string) Map {
 * @param readTimeoutMs 读超时时间，单位是毫秒
 * @return PayData, error API返回数据
  */
-func (o *order) Query(m Map) Map {
+func (o *order) query(m Map) Map {
 	m.Set("appid", o.Get("app_id"))
 	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
@@ -70,11 +70,11 @@ func (o *order) Query(m Map) Map {
 func (o *order) QueryByTransactionId(id string) Map {
 	m := make(Map)
 	m.Set("transaction_id", id)
-	return o.Query(m)
+	return o.query(m)
 }
 
 func (o *order) QueryByOutTradeNumber(no string) Map {
 	m := make(Map)
 	m.Set("out_trade_no", no)
-	return o.Query(m)
+	return o.query(m)
 }
