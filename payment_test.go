@@ -1,11 +1,7 @@
 package wego_test
 
 import (
-	"encoding/json"
-	"log"
 	"testing"
-
-	"github.com/godcong/wego"
 )
 
 //
@@ -18,7 +14,7 @@ import (
 //	"github.com/godcong/wopay/wxpay"
 //)
 //
-var out_trade_no = "201813091059590000003433-asd002"
+var out_trade_no = "201813091059590000003433-asd003"
 
 //var total_fee = "1"
 //var data wxpay.PayData = map[string]string{
@@ -44,30 +40,30 @@ var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 //}
 //
 func TestUnify(t *testing.T) {
-	m := make(wego.Map)
-	m.Set("body", "腾讯充值中心-QQ会员充值")
-	m.Set("out_trade_no", out_trade_no)
-	//m.Set("device_info", "")
-	//m.Set("fee_type", "CNY")
-	m.Set("total_fee", "1")
-	//m.Set("spbill_create_ip", "123.12.12.123")
-	m.Set("notify_url", "https://test.letiantian.me/wxpay/notify")
-	m.Set("trade_type", "NATIVE")
-	//m.Set("product_id", "12")
-	p := wego.NewPayment(nil)
-	rdata, _ := p.Unify(m)
-	v, _ := json.Marshal(rdata)
-	log.Println(string(v))
-	//{"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=3zBUNpw","mch_id":"1900009851","nonce_str":"nK2TLY1Kh5sNHmxC","prepay_id":"wx2018021723523407ff48a9cf0411073420","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"8D08FECF79B3572132A1CAF4A795AE50","trade_type":"NATIVE"}
+	//m := make(wego.Map)
+	//m.Set("body", "腾讯充值中心-QQ会员充值")
+	//m.Set("out_trade_no", out_trade_no)
+	////m.Set("device_info", "")
+	////m.Set("fee_type", "CNY")
+	//m.Set("total_fee", "1")
+	////m.Set("spbill_create_ip", "123.12.12.123")
+	//m.Set("notify_url", "https://test.letiantian.me/wxpay/notify")
+	//m.Set("trade_type", "NATIVE")
+	////m.Set("product_id", "12")
+	//p := wego.NewPayment(nil)
+	//rdata, _ := p.Unify(m)
+	//v, _ := json.Marshal(rdata)
+	//log.Println(string(v))
+	////{"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=3zBUNpw","mch_id":"1900009851","nonce_str":"nK2TLY1Kh5sNHmxC","prepay_id":"wx2018021723523407ff48a9cf0411073420","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"8D08FECF79B3572132A1CAF4A795AE50","trade_type":"NATIVE"}
 
 }
 
 //
 func TestClose(t *testing.T) {
-	p := wego.NewPayment(nil)
-	rdata, _ := p.Close(out_trade_no)
-	v, _ := json.Marshal(rdata)
-	log.Println(string(v))
+	//p := wego.NewPayment(nil)
+	//rdata, _ := p.Close(out_trade_no)
+	//v, _ := json.Marshal(rdata)
+	//log.Println(string(v))
 	//{"appid":"wx426b3015555a46be","mch_id":"1900009851","nonce_str":"dw5cYxs1kntdsoyC","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"C5901659471C6D8A5DFF829FCA9A92FF","sub_mch_id":""}
 
 }

@@ -2,8 +2,6 @@ package wego_test
 
 import (
 	"testing"
-
-	"github.com/godcong/wego"
 )
 
 //
@@ -74,7 +72,7 @@ import (
 //}
 
 func TestNewReqeust(t *testing.T) {
-	wego.NewRequest(wego.GetConfig("payment.default"))
+	//wego.NewRequest(wego.GetConfig("payment.default"))
 }
 
 func TestRequest_SafeRequest(t *testing.T) {

@@ -139,9 +139,23 @@ package wego
 
 type payment struct {
 	Config
-	app Application
-	//order  Order
-	//client Client
+	app     Application
+	order   Order
+	sandbox Sandbox
+}
+
+func (p *payment) Sandbox() Sandbox {
+	if p.sandbox == nil {
+		p.sandbox = NewSandbox(p.app)
+	}
+	return p.sandbox
+}
+
+func (p *payment) Order() Order {
+	if p.order == nil {
+		p.order = NewOrder(p.app)
+	}
+	return p.order
 }
 
 //func (p *payment) GetRequest() Request {
@@ -157,7 +171,7 @@ func (p *payment) Link(url string) string {
 
 type Payment interface {
 	Sandbox() Sandbox
-	//Link(string) string
+	Order() Order
 	//GetKey(s string) string
 }
 

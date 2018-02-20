@@ -1,4 +1,4 @@
-package wego
+package wego_test
 
 import (
 	"testing"

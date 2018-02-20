@@ -2,6 +2,7 @@ package wego
 
 type Application interface {
 	Payment() Payment
+	Client() Client
 	Config() Config
 	Scheme(id string) string
 	GetKey(s string) string
@@ -14,6 +15,20 @@ type application struct {
 	sandbox Sandbox
 	payment Payment
 	order   Order
+	client  Client
+	request *Request
+}
+
+var app *application
+
+func initApp(config Config) {
+	if app == nil {
+		app = newApplication(config)
+	}
+}
+
+func GetOrder() Order {
+	return app.Payment().Order()
 }
 
 func (a *application) Payment() Payment {
@@ -21,6 +36,20 @@ func (a *application) Payment() Payment {
 		a.payment = NewPayment(a)
 	}
 	return a.payment
+}
+
+func (a *application) Request() *Request {
+	if a.request == nil {
+		a.request = NewRequest(a)
+	}
+	return a.request
+}
+
+func (a *application) Client() Client {
+	if a.client == nil {
+		a.client = NewClient(a, a.Request())
+	}
+	return a.client
 }
 
 func (a *application) SetSubMerchant(mchid, appid string) Application {
@@ -40,15 +69,22 @@ func (a *application) SetSubMerchant(mchid, appid string) Application {
 //func (a *application) Query(m Map) (Map, error) {
 //	return a.order.Query(m)
 //}
-
-func NewApplication(config Config) Application {
-	app := &application{
-		config: config,
+func newApplication(v ...interface{}) *application {
+	app := &application{}
+	for _, value := range v {
+		switch value.(type) {
+		case Config:
+			app.config = (value).(Config)
+		}
 	}
-	//app.order = NewOrder(app)
-	//app.payment = NewPayment(app)
-	//app.sandbox = NewSandbox()
+	if app.config == nil {
+		app.config = GetRootConfig()
+	}
 	return app
+}
+
+func NewApplication(v ...interface{}) Application {
+	return newApplication(v)
 }
 
 func (a *application) Config() Config {

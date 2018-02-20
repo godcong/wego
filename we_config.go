@@ -30,7 +30,7 @@ func init() {
 	initLog(system)
 	//initSandbox(GetConfig("payment.default"))
 	//initDomain(GetConfig("domain"))
-	//Println(config)
+	initApp(GetRootConfig())
 }
 
 type System struct {
@@ -136,7 +136,9 @@ func (t *Tree) Get(s string) string {
 	if v, b := v.(string); b {
 		return v
 	}
-
+	if ParseInt(v) == -1 {
+		return ""
+	}
 	return strconv.Itoa(ParseInt(v))
 }
 

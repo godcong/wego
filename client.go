@@ -21,6 +21,7 @@ type client struct {
 }
 
 func (c *client) Request(url string, params Map, method string, options map[string]Map) Map {
+	options = MakeOption(options)
 	params.Set("mch_id", c.Get("mch_id"))
 	params.Set("nonce_str", GenerateUUID())
 	params.Set("sub_mch_id", c.Get("sub_mch_id"))
@@ -30,7 +31,8 @@ func (c *client) Request(url string, params Map, method string, options map[stri
 
 	params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
 
-	resp, err := c.request.PerformRequest(c.buildTransport(), c.Link(url), "post", options)
+	options["body"] = params
+	resp, err := c.request.PerformRequest(c.buildTransport(), url, "post", options)
 	if err != nil {
 		Println(err)
 		return nil
@@ -47,6 +49,7 @@ func (c *client) RequestRaw(url string, params Map, method string, options map[s
 }
 
 func (c *client) SafeRequest(url string, params Map, method string, options map[string]Map) Map {
+	options = MakeOption(options)
 	params.Set("mch_id", c.Get("mch_id"))
 	params.Set("nonce_str", GenerateUUID())
 	params.Set("sub_mch_id", c.Get("sub_mch_id"))
@@ -54,7 +57,8 @@ func (c *client) SafeRequest(url string, params Map, method string, options map[
 	params.Set("sign_type", SIGN_TYPE_MD5.String())
 	params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
 
-	resp, err := c.request.PerformRequest(c.buildSafeTransport(), c.Link(url), "post", options)
+	options["body"] = params
+	resp, err := c.request.PerformRequest(c.buildSafeTransport(), url, "post", options)
 	if err != nil {
 		Println(err)
 		return nil
@@ -71,7 +75,7 @@ func (c *client) Link(url string) string {
 
 func NewClient(application Application, request *Request) Client {
 	return &client{
-		Config:  application.Config(),
+		Config:  application.Config().GetConfig("payment.default"),
 		app:     application,
 		request: request,
 	}

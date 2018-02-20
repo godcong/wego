@@ -3,6 +3,7 @@ package wego
 import (
 	"bytes"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -64,6 +65,7 @@ func (r *Request) Options() map[string]Map {
 }
 
 func (r *Request) PerformRequest(transport *http.Transport, url string, method string, options map[string]Map) ([]byte, error) {
+	options = optionCheck(r, options)
 	client := &http.Client{
 		Transport: transport,
 		//Timeout:   time.Duration((connectTimeoutMs + readTimeoutMs) * 1000000),
@@ -72,7 +74,7 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	if !b {
 		body = Map{}
 	}
-
+	log.Println("body:", body)
 	req, err := http.NewRequest(strings.ToUpper(method), url, bytes.NewBufferString(body.ToXml()))
 	if err != nil {
 		Println(err)
@@ -94,4 +96,22 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
+}
+
+func optionCheck(r *Request, options map[string]Map) map[string]Map {
+	base := r.Options()
+	if options == nil {
+		return base
+	}
+	for key, value := range options {
+		base[key] = value
+	}
+	return base
+}
+
+func MakeOption(options map[string]Map) map[string]Map {
+	if options == nil {
+		return make(map[string]Map)
+	}
+	return options
 }

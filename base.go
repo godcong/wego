@@ -213,7 +213,7 @@ func ParseInt(v interface{}) int {
 	case int, int32, int64, uint, uint32, uint64:
 		t = v.(int)
 	default:
-		return 0
+		return -1
 	}
 	return t
 }

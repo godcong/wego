@@ -14,7 +14,6 @@ package wego
 //	ErrorUnknownHost    = errors.New("ErrorUnknownHostException")
 //)
 //
-var domainInfo Domain
 
 type Domain interface {
 	URL() string
@@ -33,10 +32,16 @@ func (d *domain) URL() string {
 	return url
 }
 
-func NewDomain(application Application) Domain {
+//func NewDomain(application Application) Domain {
+//	return &domain{
+//		Config: application.Config(),
+//		app:    application,
+//	}
+//}
+
+func domainInfo() Domain {
 	return &domain{
-		Config: application.Config(),
-		app:    application,
+		Config: GetConfig("domain"),
 	}
 }
 
@@ -45,7 +50,7 @@ func NewDomain(application Application) Domain {
 //}
 
 func DomainUrl() string {
-	return domainInfo.URL()
+	return domainInfo().URL()
 }
 
 //
