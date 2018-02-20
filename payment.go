@@ -141,7 +141,15 @@ type payment struct {
 	Config
 	app     Application
 	order   Order
+	refund  Refund
 	sandbox Sandbox
+}
+
+func (p *payment) Refund() Refund {
+	if p.refund == nil {
+		p.refund = NewRefund(p.app)
+	}
+	return p.refund
 }
 
 func (p *payment) Sandbox() Sandbox {
@@ -172,6 +180,7 @@ func (p *payment) Link(url string) string {
 type Payment interface {
 	Sandbox() Sandbox
 	Order() Order
+	Refund() Refund
 	//GetKey(s string) string
 }
 
