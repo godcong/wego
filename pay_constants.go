@@ -59,3 +59,4 @@ const MMPAYSPTRANS_QUERY_BANK_URL_SUFFIX = "/mmpaymkttransfers/mmpaysptrans/quer
 const MMPAYSPTRANS_PAY_BANK_URL_SUFFIX = "/mmpaymkttransfers/mmpaysptrans/pay_bank"
 
 const RISK_GETPUBLICKEY_URL_SUFFIX = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
+const CGI_BIN_TOKEN_URL_SUFFIX = "https://api.weixin.qq.com/cgi-bin/token"

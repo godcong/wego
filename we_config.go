@@ -29,21 +29,8 @@ type Log struct {
 	File string
 }
 
-type config struct {
-	//System  `toml:"system"`
-	Content *Tree
-	//OfficialAccount map[string]ConfigMap `toml:"official_account"`
-	//OpenPlatform    map[string]ConfigMap `toml:"open_platform"`
-	//MiniProgram     map[string]ConfigMap `toml:"mini_program"`
-	//Payment         map[string]ConfigMap `toml:"payment"`
-	//Work            map[string]ConfigMap `toml:"work"`
-}
-
-//func (c *config) UseCache() bool {
-//	if c == nil {
-//		return false
-//	}
-//	return c.System.UseCache
+//type config struct {
+//	Content *Tree
 //}
 
 type Config interface {
@@ -53,6 +40,8 @@ type Config interface {
 	GetConfig(s string) Config
 	GetTree(s string) interface{}
 }
+
+var useCache = false
 
 func ConfigTree() *Tree {
 	t, e := toml.LoadFile(*f)

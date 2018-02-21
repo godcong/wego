@@ -4,28 +4,39 @@ type AccessTokenInterface interface {
 	GetToken() string
 	Refresh() AccessTokenInterface
 	ApplyToRequest(RequestInterface, Map) RequestInterface
+	//getCredentials() Map
+	//getQuery() Map
+	//sendRequest() []byte
 }
 
-type accessToken struct {
+type AccessToken struct {
 	Config
 	app   Application
 	token string
 }
 
+func (a *AccessToken) getQuery() Map {
+	panic("implement me")
+}
+
+func (a *AccessToken) sendRequest() []byte {
+	panic("implement me")
+}
+
 var acc AccessTokenInterface
 
 func NewAccessToken(application Application, config Config) AccessTokenInterface {
-	return &accessToken{
+	return &AccessToken{
 		Config: config,
 		app:    application,
 	}
 }
 
-func (a *accessToken) GetToken() string {
+func (a *AccessToken) GetToken() string {
 	panic("implement me")
 }
 
-func (a *accessToken) getToken(b bool) string {
+func (a *AccessToken) getToken(b bool) string {
 	panic("implement me")
 	//$cacheKey = $this->getCacheKey();
 	//$cache = $this->getCache();
@@ -41,23 +52,22 @@ func (a *accessToken) getToken(b bool) string {
 	//return token;
 }
 
-func (a *accessToken) Refresh() AccessTokenInterface {
+func (a *AccessToken) GetRefreshToken() string {
 	panic("implement me")
 }
 
-func (a *accessToken) ApplyToRequest(RequestInterface, Map) RequestInterface {
+func (a *AccessToken) Refresh() AccessTokenInterface {
 	panic("implement me")
 }
 
-func (a *accessToken) GetRefreshedToken(RequestInterface, Map) RequestInterface {
+func (a *AccessToken) ApplyToRequest(RequestInterface, Map) RequestInterface {
 	panic("implement me")
 }
 
-func (a *accessToken) getCredentials() Map {
-	return Map{
-		"grant_type": "client_credential",
-		"appid":      a.Get("app_id"),
-		"secret":     a.Get("secret"),
-	}
+func (a *AccessToken) GetRefreshedToken(RequestInterface, Map) RequestInterface {
+	panic("implement me")
+}
 
+func (a *AccessToken) getCredentials() Map {
+	panic("implement me")
 }

@@ -3,12 +3,14 @@ package wego
 import (
 	"flag"
 
+	"github.com/godcong/wego/cache"
 	"github.com/pelletier/go-toml"
 )
 
 type Application interface {
 	Payment() Payment
 	MiniProgram() MiniProgram
+	Cache() cache.Cache
 	Client(config Config) Client
 	GetConfig(s string) Config
 	Scheme(id string) string
@@ -18,10 +20,11 @@ type Application interface {
 }
 
 type application struct {
-	cache   Cache
+	cache   cache.Cache
 	config  Config
 	sandbox Sandbox
 	payment Payment
+	mini    MiniProgram
 	order   Order
 	request *Request
 }
@@ -29,7 +32,7 @@ type application struct {
 var f = flag.String("f", "config.toml", "config file path")
 
 var system System
-var useCache = false
+
 var configCache *Tree
 
 var app *application
@@ -37,14 +40,12 @@ var app *application
 func init() {
 	flag.Parse()
 	config := initLoader()
-	useCache = system.UseCache
-	if UseCache() {
+	if system.UseCache {
+		CacheOn()
 		configCache = config
 	}
 	initLog(system)
-	//initSandbox(GetConfig("payment.default"))
-	//initDomain(GetConfig("domain"))
-	initApp(GetRootConfig())
+	initApp(config)
 }
 
 func initLoader() *Tree {
@@ -53,10 +54,11 @@ func initLoader() *Tree {
 	return t
 }
 
-func initApp(config Config) {
+func initApp(config Config) Application {
 	if app == nil {
 		app = newApplication(config)
 	}
+	return app
 }
 
 func GetSecurity() Security {
@@ -73,6 +75,17 @@ func GetRefund() Refund {
 
 func GetBill() Bill {
 	return app.Payment().Bill()
+}
+
+func (a *application) MiniProgram() MiniProgram {
+	if a.mini == nil {
+		a.mini = NewMiniProgram(a)
+	}
+	return a.mini
+}
+
+func (a *application) Cache() cache.Cache {
+	return cache.GetCache()
 }
 
 func (a *application) Payment() Payment {
