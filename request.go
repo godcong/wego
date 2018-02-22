@@ -73,8 +73,8 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 		body = Map{}
 	}
 	reqData := body.ToXml()
-	if _, b := options["json"]; b {
-		reqData = string(body.ToJson())
+	if v, b := options["json"]; b {
+		reqData = string(v.ToJson())
 	}
 	req, err := http.NewRequest(strings.ToUpper(method), url, bytes.NewBufferString(reqData))
 	if err != nil {

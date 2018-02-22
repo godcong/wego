@@ -64,7 +64,8 @@ func (j *jssdk) ShareAddressConfig(accessToken interface{}) Map {
 	token := ""
 	switch accessToken.(type) {
 	case AccessTokenInterface:
-		token = accessToken.(AccessTokenInterface).GetToken()
+		t := (accessToken.(AccessTokenInterface)).GetToken()
+		token = t.ToJson()
 	case string:
 		token = accessToken.(string)
 	}

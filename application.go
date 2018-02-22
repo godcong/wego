@@ -61,6 +61,10 @@ func initApp(config Config) Application {
 	return app
 }
 
+func GetApplication() Application {
+	return app
+}
+
 func GetSecurity() Security {
 	return app.Payment().Security()
 }

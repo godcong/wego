@@ -4,12 +4,13 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/godcong/wego/cache"
 )
 
 type AccessTokenInterface interface {
-	GetToken() map[string]interface{}
+	GetToken() Token
 	Refresh() AccessTokenInterface
 	ApplyToRequest(RequestInterface, Map) RequestInterface
 	//getCredentials() Map
@@ -68,11 +69,11 @@ func (a *AccessToken) GetRefreshedToken(RequestInterface, Map) RequestInterface 
 	panic("implement me")
 }
 
-func (a *AccessToken) GetToken() map[string]interface{} {
+func (a *AccessToken) GetToken() Token {
 	return a.getToken(false)
 }
 
-func (a *AccessToken) GetTokenWithRefresh() map[string]interface{} {
+func (a *AccessToken) GetTokenWithRefresh() Token {
 	return a.getToken(true)
 }
 
@@ -98,6 +99,7 @@ func (a *AccessToken) getToken(refresh bool) Token {
 }
 func (a *AccessToken) RequestToken(credentials string) Token {
 	response := a.sendRequest(credentials)
+	log.Println(string(response))
 	m := Token{}
 	json.Unmarshal(response, &m)
 	return m
@@ -154,4 +156,12 @@ func (t *Token) GetExpiresIn() int {
 		return i.(int)
 	}
 	return -1
+}
+
+func (t *Token) ToJson() string {
+	v, e := json.Marshal(*t)
+	if e != nil {
+		return ""
+	}
+	return string(v)
 }

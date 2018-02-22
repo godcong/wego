@@ -21,16 +21,16 @@ type client struct {
 }
 
 func (c *client) Request(url string, params Map, method string, options map[string]Map) Map {
-	resp := request(c, c.buildTransport(), url, params, "post", options)
+	resp := request(c, c.buildTransport(), url, params, method, options)
 	return XmlToMap(resp)
 }
 
 func (c *client) RequestRaw(url string, params Map, method string, options map[string]Map) []byte {
-	return request(c, c.buildTransport(), url, params, "post", options)
+	return request(c, c.buildTransport(), url, params, method, options)
 }
 
 func (c *client) SafeRequest(url string, params Map, method string, options map[string]Map) Map {
-	resp := request(c, c.buildSafeTransport(), url, params, "post", options)
+	resp := request(c, c.buildSafeTransport(), url, params, method, options)
 	return XmlToMap(resp)
 }
 
