@@ -2,7 +2,9 @@ package cache
 
 type Cache interface {
 	Get(key string) interface{}
+	GetD(key string, v interface{}) interface{}
 	Set(key string, val interface{}) Cache
+	SetWithTTL(key string, val interface{}, ttl int) Cache
 	Has(key string) bool
 	Delete(key string) Cache
 	Clear()

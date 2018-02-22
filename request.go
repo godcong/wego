@@ -3,7 +3,6 @@ package wego
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -73,7 +72,6 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	if !b {
 		body = Map{}
 	}
-	log.Println("body:", body)
 	reqData := body.ToXml()
 	if _, b := options["json"]; b {
 		reqData = string(body.ToJson())

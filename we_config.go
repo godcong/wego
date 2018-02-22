@@ -4,6 +4,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/godcong/wego/cache"
 	"github.com/pelletier/go-toml"
 )
 
@@ -43,31 +44,22 @@ type Config interface {
 
 var useCache = false
 
-func ConfigTree() *Tree {
-	t, e := toml.LoadFile(*f)
+func ConfigTree(f string) *Tree {
+	t, e := toml.LoadFile(f)
 	if e != nil {
-		log.Println("filepath: " + *f)
+		log.Println("filepath: " + f)
 		log.Println(e.Error())
 		panic(FileLoadError)
 	}
 	return (*Tree)(t)
 }
 
-//
-//func TransToMap(tree *toml.Tree, name string) map[string]Tree {
-//	cm := make(map[string]Tree)
-//	mp := tree.Get(name).(*toml.Tree).ToMap()
-//	for key, value := range mp {
-//		cm[key] = value.(map[string]Tree
-//	}
-//	return cm
-//}
-
 func treeLoader() *Tree {
+	c := cache.GetCache()
 	if system.UseCache {
-		return configCache
+		return c.Get("cache").(*Tree)
 	}
-	return ConfigTree()
+	return ConfigTree(c.GetD("cache_path", "config.toml").(string))
 }
 
 func GetConfig(s string) Config {

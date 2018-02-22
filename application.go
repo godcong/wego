@@ -33,23 +33,23 @@ var f = flag.String("f", "config.toml", "config file path")
 
 var system System
 
-var configCache *Tree
-
 var app *application
 
 func init() {
+	c := cache.GetCache()
 	flag.Parse()
+	c.Set("cache_path", *f)
 	config := initLoader()
 	if system.UseCache {
 		CacheOn()
-		configCache = config
+		c.Set("cache", config)
 	}
 	initLog(system)
 	initApp(config)
 }
 
 func initLoader() *Tree {
-	t := ConfigTree()
+	t := ConfigTree(*f)
 	t.GetTree("system").(*toml.Tree).Unmarshal(&system)
 	return t
 }

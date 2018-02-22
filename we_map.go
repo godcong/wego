@@ -9,10 +9,7 @@ import (
 type Map map[string]string
 
 func (m *Map) String() string {
-	if v, e := json.Marshal(m); e == nil {
-		return string(v)
-	}
-	return ""
+	return string(m.ToJson())
 }
 
 func (m *Map) Set(s string, v string) *Map {
