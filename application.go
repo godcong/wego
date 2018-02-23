@@ -5,15 +5,16 @@ import (
 )
 
 type Application interface {
-	//Payment() Payment
-	//MiniProgram() mini.MiniProgram
-	//Cache() cache.Cache
-	//Client(config core.Config) core.Client
-	//GetConfig(s string) core.Config
+	Get(name string) interface{}
+	Register(name string, v interface{})
 	Scheme(id string) string
 	GetKey(s string) string
 	InSandbox() bool
 	SetSubMerchant(mchid, appid string) *core.Application
+}
+
+func GetApplication() Application {
+	return core.GetApplication()
 }
 
 //

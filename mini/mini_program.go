@@ -1,11 +1,25 @@
 package mini
 
-//type MiniProgram struct {
-//	core.Config
-//	acc    token.AccessTokenInterface
-//	app    Application
-//	client Client
-//}
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/token"
+)
+
+type MiniProgram struct {
+	core.Config
+	acc    token.AccessTokenInterface
+	app    *core.Application
+	client core.Client
+}
+
+func (p *MiniProgram) SetClient(c core.Client) *MiniProgram {
+	p.client = c
+	return p
+}
+
+func (p *MiniProgram) GetClient() core.Client {
+	return p.client
+}
 
 //func (m *MiniProgram) AccessToken() token.AccessTokenInterface {
 //	if m.acc == nil {

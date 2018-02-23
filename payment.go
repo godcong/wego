@@ -62,9 +62,9 @@ type Transfer interface {
 }
 type Payment interface {
 	//Sandbox() Sandbox
-	//Order() *payment.Order
-	//Refund() *payment.Refund
-	//Security() *payment.Security
+	Order() *payment.Order
+	Refund() *payment.Refund
+	Security() *payment.Security
 	Pay(core.Map) core.Map
 	Request(url string, m core.Map) core.Map
 	RequestRaw(url string, m core.Map) []byte
@@ -136,17 +136,22 @@ func NewTransfer(application Application, config core.Config) *payment.Transfer 
 	}
 }
 
+func GetPayment() Payment {
+	payment := GetApplication().Get("payment").(*payment.Payment)
+	return payment
+}
+
 func GetSecurity() Security {
-	payment := core.GetApplication().Get("payment").(*payment.Payment)
+	payment := GetApplication().Get("payment").(*payment.Payment)
 	return payment.Security()
 }
 
 func GetOrder() Order {
-	payment := core.GetApplication().Get("payment").(*payment.Payment)
+	payment := GetApplication().Get("payment").(*payment.Payment)
 	return payment.Order()
 }
 
 func GetRefund() Refund {
-	payment := core.GetApplication().Get("payment").(*payment.Payment)
+	payment := GetApplication().Get("payment").(*payment.Payment)
 	return payment.Refund()
 }
