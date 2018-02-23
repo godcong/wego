@@ -1,4 +1,11 @@
 # wego
+[![GoDoc](https://godoc.org/github.com/godcong/wopay?status.svg)](http://godoc.org/github.com/godcong/wego)
+[![license](https://img.shields.io/github/license/godcong/wopay.svg)](https://github.com/godcong/wego/blob/master/LICENSE)
+ [![Build Status](https://travis-ci.org/godcong/wopay.svg?branch=master)](https://travis-ci.org/godcong/wego)
+[![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wopay)](https://goreportcard.com/report/github.com/godcong/wego)
+
+
+
 a fashion fast wechat pay api for golang
 最时尚，速度快，性能好的微信支付接口
 
