@@ -41,25 +41,31 @@ data := Map{
 }
 
 a. 统一下单： https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
+
 调用接口： GetOrder().Unify(data)
 
 b. 查询订单: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+
 调用接口： GetOrder().Query(data)
 
 c. 关闭订单: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
+
 调用接口： GetOrder().Close(data)
 
 d. 申请退款: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
+
 调用接口： GetRefund().ByOutTradeNumber()
 调用接口： GetRefund().ByTransactionId()
 
 e. 查询退款: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_5
+
 调用接口： GetRefund().QueryByRefundId(id)
 调用接口： GetRefund().QueryByOutRefundNumber(num)
 调用接口： GetRefund().QueryByOutTradeNumber(num)
 调用接口： GetRefund().QueryByTransactionId(id)
 
 f. 下载对账单 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
+
 调用接口： GetBill().Get(bill_date, bill_type,op Map)
 
 g. 支付结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7
