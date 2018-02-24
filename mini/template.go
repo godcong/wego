@@ -1,0 +1,32 @@
+package mini
+
+import "github.com/godcong/wego/core"
+
+type Template struct {
+	core.Config
+	*MiniProgram
+}
+
+func (t *Template) List(offset, count int) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_LIBRARY_LIST_URL_SUFFIX), core.Map{"offset": offset, "count": count}, nil)
+}
+
+func (t *Template) Get(id string) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_LIBRARY_GET_URL_SUFFIX), core.Map{"id": id}, nil)
+}
+
+func (t *Template) Delete(templateId string) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_DEL_URL_SUFFIX), core.Map{"template_id": templateId}, nil)
+}
+
+func (t *Template) GetTemplates(offset, count int) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_LIST_URL_SUFFIX), core.Map{"offset": offset, "count": count}, nil)
+}
+
+func (t *Template) Add(id string, keyword core.Map) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_ADD_URL_SUFFIX), core.Map{"id": id, "keyword_id_list": keyword}, nil)
+}
+
+func (t *Template) Send(data core.Map) core.Map {
+	return t.GetClient().HttpPostJson(t.prefix(core.TEMPLATE_SEND_URL_SUFFIX), data, nil)
+}

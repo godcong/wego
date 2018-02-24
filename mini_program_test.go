@@ -18,3 +18,8 @@ func TestGetAuth(t *testing.T) {
 func TestGetAppCode(t *testing.T) {
 	log.Println(wego.GetAppCode().Get("path", nil))
 }
+
+func TestNewAppCode(t *testing.T) {
+	var v []string
+	log.Println(v == nil)
+}

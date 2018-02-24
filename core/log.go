@@ -14,12 +14,11 @@ var debug = false
 func initLog(system System) {
 	debug = system.Debug
 	if Debug() {
-		os.Rename(system.Log.File, time.Now().Format("060102150405")+"_"+system.Log.File)
-
 		i := strings.LastIndexAny(system.Log.File, "/")
+		y := strings.LastIndexAny(system.Log.File, ".")
 		r := []rune(system.Log.File)
+		e := os.Rename(system.Log.File, string(r[:y])+"_"+time.Now().Format("060102150405")+string(r[y:]))
 		os.MkdirAll(string(r[:i]), os.ModePerm)
-
 		f, e := os.OpenFile(system.Log.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if e != nil {
 			log.Println("cannot open file: " + system.Log.File)

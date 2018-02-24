@@ -11,6 +11,7 @@ import (
 type Client interface {
 	HttpGet(url string, m Map) Map
 	HttpPost(url string, m Map) Map
+	HttpPostJson(url string, m Map, query Map) Map
 	Request(url string, params Map, method string, options Map) Map
 	RequestRaw(url string, params Map, method string, options Map) []byte
 	SafeRequest(url string, params Map, method string, options Map) Map
@@ -20,6 +21,10 @@ type Client interface {
 type client struct {
 	Config
 	request *Request
+}
+
+func (c *client) HttpPostJson(url string, data Map, query Map) Map {
+	return c.Request(url, nil, "post", Map{"query": query, "json": data})
 }
 
 func (c *client) HttpGet(url string, m Map) Map {

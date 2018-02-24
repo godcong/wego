@@ -108,13 +108,6 @@ func NewOrder(application Application, config core.Config) *payment.Order {
 	}
 }
 
-func NewRefund(application Application, config core.Config) *payment.Refund {
-	return &payment.Refund{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
-
 func NewSandbox(application Application, config core.Config) *core.Sandbox {
 	return &core.Sandbox{
 		Config: config,

@@ -20,6 +20,15 @@ func (r *Refund) refund(num string, total, refund int, options core.Map) core.Ma
 	return r.SafeRequest(core.REFUND_URL_SUFFIX, options)
 }
 
+func NewRefund(p *Payment, config core.Config) *Refund {
+	r := &Refund{
+		Config:  config,
+		Payment: p,
+	}
+	p.refund = r
+	return r
+}
+
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) core.Map {
 	options.NullSet("out_trade_no", tradeNum)
 	return r.refund(num, total, refund, options)

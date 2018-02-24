@@ -6,11 +6,13 @@ import (
 
 type MiniProgram struct {
 	core.Config
-	token   *core.AccessToken
-	app     *core.Application
-	client  core.Client
-	auth    *Auth
-	appCode *AppCode
+	token    *core.AccessToken
+	app      *core.Application
+	client   core.Client
+	auth     *Auth
+	appCode  *AppCode
+	dataCube *DataCube
+	template *Template
 }
 
 func init() {
@@ -53,6 +55,26 @@ func (m *MiniProgram) AppCode() *AppCode {
 		}
 	}
 	return m.appCode
+}
+
+func (m *MiniProgram) DataCube() *DataCube {
+	if m.dataCube == nil {
+		m.dataCube = &DataCube{
+			Config:      m.Config,
+			MiniProgram: m,
+		}
+	}
+	return m.dataCube
+}
+
+func (m *MiniProgram) Template() *Template {
+	if m.template == nil {
+		m.template = &Template{
+			Config:      m.Config,
+			MiniProgram: m,
+		}
+	}
+	return m.template
 }
 
 func (m *MiniProgram) AccessToken() *core.AccessToken {

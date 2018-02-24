@@ -39,7 +39,6 @@ func (a *AppCode) GetUnlimit(scene string, optionals core.Map) core.Map {
 func (a *AppCode) getStream(url string, m core.Map) []byte {
 	log.Println(url, m)
 	token0 := a.AccessToken().GetToken()
-	log.Println(token0)
 	token := strings.Join([]string{"access_token", token0.GetKey()}, "=")
 
 	return a.GetClient().RequestRaw(url+"?"+token, nil, "post", core.Map{"json": m})
