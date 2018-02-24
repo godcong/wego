@@ -69,11 +69,16 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	method = strings.ToUpper(method)
 	client := &http.Client{
 		Transport: transport,
-		//Timeout:   time.Duration((connectTimeoutMs + readTimeoutMs) * 1000000),
+		//Timeout:   time.Duration(50000),
 	}
 	reqData := ""
 	if _, b := options["json"]; b {
-		reqData = op["body"].(string)
+		switch v := op["body"].(type) {
+		case string:
+			reqData = v
+		case Map:
+			reqData = string(v.ToJson())
+		}
 	} else {
 		body := op["body"].(Map)
 		reqData = body.ToXml()
@@ -91,11 +96,14 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 		return []byte(nil), err
 	}
 	header, b := op["headers"].(Map)
-	if b {
-		for k, v := range header {
-			req.Header.Set(k, v.(string))
+	if method == "POST" {
+		if b {
+			for k, v := range header {
+				req.Header.Set(k, v.(string))
+			}
 		}
 	}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		Error(err)
@@ -114,10 +122,8 @@ func optionCheck(r *Request, options Map) Map {
 	for key, value := range options {
 		base[key] = value
 	}
-
 	if v, b := options["json"]; b {
-		base["headers"] = Map{"Content-Type": "application/json"}
-		//b, _ := json.Marshal(v)
+		base["headers"] = Map{"Content-Type": "application/json; encoding=utf-8"}
 		base["body"] = v
 	}
 

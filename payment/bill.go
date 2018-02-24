@@ -8,7 +8,7 @@ import (
 
 type Bill struct {
 	core.Config
-	Payment
+	*Payment
 }
 
 func (b *Bill) Get(bd string, bt string, op core.Map) core.Map {

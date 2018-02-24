@@ -9,6 +9,8 @@ import (
 )
 
 type Client interface {
+	HttpGet(url string, m Map) Map
+	HttpPost(url string, m Map) Map
 	Request(url string, params Map, method string, options Map) Map
 	RequestRaw(url string, params Map, method string, options Map) []byte
 	SafeRequest(url string, params Map, method string, options Map) Map
@@ -18,6 +20,14 @@ type Client interface {
 type client struct {
 	Config
 	request *Request
+}
+
+func (c *client) HttpGet(url string, m Map) Map {
+	return c.Request(url, nil, "get", Map{"query": m})
+}
+
+func (c *client) HttpPost(url string, m Map) Map {
+	return c.Request(url, nil, "post", Map{"form_params": m})
 }
 
 func (c *client) Request(url string, params Map, method string, options Map) Map {
@@ -60,6 +70,7 @@ func (c *client) buildTransport() *http.Transport {
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
+		Proxy: nil,
 		//TLSHandshakeTimeout:   10 * time.Second,
 		//ResponseHeaderTimeout: 10 * time.Second,
 		//ExpectContinueTimeout: 1 * time.Second,
@@ -93,6 +104,7 @@ func (c *client) buildSafeTransport() *http.Transport {
 		//	KeepAlive: 30 * time.Second,
 		//}).Dial,
 		TLSClientConfig: tlsConfig,
+		Proxy:           nil,
 		//TLSHandshakeTimeout:   10 * time.Second,
 		//ResponseHeaderTimeout: 10 * time.Second,
 		//ExpectContinueTimeout: 1 * time.Second,

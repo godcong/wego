@@ -249,6 +249,6 @@ func TestRefund_Query(t *testing.T) {
 }
 
 func TestSecurity_GetPublicKey(t *testing.T) {
-	m := wego.GetPayment().Security().GetPublicKey()
+	m := wego.GetSecurity().GetPublicKey()
 	log.Println(m.Get("pub_key"))
 }

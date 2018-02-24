@@ -2,23 +2,68 @@ package mini
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/token"
 )
 
 type MiniProgram struct {
 	core.Config
-	acc    token.AccessTokenInterface
-	app    *core.Application
-	client core.Client
+	token   *core.AccessToken
+	app     *core.Application
+	client  core.Client
+	auth    *Auth
+	appCode *AppCode
 }
 
-func (p *MiniProgram) SetClient(c core.Client) *MiniProgram {
-	p.client = c
-	return p
+func init() {
+	app := core.GetApplication()
+	app.Register("mini_program", newMiniProgram())
 }
 
-func (p *MiniProgram) GetClient() core.Client {
-	return p.client
+func newMiniProgram() *MiniProgram {
+	config := core.GetConfig("mini_program.default")
+	mini0 := &MiniProgram{
+		Config: config,
+		client: core.NewClient(core.NewRequest(), config),
+	}
+	return mini0
+}
+
+func (m *MiniProgram) SetClient(c core.Client) *MiniProgram {
+	m.client = c
+	return m
+}
+
+func (m *MiniProgram) GetClient() core.Client {
+	return m.client
+}
+func (m *MiniProgram) Auth() *Auth {
+	if m.auth == nil {
+		m.auth = &Auth{
+			Config:      m.Config,
+			MiniProgram: m,
+		}
+	}
+	return m.auth
+}
+
+func (m *MiniProgram) AppCode() *AppCode {
+	if m.appCode == nil {
+		m.appCode = &AppCode{
+			Config:      m.Config,
+			MiniProgram: m,
+		}
+	}
+	return m.appCode
+}
+
+func (m *MiniProgram) AccessToken() *core.AccessToken {
+	if m.token == nil {
+		m.token = core.NewAccessToken(m.Config, m.client)
+	}
+	return m.token
+}
+
+func (m *MiniProgram) prefix(s string) string {
+	return core.API_WEIXIN_URL_SUFFIX + s
 }
 
 //func (m *MiniProgram) AccessToken() token.AccessTokenInterface {
@@ -63,14 +108,4 @@ func (p *MiniProgram) GetClient() core.Client {
 //		"appid":      m.Get("app_id"),
 //		"secret":     m.Get("secret"),
 //	}
-//}
-//
-//func (m *MiniProgramAccessToken) Session(code string) core.Map {
-//	param := core.Map{
-//		"appid":      m.Get("app_id"),
-//		"secret":     m.Get("secret"),
-//		"js_code":    code,
-//		"grant_type": "authorization_code",
-//	}
-//	return m.app.Client(m.Config).Request(core.SNS_JSCODE2SESSION_URL_SUFFIX+"?"+param.ToUrl(), nil, "get", nil)
 //}

@@ -60,5 +60,9 @@ const MMPAYSPTRANS_PAY_BANK_URL_SUFFIX = "/mmpaymkttransfers/mmpaysptrans/pay_ba
 
 const RISK_GETPUBLICKEY_URL_SUFFIX = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 const API_WEIXIN_URL_SUFFIX = "https://api.weixin.qq.com"
-const SNS_JSCODE2SESSION_URL_SUFFIX = API_WEIXIN_URL_SUFFIX + "/sns/jscode2session"
-const CGI_BIN_TOKEN_URL_SUFFIX = API_WEIXIN_URL_SUFFIX + "/cgi-bin/token"
+
+const GETWXACODE_URL_SUFFIX = "/wxa/getwxacode"
+const CREATEWXAQRCODE_URL_SUFFIX = "/cgi-bin/wxaapp/createwxaqrcode"
+const GETWXACODEUNLIMIT_URL_SUFFIX = "/wxa/getwxacodeunlimit"
+const SNS_JSCODE2SESSION_URL_SUFFIX = "/sns/jscode2session"
+const CGI_BIN_TOKEN_URL_SUFFIX = "/cgi-bin/token"

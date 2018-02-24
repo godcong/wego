@@ -4,93 +4,83 @@ import (
 	"sync"
 )
 
-type MapCache map[string]interface{}
-
-var mutex sync.RWMutex
+type MapCache struct {
+	sync.Map
+}
 
 func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
-	v := m.Get(key)
-	if v == nil {
-		return v0
+
+	if v, b := m.Load(key); b {
+		return v
 	}
-	return v
+	return v0
 }
 
 //TODO: ttl not set
 func (m *MapCache) SetWithTTL(key string, val interface{}, ttl int) Cache {
-	mutex.Lock()
-	(*m)[key] = val
-	mutex.Unlock()
+	m.Store(key, val)
 	return m
 }
 
 func NewMapCache() Cache {
 	c := &MapCache{}
+
 	return c
 }
 
 func (m *MapCache) Get(key string) interface{} {
-	mutex.RLock()
-	if v, b := (*m)[key]; b {
+	if v, b := m.Load(key); b {
 		return v
 	}
-	mutex.RUnlock()
 	return nil
 }
 
 func (m *MapCache) Set(key string, val interface{}) Cache {
-	mutex.Lock()
-	(*m)[key] = val
-	mutex.Unlock()
+	m.Store(key, val)
+
 	return m
 }
 
 func (m *MapCache) Has(key string) bool {
-	mutex.RLock()
-	_, b := (*m)[key]
-	mutex.RUnlock()
+
+	_, b := m.Load(key)
 	return b
 }
 
 func (m *MapCache) Delete(key string) Cache {
-	mutex.Lock()
-	delete(*m, key)
-	mutex.Unlock()
+
+	m.Delete(key)
 	return m
 }
 
 func (m *MapCache) Clear() {
-	mutex.Lock()
-	*m = make(MapCache)
-	mutex.Unlock()
+	*m = MapCache{}
 }
 
 func (m *MapCache) GetMultiple(keys []string) map[string]interface{} {
 	c := make(map[string]interface{})
-	mutex.RLock()
+
 	for _, k := range keys {
-		if tmp, b := (*m)[k]; b {
+		if tmp := m.Get(k); tmp != nil {
 			c[k] = tmp
 		}
 		c[k] = nil
 	}
-	mutex.RUnlock()
+
 	return c
 }
 
 func (m *MapCache) SetMultiple(values map[string]interface{}) {
-	mutex.Lock()
+
 	for k, v := range values {
-		(*m)[k] = v
+		m.Set(k, v)
 	}
-	mutex.Unlock()
+
 }
 
 func (m *MapCache) DeleteMultiple(keys []string) Cache {
-	mutex.Lock()
 	for _, k := range keys {
-		delete(*m, k)
+		m.Delete(k)
 	}
-	mutex.Unlock()
 	return m
 }

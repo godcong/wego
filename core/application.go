@@ -9,14 +9,7 @@ import (
 )
 
 type Application struct {
-	//cache   cache.Cache
-	//Config
-	//request *Request
-	app Map
-
-	//sandbox Sandbox
-	//payment Payment
-	//mini    MiniProgram
+	obj Map
 }
 
 var f = flag.String("f", "config.toml", "config file path")
@@ -31,7 +24,7 @@ func initLoader() *Tree {
 
 func newApplication(v ...interface{}) *Application {
 	app := &Application{
-		app: Map{},
+		obj: Map{},
 	}
 	for _, value := range v {
 		switch value.(type) {
@@ -55,7 +48,6 @@ func initApp(config Config) *Application {
 func init() {
 	c := cache.GetCache()
 	flag.Parse()
-	c.Set("cache_path", *f)
 	config := initLoader()
 	if system.UseCache {
 		CacheOn()
@@ -66,14 +58,14 @@ func init() {
 }
 
 func (a *Application) Get(name string) interface{} {
-	if v, b := (*a).app[name]; b {
+	if v, b := (*a).obj[name]; b {
 		return v
 	}
 	return nil
 }
 
 func (a *Application) Register(name string, v interface{}) {
-	(*a).app[name] = v
+	(*a).obj[name] = v
 }
 
 func GetApplication() *Application {

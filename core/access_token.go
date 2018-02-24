@@ -1,4 +1,4 @@
-package token
+package core
 
 import (
 	"crypto/md5"
@@ -6,24 +6,14 @@ import (
 	"fmt"
 
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/core"
 )
-
-type AccessTokenInterface interface {
-	GetToken() Token
-	Refresh() AccessTokenInterface
-	//ApplyToRequest(RequestInterface, Map) RequestInterface
-	//getCredentials() Map
-	//getQuery() Map
-	//sendRequest() []byte
-}
 
 type Token map[string]interface{}
 
 type AccessToken struct {
-	core.Config
-	app         core.Application
-	credentials core.Map
+	Config
+	Client
+	credentials Map
 	token       string
 }
 
@@ -32,31 +22,29 @@ const ACCESS_TOKEN_EXPIRES_IN = "expires_in"
 
 const ACCESS_TOKEN_SAFE_SECONDS = 500
 
-func (a *AccessToken) getQuery() core.Map {
+func (a *AccessToken) getQuery() Map {
 	panic("implement me")
 }
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	m0 := core.Map{
+	m0 := Map{
 		"grant_type": "client_credential",
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
 	}
 
-	c := a.app.Get("client").(core.Client)
-	m := c.Request(core.CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.ToUrl(), nil, "get", nil)
+	m := a.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.ToUrl(), nil, "get", nil)
 	return m.ToJson()
 }
 
-var acc AccessTokenInterface
-
-func NewAccessToken(config core.Config) AccessTokenInterface {
+func NewAccessToken(config Config, client Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
+		Client: client,
 	}
 }
 
-func (a *AccessToken) Refresh() AccessTokenInterface {
+func (a *AccessToken) Refresh() *AccessToken {
 	a.getToken(true)
 	return a
 }
@@ -100,15 +88,15 @@ func (a *AccessToken) RequestToken(credentials string) Token {
 	return m
 }
 
-func (a *AccessToken) SetTokenWithLife(token string, lifeTime int) AccessTokenInterface {
+func (a *AccessToken) SetTokenWithLife(token string, lifeTime int) *AccessToken {
 	return a.setToken(token, lifeTime)
 }
 
-func (a *AccessToken) SetToken(token string) AccessTokenInterface {
+func (a *AccessToken) SetToken(token string) *AccessToken {
 	return a.setToken(token, 7200)
 }
 
-func (a *AccessToken) setToken(token string, lifeTime int) AccessTokenInterface {
+func (a *AccessToken) setToken(token string, lifeTime int) *AccessToken {
 	cache.GetCache().SetWithTTL(a.getCacheKey(), Token{
 		ACCESS_TOKEN_KEY: token,
 		"expires_in":     lifeTime,
@@ -144,7 +132,7 @@ func (t *Token) SetExpiresIn(i int) *Token {
 
 func (t *Token) GetExpiresIn() int {
 	if i, b := (*t)[ACCESS_TOKEN_EXPIRES_IN]; b {
-		return core.ParseInt(i)
+		return ParseInt(i)
 	}
 	return -1
 }

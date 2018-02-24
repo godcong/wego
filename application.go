@@ -13,6 +13,15 @@ type Application interface {
 	SetSubMerchant(mchid, appid string) *core.Application
 }
 
+type AccessToken interface {
+	GetToken() core.Token
+	Refresh() *core.AccessToken
+	//ApplyToRequest(RequestInterface, Map) RequestInterface
+	//getCredentials() Map
+	//getQuery() Map
+	//sendRequest() []byte
+}
+
 func GetApplication() Application {
 	return core.GetApplication()
 }

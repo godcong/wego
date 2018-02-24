@@ -9,6 +9,7 @@ type Payment struct {
 	client   core.Client
 	sandbox  *core.Sandbox
 	app      *core.Application
+	token    *core.AccessToken
 	bill     *Bill
 	redPack  *RedPack
 	order    *Order
@@ -19,9 +20,8 @@ type Payment struct {
 
 func init() {
 	app := core.GetApplication()
-	//payment.Order = NewOrder(app, payment.Config)
 	app.Register("payment", newPayment())
-	//app.Register("payment", NewJSSDK(app, app.Config))
+
 }
 
 func newPayment() *Payment {
@@ -110,12 +110,13 @@ func (p *Payment) Refund() *Refund {
 //	return p.sandbox
 //}
 //
-//func (p *Payment) Bill() *Bill {
-//	if p.bill == nil {
-//		p.bill = NewBill(p.app, p.Config)
-//	}
-//	return p.bill
-//}
+func (p *Payment) AccessToken() *core.AccessToken {
+	if p.token == nil {
+		p.token = core.NewAccessToken(p.Config, p.client)
+	}
+	return p.token
+}
+
 //
 func (p *Payment) Order() *Order {
 	if p.order == nil {

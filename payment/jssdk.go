@@ -4,16 +4,15 @@ import (
 	"strings"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/token"
 )
 
 type JSSDK struct {
 	core.Config
-	app core.Application
+	*Payment
 }
 
 func (j *JSSDK) getUrl() string {
-	return "http://y11e.com"
+	return core.GetServerIp()
 }
 
 func (j *JSSDK) BridgeConfig(pid string) core.Map {
@@ -59,13 +58,13 @@ func (j *JSSDK) AppConfig(pid string) core.Map {
 }
 
 func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
-	token0 := ""
-	switch accessToken.(type) {
-	case token.AccessTokenInterface:
-		t := (accessToken.(token.AccessTokenInterface)).GetToken()
-		token0 = t.ToJson()
+	token := ""
+	switch v := accessToken.(type) {
+	case core.AccessToken:
+		token0 := v.GetToken()
+		token = token0.ToJson()
 	case string:
-		token0 = accessToken.(string)
+		token = accessToken.(string)
 	}
 	m := core.Map{
 		"appId":     j.Get("app_id"),
@@ -76,11 +75,11 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 	}
 
 	sm := core.Map{
-		"appid": m.Get("appId"),
-		//"url" : $this->getUrl(),
+		"appid":       m.Get("appId"),
+		"url":         j.getUrl(),
 		"timestamp":   m.Get("timeStamp"),
 		"noncestr":    m.Get("nonceStr"),
-		"accesstoken": token0,
+		"accesstoken": token,
 	}
 
 	sm.SortKeys()

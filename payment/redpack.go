@@ -8,7 +8,7 @@ import (
 
 type RedPack struct {
 	core.Config
-	Payment
+	*Payment
 }
 
 func (r *RedPack) Info(m core.Map) core.Map {

@@ -4,7 +4,7 @@ import "github.com/godcong/wego/core"
 
 type Reverse struct {
 	core.Config
-	Payment
+	*Payment
 }
 
 func (r *Reverse) ByOutTradeNumber(num string) core.Map {

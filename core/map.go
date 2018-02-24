@@ -77,12 +77,23 @@ func (m *Map) ToXml() string {
 
 }
 
+func (m *Map) ParseXml(b []byte) {
+	m.Join(XmlToMap(b))
+}
+
 func (m *Map) ToJson() []byte {
 	v, e := json.Marshal(*m)
 	if e != nil {
 		return []byte(nil)
 	}
 	return v
+}
+
+func (m *Map) ParseJson(b []byte) {
+	tmp := Map{}
+	if e := json.Unmarshal(b, &tmp); e == nil {
+		m.Join(tmp)
+	}
 }
 
 func (m *Map) ToUrl() string {

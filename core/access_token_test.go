@@ -1,4 +1,4 @@
-package token
+package core
 
 import (
 	"log"
