@@ -41,6 +41,17 @@ import (
 type RequestInterface interface {
 }
 
+type RequestType string
+
+const (
+	REQUEST_TYPE_JSON        RequestType = "json"
+	REQUEST_TYPE_QUERY                   = "query"
+	REQUEST_TYPE_XML                     = "xml"
+	REQUEST_TYPE_FORM_PARAMS             = "form_params"
+	REQUEST_TYPE_FILE                    = "file"
+	REQUEST_TYPE_STRING                  = "string"
+)
+
 type Request struct {
 	client  Client
 	app     Application
@@ -48,24 +59,31 @@ type Request struct {
 	//Transport     *http.Transport
 }
 
-func NewRequest() *Request {
+func NewRequest(op Map) *Request {
 	r := Request{}
 	r.options = Map{
 		"headers": Map{
 			"Content-Type": "text/xml",
 		},
+		"xml":  "",
+		"json": "",
 	}
 	return &r
 }
 
-func (r *Request) Options() Map {
+func (r *Request) SetOptions(op Map) *Request {
+	r.options = op
+	return r
+}
+
+func (r *Request) GetOptions() Map {
 	return r.options
 }
 
 func (r *Request) PerformRequest(transport *http.Transport, url string, method string, options Map) ([]byte, error) {
 	var req *http.Request
 	var err error
-	op := optionCheck(r, options)
+	op := optionMerge(r, options)
 	method = strings.ToUpper(method)
 	client := &http.Client{
 		Transport: transport,
@@ -113,8 +131,8 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	return ioutil.ReadAll(resp.Body)
 }
 
-func optionCheck(r *Request, options Map) Map {
-	base := r.Options()
+func optionMerge(r *Request, options Map) Map {
+	base := r.GetOptions()
 	if options == nil {
 		return base
 	}
@@ -123,16 +141,21 @@ func optionCheck(r *Request, options Map) Map {
 		base[key] = value
 	}
 	if v, b := options["json"]; b {
-		base["headers"] = Map{"Content-Type": "application/json; encoding=utf-8"}
+		base["headers"] = Map{"Content-Type": "application/json"}
 		base["body"] = v
 	}
-
 	return base
 }
 
-func MakeOption(options Map) Map {
-	if options == nil {
-		return make(Map)
+func parseBody(typ string, body interface{}) string {
+	switch v := body.(type) {
+	case Map:
+		if typ == "json" {
+			return string(v.ToJson())
+		} else {
+
+		}
+
 	}
-	return options
+	return ""
 }

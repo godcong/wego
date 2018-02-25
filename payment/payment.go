@@ -28,7 +28,7 @@ func newPayment() *Payment {
 	config := core.GetConfig("payment.default")
 	payment0 := &Payment{
 		Config: config,
-		client: core.NewClient(core.NewRequest(), config),
+		client: core.NewClient(core.NewRequest(nil), config),
 	}
 	return payment0
 }

@@ -12,6 +12,13 @@ func (m *Map) String() string {
 	return string(m.ToJson())
 }
 
+func MapNilMake(m Map) Map {
+	if m == nil {
+		return make(Map)
+	}
+	return m
+}
+
 func (m *Map) Set(s string, v interface{}) *Map {
 	(*m)[s] = v
 	return m

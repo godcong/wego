@@ -24,7 +24,7 @@ func newMiniProgram() *MiniProgram {
 	config := core.GetConfig("mini_program.default")
 	mini0 := &MiniProgram{
 		Config: config,
-		client: core.NewClient(core.NewRequest(), config),
+		client: core.NewClient(core.NewRequest(nil), config),
 	}
 	return mini0
 }

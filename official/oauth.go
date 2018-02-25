@@ -1,15 +1,17 @@
 package official
 
+import "github.com/godcong/wego/core"
+
 type OAuth interface {
-	PrepareCallbackUrl(application Application)
+	//PrepareCallbackUrl(application Application)
 }
 
-type oauth struct {
-	Config
-	app Application
+type Oauth struct {
+	core.Config
+	client core.Client
 }
 
-func (o *oauth) PrepareCallbackUrl(application Application) {
+func (o *Oauth) PrepareCallbackUrl() {
 	//$callback = $app['config']->get('oauth.callback');
 	//if (0 === stripos($callback, 'http')) {
 	//return $callback;
@@ -19,10 +21,11 @@ func (o *oauth) PrepareCallbackUrl(application Application) {
 	//return $baseUrl.'/'.ltrim($callback, '/');
 }
 
-func NewOAuth(application Application, config Config) OAuth {
-	return &oauth{
-		Config: config,
-		app:    application,
-		//client: application.Client(),
-	}
-}
+//
+//func NewOAuth(application Application, config Config) OAuth {
+//	return &Oauth{
+//		Config: config,
+//		app:    application,
+//		//client: application.Client(),
+//	}
+//}

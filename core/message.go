@@ -26,6 +26,8 @@ const (
 	MESSAGE_TYPE_TRANSFER = "transfer_customer_service"
 	//表示事件推送消息
 	MESSAGE_TYPE_EVENT = "event"
+
+	MESSAGE_TYPE_MINIPROGRAMPAGE = "miniprogrampage"
 )
 
 const (
@@ -55,7 +57,13 @@ const (
 	EVENT_TYPE_LOCATIONSELECT = "location_select"
 	//发送模板消息推送通知
 	EVENT_TYPE_TEMPLATESENDJOBFINISH = "TEMPLATESENDJOBFINISH"
+	//会话事件
+	EVENT_TYPE_USER_ENTER_TEMPSESSION = "user_enter_tempsession"
 )
+
+type MessageTransfer interface {
+	ToMap() Map
+}
 
 type Message struct {
 	url    string
@@ -70,43 +78,11 @@ type Message struct {
 	aliases    Map
 }
 
-type MessageText struct {
-	*Message
-}
-
-type MessageImage struct {
-	*Message
-}
-type MessageMusic struct {
-	*Message
+type Article struct {
 }
 
 func NewMessage() *Message {
 	return &Message{}
-}
-
-func NewMessageText(content string) *MessageText {
-	return &MessageText{
-		Message: NewMessage().SetAttribute("Content", content),
-	}
-}
-
-func NewMessageImage(mediaID string) *MessageImage {
-	return &MessageImage{
-		Message: NewMessage().SetAttribute("MediaID", mediaID),
-	}
-}
-
-func NewMessageMusic(title, des, murl, hqurl, thumb string) *MessageMusic {
-	return &MessageMusic{
-		Message: NewMessage().SetAttributes(Map{
-			"Title":        title,
-			"Description":  des,
-			"MusicURL":     murl,
-			"HQMusicURL":   hqurl,
-			"ThumbMediaID": thumb,
-		}),
-	}
 }
 
 func (m *Message) SetAttribute(key string, val interface{}) *Message {

@@ -117,7 +117,7 @@ func (c *client) buildSafeTransport() *http.Transport {
 }
 
 func request(c *client, transport *http.Transport, url string, params Map, method string, op Map) []byte {
-	op = MakeOption(op)
+	op = MapNilMake(op)
 	if params != nil {
 		params.Set("mch_id", c.Get("mch_id"))
 		params.Set("nonce_str", GenerateUUID())
