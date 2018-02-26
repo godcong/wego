@@ -1,9 +1,12 @@
 package core
 
+import "net/http"
+
 type Response struct {
-	Content []byte
-	Type    string
-	Error   error
+	response *http.Response
+	Content  []byte
+	Type     string
+	Error    error
 }
 
 type ResponseType string

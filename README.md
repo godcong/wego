@@ -1,8 +1,8 @@
 # wego
-[![GoDoc](https://godoc.org/github.com/godcong/wopay?status.svg)](http://godoc.org/github.com/godcong/wego)
-[![license](https://img.shields.io/github/license/godcong/wopay.svg)](https://github.com/godcong/wego/blob/master/LICENSE)
- [![Build Status](https://travis-ci.org/godcong/wopay.svg?branch=master)](https://travis-ci.org/godcong/wego)
-[![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wopay)](https://goreportcard.com/report/github.com/godcong/wego)
+[![GoDoc](https://godoc.org/github.com/godcong/wego?status.svg)](http://godoc.org/github.com/godcong/wego)
+[![license](https://img.shields.io/github/license/godcong/wego.svg)](https://github.com/godcong/wego/blob/master/LICENSE)
+ [![Build Status](https://travis-ci.org/godcong/wego.svg?branch=master)](https://travis-ci.org/godcong/wego)
+[![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wego)](https://goreportcard.com/report/github.com/godcong/wego)
 
 
 

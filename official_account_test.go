@@ -9,7 +9,7 @@ import (
 )
 
 func TestOfficialAccount(t *testing.T) {
-	o := wego.GetApplication().Get("official_account").(*official.OfficialAccount)
+	o := wego.GetApp().Get("official_account").(*official.OfficialAccount)
 	log.Println(o.GetValidIps())
 	log.Println(o.ClearQuota())
 }

@@ -2,7 +2,6 @@ package core
 
 import (
 	"bytes"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -110,7 +109,6 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 		Info(method, url)
 		req, err = http.NewRequest(method, url, bytes.NewBufferString(reqData))
 	}
-	http.PostForm()
 
 	if err != nil {
 		Error(err)
@@ -131,15 +129,14 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	if err != nil {
 		Error(err)
 		return Response{
-			Error: err,
+			response: resp,
+			Error:    err,
 		}
 	}
-	defer resp.Body.Close()
-	content, err := ioutil.ReadAll(resp.Body)
 	return Response{
-		Content: content,
-		Type:    respType,
-		Error:   err,
+		response: resp,
+		Type:     respType,
+		Error:    err,
 	}
 }
 
