@@ -9,6 +9,8 @@ import (
 )
 
 type Application struct {
+	Config
+	Client
 	obj Map
 }
 
@@ -27,13 +29,15 @@ func newApplication(v ...interface{}) *Application {
 		obj: Map{},
 	}
 	for _, value := range v {
-		switch value.(type) {
+		switch v := value.(type) {
 		case Config:
-			app.Register("config", (value).(Config))
+			app.Register("config", v)
+			app.Config = v
 		}
 	}
 	if app.Get("config") == nil {
 		app.Register("config", GetRootConfig())
+		app.Config = GetRootConfig()
 	}
 	return app
 }
@@ -68,7 +72,7 @@ func (a *Application) Register(name string, v interface{}) {
 	(*a).obj[name] = v
 }
 
-func GetApplication() *Application {
+func App() *Application {
 	return app
 }
 
@@ -83,6 +87,7 @@ func (a *Application) GetKey(s string) string {
 		c.GetKey()
 	}
 	return c.Get("aes_key")
+
 }
 
 func (a *Application) Scheme(id string) string {

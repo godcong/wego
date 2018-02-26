@@ -44,7 +44,7 @@ func NewAppCode(application core.Application, config core.Config) AppCode {
 }
 
 func GetMiniProgram() MiniProgram {
-	obj := GetApplication().Get("mini_program").(MiniProgram)
+	obj := GetApp().Get("mini_program").(MiniProgram)
 	return obj
 }
 

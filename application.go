@@ -22,8 +22,8 @@ type AccessToken interface {
 	//sendRequest() []byte
 }
 
-func GetApplication() Application {
-	return core.GetApplication()
+func GetApp() Application {
+	return core.App()
 }
 
 //

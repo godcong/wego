@@ -20,7 +20,10 @@ type Client interface {
 
 type client struct {
 	Config
-	request *Request
+	app         *Application
+	accessToken *AccessToken
+	request     *Request
+	uri         string
 }
 
 func (c *client) HttpPostJson(url string, data Map, query Map) Map {
@@ -36,7 +39,7 @@ func (c *client) HttpPost(url string, m Map) Map {
 }
 
 func (c *client) Request(url string, params Map, method string, options Map) Map {
-	resp := request(c, c.buildTransport(), url, params, method, options)
+	resp := request(c, buildTransport(c.Config), url, params, method, options)
 	if strings.Index(string(resp), "<xml>") == 0 {
 		return XmlToMap(resp)
 	}
@@ -44,11 +47,11 @@ func (c *client) Request(url string, params Map, method string, options Map) Map
 }
 
 func (c *client) RequestRaw(url string, params Map, method string, options Map) []byte {
-	return request(c, c.buildTransport(), url, params, method, options)
+	return request(c, buildTransport(c.Config), url, params, method, options)
 }
 
 func (c *client) SafeRequest(url string, params Map, method string, options Map) Map {
-	resp := request(c, c.buildSafeTransport(), url, params, method, options)
+	resp := request(c, buildSafeTransport(c.Config), url, params, method, options)
 	return XmlToMap(resp)
 }
 
@@ -66,7 +69,7 @@ func NewClient(request *Request, config Config) Client {
 	}
 }
 
-func (c *client) buildTransport() *http.Transport {
+func buildTransport(config Config) *http.Transport {
 	return &http.Transport{
 		//Dial: (&net.Dialer{
 		//	Timeout:   30 * time.Second,
@@ -83,14 +86,14 @@ func (c *client) buildTransport() *http.Transport {
 
 }
 
-func (c *client) buildSafeTransport() *http.Transport {
-	cert, err := tls.LoadX509KeyPair(c.Get("cert_path"), c.Get("key_path"))
+func buildSafeTransport(config Config) *http.Transport {
+	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
 	if err != nil {
 		Println(err)
 		return nil
 	}
 
-	caFile, err := ioutil.ReadFile(c.Get("rootca_path"))
+	caFile, err := ioutil.ReadFile(config.Get("rootca_path"))
 	if err != nil {
 		Println(err)
 		return nil

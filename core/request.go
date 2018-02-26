@@ -49,6 +49,7 @@ const (
 	REQUEST_TYPE_XML                     = "xml"
 	REQUEST_TYPE_FORM_PARAMS             = "form_params"
 	REQUEST_TYPE_FILE                    = "file"
+	REQUEST_TYPE_MULTIPART               = "multipart"
 	REQUEST_TYPE_STRING                  = "string"
 )
 
@@ -80,17 +81,18 @@ func (r *Request) GetOptions() Map {
 	return r.options
 }
 
-func (r *Request) PerformRequest(transport *http.Transport, url string, method string, options Map) ([]byte, error) {
+func (r *Request) PerformRequest(transport *http.Transport, url string, method string, ops Map) Response {
 	var req *http.Request
 	var err error
-	op := optionMerge(r, options)
+	op := optionMerge(r, ops)
 	method = strings.ToUpper(method)
 	client := &http.Client{
 		Transport: transport,
 		//Timeout:   time.Duration(50000),
 	}
 	reqData := ""
-	if _, b := options["json"]; b {
+	respType := "json"
+	if _, b := ops["json"]; b {
 		switch v := op["body"].(type) {
 		case string:
 			reqData = v
@@ -108,10 +110,13 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 		Info(method, url)
 		req, err = http.NewRequest(method, url, bytes.NewBufferString(reqData))
 	}
+	http.PostForm()
 
 	if err != nil {
 		Error(err)
-		return []byte(nil), err
+		return Response{
+			Error: err,
+		}
 	}
 	header, b := op["headers"].(Map)
 	if method == "POST" {
@@ -125,10 +130,17 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 	resp, err := client.Do(req)
 	if err != nil {
 		Error(err)
-		return []byte(nil), err
+		return Response{
+			Error: err,
+		}
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	content, err := ioutil.ReadAll(resp.Body)
+	return Response{
+		Content: content,
+		Type:    respType,
+		Error:   err,
+	}
 }
 
 func optionMerge(r *Request, options Map) Map {
@@ -147,7 +159,7 @@ func optionMerge(r *Request, options Map) Map {
 	return base
 }
 
-func parseBody(typ string, body interface{}) string {
+func parseBody(typ RequestType, body interface{}) string {
 	switch v := body.(type) {
 	case Map:
 		if typ == "json" {

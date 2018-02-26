@@ -90,10 +90,12 @@ func (t *Tree) Get(s string) string {
 	if v, b := v.(string); b {
 		return v
 	}
-	if ParseInt(v) == -1 {
+	if v0 := ParseInt(v); v0 == -1 {
 		return ""
+	} else {
+		return strconv.FormatInt(v0, 10)
 	}
-	return strconv.Itoa(ParseInt(v))
+
 }
 
 func (t *Tree) Set(k, v string) *Tree {

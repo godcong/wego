@@ -214,11 +214,11 @@ func SHA1(s string) string {
 	return fmt.Sprintf("%x", m.Sum(nil))
 }
 
-func ParseInt(v interface{}) int {
-	var t int
+func ParseInt(v interface{}) int64 {
+	var t int64
 	switch v.(type) {
 	case int, int32, int64, uint, uint32, uint64:
-		t = v.(int)
+		t = v.(int64)
 	default:
 		return -1
 	}

@@ -2,8 +2,8 @@ package core
 
 import (
 	"encoding/json"
+	"net/url"
 	"sort"
-	"strings"
 )
 
 type Map map[string]interface{}
@@ -103,32 +103,22 @@ func (m *Map) ParseJson(b []byte) {
 	}
 }
 
-func (m *Map) ToUrl() string {
-	var varr []string
-	for k, v := range *m {
-		varr = append(varr, strings.Join([]string{k, v.(string)}, "="))
+func (m *Map) UrlEncode() string {
+	url := url.Values{}
+	for key, v := range *m {
+		if v0, b := v.(string); b {
+			url.Add(key, v0)
+		}
 	}
-	return strings.Join(varr, "&")
-}
-
-func (m *Map) ToSortedUrl() string {
-	var varr []string
-	keys := m.SortKeys()
-	for _, key := range keys {
-		varr = append(varr, strings.Join([]string{key, m.GetString(key)}, "="))
-	}
-	return strings.Join(varr, "&")
+	return url.Encode()
 }
 
 func (m *Map) join(source Map, replace bool) *Map {
 	for k, v := range source {
-		if replace {
-			m.Set(k, v)
-			continue
-		}
-		if !m.Has(k) {
+		if replace || !m.Has(k) {
 			m.Set(k, v)
 		}
+
 	}
 	return m
 }
