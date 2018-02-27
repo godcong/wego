@@ -19,7 +19,7 @@ type Payment struct {
 }
 
 func init() {
-	app := core.GetApplication()
+	app := core.App()
 	app.Register("payment", newPayment())
 
 }
@@ -28,7 +28,7 @@ func newPayment() *Payment {
 	config := core.GetConfig("payment.default")
 	payment0 := &Payment{
 		Config: config,
-		client: core.NewClient(core.NewRequest(nil), config),
+		client: core.NewClient(core.NewRequest(), config),
 	}
 	return payment0
 }

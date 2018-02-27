@@ -13,7 +13,7 @@ type OfficialAccount struct {
 }
 
 func init() {
-	app := core.GetApplication()
+	app := core.App()
 	app.Register("official_account", newOfficialAccount())
 
 }
@@ -22,10 +22,10 @@ func newOfficialAccount() *OfficialAccount {
 	config := core.GetConfig("payment.default")
 	official0 := &OfficialAccount{
 		Config: config,
-		client: core.NewClient(core.NewRequest(nil), config),
+		client: core.NewClient(core.NewRequest(), config),
 		Base: &Base{
 			Config: config,
-			Client: core.NewClient(core.NewRequest(nil), config),
+			Client: core.NewClient(core.NewRequest(), config),
 		},
 	}
 	return official0

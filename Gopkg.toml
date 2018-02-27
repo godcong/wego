@@ -4,7 +4,7 @@
 # for detailed Gopkg.toml documentation.
 #
 # required = ["golang.org/x/net"]
-# ignored = ["golang.org/x/net", "golang.org/x/net/context"]
+ ignored = ["golang.org/x/net", "golang.org/x/net/context","golang.org/x/oauth2"]
 #
 # [[constraint]]
 #   name = "github.com/user/project"

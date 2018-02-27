@@ -26,6 +26,11 @@ func GetApp() Application {
 	return core.App()
 }
 
+func Get(name string, v interface{}) error {
+	//core.App().Get()
+	return nil
+}
+
 //
 //func GetBill() Bill {
 //	return app.Payment().Bill()

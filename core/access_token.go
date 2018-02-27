@@ -33,7 +33,7 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"secret":     a.Get("secret"),
 	}
 
-	m := a.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.ToUrl(), nil, "get", nil)
+	m := a.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.UrlEncode(), nil, "get", nil)
 	return m.ToJson()
 }
 
@@ -73,7 +73,7 @@ func (a *AccessToken) getToken(refresh bool) Token {
 
 	token := a.RequestToken(a.getCredentials())
 	if v := token.GetExpiresIn(); v != -1 {
-		a.SetTokenWithLife(token.GetKey(), v)
+		a.SetTokenWithLife(token.GetKey(), int(v))
 	} else {
 		a.SetToken(token.GetKey())
 	}
@@ -125,12 +125,12 @@ func (t *Token) GetKey() string {
 	return ""
 }
 
-func (t *Token) SetExpiresIn(i int) *Token {
+func (t *Token) SetExpiresIn(i int64) *Token {
 	(*t)[ACCESS_TOKEN_EXPIRES_IN] = i
 	return t
 }
 
-func (t *Token) GetExpiresIn() int {
+func (t *Token) GetExpiresIn() int64 {
 	if i, b := (*t)[ACCESS_TOKEN_EXPIRES_IN]; b {
 		return ParseInt(i)
 	}

@@ -1,7 +1,9 @@
-package core
+package core_test
 
 import (
 	"testing"
+
+	"github.com/godcong/wego/core"
 )
 
 //
@@ -73,6 +75,7 @@ import (
 
 func TestNewReqeust(t *testing.T) {
 	//wego.NewRequest(wego.GetConfig("payment.default"))
+	_ = core.DefaultRequest
 
 }
 

@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -50,24 +51,25 @@ const (
 	REQUEST_TYPE_FILE                    = "file"
 	REQUEST_TYPE_MULTIPART               = "multipart"
 	REQUEST_TYPE_STRING                  = "string"
+	REQUEST_TYPE_HEADERS                 = "headers"
 )
 
 type Request struct {
-	client  Client
-	app     Application
+	request *http.Request
+	error   error
 	options Map
-	//Transport     *http.Transport
 }
 
-func NewRequest(op Map) *Request {
+var DefaultRequest = NewRequest()
+
+func init() {
+	log.Println("init")
+}
+
+func NewRequest() *Request {
+	log.Println("request")
 	r := Request{}
-	r.options = Map{
-		"headers": Map{
-			"Content-Type": "text/xml",
-		},
-		"xml":  "",
-		"json": "",
-	}
+	r.options = Map{}
 	return &r
 }
 
@@ -80,17 +82,17 @@ func (r *Request) GetOptions() Map {
 	return r.options
 }
 
-func (r *Request) PerformRequest(transport *http.Transport, url string, method string, ops Map) Response {
+func (r *Request) Error() error {
+	return r.error
+}
+
+func (r *Request) PerformRequest(url string, method string, ops Map) *Request {
 	var req *http.Request
 	var err error
-	op := optionMerge(r, ops)
 	method = strings.ToUpper(method)
-	client := &http.Client{
-		Transport: transport,
-		//Timeout:   time.Duration(50000),
-	}
+	op := optionMerge(r, ops)
+
 	reqData := ""
-	respType := "json"
 	if _, b := ops["json"]; b {
 		switch v := op["body"].(type) {
 		case string:
@@ -110,12 +112,6 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 		req, err = http.NewRequest(method, url, bytes.NewBufferString(reqData))
 	}
 
-	if err != nil {
-		Error(err)
-		return Response{
-			Error: err,
-		}
-	}
 	header, b := op["headers"].(Map)
 	if method == "POST" {
 		if b {
@@ -124,20 +120,9 @@ func (r *Request) PerformRequest(transport *http.Transport, url string, method s
 			}
 		}
 	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		Error(err)
-		return Response{
-			response: resp,
-			Error:    err,
-		}
-	}
-	return Response{
-		response: resp,
-		Type:     respType,
-		Error:    err,
-	}
+	r.request = req
+	r.error = err
+	return r
 }
 
 func optionMerge(r *Request, options Map) Map {
@@ -156,7 +141,7 @@ func optionMerge(r *Request, options Map) Map {
 	return base
 }
 
-func parseBody(typ RequestType, body interface{}) string {
+func pickUpBody(typ RequestType, body interface{}) string {
 	switch v := body.(type) {
 	case Map:
 		if typ == "json" {

@@ -16,7 +16,7 @@ type MiniProgram struct {
 }
 
 func init() {
-	app := core.GetApplication()
+	app := core.App()
 	app.Register("mini_program", newMiniProgram())
 }
 
@@ -24,7 +24,7 @@ func newMiniProgram() *MiniProgram {
 	config := core.GetConfig("mini_program.default")
 	mini0 := &MiniProgram{
 		Config: config,
-		client: core.NewClient(core.NewRequest(nil), config),
+		client: core.NewClient(core.NewRequest(), config),
 	}
 	return mini0
 }

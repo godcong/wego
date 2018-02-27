@@ -8,7 +8,9 @@ type OAuth interface {
 
 type Oauth struct {
 	core.Config
-	client core.Client
+	client   core.Client
+	scopes   string
+	callback string
 }
 
 func (o *Oauth) PrepareCallbackUrl() {

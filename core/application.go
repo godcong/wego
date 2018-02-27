@@ -99,7 +99,7 @@ func (a *Application) Scheme(id string) string {
 	m.Set("nonce_str", GenerateNonceStr())
 	m.Set("product_id", id)
 	m.Set("sign", GenerateSignature(m, c.Get("aes_key"), SIGN_TYPE_MD5))
-	return BIZPAYURL + m.ToUrl()
+	return BIZPAYURL + m.UrlEncode()
 }
 
 func (a *Application) HandleNotify(typ string, f func(interface{})) {

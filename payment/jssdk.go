@@ -82,9 +82,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 		"accesstoken": token,
 	}
 
-	sm.SortKeys()
-	sm.ToUrl()
-	m.Set("addrSign", core.SHA1(sm.ToSortedUrl()))
+	m.Set("addrSign", core.SHA1(sm.UrlEncode()))
 
 	return m
 }
