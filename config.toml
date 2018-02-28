@@ -1,6 +1,6 @@
 [system]
     debug = true
-    response_type = 'array'
+    response_type = 'map'
     use_cache = true
 
 [system.log]

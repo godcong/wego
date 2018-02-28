@@ -23,6 +23,10 @@ func (o *Oauth) PrepareCallbackUrl() {
 	//return $baseUrl.'/'.ltrim($callback, '/');
 }
 
+func (o *Oauth) User() {
+
+}
+
 //
 //func NewOAuth(application Application, config Config) OAuth {
 //	return &Oauth{
