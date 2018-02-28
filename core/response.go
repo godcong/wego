@@ -23,6 +23,24 @@ const (
 	RESPONSE_TYPE_RAW                 = "raw"
 )
 
+func (r *Response) Error() error {
+	return r.error
+}
+
+func (r *Response) ToMap() Map {
+	if r.responseType == RESPONSE_TYPE_XML {
+		return XmlToMap(r.responseData)
+	}
+	if r.responseType == RESPONSE_TYPE_JSON {
+		return JsonToMap(r.responseData)
+	}
+	return Map{}
+}
+
+func (r *Response) ToBytes() []byte {
+	return r.responseData
+}
+
 func ParseClient(client *http.Client, request *Request) *Response {
 	response := &Response{}
 
@@ -32,11 +50,12 @@ func ParseClient(client *http.Client, request *Request) *Response {
 	}
 
 	response.responseData, response.error = ioutil.ReadAll(response.response.Body)
+	if request.GetRequestType() == REQUEST_TYPE_JSON {
+		response.responseType = RESPONSE_TYPE_JSON
+	} else {
+		response.responseType = RESPONSE_TYPE_XML
+	}
 	return response
-}
-
-func (r *Response) Error() error {
-	return r.error
 }
 
 func ErrorResponse(err error) *Response {

@@ -65,15 +65,16 @@ func (c *client) SafeRequest(url string, params Map, method string, options Map)
 
 func (c *client) Link(url string) string {
 	if c.GetBool("sandbox") {
-		return DomainUrl() + SANDBOX_URL_SUFFIX + url
+		return c.uri + SANDBOX_URL_SUFFIX + url
 	}
-	return DomainUrl() + url
+	return c.uri + url
 }
 
 func NewClient(config Config) Client {
 	return &client{
 		request: DefaultRequest,
 		Config:  config,
+		uri:     DomainUrl(),
 	}
 }
 

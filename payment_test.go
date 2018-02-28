@@ -196,7 +196,7 @@ func TestOrder_Query(t *testing.T) {
 	//m := make(wego.Map)
 	//m.Set("out_trade_no", out_trade_no)
 	r := wego.GetPayment().Order().QueryByOutTradeNumber(out_trade_no)
-	log.Println(string(r.ToJson()))
+	log.Println(r)
 	// {"appid":"wx426b3015555a46be","attach":"","mch_id":"1900009851","nonce_str":"lJhbZ9dwP4Pd5aKm","out_trade_no":"201813091059590000003433-asd002","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"2F60EDECAAC5F139A82570B6724AA941","trade_state":"CLOSED","trade_state_desc":"订单已关闭"}
 
 }

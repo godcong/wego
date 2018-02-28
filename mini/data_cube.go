@@ -13,7 +13,7 @@ func (d *DataCube) query(api, from, to string) []byte {
 		"end_date":   to,
 	}
 	m := d.GetClient().HttpPostJson(api, params, nil)
-	return m.ToJson()
+	return m.ToBytes()
 }
 
 func (d *DataCube) UserPortrait(from, to string) core.Map {

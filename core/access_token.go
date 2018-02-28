@@ -12,6 +12,9 @@ type Token map[string]interface{}
 
 type AccessToken interface {
 	GetToken() Token
+	GetTokenWithRefresh() Token
+	GetRefreshedToken() Token
+	Refresh() AccessToken
 }
 
 type accessToken struct {
@@ -49,7 +52,7 @@ func NewAccessToken(config Config, client Client) *accessToken {
 	}
 }
 
-func (a *accessToken) Refresh() *accessToken {
+func (a *accessToken) Refresh() AccessToken {
 	a.getToken(true)
 	return a
 }

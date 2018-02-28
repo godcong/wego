@@ -8,5 +8,5 @@ type Security struct {
 }
 
 func (s *Security) GetPublicKey() core.Map {
-	return s.GetClient().SafeRequest(core.RISK_GETPUBLICKEY_URL_SUFFIX, core.Map{"sign_type": "MD5"}, "post", nil)
+	return s.GetClient().SafeRequest(core.RISK_GETPUBLICKEY_URL_SUFFIX, core.Map{"sign_type": "MD5"}, "post", nil).ToMap()
 }

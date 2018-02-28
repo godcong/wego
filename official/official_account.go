@@ -22,10 +22,10 @@ func newOfficialAccount() *OfficialAccount {
 	config := core.GetConfig("payment.default")
 	official0 := &OfficialAccount{
 		Config: config,
-		client: core.NewClient(core.NewRequest(), config),
+		client: core.NewClient(config),
 		Base: &Base{
 			Config: config,
-			Client: core.NewClient(core.NewRequest(), config),
+			Client: core.NewClient(config),
 		},
 	}
 	return official0
@@ -95,7 +95,8 @@ func (b *Base) ClearQuota() core.Map {
 	params := core.Map{
 		"appid": b.Get("app_id"),
 	}
-	return b.HttpPostJson(b.prefix(core.CLEAR_QUOTA_URL_SUFFIX), params, nil)
+	resp := b.HttpPostJson(b.prefix(core.CLEAR_QUOTA_URL_SUFFIX), params, nil)
+	return resp.ToMap()
 }
 
 func (b *Base) GetValidIps() core.Map {
@@ -103,5 +104,6 @@ func (b *Base) GetValidIps() core.Map {
 		"appid": b.Get("app_id"),
 	}
 
-	return b.HttpPostJson(b.prefix(core.GETCALLBACKIP_URL_SUFFIX), params, nil)
+	resp := b.HttpPostJson(b.prefix(core.GETCALLBACKIP_URL_SUFFIX), params, nil)
+	return resp.ToMap()
 }

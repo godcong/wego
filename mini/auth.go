@@ -14,5 +14,6 @@ func (a *Auth) Session(code string) core.Map {
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
-	return a.GetClient().HttpGet(a.prefix(core.SNS_JSCODE2SESSION_URL_SUFFIX), params)
+	resp := a.GetClient().HttpGet(a.prefix(core.SNS_JSCODE2SESSION_URL_SUFFIX), params)
+	return resp.ToMap()
 }

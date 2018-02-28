@@ -6,10 +6,11 @@ import (
 
 type Payment struct {
 	core.Config
-	client   core.Client
-	sandbox  *core.Sandbox
-	app      *core.Application
-	token    *core.accessToken
+	client  core.Client
+	token   core.AccessToken
+	sandbox *core.Sandbox
+	app     *core.Application
+
 	bill     *Bill
 	redPack  *RedPack
 	order    *Order
@@ -28,7 +29,7 @@ func newPayment() *Payment {
 	config := core.GetConfig("payment.default")
 	payment0 := &Payment{
 		Config: config,
-		client: core.NewClient(core.NewRequest(), config),
+		client: core.NewClient(config),
 	}
 	return payment0
 }
@@ -43,20 +44,20 @@ func (p *Payment) GetClient() core.Client {
 }
 
 func (p *Payment) Request(url string, m core.Map) core.Map {
-	return p.client.Request(p.client.Link(url), m, "post", nil)
+	return p.client.Request(p.client.Link(url), m, "post", nil).ToMap()
 }
 
 func (p *Payment) RequestRaw(url string, m core.Map) []byte {
-	return p.client.RequestRaw(p.client.Link(url), m, "post", nil)
+	return p.client.RequestRaw(p.client.Link(url), m, "post", nil).ToBytes()
 }
 
 func (p *Payment) SafeRequest(url string, m core.Map) core.Map {
-	return p.client.SafeRequest(p.client.Link(url), m, "post", nil)
+	return p.client.SafeRequest(p.client.Link(url), m, "post", nil).ToMap()
 }
 
 func (p *Payment) Pay(m core.Map) core.Map {
 	m.Set("appid", p.Get("app_id"))
-	return p.client.Request(core.MICROPAY_URL_SUFFIX, m, "post", nil)
+	return p.client.Request(core.MICROPAY_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
@@ -64,7 +65,7 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	m.Set("appid", p.Get("app_id"))
 	m.Set("auth_code", authCode)
 
-	return p.client.Request(core.AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil)
+	return p.client.Request(core.AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
 //
@@ -110,7 +111,7 @@ func (p *Payment) Refund() *Refund {
 //	return p.sandbox
 //}
 //
-func (p *Payment) AccessToken() *core.accessToken {
+func (p *Payment) AccessToken() core.AccessToken {
 	if p.token == nil {
 		p.token = core.NewAccessToken(p.Config, p.client)
 	}

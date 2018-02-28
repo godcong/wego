@@ -53,10 +53,12 @@ const (
 	REQUEST_TYPE_MULTIPART   RequestType = "multipart"
 	REQUEST_TYPE_STRING      RequestType = "string"
 	REQUEST_TYPE_HEADERS     RequestType = "headers"
+	REQUEST_TYPE_CUSTOM      RequestType = "custom"
 )
 
 type Request struct {
 	request     *http.Request
+	custom      func(*Request) string
 	error       error
 	requestData RequestData
 }
@@ -80,14 +82,25 @@ func NewRequest() *Request {
 	r := Request{
 		request: nil,
 		error:   nil,
+
 		requestData: RequestData{
-			Query:  "",
-			Body:   "",
-			Method: "",
-			Header: http.Header{},
+			Query:       "",
+			Body:        "",
+			Method:      "",
+			requestType: REQUEST_TYPE_XML,
+			Header:      http.Header{},
 		},
 	}
 	return &r
+}
+
+func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
+	r.custom = f
+	return r
+}
+
+func (r *Request) GetRequestType() RequestType {
+	return r.requestData.requestType
 }
 
 func (r *Request) Error() error {
@@ -102,7 +115,6 @@ func (r *Request) PerformRequest(url string, method string, ops Map) *Request {
 	var req *http.Request
 	var err error
 	data := optionProcess(r, method, ops)
-
 	req, err = http.NewRequest(data.Method, parseQuery(url, data.Query), parseBody(data.Body))
 	Info(data)
 	if err != nil {
@@ -132,10 +144,13 @@ func optionProcess(r *Request, method string, src Map) RequestData {
 			base.requestType = REQUEST_TYPE_XML
 			base.Body = processXml(value)
 		case REQUEST_TYPE_FORM_PARAMS:
+			base.Body = processFormParams(value)
 		case REQUEST_TYPE_FILE:
 		case REQUEST_TYPE_MULTIPART:
 		case REQUEST_TYPE_STRING:
 		case REQUEST_TYPE_HEADERS:
+		case REQUEST_TYPE_CUSTOM:
+			base.Body = r.custom(r)
 		}
 	}
 
@@ -146,6 +161,15 @@ func optionProcess(r *Request, method string, src Map) RequestData {
 	base.Method = strings.ToUpper(method)
 
 	return base
+}
+func processFormParams(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return v.ToXml()
+	}
+	return ""
 }
 func processXml(i interface{}) string {
 	switch v := i.(type) {
@@ -162,7 +186,6 @@ func processJson(i interface{}) string {
 	case string:
 		return v
 	case Map:
-		log.Println("map", v)
 		return string(v.ToJson())
 	}
 	return ""

@@ -6,8 +6,8 @@ import (
 
 type MiniProgram struct {
 	core.Config
-	token    *core.accessToken
 	app      *core.Application
+	token    core.AccessToken
 	client   core.Client
 	auth     *Auth
 	appCode  *AppCode
@@ -24,7 +24,7 @@ func newMiniProgram() *MiniProgram {
 	config := core.GetConfig("mini_program.default")
 	mini0 := &MiniProgram{
 		Config: config,
-		client: core.NewClient(core.NewRequest(), config),
+		client: core.NewClient(config),
 	}
 	return mini0
 }
@@ -77,7 +77,7 @@ func (m *MiniProgram) Template() *Template {
 	return m.template
 }
 
-func (m *MiniProgram) AccessToken() *core.AccessToken {
+func (m *MiniProgram) AccessToken() core.AccessToken {
 	if m.token == nil {
 		m.token = core.NewAccessToken(m.Config, m.client)
 	}
