@@ -6,6 +6,20 @@ import (
 	"sort"
 )
 
+type StringAble interface {
+	String() string
+}
+
+type String string
+
+func (s *String) String() string {
+	return string(*s)
+}
+
+func ToString(s string) String {
+	return String(s)
+}
+
 type Map map[string]interface{}
 
 func (m *Map) String() string {
@@ -24,9 +38,16 @@ func (m *Map) Set(s string, v interface{}) *Map {
 	return m
 }
 
-func (m *Map) NullSet(s string, v interface{}) *Map {
+func (m *Map) NilSet(s string, v interface{}) *Map {
 	if !m.Has(s) {
-		(*m)[s] = v
+		m.Set(s, v)
+	}
+	return m
+}
+
+func (m *Map) HasSet(s string, v interface{}) *Map {
+	if m.Has(s) {
+		m.Set(s, v)
 	}
 	return m
 }
@@ -115,10 +136,9 @@ func (m *Map) UrlEncode() string {
 
 func (m *Map) join(source Map, replace bool) *Map {
 	for k, v := range source {
-		if replace || !m.Has(k) {
-			m.Set(k, v)
+		if _, b := (*m)[k]; replace || !b {
+			(*m)[k] = v
 		}
-
 	}
 	return m
 }

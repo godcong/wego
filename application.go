@@ -15,7 +15,7 @@ type Application interface {
 
 type AccessToken interface {
 	GetToken() core.Token
-	Refresh() *core.AccessToken
+	Refresh() *core.accessToken
 	//ApplyToRequest(RequestInterface, Map) RequestInterface
 	//getCredentials() Map
 	//getQuery() Map

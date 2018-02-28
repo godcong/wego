@@ -3,7 +3,7 @@ package official
 import "github.com/godcong/wego/core"
 
 //type OfficialAccount interface {
-//	AccessToken() AccessTokenInterface
+//	accessToken() AccessTokenInterface
 //}
 //
 type OfficialAccount struct {
@@ -81,7 +81,7 @@ func (m *OfficialAccount) Message(message core.Map) {
 //	}
 //}
 //
-//func (a *officialAccount) AccessToken() AccessTokenInterface {
+//func (a *officialAccount) accessToken() AccessTokenInterface {
 //	return NewAccessToken(a.app, a.Config)
 //}
 

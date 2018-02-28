@@ -60,7 +60,7 @@ func (j *JSSDK) AppConfig(pid string) core.Map {
 func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 	token := ""
 	switch v := accessToken.(type) {
-	case core.AccessToken:
+	case core.accessToken:
 		token0 := v.GetToken()
 		token = token0.ToJson()
 	case string:

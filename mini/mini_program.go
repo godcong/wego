@@ -6,7 +6,7 @@ import (
 
 type MiniProgram struct {
 	core.Config
-	token    *core.AccessToken
+	token    *core.accessToken
 	app      *core.Application
 	client   core.Client
 	auth     *Auth
@@ -88,7 +88,7 @@ func (m *MiniProgram) prefix(s string) string {
 	return core.API_WEIXIN_URL_SUFFIX + s
 }
 
-//func (m *MiniProgram) AccessToken() token.AccessTokenInterface {
+//func (m *MiniProgram) accessToken() token.AccessTokenInterface {
 //	if m.acc == nil {
 //		m.acc = NewMiniProgramAccessToken(m.app, m.Config)
 //	}
@@ -112,7 +112,7 @@ func (m *MiniProgram) prefix(s string) string {
 //}
 //
 //type MiniProgramAccessToken struct {
-//	token.AccessToken
+//	token.accessToken
 //	core.Config
 //	app core.Application
 //}

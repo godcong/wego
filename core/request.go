@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -45,19 +46,27 @@ type RequestType string
 
 const (
 	REQUEST_TYPE_JSON        RequestType = "json"
-	REQUEST_TYPE_QUERY                   = "query"
-	REQUEST_TYPE_XML                     = "xml"
-	REQUEST_TYPE_FORM_PARAMS             = "form_params"
-	REQUEST_TYPE_FILE                    = "file"
-	REQUEST_TYPE_MULTIPART               = "multipart"
-	REQUEST_TYPE_STRING                  = "string"
-	REQUEST_TYPE_HEADERS                 = "headers"
+	REQUEST_TYPE_QUERY       RequestType = "query"
+	REQUEST_TYPE_XML         RequestType = "xml"
+	REQUEST_TYPE_FORM_PARAMS RequestType = "form_params"
+	REQUEST_TYPE_FILE        RequestType = "file"
+	REQUEST_TYPE_MULTIPART   RequestType = "multipart"
+	REQUEST_TYPE_STRING      RequestType = "string"
+	REQUEST_TYPE_HEADERS     RequestType = "headers"
 )
 
 type Request struct {
-	request *http.Request
-	error   error
-	options Map
+	request     *http.Request
+	error       error
+	requestData RequestData
+}
+
+type RequestData struct {
+	Query       string
+	Body        string
+	Method      string
+	requestType RequestType
+	Header      http.Header
 }
 
 var DefaultRequest = NewRequest()
@@ -68,88 +77,133 @@ func init() {
 
 func NewRequest() *Request {
 	log.Println("request")
-	r := Request{}
-	r.options = Map{}
+	r := Request{
+		request: nil,
+		error:   nil,
+		requestData: RequestData{
+			Query:  "",
+			Body:   "",
+			Method: "",
+			Header: http.Header{},
+		},
+	}
 	return &r
-}
-
-func (r *Request) SetOptions(op Map) *Request {
-	r.options = op
-	return r
-}
-
-func (r *Request) GetOptions() Map {
-	return r.options
 }
 
 func (r *Request) Error() error {
 	return r.error
 }
 
+func (r *Request) HttpRequest() *http.Request {
+	return r.request
+}
+
 func (r *Request) PerformRequest(url string, method string, ops Map) *Request {
 	var req *http.Request
 	var err error
-	method = strings.ToUpper(method)
-	op := optionMerge(r, ops)
+	data := optionProcess(r, method, ops)
 
-	reqData := ""
-	if _, b := ops["json"]; b {
-		switch v := op["body"].(type) {
-		case string:
-			reqData = v
-		case Map:
-			reqData = string(v.ToJson())
-		}
-	} else {
-		body := op["body"].(Map)
-		reqData = body.ToXml()
+	req, err = http.NewRequest(data.Method, parseQuery(url, data.Query), parseBody(data.Body))
+	Info(data)
+	if err != nil {
+		r.error = err
 	}
-	if method == "GET" {
-		Info(method, url)
-		req, err = http.NewRequest(method, url, nil)
-	} else {
-		Info(method, url)
-		req, err = http.NewRequest(method, url, bytes.NewBufferString(reqData))
-	}
-
-	header, b := op["headers"].(Map)
-	if method == "POST" {
-		if b {
-			for k, v := range header {
-				req.Header.Set(k, v.(string))
-			}
-		}
-	}
+	req.Header = data.Header
 	r.request = req
-	r.error = err
 	return r
 }
 
-func optionMerge(r *Request, options Map) Map {
-	base := r.GetOptions()
-	if options == nil {
+func optionProcess(r *Request, method string, src Map) RequestData {
+	base := r.requestData
+	if src == nil {
 		return base
 	}
 
-	for key, value := range options {
-		base[key] = value
+	for key, value := range src {
+
+		switch (RequestType)(key) {
+		case REQUEST_TYPE_JSON:
+			base.Body = processJson(value)
+			base.Header.Set("Content-Type", "application/json")
+			base.requestType = REQUEST_TYPE_JSON
+		case REQUEST_TYPE_QUERY:
+			base.Query = processQuery(value)
+		case REQUEST_TYPE_XML:
+			base.requestType = REQUEST_TYPE_XML
+			base.Body = processXml(value)
+		case REQUEST_TYPE_FORM_PARAMS:
+		case REQUEST_TYPE_FILE:
+		case REQUEST_TYPE_MULTIPART:
+		case REQUEST_TYPE_STRING:
+		case REQUEST_TYPE_HEADERS:
+		}
 	}
-	if v, b := options["json"]; b {
-		base["headers"] = Map{"Content-Type": "application/json"}
-		base["body"] = v
+
+	if UseUTF8() {
+		base.Header.Add("Content-Type", "charset=utf-8")
 	}
+
+	base.Method = strings.ToUpper(method)
+
 	return base
 }
-
-func pickUpBody(typ RequestType, body interface{}) string {
-	switch v := body.(type) {
+func processXml(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
 	case Map:
-		if typ == "json" {
-			return string(v.ToJson())
-		} else {
-
-		}
-
+		return v.ToXml()
 	}
 	return ""
+}
+
+func processJson(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		log.Println("map", v)
+		return string(v.ToJson())
+	}
+	return ""
+}
+
+func processQuery(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return v.UrlEncode()
+	}
+	return ""
+}
+
+//REQUEST_TYPE_JSON:        nil,
+//REQUEST_TYPE_QUERY:       nil,
+//REQUEST_TYPE_XML:         nil,
+//REQUEST_TYPE_FORM_PARAMS: nil,
+//REQUEST_TYPE_FILE:        nil,
+//REQUEST_TYPE_MULTIPART:   nil,
+//REQUEST_TYPE_STRING:      nil,
+//REQUEST_TYPE_HEADERS:     nil,
+func parseQuery(url, query string) string {
+	if query == "" {
+		return url
+	}
+	return url + "?" + query
+}
+
+func parseBody(body string) io.Reader {
+	if body == "" {
+		return nil
+	}
+	return bytes.NewBufferString(body)
+}
+
+func UseUTF8() bool {
+	return true
+}
+
+func (r RequestType) String() string {
+	return string(r)
 }

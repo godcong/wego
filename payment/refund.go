@@ -12,30 +12,21 @@ type Refund struct {
 }
 
 func (r *Refund) refund(num string, total, refund int, options core.Map) core.Map {
-	options.NullSet("out_refund_no", num)
-	options.NullSet("total_fee", strconv.Itoa(total))
-	options.NullSet("refund_fee", strconv.Itoa(refund))
-	options.NullSet("appid", r.Get("app_id"))
+	options.NilSet("out_refund_no", num)
+	options.NilSet("total_fee", strconv.Itoa(total))
+	options.NilSet("refund_fee", strconv.Itoa(refund))
+	options.NilSet("appid", r.Get("app_id"))
 
 	return r.SafeRequest(core.REFUND_URL_SUFFIX, options)
 }
 
-func NewRefund(p *Payment, config core.Config) *Refund {
-	r := &Refund{
-		Config:  config,
-		Payment: p,
-	}
-	p.refund = r
-	return r
-}
-
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) core.Map {
-	options.NullSet("out_trade_no", tradeNum)
+	options.NilSet("out_trade_no", tradeNum)
 	return r.refund(num, total, refund, options)
 }
 
 func (r *Refund) ByTransactionId(tid, num string, total, refund int, options core.Map) core.Map {
-	options.NullSet("transaction_id", tid)
+	options.NilSet("transaction_id", tid)
 	return r.refund(num, total, refund, options)
 }
 

@@ -9,7 +9,7 @@ type Payment struct {
 	client   core.Client
 	sandbox  *core.Sandbox
 	app      *core.Application
-	token    *core.AccessToken
+	token    *core.accessToken
 	bill     *Bill
 	redPack  *RedPack
 	order    *Order
@@ -110,7 +110,7 @@ func (p *Payment) Refund() *Refund {
 //	return p.sandbox
 //}
 //
-func (p *Payment) AccessToken() *core.AccessToken {
+func (p *Payment) AccessToken() *core.accessToken {
 	if p.token == nil {
 		p.token = core.NewAccessToken(p.Config, p.client)
 	}
