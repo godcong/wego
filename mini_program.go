@@ -44,8 +44,10 @@ func NewAppCode(application core.Application, config core.Config) AppCode {
 }
 
 func GetMiniProgram() MiniProgram {
-	obj := GetApp().Get("mini_program").(MiniProgram)
-	return obj
+	mini := GetApp().Get("mini_program").(MiniProgram)
+	core.Debug("GetMiniProgram|mini:", mini)
+	return mini
+
 }
 
 func GetAuth() Auth {

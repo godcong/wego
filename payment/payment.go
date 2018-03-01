@@ -31,6 +31,7 @@ func newPayment() *Payment {
 		Config: config,
 		client: core.NewClient(config),
 	}
+	payment0.client.SetDataType(core.DATA_TYPE_XML)
 	return payment0
 }
 
@@ -43,29 +44,28 @@ func (p *Payment) GetClient() core.Client {
 	return p.client
 }
 
-func (p *Payment) Request(url string, m core.Map) core.Map {
-	return p.client.Request(p.client.Link(url), m, "post", nil).ToMap()
+func (p *Payment) Request(url string, m core.Map) *core.Response {
+	return p.client.Request(p.client.Link(url), m, "post", nil)
 }
 
-func (p *Payment) RequestRaw(url string, m core.Map) []byte {
-	return p.client.RequestRaw(p.client.Link(url), m, "post", nil).ToBytes()
+func (p *Payment) RequestRaw(url string, m core.Map) *core.Response {
+	return p.client.RequestRaw(p.client.Link(url), m, "post", nil)
 }
 
-func (p *Payment) SafeRequest(url string, m core.Map) core.Map {
-	return p.client.SafeRequest(p.client.Link(url), m, "post", nil).ToMap()
+func (p *Payment) SafeRequest(url string, m core.Map) *core.Response {
+	return p.client.SafeRequest(p.client.Link(url), m, "post", nil)
 }
 
 func (p *Payment) Pay(m core.Map) core.Map {
 	m.Set("appid", p.Get("app_id"))
-	return p.client.Request(core.MICROPAY_URL_SUFFIX, m, "post", nil).ToMap()
+	return p.client.Request(MICROPAY_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	m := make(core.Map)
 	m.Set("appid", p.Get("app_id"))
 	m.Set("auth_code", authCode)
-
-	return p.client.Request(core.AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
+	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
 //

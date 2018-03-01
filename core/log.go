@@ -13,7 +13,7 @@ var debug = false
 
 func initLog(system System) {
 	debug = system.Debug
-	if Debug() {
+	if IsDebug() {
 		i := strings.LastIndexAny(system.Log.File, "/")
 		y := strings.LastIndexAny(system.Log.File, ".")
 		r := []rune(system.Log.File)
@@ -37,15 +37,21 @@ func DebugOff() {
 	debug = false
 }
 
-func Debug() bool {
+func IsDebug() bool {
 	return debug
 }
 
 func Println(v ...interface{}) {
-	if Debug() {
+	if IsDebug() {
 		_, f, l, _ := runtime.Caller(1)
 		log.Println(f, "|", l, "|", v)
 	}
+}
+
+func Debug(v ...interface{}) {
+	_, f, l, _ := runtime.Caller(1)
+	log.Println("Debug:", f, "|", l, "|", v)
+
 }
 
 func Error(v ...interface{}) {
@@ -59,7 +65,7 @@ func Info(v ...interface{}) {
 }
 
 func Print(v ...interface{}) {
-	if Debug() {
+	if IsDebug() {
 		_, f, l, _ := runtime.Caller(1)
 		log.Print(f, "|", l, "|", v)
 	}

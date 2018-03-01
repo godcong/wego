@@ -19,6 +19,8 @@ type System struct {
 	//response_type = 'array'
 	ResponseType string `toml:"response_type"`
 	//use_cache = true
+	//DataType DataType `toml:"data_type"`
+
 	UseCache bool `toml:"use_cache"`
 	Log      Log
 }
@@ -42,6 +44,7 @@ type Config interface {
 	GetTree(s string) interface{}
 }
 
+var system System
 var useCache = false
 
 func ConfigTree(f string) *Tree {
@@ -52,6 +55,10 @@ func ConfigTree(f string) *Tree {
 		panic(FileLoadError)
 	}
 	return (*Tree)(t)
+}
+
+func initSystem(v interface{}) {
+	v.(*toml.Tree).Unmarshal(&system)
 }
 
 func treeLoader() *Tree {
@@ -72,6 +79,10 @@ func GetConfig(s string) Config {
 
 func GetRootConfig() Config {
 	return treeLoader()
+}
+
+func GetSystemConfig() System {
+	return system
 }
 
 func (t *Tree) GetConfig(s string) Config {

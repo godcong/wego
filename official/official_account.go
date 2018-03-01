@@ -12,6 +12,10 @@ type OfficialAccount struct {
 	*Base
 }
 
+func DataType() core.DataType {
+	return core.DATA_TYPE_XML
+}
+
 func init() {
 	app := core.App()
 	app.Register("official_account", newOfficialAccount())

@@ -1,14 +1,20 @@
 package core
 
 import (
+	"bytes"
 	"crypto/tls"
 	"crypto/x509"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Client interface {
 	HttpClient() *http.Client
+	SetHttpClient(client *http.Client) Client
+	DataType() DataType
+	SetDataType(dataType DataType) Client
+	Url() string
 	HttpGet(url string, m Map) *Response
 	HttpPost(url string, m Map) *Response
 	HttpPostJson(url string, m Map, query Map) *Response
@@ -18,18 +24,44 @@ type Client interface {
 	Link(string) string
 }
 
+type DataType string
+
+const (
+	DATA_TYPE_XML  DataType = "xml"
+	DATA_TYPE_JSON DataType = "json"
+)
+
 type client struct {
-	Config
+	dataType    DataType
+	url         string
 	app         *Application
 	accessToken *accessToken
 	request     *Request
 	response    *Response
 	client      *http.Client
-	uri         string
+	Config
+}
+
+func (c *client) Url() string {
+	return c.url
 }
 
 func (c *client) HttpClient() *http.Client {
 	return c.client
+}
+
+func (c *client) SetHttpClient(client *http.Client) Client {
+	c.client = client
+	return c
+}
+
+func (c *client) DataType() DataType {
+	return c.dataType
+}
+
+func (c *client) SetDataType(dataType DataType) Client {
+	c.dataType = dataType
+	return c
 }
 
 func (c *client) HttpPostJson(url string, data Map, query Map) *Response {
@@ -58,23 +90,24 @@ func (c *client) RequestRaw(url string, params Map, method string, options Map) 
 
 func (c *client) SafeRequest(url string, params Map, method string, options Map) *Response {
 	c.client = buildSafeTransport(c.Config)
-	resp := request(c, url, params, method, options)
-	c.response = resp
-	return resp
+	Debug("SafeRequest|httpClient", c.client)
+	c.response = request(c, url, params, method, options)
+	return c.response
 }
 
-func (c *client) Link(url string) string {
+func (c *client) Link(uri string) string {
 	if c.GetBool("sandbox") {
-		return c.uri + SANDBOX_URL_SUFFIX + url
+		return c.Url() + SANDBOX_URL_SUFFIX + uri
 	}
-	return c.uri + url
+	return c.Url() + uri
 }
 
 func NewClient(config Config) Client {
 	return &client{
-		request: DefaultRequest,
-		Config:  config,
-		uri:     DomainUrl(),
+		request:  DefaultRequest,
+		Config:   config,
+		dataType: DATA_TYPE_XML,
+		url:      DomainUrl(),
 	}
 }
 
@@ -103,14 +136,12 @@ func buildTransport(config Config) *http.Client {
 func buildSafeTransport(config Config) *http.Client {
 	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
 	if err != nil {
-		Println(err)
-		return nil
+		panic(err)
 	}
 
 	caFile, err := ioutil.ReadFile(config.Get("rootca_path"))
 	if err != nil {
-		Println(err)
-		return nil
+		panic(err)
 	}
 	certPool := x509.NewCertPool()
 	certPool.AppendCertsFromPEM(caFile)
@@ -136,6 +167,7 @@ func buildSafeTransport(config Config) *http.Client {
 }
 
 func request(c *client, url string, params Map, method string, op Map) *Response {
+	Debug("request", c, url, params, method, op)
 	op = MapNilMake(op)
 	if params != nil {
 		params.Set("mch_id", c.Get("mch_id"))
@@ -145,11 +177,26 @@ func request(c *client, url string, params Map, method string, op Map) *Response
 		params.Set("sign_type", SIGN_TYPE_MD5.String())
 		params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
 	}
-	op[REQUEST_TYPE_FORM_PARAMS.String()] = params
 
-	if r := c.request.PerformRequest(url, method, op); r.Error() == nil {
-		return ParseClient(c.HttpClient(), r)
+	data := toRequestData(c, params, op)
+
+	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
+		return ClientDo(c, r)
 	} else {
 		return ErrorResponse(r.Error())
 	}
+}
+
+func toRequestData(client *client, p, op Map) *RequestData {
+	data := client.request.RequestDataCopy()
+	if client.DataType() == DATA_TYPE_JSON {
+		data.SetHeaderJson()
+		data.Body = bytes.NewReader(p.ToJson())
+	}
+	if client.DataType() == DATA_TYPE_XML {
+		data.SetHeaderXml()
+		data.Body = strings.NewReader(p.ToXml())
+	}
+
+	return data
 }

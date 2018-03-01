@@ -1,6 +1,7 @@
 [system]
     debug = true
     response_type = 'map'
+
     use_cache = true
 
 [system.log]
@@ -16,6 +17,9 @@
             url = 'https://api.mch.weixin.qq.com'
 
 [official_account]
+#        [official_account.config]
+#            data_type = "json"
+
         [official_account.default]
             app_id ='wx426b3015555a46be'                    #AppID
             secret = '7813490da6f1265e4901ffb80afaa36f'     #AppSecret

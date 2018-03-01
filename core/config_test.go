@@ -1,16 +1,14 @@
 package core_test
 
 import (
-	"crypto/md5"
-	"fmt"
+	"log"
 	"testing"
+
+	"github.com/godcong/wego/core"
 )
 
 func TestConfigLoader(t *testing.T) {
 
-	m := md5.New()
-	m.Write([]byte("These pretzels are making me thirsty."))
-
-	fmt.Printf("%x", m.Sum(nil))
+	log.Println(core.GetSystemConfig())
 
 }

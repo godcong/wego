@@ -3,7 +3,6 @@ package core
 import (
 	"bytes"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -57,38 +56,25 @@ const (
 )
 
 type Request struct {
+	requestType RequestType
+	requestData *RequestData
 	request     *http.Request
 	custom      func(*Request) string
-	error       error
-	requestData RequestData
-}
 
-type RequestData struct {
-	Query       string
-	Body        string
-	Method      string
-	requestType RequestType
-	Header      http.Header
+	error error
 }
 
 var DefaultRequest = NewRequest()
 
-func init() {
-	log.Println("init")
-}
-
 func NewRequest() *Request {
-	log.Println("request")
 	r := Request{
 		request: nil,
 		error:   nil,
-
-		requestData: RequestData{
-			Query:       "",
-			Body:        "",
-			Method:      "",
-			requestType: REQUEST_TYPE_XML,
-			Header:      http.Header{},
+		requestData: &RequestData{
+			Query:  "",
+			Body:   nil,
+			Method: "",
+			Header: http.Header{},
 		},
 	}
 	return &r
@@ -99,68 +85,55 @@ func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
 	return r
 }
 
-func (r *Request) GetRequestType() RequestType {
-	return r.requestData.requestType
-}
+//
+//func (r *Request) GetRequestType() RequestType {
+//	return r.requestData.requestType
+//}
 
 func (r *Request) Error() error {
 	return r.error
+}
+
+func (r *Request) RequestDataCopy() *RequestData {
+	data := *r.requestData
+	data.Header = cloneHeader(r.requestData.Header)
+	return &data
 }
 
 func (r *Request) HttpRequest() *http.Request {
 	return r.request
 }
 
-func (r *Request) PerformRequest(url string, method string, ops Map) *Request {
+func (r *Request) PerformRequest(url string, method string, data *RequestData) *Request {
 	var req *http.Request
 	var err error
-	data := optionProcess(r, method, ops)
-	req, err = http.NewRequest(data.Method, parseQuery(url, data.Query), parseBody(data.Body))
-	Info(data)
+	data = dataProcess(r, method, data)
+	Debug("PerformRequest|data", *data)
+	req, err = http.NewRequest(data.Method, parseQuery(url, data.Query), data.Body)
 	if err != nil {
 		r.error = err
 	}
 	req.Header = data.Header
+	Debug("PerformRequest|req", req)
 	r.request = req
 	return r
 }
 
-func optionProcess(r *Request, method string, src Map) RequestData {
-	base := r.requestData
+func dataProcess(r *Request, method string, src *RequestData) *RequestData {
 	if src == nil {
-		return base
+		src = r.RequestDataCopy()
 	}
+	src.Method = strings.ToUpper(method)
 
-	for key, value := range src {
-
-		switch (RequestType)(key) {
-		case REQUEST_TYPE_JSON:
-			base.Body = processJson(value)
-			base.Header.Set("Content-Type", "application/json")
-			base.requestType = REQUEST_TYPE_JSON
-		case REQUEST_TYPE_QUERY:
-			base.Query = processQuery(value)
-		case REQUEST_TYPE_XML:
-			base.requestType = REQUEST_TYPE_XML
-			base.Body = processXml(value)
-		case REQUEST_TYPE_FORM_PARAMS:
-			base.Body = processFormParams(value)
-		case REQUEST_TYPE_FILE:
-		case REQUEST_TYPE_MULTIPART:
-		case REQUEST_TYPE_STRING:
-		case REQUEST_TYPE_HEADERS:
-		case REQUEST_TYPE_CUSTOM:
-			base.Body = r.custom(r)
-		}
+	if src.Header.Get("Content-Type") == "" {
+		src.Header.Set("Content-Type", "application/json")
 	}
 
 	if UseUTF8() {
-		base.Header.Add("Content-Type", "charset=utf-8")
+		src.Header.Add("Content-Type", "charset=utf-8")
 	}
 
-	base.Method = strings.ToUpper(method)
-
-	return base
+	return src
 }
 func processFormParams(i interface{}) string {
 	switch v := i.(type) {
@@ -229,4 +202,14 @@ func UseUTF8() bool {
 
 func (r RequestType) String() string {
 	return string(r)
+}
+
+func cloneHeader(h http.Header) http.Header {
+	h2 := make(http.Header, len(h))
+	for k, vv := range h {
+		vv2 := make([]string, len(vv))
+		copy(vv2, vv)
+		h2[k] = vv2
+	}
+	return h2
 }

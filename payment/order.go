@@ -20,7 +20,7 @@ func (o *Order) Unify(m core.Map) core.Map {
 	if !m.Has("notify_url") {
 		m.Set("notify_url", o.Get("notify_url"))
 	}
-	return o.Request(core.UNIFIEDORDER_URL_SUFFIX, m)
+	return o.Request(UNIFIEDORDER_URL_SUFFIX, m)
 }
 
 //func (o *order) request(url string, m Map) Map {
@@ -37,7 +37,7 @@ func (o *Order) Close(no string) core.Map {
 	m := make(core.Map)
 	m.Set("appid", o.Get("app_id"))
 	m.Set("out_trade_no", no)
-	return o.Request(core.CLOSEORDER_URL_SUFFIX, m)
+	return o.Request(CLOSEORDER_URL_SUFFIX, m)
 }
 
 /** QueryOrder
@@ -50,7 +50,7 @@ func (o *Order) Close(no string) core.Map {
  */
 func (o *Order) query(m core.Map) core.Map {
 	m.Set("appid", o.Get("app_id"))
-	return o.Request(core.ORDERQUERY_URL_SUFFIX, m)
+	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
 
 func (o *Order) QueryByTransactionId(id string) core.Map {

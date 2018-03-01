@@ -4,8 +4,6 @@ import (
 	"flag"
 
 	"github.com/godcong/wego/cache"
-
-	toml "github.com/pelletier/go-toml"
 )
 
 type Application struct {
@@ -16,11 +14,10 @@ type Application struct {
 
 var f = flag.String("f", "config.toml", "config file path")
 var app *Application
-var system System
 
 func initLoader() *Tree {
 	t := ConfigTree(*f)
-	t.GetTree("system").(*toml.Tree).Unmarshal(&system)
+	initSystem(t.GetTree("system"))
 	return t
 }
 
@@ -73,6 +70,7 @@ func (a *Application) Register(name string, v interface{}) {
 }
 
 func App() *Application {
+	Debug("app:", app)
 	return app
 }
 

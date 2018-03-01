@@ -220,7 +220,7 @@ func TestOrder_QueryByTransactionId(t *testing.T) {
 func TestOrder_Unify(t *testing.T) {
 	m := make(core.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
-	m.Set("out_trade_no", out_trade_no)
+	m.Set("out_trade_no", out_trade_no+"2")
 	//m.Set("device_info", "")
 	////m.Set("fee_type", "CNY")
 	m.Set("total_fee", "1")
@@ -250,5 +250,5 @@ func TestRefund_Query(t *testing.T) {
 
 func TestSecurity_GetPublicKey(t *testing.T) {
 	m := wego.GetSecurity().GetPublicKey()
-	log.Println(m.Get("pub_key"))
+	log.Println(m)
 }

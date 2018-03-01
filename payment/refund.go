@@ -17,7 +17,7 @@ func (r *Refund) refund(num string, total, refund int, options core.Map) core.Ma
 	options.NilSet("refund_fee", strconv.Itoa(refund))
 	options.NilSet("appid", r.Get("app_id"))
 
-	return r.SafeRequest(core.REFUND_URL_SUFFIX, options)
+	return r.SafeRequest(REFUND_URL_SUFFIX, options)
 }
 
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) core.Map {
@@ -32,7 +32,7 @@ func (r *Refund) ByTransactionId(tid, num string, total, refund int, options cor
 
 func (r *Refund) query(m core.Map) core.Map {
 	m.Set("appid", r.Get("app_id"))
-	return r.Request(core.REFUNDQUERY_URL_SUFFIX, m)
+	return r.Request(REFUNDQUERY_URL_SUFFIX, m)
 }
 
 func (r *Refund) QueryByRefundId(id string) core.Map {

@@ -130,21 +130,25 @@ func NewTransfer(application Application, config core.Config) *payment.Transfer 
 }
 
 func GetPayment() Payment {
-	obj := GetApp().Get("payment").(Payment)
-	return obj
+	payment := GetApp().Get("payment").(Payment)
+	core.Debug("GetPayment|payment:", payment)
+	return payment
 }
 
 func GetSecurity() Security {
 	payment := GetApp().Get("payment").(Payment)
+	core.Debug("GetSecurity|payment:", payment)
 	return payment.Security()
 }
 
 func GetOrder() Order {
 	payment := GetApp().Get("payment").(Payment)
+	core.Debug("GetOrder|payment:", payment)
 	return payment.Order()
 }
 
 func GetRefund() Refund {
 	payment := GetApp().Get("payment").(Payment)
+	core.Debug("GetRefund|payment:", payment)
 	return payment.Refund()
 }

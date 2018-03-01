@@ -181,7 +181,7 @@ func xmlToMap(contentXml []byte, hasHeader bool) Map {
 			val = string(token)
 			//异常处理(Log输出）
 		default:
-			log.Println(token)
+			Println(token)
 		}
 
 	}

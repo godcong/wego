@@ -17,7 +17,7 @@ func (b *Bill) Get(bd string, bt string, op core.Map) core.Map {
 	m.Set("bill_date", bd)
 	m.Set("bill_type", bt)
 	m.Join(op)
-	resp := b.RequestRaw(core.DOWNLOADBILL_URL_SUFFIX, m)
+	resp := b.RequestRaw(DOWNLOADBILL_URL_SUFFIX, m)
 	if strings.Index(string(resp), "<xml>") == 0 {
 		return core.XmlToMap(resp)
 	}
