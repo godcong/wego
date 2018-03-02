@@ -38,8 +38,26 @@ func (r *Response) ToMap() Map {
 	return Map{}
 }
 
+func (r *Response) ToXml() string {
+	if r.responseType == RESPONSE_TYPE_XML {
+		return string(r.responseData)
+	}
+	return r.ToMap().ToXml()
+}
+
+func (r *Response) ToJson() []byte {
+	if r.responseType == RESPONSE_TYPE_JSON {
+		return r.responseData
+	}
+	return r.ToMap().ToJson()
+}
+
 func (r *Response) ToBytes() []byte {
 	return r.responseData
+}
+
+func (r *Response) ToString() string {
+	return string(r.responseData)
 }
 
 func ClientDo(client Client, request *Request) *Response {
