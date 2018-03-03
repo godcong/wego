@@ -21,7 +21,7 @@ func initLog(system System) {
 		os.MkdirAll(string(r[:i]), os.ModePerm)
 		f, e := os.OpenFile(system.Log.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if e != nil {
-			log.Println("cannot open file: " + system.Log.File)
+			log.Println("cannot open_platform file: " + system.Log.File)
 		}
 		log.SetFlags(log.LstdFlags)
 		log.SetOutput(io.MultiWriter(os.Stdout, f))

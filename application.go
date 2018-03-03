@@ -37,10 +37,10 @@ func Get(name string, v interface{}) error {
 //}
 //
 //func (a *application) MiniProgram() MiniProgram {
-//	if a.mini == nil {
-//		a.mini = NewMiniProgram(a)
+//	if a.mini_program == nil {
+//		a.mini_program = NewMiniProgram(a)
 //	}
-//	return a.mini
+//	return a.mini_program
 //}
 //
 //func (a *application) Cache() cache.Cache {

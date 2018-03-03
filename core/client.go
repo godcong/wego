@@ -33,6 +33,7 @@ func (c *client) HttpClient() *http.Client {
 }
 
 func (c *client) HttpPostJson(url string, data Map, ops Map) *Response {
+	ops = MapNilMake(ops)
 	ops.Set(REQUEST_TYPE_JSON.String(), data)
 	return c.Request(url, nil, "post", ops)
 }
