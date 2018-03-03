@@ -9,7 +9,11 @@ import "github.com/godcong/wego/core"
 type OfficialAccount struct {
 	core.Config
 	client core.Client
-	*Base
+	base   *Base
+}
+
+func (m *OfficialAccount) Base() *Base {
+	return m.base
 }
 
 func DataType() core.DataType {
@@ -27,11 +31,12 @@ func newOfficialAccount() *OfficialAccount {
 	official0 := &OfficialAccount{
 		Config: config,
 		client: core.NewClient(config),
-		Base: &Base{
+		base: &Base{
 			Config: config,
 			Client: core.NewClient(config),
 		},
 	}
+	official0.base.AccessToken = core.NewAccessToken(config, official0.client)
 	return official0
 }
 
@@ -40,7 +45,7 @@ func (m *OfficialAccount) prefix(s string) string {
 }
 
 func (m *OfficialAccount) List() {
-	m.HttpGet(m.prefix(core.GETKFLIST_URL_SUFFIX), nil)
+	m.client.HttpGet(m.prefix(core.GETKFLIST_URL_SUFFIX), nil)
 }
 
 func (m *OfficialAccount) Online() {

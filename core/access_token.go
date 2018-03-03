@@ -41,7 +41,7 @@ func (a *accessToken) sendRequest(s string) []byte {
 	}
 
 	m := a.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.UrlEncode(), nil, "get", nil)
-	panic(m)
+	return m.ToBytes()
 	//return m
 }
 

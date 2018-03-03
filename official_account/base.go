@@ -17,7 +17,19 @@ func (b *Base) ClearQuota() core.Map {
 	return resp.ToMap()
 }
 
+//成功：
+//{
+//"ip_list": [
+//"127.0.0.1",
+//"127.0.0.2",
+//"101.226.103.0/25"
+//]
+//}
+//失败:
+//{"errcode":40013,"errmsg":"invalid appid"}
 func (b *Base) GetCallbackIp() core.Map {
-	resp := b.HttpPostJson(b.Link(GETCALLBACKIP_URL_SUFFIX), nil, core.Map{core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": b.GetToken().GetKey()}})
+	token := b.GetToken()
+
+	resp := b.HttpPostJson(b.Link(GETCALLBACKIP_URL_SUFFIX), nil, core.Map{core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()}})
 	return resp.ToMap()
 }
