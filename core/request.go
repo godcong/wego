@@ -108,8 +108,10 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 	var req *http.Request
 	var err error
 	data = dataProcess(r, method, data)
+	url = parseQuery(url, data.Query)
 	Debug("PerformRequest|data", *data)
-	req, err = http.NewRequest(data.Method, parseQuery(url, data.Query), data.Body)
+	Debug("PerformRequest|url", url)
+	req, err = http.NewRequest(data.Method, url, data.Body)
 	if err != nil {
 		r.error = err
 	}
@@ -134,44 +136,6 @@ func dataProcess(r *Request, method string, src *RequestData) *RequestData {
 	}
 
 	return src
-}
-func processFormParams(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case Map:
-		return v.ToXml()
-	}
-	return ""
-}
-func processXml(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case Map:
-		return v.ToXml()
-	}
-	return ""
-}
-
-func processJson(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case Map:
-		return string(v.ToJson())
-	}
-	return ""
-}
-
-func processQuery(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case Map:
-		return v.UrlEncode()
-	}
-	return ""
 }
 
 //REQUEST_TYPE_JSON:        nil,

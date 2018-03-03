@@ -15,5 +15,6 @@ type Base interface {
 
 func GetOfficialAccount() OfficialAccount {
 	obj := GetApp().Get("official_account").(*official_account.OfficialAccount)
+	core.Debug("GetOfficialAccount|official_account:", obj)
 	return obj
 }

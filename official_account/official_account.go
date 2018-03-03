@@ -1,6 +1,8 @@
 package official_account
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+)
 
 //type OfficialAccount interface {
 //	accessToken() AccessTokenInterface
@@ -9,7 +11,11 @@ import "github.com/godcong/wego/core"
 type OfficialAccount struct {
 	core.Config
 	client core.Client
-	base   *Base
+	token  core.AccessToken
+	app    *core.Application
+
+	base            *Base
+	customerService *CustomerService
 }
 
 func (m *OfficialAccount) Base() *Base {
@@ -36,16 +42,20 @@ func newOfficialAccount() *OfficialAccount {
 			Client: core.NewClient(config),
 		},
 	}
-	official0.base.AccessToken = core.NewAccessToken(config, official0.client)
+	official0.client.SetDomain(core.NewDomain("official_account"))
+	official0.client.SetDataType(core.DATA_TYPE_JSON)
+	official0.base = &Base{
+		Config:          official0.Config,
+		Client:          official0.client,
+		AccessToken:     core.NewAccessToken(config, official0.client),
+		OfficialAccount: official0,
+	}
+
 	return official0
 }
 
 func (m *OfficialAccount) prefix(s string) string {
 	return core.API_WEIXIN_URL_SUFFIX + s
-}
-
-func (m *OfficialAccount) List() {
-	m.client.HttpGet(m.prefix(core.GETKFLIST_URL_SUFFIX), nil)
 }
 
 func (m *OfficialAccount) Online() {

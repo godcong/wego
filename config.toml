@@ -13,8 +13,10 @@
             uri=  '/server'
 
 [domain]
-#        [domain.primary]
+        [domain.default]
             url = 'https://api.mch.weixin.qq.com'
+        [domain.official_account]
+            url = 'https://api.weixin.qq.com'
 
 [official_account]
 #        [official_account.config]

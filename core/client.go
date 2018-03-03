@@ -14,7 +14,8 @@ type Client interface {
 	SetHttpClient(client *http.Client) Client
 	DataType() DataType
 	SetDataType(dataType DataType) Client
-	Url() string
+	URL() string
+	SetDomain(domain Domain) Client
 	HttpGet(url string, m Map) *Response
 	HttpPost(url string, m Map) *Response
 	HttpPostJson(url string, m Map, query Map) *Response
@@ -33,7 +34,7 @@ const (
 
 type client struct {
 	dataType    DataType
-	url         string
+	domain      Domain
 	app         *Application
 	accessToken *accessToken
 	request     *Request
@@ -42,8 +43,13 @@ type client struct {
 	Config
 }
 
-func (c *client) Url() string {
-	return c.url
+func (c *client) SetDomain(domain Domain) Client {
+	c.domain = domain
+	return c
+}
+
+func (c *client) URL() string {
+	return c.domain.URL()
 }
 
 func (c *client) HttpClient() *http.Client {
@@ -66,7 +72,12 @@ func (c *client) SetDataType(dataType DataType) Client {
 
 func (c *client) HttpPostJson(url string, data Map, ops Map) *Response {
 	ops = MapNilMake(ops)
-	ops.Set(REQUEST_TYPE_JSON.String(), data)
+	if c.dataType == DATA_TYPE_JSON {
+		ops.Set(REQUEST_TYPE_JSON.String(), data)
+	} else {
+		ops.Set(REQUEST_TYPE_XML.String(), data)
+	}
+
 	return c.Request(url, nil, "post", ops)
 }
 
@@ -99,9 +110,9 @@ func (c *client) SafeRequest(url string, params Map, method string, options Map)
 
 func (c *client) Link(uri string) string {
 	if c.GetBool("sandbox") {
-		return c.Url() + SANDBOX_URL_SUFFIX + uri
+		return c.URL() + SANDBOX_URL_SUFFIX + uri
 	}
-	return c.Url() + uri
+	return c.URL() + uri
 }
 
 func NewClient(config Config) Client {
@@ -109,7 +120,7 @@ func NewClient(config Config) Client {
 		request:  DefaultRequest,
 		Config:   config,
 		dataType: DATA_TYPE_XML,
-		url:      DomainUrl(),
+		domain:   NewDomain("default"),
 	}
 }
 
@@ -191,6 +202,7 @@ func request(c *client, url string, params Map, method string, op Map) *Response
 
 func toRequestData(client *client, p, op Map) *RequestData {
 	data := client.request.RequestDataCopy()
+	data.Query = processQuery(op.Get(REQUEST_TYPE_QUERY.String()))
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
 		data.Body = bytes.NewReader(p.ToJson())
@@ -201,4 +213,43 @@ func toRequestData(client *client, p, op Map) *RequestData {
 	}
 
 	return data
+}
+
+func processFormParams(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return v.ToXml()
+	}
+	return ""
+}
+func processXml(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return v.ToXml()
+	}
+	return ""
+}
+
+func processJson(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return string(v.ToJson())
+	}
+	return ""
+}
+
+func processQuery(i interface{}) string {
+	switch v := i.(type) {
+	case string:
+		return v
+	case Map:
+		return v.UrlEncode()
+	}
+	return ""
 }

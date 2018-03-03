@@ -15,6 +15,7 @@ func (t SignType) String() string {
 }
 
 const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
+const API_WEIXIN_URL_SUFFIX = "https://api.weixin.qq.com"
 const BACK_DOMAIN = "api2.mch.weixin.qq.com"
 const HK_DOMAIN = "apihk.mch.weixin.qq.com"
 const US_DOMAIN = "apius.mch.weixin.qq.com"
@@ -41,8 +42,6 @@ const SHORTURL_URL_SUFFIX = "/tools/shorturl"
 const SANDBOX_URL_SUFFIX = "/sandboxnew"
 const SANDBOX_SIGNKEY_URL_SUFFIX = SANDBOX_URL_SUFFIX + "/pay/getsignkey"
 
-const API_WEIXIN_URL_SUFFIX = "https://api.weixin.qq.com"
-
 const GETWXACODE_URL_SUFFIX = "/wxa/getwxacode"
 const CREATEWXAQRCODE_URL_SUFFIX = "/cgi-bin/wxaapp/createwxaqrcode"
 const GETWXACODEUNLIMIT_URL_SUFFIX = "/wxa/getwxacodeunlimit"
@@ -67,7 +66,7 @@ const TEMPLATE_LIBRARY_LIST_URL_SUFFIX = "/cgi-bin/wxopen/template/library/list"
 const TEMPLATE_LIBRARY_GET_URL_SUFFIX = "/cgi-bin/wxopen/template/library/get"
 
 const CUSTOM_SEND_URL_SUFFIX = "/cgi-bin/message/custom/send"
-const GETKFLIST_URL_SUFFIX = "/cgi-bin/customservice/getkflist"
+
 const GETONLINEKFLIST_URL_SUFFIX = "/cgi-bin/customservice/getonlinekflist"
 const KFACCOUNT_ADD_URL_SUFFIX = "/customservice/kfaccount/add"
 const KFACCOUNT_UPDATE_URL_SUFFIX = "/customservice/kfaccount/update"

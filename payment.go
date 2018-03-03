@@ -62,93 +62,97 @@ type Transfer interface {
 }
 type Payment interface {
 	//Sandbox() Sandbox
+	//Order() *payment.Order
+	//Refund() *payment.Refund
+	//Security() *payment.Security
 	Order() *payment.Order
 	Refund() *payment.Refund
 	Security() *payment.Security
 	Pay(core.Map) core.Map
-	Request(url string, m core.Map) core.Map
-	RequestRaw(url string, m core.Map) []byte
-	SafeRequest(url string, m core.Map) core.Map
+	Request(url string, m core.Map) *core.Response
+	RequestRaw(url string, m core.Map) *core.Response
+	SafeRequest(url string, m core.Map) *core.Response
 	AuthCodeToOpenid(string) core.Map
 }
 
-func NewJSSDK(application Application, config core.Config) *payment.JSSDK {
-	return &payment.JSSDK{
-		Config: config,
-		//app:    application,
-	}
-}
-
-func NewRedPack(application core.Application, config core.Config) *payment.RedPack {
-	return &payment.RedPack{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
-
-func NewBill(application Application, config core.Config) *payment.Bill {
-	return &payment.Bill{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
-
-func NewSecurity(application Application, config core.Config) *payment.Security {
-	return &payment.Security{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
-
-func NewOrder(application Application, config core.Config) *payment.Order {
-	return &payment.Order{
-		//app:    application,
-		//Payment: application.Payment(),
-		Config: config,
-	}
-}
-
-func NewSandbox(application Application, config core.Config) *core.Sandbox {
-	return &core.Sandbox{
-		Config: config,
-		//app:    application,
-	}
-}
-
-func NewReverse(application Application, config core.Config) *payment.Reverse {
-	return &payment.Reverse{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
-
-func NewTransfer(application Application, config core.Config) *payment.Transfer {
-	return &payment.Transfer{
-		Config: config,
-		//Payment: application.Payment(),
-	}
-}
+//
+//func NewJSSDK(application Application, config core.Config) *payment.JSSDK {
+//	return &payment.JSSDK{
+//		Config: config,
+//		//app:    application,
+//	}
+//}
+//
+//func NewRedPack(application core.Application, config core.Config) *payment.RedPack {
+//	return &payment.RedPack{
+//		Config: config,
+//		//Payment: application.Payment(),
+//	}
+//}
+//
+//func NewBill(application Application, config core.Config) *payment.Bill {
+//	return &payment.Bill{
+//		Config: config,
+//		//Payment: application.Payment(),
+//	}
+//}
+//
+//func NewSecurity(application Application, config core.Config) *payment.Security {
+//	return &payment.Security{
+//		Config: config,
+//		//Payment: application.Payment(),
+//	}
+//}
+//
+//func NewOrder(application Application, config core.Config) *payment.Order {
+//	return &payment.Order{
+//		//app:    application,
+//		//Payment: application.Payment(),
+//		Config: config,
+//	}
+//}
+//
+//func NewSandbox(application Application, config core.Config) *core.Sandbox {
+//	return &core.Sandbox{
+//		Config: config,
+//		//app:    application,
+//	}
+//}
+//
+//func NewReverse(application Application, config core.Config) *payment.Reverse {
+//	return &payment.Reverse{
+//		Config: config,
+//		//Payment: application.Payment(),
+//	}
+//}
+//
+//func NewTransfer(application Application, config core.Config) *payment.Transfer {
+//	return &payment.Transfer{
+//		Config: config,
+//		//Payment: application.Payment(),
+//	}
+//}
 
 func GetPayment() Payment {
-	payment := GetApp().Get("payment").(Payment)
-	core.Debug("GetPayment|payment:", payment)
-	return payment
+	obj := GetApp().Get("payment").(*payment.Payment)
+	core.Debug("GetPayment|obj:", obj)
+	return obj
 }
 
 func GetSecurity() Security {
-	payment := GetApp().Get("payment").(Payment)
-	core.Debug("GetSecurity|payment:", payment)
-	return payment.Security()
+	obj := GetPayment().Security()
+	core.Debug("GetSecurity|obj:", obj)
+	return obj
 }
 
 func GetOrder() Order {
-	payment := GetApp().Get("payment").(Payment)
-	core.Debug("GetOrder|payment:", payment)
-	return payment.Order()
+	obj := GetPayment().Order()
+	core.Debug("GetOrder|obj:", obj)
+	return obj
 }
 
 func GetRefund() Refund {
-	payment := GetApp().Get("payment").(Payment)
-	core.Debug("GetRefund|payment:", payment)
-	return payment.Refund()
+	obj := GetPayment().Refund()
+	core.Debug("GetRefund|obj:", obj)
+	return obj
 }

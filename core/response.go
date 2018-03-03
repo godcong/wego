@@ -8,6 +8,7 @@ import (
 type Response struct {
 	responseType ResponseType
 	responseData []byte
+	responseMap  Map
 	response     *http.Response
 	error        error
 }
@@ -29,27 +30,27 @@ func (r *Response) Error() error {
 
 func (r *Response) ToMap() Map {
 	if r.responseType == RESPONSE_TYPE_XML {
-		return XmlToMap(r.responseData)
+		r.responseMap = XmlToMap(r.responseData)
 	}
 	if r.responseType == RESPONSE_TYPE_JSON {
-		return JsonToMap(r.responseData)
+		r.responseMap = JsonToMap(r.responseData)
 	}
 
-	return Map{}
+	return r.responseMap
 }
 
 func (r *Response) ToXml() string {
 	if r.responseType == RESPONSE_TYPE_XML {
 		return string(r.responseData)
 	}
-	return r.ToMap().ToXml()
+	return r.responseMap.ToXml()
 }
 
 func (r *Response) ToJson() []byte {
 	if r.responseType == RESPONSE_TYPE_JSON {
 		return r.responseData
 	}
-	return r.ToMap().ToJson()
+	return r.responseMap.ToJson()
 }
 
 func (r *Response) ToBytes() []byte {
@@ -74,6 +75,7 @@ func ClientDo(client Client, request *Request) *Response {
 		response.responseType = RESPONSE_TYPE_JSON
 	}
 	Debug("ClientDo|response", *response)
+	Debug("ClientDo|response|data", string(response.responseData))
 	return response
 }
 
@@ -82,4 +84,8 @@ func ErrorResponse(err error) *Response {
 	return &Response{
 		error: err,
 	}
+}
+
+func (r ResponseType) String() string {
+	return string(r)
 }

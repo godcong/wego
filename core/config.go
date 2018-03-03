@@ -3,6 +3,7 @@ package core
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/godcong/wego/cache"
 	"github.com/pelletier/go-toml"
@@ -134,4 +135,8 @@ func CacheOff() {
 
 func UseCache() bool {
 	return useCache
+}
+
+func DeployJoin(v ...string) string {
+	return strings.Join(v, ".")
 }

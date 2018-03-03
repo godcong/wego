@@ -30,6 +30,7 @@ func (b *Base) ClearQuota() core.Map {
 func (b *Base) GetCallbackIp() core.Map {
 	token := b.GetToken()
 
-	resp := b.HttpPostJson(b.Link(GETCALLBACKIP_URL_SUFFIX), nil, core.Map{core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()}})
+	resp := b.HttpGet(b.Link(GETCALLBACKIP_URL_SUFFIX), core.Map{"access_token": token.GetKey()})
+
 	return resp.ToMap()
 }

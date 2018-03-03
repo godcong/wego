@@ -20,16 +20,15 @@ type Domain interface {
 }
 
 type domain struct {
-	Config
-	app Application
+	url string
+	app *Application
 }
 
 func (d *domain) URL() string {
-	url := d.Get("url")
-	if url == "" {
+	if d.url == "" {
 		return BASE_DOMAIN
 	}
-	return url
+	return d.url
 }
 
 //func NewDomain(application Application) Domain {
@@ -39,18 +38,25 @@ func (d *domain) URL() string {
 //	}
 //}
 
-func domainInfo() Domain {
+func newDomain(s string) *domain {
+	url := GetConfig(DeployJoin("domain", s)).Get("url")
+	if url == "" {
+		switch s {
+		case "default":
+			url = BASE_DOMAIN
+		case "official_account":
+			url = API_WEIXIN_URL_SUFFIX
+		default:
+			url = BACK_DOMAIN
+		}
+	}
 	return &domain{
-		Config: GetConfig("domain"),
+		url: url,
 	}
 }
 
-//func initDomain(config Config) {
-//	domainInfo = NewDomain(config)
-//}
-
-func DomainUrl() string {
-	return domainInfo().URL()
+func NewDomain(url string) Domain {
+	return newDomain(url)
 }
 
 //

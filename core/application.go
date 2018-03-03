@@ -66,7 +66,7 @@ func (a *Application) Get(name string) interface{} {
 }
 
 func (a *Application) Register(name string, v interface{}) {
-	(*a).obj[name] = v
+	a.obj[name] = v
 }
 
 func App() *Application {
