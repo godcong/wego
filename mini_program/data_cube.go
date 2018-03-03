@@ -1,4 +1,4 @@
-package mini
+package mini_program
 
 import "github.com/godcong/wego/core"
 

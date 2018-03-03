@@ -2,7 +2,7 @@ package wego
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/mini"
+	"github.com/godcong/wego/mini_program"
 )
 
 type Auth interface {
@@ -29,17 +29,17 @@ type AppCode interface {
 }
 
 type MiniProgram interface {
-	Auth() *mini.Auth
-	AppCode() *mini.AppCode
+	Auth() *mini_program.Auth
+	AppCode() *mini_program.AppCode
 	//Client() core.Client
-	DataCube() *mini.DataCube
+	DataCube() *mini_program.DataCube
 	//accessToken() token.AccessTokenInterface
 }
 
 func NewAppCode(application core.Application, config core.Config) AppCode {
-	return &mini.AppCode{
+	return &mini_program.AppCode{
 		Config: config,
-		//mini:   application.MiniProgram(),
+		//mini_program:   application.MiniProgram(),
 	}
 }
 

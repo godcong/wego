@@ -1,4 +1,4 @@
-package mini
+package mini_program
 
 import (
 	"github.com/godcong/wego/core"
@@ -103,7 +103,7 @@ func (m *MiniProgram) prefix(s string) string {
 //}
 //
 //func NewMiniProgram(application Application) MiniProgram {
-//	config := application.GetConfig("mini.default")
+//	config := application.GetConfig("mini_program.default")
 //	return &MiniProgram{
 //		Config: config,
 //		app:    application,

@@ -1,4 +1,4 @@
-package mini
+package mini_program
 
 type ProgramServer struct {
 }

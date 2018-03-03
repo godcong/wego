@@ -1,4 +1,4 @@
-package official
+package official_account
 
 import "github.com/godcong/wego/core"
 
@@ -23,7 +23,7 @@ func init() {
 }
 
 func newOfficialAccount() *OfficialAccount {
-	config := core.GetConfig("payment.default")
+	config := core.GetConfig("official_account.default")
 	official0 := &OfficialAccount{
 		Config: config,
 		client: core.NewClient(config),
@@ -80,7 +80,7 @@ func (m *OfficialAccount) Message(message core.Map) {
 //
 //func NewOfficialAccount(application Application) OfficialAccount {
 //	return &officialAccount{
-//		Config: application.GetConfig("official.default"),
+//		Config: application.GetConfig("official_account.default"),
 //		app:    application,
 //	}
 //}
