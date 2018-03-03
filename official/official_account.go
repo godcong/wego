@@ -84,26 +84,3 @@ func (m *OfficialAccount) Message(message core.Map) {
 //func (a *officialAccount) accessToken() AccessTokenInterface {
 //	return NewAccessToken(a.app, a.Config)
 //}
-
-type Base struct {
-	core.Config
-	core.Client
-	*OfficialAccount
-}
-
-func (b *Base) ClearQuota() core.Map {
-	params := core.Map{
-		"appid": b.Get("app_id"),
-	}
-	resp := b.HttpPostJson(b.prefix(core.CLEAR_QUOTA_URL_SUFFIX), params, nil)
-	return resp.ToMap()
-}
-
-func (b *Base) GetValidIps() core.Map {
-	params := core.Map{
-		"appid": b.Get("app_id"),
-	}
-
-	resp := b.HttpPostJson(b.prefix(core.GETCALLBACKIP_URL_SUFFIX), params, nil)
-	return resp.ToMap()
-}
