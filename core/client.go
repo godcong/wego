@@ -64,8 +64,9 @@ func (c *client) SetDataType(dataType DataType) Client {
 	return c
 }
 
-func (c *client) HttpPostJson(url string, data Map, query Map) *Response {
-	return c.Request(url, nil, "post", Map{REQUEST_TYPE_QUERY.String(): query, REQUEST_TYPE_JSON.String(): data})
+func (c *client) HttpPostJson(url string, data Map, ops Map) *Response {
+	ops.Set(REQUEST_TYPE_JSON.String(), data)
+	return c.Request(url, nil, "post", ops)
 }
 
 func (c *client) HttpGet(url string, m Map) *Response {

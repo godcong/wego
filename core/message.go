@@ -61,10 +61,6 @@ const (
 	EVENT_TYPE_USER_ENTER_TEMPSESSION = "user_enter_tempsession"
 )
 
-type MessageTransfer interface {
-	ToMap() Map
-}
-
 type Message struct {
 	url    string
 	to     string

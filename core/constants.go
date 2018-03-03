@@ -66,9 +66,6 @@ const TEMPLATE_SEND_URL_SUFFIX = "/cgi-bin/message/wxopen/template/send"
 const TEMPLATE_LIBRARY_LIST_URL_SUFFIX = "/cgi-bin/wxopen/template/library/list"
 const TEMPLATE_LIBRARY_GET_URL_SUFFIX = "/cgi-bin/wxopen/template/library/get"
 
-const CLEAR_QUOTA_URL_SUFFIX = "/cgi-bin/clear_quota"
-const GETCALLBACKIP_URL_SUFFIX = "/cgi-bin/getcallbackip"
-
 const CUSTOM_SEND_URL_SUFFIX = "/cgi-bin/message/custom/send"
 const GETKFLIST_URL_SUFFIX = "/cgi-bin/customservice/getkflist"
 const GETONLINEKFLIST_URL_SUFFIX = "/cgi-bin/customservice/getonlinekflist"
