@@ -1,7 +1,7 @@
 package message
 
 type MsgType string
-type EventType string
+type EvtType string
 
 const (
 	MESSAGE_TYPE_TEXT            MsgType = "text"                      //表示文本消息
@@ -19,27 +19,31 @@ const (
 )
 
 const (
-	EVENT_TYPE_SUBSCRIBE              EventType = "subscribe"              //订阅
-	EVENT_TYPE_UNSUBSCRIBE            EventType = "unsubscribe"            //取消订阅
-	EVENT_TYPE_SCAN                   EventType = "scan"                   //用户已经关注公众号，则微信会将带场景值扫描事件推送给开发者
-	EVENT_TYPE_LOCATION               EventType = "location"               //上报地理位置事件
-	EVENT_TYPE_CLICK                  EventType = "click"                  //点击菜单拉取消息时的事件推送
-	EVENT_TYPE_VIEW                   EventType = "view"                   //点击菜单跳转链接时的事件推送
-	EVENT_TYPE_SCANCODEPUSH           EventType = "scancode_push"          //扫码推事件的事件推送
-	EVENT_TYPE_SCANCODEWAITMSG        EventType = "scancode_waitmsg"       //扫码推事件且弹出“消息接收中”提示框的事件推送
-	EVENT_TYPE_PICSYSPHOTO            EventType = "pic_sysphoto"           //弹出系统拍照发图的事件推送
-	EVENT_TYPE_PICPHOTOORALBUM        EventType = "pic_photo_or_album"     //弹出拍照或者相册发图的事件推送
-	EVENT_TYPE_PICWEIXIN              EventType = "pic_weixin"             //弹出微信相册发图器的事件推送
-	EVENT_TYPE_LOCATIONSELECT         EventType = "location_select"        //弹出地理位置选择器的事件推送
-	EVENT_TYPE_TEMPLATESENDJOBFINISH  EventType = "templatesendjobfinish"  //发送模板消息推送通知
-	EVENT_TYPE_USER_ENTER_TEMPSESSION EventType = "user_enter_tempsession" //会话事件
+	EVENT_TYPE_SUBSCRIBE              EvtType = "subscribe"              //订阅
+	EVENT_TYPE_UNSUBSCRIBE            EvtType = "unsubscribe"            //取消订阅
+	EVENT_TYPE_SCAN                   EvtType = "scan"                   //用户已经关注公众号，则微信会将带场景值扫描事件推送给开发者
+	EVENT_TYPE_LOCATION               EvtType = "location"               //上报地理位置事件
+	EVENT_TYPE_CLICK                  EvtType = "click"                  //点击菜单拉取消息时的事件推送
+	EVENT_TYPE_VIEW                   EvtType = "view"                   //点击菜单跳转链接时的事件推送
+	EVENT_TYPE_SCANCODEPUSH           EvtType = "scancode_push"          //扫码推事件的事件推送
+	EVENT_TYPE_SCANCODEWAITMSG        EvtType = "scancode_waitmsg"       //扫码推事件且弹出“消息接收中”提示框的事件推送
+	EVENT_TYPE_PICSYSPHOTO            EvtType = "pic_sysphoto"           //弹出系统拍照发图的事件推送
+	EVENT_TYPE_PICPHOTOORALBUM        EvtType = "pic_photo_or_album"     //弹出拍照或者相册发图的事件推送
+	EVENT_TYPE_PICWEIXIN              EvtType = "pic_weixin"             //弹出微信相册发图器的事件推送
+	EVENT_TYPE_LOCATIONSELECT         EvtType = "location_select"        //弹出地理位置选择器的事件推送
+	EVENT_TYPE_TEMPLATESENDJOBFINISH  EvtType = "templatesendjobfinish"  //发送模板消息推送通知
+	EVENT_TYPE_USER_ENTER_TEMPSESSION EvtType = "user_enter_tempsession" //会话事件
 )
 
-type Common struct {
+type Message struct {
+	XMLName      string `xml:"xml"`
 	MsgType      MsgType
-	URL          string
+	MsgId        int64
 	ToUserName   string
 	FromUserName string
 	CreateTime   int64
-	MsgId        int64
+}
+
+type Event struct {
+	Event EvtType
 }

@@ -1,6 +1,7 @@
 package message
 
 type News struct {
+	Message
 	Items []*NewItem
 }
 
