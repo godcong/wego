@@ -5,9 +5,12 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/official"
 )
 
 func TestOfficialAccount(t *testing.T) {
-	ip := wego.GetOfficialAccount().Base().GetCallbackIp()
+	o := wego.GetApp().Get("official_account").(*official.OfficialAccount)
 	log.Println(ip)
+	wego.GetO
+
 }
