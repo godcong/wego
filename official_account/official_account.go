@@ -29,6 +29,7 @@ func DataType() core.DataType {
 func init() {
 	app := core.App()
 	app.Register("official_account", newOfficialAccount())
+	//app.Register(newOfficialAccount())
 
 }
 

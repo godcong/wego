@@ -70,9 +70,10 @@ func treeLoader() *Tree {
 	return ConfigTree(c.GetD("cache_path", "config.toml").(string))
 }
 
-func GetConfig(s string) Config {
+func GetConfig(path string) Config {
+	Debug("GetConfig|path", path)
 	c := treeLoader()
-	if v, b := c.GetTree(s).(*toml.Tree); b {
+	if v, b := c.GetTree(path).(*toml.Tree); b {
 		return (*Tree)(v)
 	}
 	return nil

@@ -16,9 +16,9 @@ func (j *JSSDK) getUrl() string {
 }
 
 func (j *JSSDK) BridgeConfig(pid string) core.Map {
-	appid := j.Get("sub_appid")
+	appid := j.Config.Get("sub_appid")
 	if appid == "" {
-		appid = j.Get("app_id")
+		appid = j.Config.Get("app_id")
 	}
 
 	m := core.Map{
@@ -29,7 +29,7 @@ func (j *JSSDK) BridgeConfig(pid string) core.Map {
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", core.GenerateSignature(m, j.Get("aes_key"), core.SIGN_TYPE_MD5))
+	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.SIGN_TYPE_MD5))
 
 	return m
 }
@@ -45,15 +45,15 @@ func (j *JSSDK) SdkConfig(pid string) core.Map {
 
 func (j *JSSDK) AppConfig(pid string) core.Map {
 	m := core.Map{
-		"appid":     j.Get("app_id"),
-		"partnerid": j.Get("mch_id"),
+		"appid":     j.Config.Get("app_id"),
+		"partnerid": j.Config.Get("mch_id"),
 		"prepayid":  pid,
 		"noncestr":  core.GenerateNonceStr(),
 		"timestamp": core.Time(),
 		"package":   "Sign=WXPay",
 	}
 
-	m.Set("sign", core.GenerateSignature(m, j.Get("aes_key"), core.SIGN_TYPE_MD5))
+	m.Set("sign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.SIGN_TYPE_MD5))
 	return m
 }
 
@@ -67,7 +67,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 		token = accessToken.(string)
 	}
 	m := core.Map{
-		"appId":     j.Get("app_id"),
+		"appId":     j.Config.Get("app_id"),
 		"scope":     "jsapi_address",
 		"timeStamp": core.Time(),
 		"nonceStr":  core.GenerateNonceStr(),

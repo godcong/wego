@@ -18,6 +18,7 @@ type MiniProgram struct {
 func init() {
 	app := core.App()
 	app.Register("mini_program", newMiniProgram())
+	//app.Register(newMiniProgram())
 }
 
 func newMiniProgram() *MiniProgram {

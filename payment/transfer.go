@@ -12,8 +12,8 @@ type Transfer struct {
 
 func (t *Transfer) QueryBalanceOrder(s string) core.Map {
 	m := core.Map{
-		"appid":            t.Get("app_id"),
-		"mch_id":           t.Get("mch_id"),
+		"appid":            t.Config.Get("app_id"),
+		"mch_id":           t.Config.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(GETTRANSFERINFO_URL_SUFFIX, m).ToMap()
@@ -21,8 +21,8 @@ func (t *Transfer) QueryBalanceOrder(s string) core.Map {
 
 func (t *Transfer) ToBalance(m core.Map) core.Map {
 	m.Set("mch_id", "")
-	m.Set("mchid", t.Get("mch_id"))
-	m.Set("mch_appid", t.Get("app_id"))
+	m.Set("mchid", t.Config.Get("mch_id"))
+	m.Set("mch_appid", t.Config.Get("app_id"))
 
 	if !m.Has("spbill_create_ip") {
 		m.Set("spbill_create_ip", core.GetServerIp())
@@ -32,7 +32,7 @@ func (t *Transfer) ToBalance(m core.Map) core.Map {
 
 func (t *Transfer) QueryBankCardOrder(s string) core.Map {
 	m := core.Map{
-		"mch_id":           t.Get("mch_id"),
+		"mch_id":           t.Config.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(MMPAYSPTRANS_QUERY_BANK_URL_SUFFIX, m).ToMap()
@@ -49,8 +49,8 @@ func (t *Transfer) ToBankCard(m core.Map) core.Map {
 		}
 	}
 
-	m.Set("enc_bank_no", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
-	m.Set("enc_true_name", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
+	m.Set("enc_bank_no", rsa.Encrypt(t.Config.Get("pubkey_path"), m.GetString("enc_bank_no")))
+	m.Set("enc_true_name", rsa.Encrypt(t.Config.Get("pubkey_path"), m.GetString("enc_true_name")))
 
 	return t.SafeRequest(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX, m).ToMap()
 }

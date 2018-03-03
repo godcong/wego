@@ -58,12 +58,24 @@ func init() {
 	initApp(config)
 }
 
+//func (a *Application) Get(v interface{}) {
+//	name := reflect.TypeOf(v).String()
+//
+//	if v0, b := (*a).obj[name]; b {
+//		v = v0
+//	}
+//}
+
 func (a *Application) Get(name string) interface{} {
 	if v, b := (*a).obj[name]; b {
 		return v
 	}
 	return nil
 }
+
+//func (a *Application) Register(v interface{}) {
+//	a.register(reflect.TypeOf(v).String(), v)
+//}
 
 func (a *Application) Register(name string, v interface{}) {
 	a.obj[name] = v
@@ -75,8 +87,8 @@ func App() *Application {
 }
 
 func (a *Application) InSandbox() bool {
-	c := a.Get("config").(Config)
-	return c.GetBool("sandbox")
+	//c := a.Get("config").(Config)
+	return a.GetBool("payment.default.sandbox")
 }
 
 func (a *Application) GetKey(s string) string {
@@ -89,14 +101,14 @@ func (a *Application) GetKey(s string) string {
 }
 
 func (a *Application) Scheme(id string) string {
-	c := a.Get("config").(Config)
+	//c := a.Config
 	m := make(Map)
-	m.Set("appid", c.Get("app_id"))
-	m.Set("mch_id", c.Get("mch_id"))
+	m.Set("appid", a.Config.Get("app_id"))
+	m.Set("mch_id", a.Config.Get("mch_id"))
 	m.Set("time_stamp", Time(nil))
 	m.Set("nonce_str", GenerateNonceStr())
 	m.Set("product_id", id)
-	m.Set("sign", GenerateSignature(m, c.Get("aes_key"), SIGN_TYPE_MD5))
+	m.Set("sign", GenerateSignature(m, a.Config.Get("aes_key"), SIGN_TYPE_MD5))
 	return BIZPAYURL + m.UrlEncode()
 }
 
@@ -105,8 +117,7 @@ func (a *Application) HandleNotify(typ string, f func(interface{})) {
 }
 
 func (a *Application) SetSubMerchant(mchid, appid string) *Application {
-	c := a.Get("config").(Config)
-	c.Set("sub_mch_id", mchid)
-	c.Set("sub_appid", appid)
+	a.Config.Set("sub_mch_id", mchid)
+	a.Config.Set("sub_appid", appid)
 	return a
 }

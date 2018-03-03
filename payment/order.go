@@ -1,6 +1,8 @@
 package payment
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+)
 
 type Order struct {
 	core.Config
@@ -15,10 +17,11 @@ func (o *Order) Unify(m core.Map) core.Map {
 		//TODO: getclientip with request
 	}
 
-	m.Set("appid", o.Get("app_id"))
+	m.Set("appid", o.Config.Get("app_id"))
+
 	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
 	if !m.Has("notify_url") {
-		m.Set("notify_url", o.Get("notify_url"))
+		m.Set("notify_url", o.Config.Get("notify_url"))
 	}
 	return o.Request(UNIFIEDORDER_URL_SUFFIX, m).ToMap()
 }
@@ -35,7 +38,7 @@ func (o *Order) Unify(m core.Map) core.Map {
  */
 func (o *Order) Close(no string) core.Map {
 	m := make(core.Map)
-	m.Set("appid", o.Get("app_id"))
+	m.Set("appid", o.Config.Get("app_id"))
 	m.Set("out_trade_no", no)
 	return o.Request(CLOSEORDER_URL_SUFFIX, m).ToMap()
 }
@@ -49,7 +52,7 @@ func (o *Order) Close(no string) core.Map {
 * @return PayData, error API返回数据
  */
 func (o *Order) query(m core.Map) *core.Response {
-	m.Set("appid", o.Get("app_id"))
+	m.Set("appid", o.Config.Get("app_id"))
 	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
 

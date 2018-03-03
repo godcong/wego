@@ -2,7 +2,6 @@ package wego
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/payment"
 )
 
 type Security interface {
@@ -62,12 +61,11 @@ type Transfer interface {
 }
 type Payment interface {
 	//Sandbox() Sandbox
-	//Order() *payment.Order
-	//Refund() *payment.Refund
-	//Security() *payment.Security
-	Order() *payment.Order
-	Refund() *payment.Refund
-	Security() *payment.Security
+
+	Order() Order
+	Refund() Refund
+	Security() Security
+
 	Pay(core.Map) core.Map
 	Request(url string, m core.Map) *core.Response
 	RequestRaw(url string, m core.Map) *core.Response
@@ -134,9 +132,13 @@ type Payment interface {
 //}
 
 func GetPayment() Payment {
-	obj := GetApp().Get("payment").(*payment.Payment)
+	obj := GetApp().Get("payment").(Payment)
 	core.Debug("GetPayment|obj:", obj)
 	return obj
+	//obj := new(payment.Payment)
+	//GetApp().Get(obj)
+	//core.Debug("GetPayment|obj:", obj)
+	//return obj
 }
 
 func GetSecurity() Security {

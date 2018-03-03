@@ -12,7 +12,7 @@ type RedPack struct {
 }
 
 func (r *RedPack) Info(m core.Map) core.Map {
-	m.Set("appid", r.Get("app_id"))
+	m.Set("appid", r.Config.Get("app_id"))
 	m.Set("bill_type", "MCHT")
 	return r.SafeRequest(GETHBINFO_URL_SUFFIX, m).ToMap()
 
@@ -21,12 +21,12 @@ func (r *RedPack) Info(m core.Map) core.Map {
 func (r *RedPack) SendNormal(m core.Map) core.Map {
 	m.Set("total_num", strconv.Itoa(1))
 	m.Set("client_ip", core.GetServerIp())
-	m.Set("wxappid", r.Get("app_id"))
+	m.Set("wxappid", r.Config.Get("app_id"))
 	return r.SafeRequest(SENDREDPACK_URL_SUFFIX, m).ToMap()
 }
 
 func (r *RedPack) SendGroup(m core.Map) core.Map {
 	m.Set("amt_type", "ALL_RAND")
-	m.Set("wxappid", r.Get("app_id"))
+	m.Set("wxappid", r.Config.Get("app_id"))
 	return r.SafeRequest(SENDGROUPREDPACK_URL_SUFFIX, m).ToMap()
 }

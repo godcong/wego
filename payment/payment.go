@@ -1,16 +1,18 @@
 package payment
 
 import (
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
 )
 
 type Payment struct {
-	core.Config
+	config  core.Config
 	client  core.Client
 	token   core.AccessToken
 	sandbox *core.Sandbox
 	app     *core.Application
 
+	sub      core.Map
 	bill     *Bill
 	redPack  *RedPack
 	order    *Order
@@ -22,13 +24,14 @@ type Payment struct {
 func init() {
 	app := core.App()
 	app.Register("payment", newPayment("default"))
+	//app.Register(newPayment("default"))
 
 }
 
 func newPayment(s string) *Payment {
 	config := core.GetConfig(core.DeployJoin("payment", s))
 	payment0 := &Payment{
-		Config: config,
+		config: config,
 		client: core.NewClient(config),
 	}
 	payment0.client.SetDataType(core.DATA_TYPE_XML)
@@ -57,13 +60,13 @@ func (p *Payment) SafeRequest(url string, m core.Map) *core.Response {
 }
 
 func (p *Payment) Pay(m core.Map) core.Map {
-	m.Set("appid", p.Get("app_id"))
+	m.Set("appid", p.config.Get("app_id"))
 	return p.client.Request(MICROPAY_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	m := make(core.Map)
-	m.Set("appid", p.Get("app_id"))
+	m.Set("appid", p.config.Get("app_id"))
 	m.Set("auth_code", authCode)
 	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
 }
@@ -76,10 +79,10 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 //	return p.client
 //}
 //
-func (p *Payment) Security() *Security {
+func (p *Payment) Security() wego.Security {
 	if p.security == nil {
 		p.security = &Security{
-			Config:  p.Config,
+			Config:  p.config,
 			Payment: p,
 		}
 	}
@@ -93,36 +96,28 @@ func (p *Payment) Security() *Security {
 //	return p.redPack
 //}
 //
-func (p *Payment) Refund() *Refund {
+func (p *Payment) Refund() wego.Refund {
 	if p.refund == nil {
 		p.refund = &Refund{
-			Config:  p.Config,
+			Config:  p.config,
 			Payment: p,
 		}
 	}
 	return p.refund
 }
 
-//
-//func (p *Payment) Sandbox() *Sandbox {
-//	if p.sandbox == nil {
-//		p.sandbox = NewSandbox(p.app, p.Config)
-//	}
-//	return p.sandbox
-//}
-//
 func (p *Payment) AccessToken() core.AccessToken {
 	if p.token == nil {
-		p.token = core.NewAccessToken(p.Config, p.client)
+		p.token = core.NewAccessToken(p.config, p.client)
 	}
 	return p.token
 }
 
 //
-func (p *Payment) Order() *Order {
+func (p *Payment) Order() wego.Order {
 	if p.order == nil {
 		p.order = &Order{
-			Config:  p.Config,
+			Config:  p.config,
 			Payment: p,
 		}
 	}
@@ -130,7 +125,7 @@ func (p *Payment) Order() *Order {
 }
 
 func (p *Payment) Link(url string) string {
-	if p.GetBool("Sandbox") {
+	if p.config.GetBool("Sandbox") {
 		return p.client.URL() + core.SANDBOX_URL_SUFFIX + url
 	}
 	return p.client.URL() + url
