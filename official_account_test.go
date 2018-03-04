@@ -2,13 +2,14 @@ package wego_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 )
@@ -35,31 +36,58 @@ var evtLocation = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromU
 var evtClick = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[FromUser]]></FromUserName><CreateTime>123456789</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[CLICK]]></Event><EventKey><![CDATA[EVENTKEY]]></EventKey></xml>`)
 var evtView = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[FromUser]]></FromUserName><CreateTime>123456789</CreateTime><MsgType><![CDATA[event]]></MsgType><Event><![CDATA[VIEW]]></Event><EventKey><![CDATA[www.qq.com]]></EventKey></xml>`)
 
+var rltText = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[你好]]></Content></xml>`)
+var rltImage = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[image]]></MsgType><Image><MediaId><![CDATA[media_id]]></MediaId></Image></xml>`)
+var rltVoice = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[voice]]></MsgType><Voice><MediaId><![CDATA[media_id]]></MediaId></Voice></xml>`)
+var rltVideo = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[media_id]]></MediaId><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description></Video></xml>`)
+var rltMusic = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[TITLE]]></Title><Description><![CDATA[DESCRIPTION]]></Description><MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl><HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl><ThumbMediaId><![CDATA[media_id]]></ThumbMediaId></Music></xml>`)
+var rltNews = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[news]]></MsgType><ArticleCount>2</ArticleCount><Articles><item><Title><![CDATA[title1]]></Title><Description><![CDATA[description1]]></Description><PicUrl><![CDATA[picurl]]></PicUrl><Url><![CDATA[url]]></Url></item><item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description><PicUrl><![CDATA[picurl]]></PicUrl><Url><![CDATA[url]]></Url></item></Articles></xml>`)
+
 func TestGetApp(t *testing.T) {
+
+	server := wego.GetOfficialAccount().Server()
+	//s := official_account.NewServer()
+	server.RegisterCallback(func(mess *core.Message) []byte {
+		v, _ := json.Marshal(message.Text{
+			Message: message.Message{},
+			Content: message.CDATA{},
+		})
+		core.Info(*mess)
+		if mess.Event.Compare(message.EventView) == 0 {
+			core.Info(message.EventView)
+		}
+		return v
+	})
+
+	rlist := [][]byte{
+		rltText,
+		rltImage,
+		rltVoice,
+		rltVideo,
+		rltMusic,
+		rltNews,
+	}
+	count := 0
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		//w.Write(messageResult)
-		if r.Method != "POST" {
-			t.Errorf("Expected 'GET' request, got '%s'", r.Method)
-		}
-		if r.URL.EscapedPath() != "/callback" {
-			t.Errorf("Expected request to '/callback', got '%s'", r.URL.EscapedPath())
-		}
-		r.ParseForm()
-		body, e := ioutil.ReadAll(r.Body)
-		if e != nil {
-			t.Errorf(e.Error())
-		}
-		//t.Log(string(body))
-		//var msg core.Message
-		var msg core.Message
-		e = xml.Unmarshal(body, &msg)
-		//xml.NewDecoder(bytes.NewReader(body)).
-		if msg.GetType() == message.MESSAGE_TYPE_TEXT {
-			b, e := xml.Marshal(msg.Text())
-			t.Log(string(b), e)
+
+		if count >= len(rlist) {
+			count = 0
 		}
 
+		server.Monitor(w, r)
+		//t.Log(string(body))
+		//var msg core.Message
+		//var msg core.Message
+		//e = xml.Unmarshal(body, &msg)
+
+		////xml.NewDecoder(bytes.NewReader(body)).
+		//if msg.GetType() == message.TypeText {
+		//	b, e := xml.Marshal(msg)
+		//	t.Log(string(b), e)
+		//	t.Log(m)
+		//}
+		count++
 	}))
 	defer ts.Close()
 
@@ -81,7 +109,10 @@ func TestGetApp(t *testing.T) {
 
 	for _, v := range list {
 		resp, e := http.Post(ts.URL+"/callback", "Content-Type:application/xml", bytes.NewReader(v))
-		log.Println(resp, e)
+		msg := new(core.Message)
+		b, e := ioutil.ReadAll(resp.Body)
+		xml.Unmarshal(b, msg)
+		core.Info(*msg, e)
 	}
 
 }

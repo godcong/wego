@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/godcong/wego/core/message"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -30,9 +31,7 @@ var (
 	ErrorToken     = errors.New("EditAddressParameters() token is nil")
 )
 
-type CDATA struct {
-	Value string `xml:",cdata"`
-}
+type CDATA = message.CDATA
 
 func Time(t ...*time.Time) string {
 	if t == nil {

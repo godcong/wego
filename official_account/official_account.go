@@ -12,7 +12,8 @@ type OfficialAccount struct {
 	core.Config
 	client core.Client
 	token  core.AccessToken
-	app    *core.Application
+
+	app *core.Application
 
 	base            *Base
 	customerService *CustomerService
@@ -55,8 +56,8 @@ func newOfficialAccount() *OfficialAccount {
 	return official0
 }
 
-func (m *OfficialAccount) prefix(s string) string {
-	return core.API_WEIXIN_URL_SUFFIX + s
+func (m *OfficialAccount) Server() *Server {
+	return NewServer()
 }
 
 func (m *OfficialAccount) Online() {
