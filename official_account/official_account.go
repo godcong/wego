@@ -1,6 +1,7 @@
 package official_account
 
 import (
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
 )
 
@@ -19,7 +20,7 @@ type OfficialAccount struct {
 	customerService *CustomerService
 }
 
-func (m *OfficialAccount) Base() *Base {
+func (m *OfficialAccount) Base() wego.Base {
 	return m.base
 }
 
@@ -56,7 +57,7 @@ func newOfficialAccount() *OfficialAccount {
 	return official0
 }
 
-func (m *OfficialAccount) Server() *Server {
+func (m *OfficialAccount) Server() wego.Server {
 	return NewServer()
 }
 

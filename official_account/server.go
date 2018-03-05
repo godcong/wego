@@ -33,11 +33,13 @@ func (s *Server) RegisterCallback(sc core.ServerCallback, types ...message.MsgTy
 func (s *Server) Monitor(w http.ResponseWriter, r *http.Request) error {
 	body, e := ioutil.ReadAll(r.Body)
 	if e != nil {
+		core.Error(e)
 		return e
 	}
 	message := new(core.Message)
 	e = xml.Unmarshal(body, message)
 	if e != nil {
+		core.Error(e)
 		return e
 	}
 	result := s.CallbackFunc(message)
@@ -49,12 +51,17 @@ func (s *Server) Monitor(w http.ResponseWriter, r *http.Request) error {
 func (s *Server) CallbackFunc(message *core.Message) []byte {
 	var result []byte
 	for _, v := range s.defaultCallback {
-		result = v(message)
+		if r := v(message); r != nil {
+			result = r
+		}
 	}
 
 	if v0, b := s.callback[message.GetType()]; b {
 		for _, v := range v0 {
-			result = v(message)
+			if r := v(message); r != nil {
+				result = r
+			}
+
 		}
 	}
 	return result
