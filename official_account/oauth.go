@@ -35,3 +35,6 @@ func (o *Oauth) User() {
 //		//client: application.Client(),
 //	}
 //}
+
+//qq回调配置
+//https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=310198347&redirect_uri=http%3A%2F%2Fwww.right.com.cn%2Fforum%2Fconnect.php%3Fmod%3Dlogin%26op%3Dcallback%26referer%3Dhttp%253A%252F%252Fwww.right.com.cn%252Fforum%252Fthread-147109-1-1.html&state=72a5eb8ae2eba26edc851175955d5094&scope=get_user_info%2Cadd_share%2Cadd_t%2Cadd_pic_t%2Cget_repost_list
