@@ -21,6 +21,7 @@ func (r *Refund) refund(num string, total, refund int, options core.Map) *core.R
 }
 
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) core.Map {
+	options = core.MapNilMake(options)
 	options.NilSet("out_trade_no", tradeNum)
 	return r.refund(num, total, refund, options).ToMap()
 }

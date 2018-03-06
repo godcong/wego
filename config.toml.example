@@ -1,6 +1,7 @@
 [system]
     debug = true
-    response_type = 'array'
+    response_type = 'map'
+
     use_cache = true
 
 [system.log]
@@ -12,15 +13,20 @@
             uri=  '/server'
 
 [domain]
-        primary = 'https://api.mch.weixin.qq.com/
+        [domain.default]
+            url = 'https://api.mch.weixin.qq.com'
+        [domain.official_account]
+            url = 'https://api.weixin.qq.com'
 
 [official_account]
+#        [official_account.config]
+#            data_type = "json"
+
         [official_account.default]
             app_id ='wx426b3015555a46be'                    #AppID
             secret = '7813490da6f1265e4901ffb80afaa36f'     #AppSecret
             token = 'your-token'                            #Token
             aes_key = '8934e7d15453e97507ef794cf7b0519d'    #EncodingAESKey
-
 
         [official_account.oauth]
             scopes   = ['snsapi_userinfo']
@@ -32,7 +38,7 @@
             app_id ='wx426b3015555a46be'                      #AppID
             secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
             token = 'your-token'                              #Token
-            aes_key = ''                                      #EncodingAESKey
+            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
 
 [mini_program]
         [mini_program.default]
@@ -50,6 +56,9 @@
             notify_url ='wxpay/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
+            rootca_path = 'cert/rootca.pem'
+            pubkey_path = "rsa/publickey.pem"
+            prikey_path = "rsa/privatekey.pem"
 
 [work]
         [work.default]

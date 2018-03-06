@@ -59,9 +59,7 @@ func TestOrder_Unify(t *testing.T) {
 }
 
 func TestRefund_Refund(t *testing.T) {
-	m := make(core.Map)
-	m.Set("out_trade_no", out_trade_no)
-	r := wego.GetPayment().Refund().ByOutTradeNumber(out_trade_no, out_trade_no, 1, 1, m)
+	r := wego.GetPayment().Refund().ByOutTradeNumber(`20180306142619979896764961`, `4200000070201803063754690350`, 3, 3, nil)
 	log.Println(string(r.ToJson()))
 	//{"appid":"wx426b3015555a46be","err_code":"ORDERNOTEXIST","err_code_des":"订单不存在","mch_id":"1900009851","nonce_str":"kSGYwLY4WNZvw91Y","result_code":"FAIL","return_code":"SUCCESS","return_msg":"OK","sign":"CC8F6CD5E5CADB15EEECEAA1DB4791FF"}
 }

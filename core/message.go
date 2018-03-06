@@ -1,8 +1,6 @@
 package core
 
 import (
-	"encoding/xml"
-
 	"github.com/godcong/wego/core/message"
 )
 
@@ -28,20 +26,18 @@ type Message struct {
 	Url          CDATA
 	/*event*/
 	message.Event
-	EventKey CDATA //事件KEY值，qrscene_为前缀，后面为二维码的参数值
-	MenuID   CDATA //指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。
-	//https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
-	ScanCodeInfo     message.ScanCodeInfo //扫描信息
-	SendPicsInfo     CDATA                //发送的图片信息
-	Count            CDATA                //发送的图片数量
-	PicList          CDATA                //图片列表
-	PicMd5Sum        CDATA                //图片的MD5值，开发者若需要，可用于验证接收到图片
-	SendLocationInfo CDATA                //发送的位置信息
-	Poiname          CDATA                //朋友圈POI的名字，可能为空
-	Ticket           CDATA                //二维码的ticket，可用来换取二维码图片
-	Latitude         float64              //地理位置纬度
-	Longitude        float64              //地理位置经度
-	Precision        float64              //地理位置精度
+	EventKey  CDATA   //事件KEY值，qrscene_为前缀，后面为二维码的参数值
+	Ticket    CDATA   //二维码的ticket，可用来换取二维码图片
+	Latitude  float64 //地理位置纬度
+	Longitude float64 //地理位置经度
+	Precision float64 //地理位置精度
+
+	MenuID CDATA //指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。
+
+	ScanCodeInfo     message.ScanCodeInfo     //扫描信息
+	SendPicsInfo     message.SendPicsInfo     //发送的图片信息
+	SendLocationInfo message.SendLocationInfo //发送的位置信息
+
 	//attributes   Map
 	//properties   []string
 	//aliases      Map
@@ -94,13 +90,4 @@ func (m *Message) Text() message.Text {
 	text.Message = m.Message
 	text.Content = m.Content
 	return text
-}
-
-func AnalyseBody(body []byte) *Message {
-	msg := new(Message)
-	e := xml.Unmarshal(body, msg)
-	if e != nil {
-		return nil
-	}
-	return msg
 }
