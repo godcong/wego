@@ -5,19 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/cache"
 )
 
 type Token map[string]interface{}
 
-type AccessToken interface {
-	GetToken() Token
-	GetTokenWithRefresh() Token
-	GetRefreshedToken() Token
-	Refresh() AccessToken
-}
-
-type accessToken struct {
+type AccessToken struct {
 	Config
 	Client
 	credentials Map
@@ -29,11 +23,11 @@ const ACCESS_TOKEN_EXPIRES_IN = "expires_in"
 
 const ACCESS_TOKEN_SAFE_SECONDS = 500
 
-func (a *accessToken) getQuery() Map {
+func (a *AccessToken) getQuery() Map {
 	panic("implement me")
 }
 
-func (a *accessToken) sendRequest(s string) []byte {
+func (a *AccessToken) sendRequest(s string) []byte {
 	m0 := Map{
 		"grant_type": "client_credential",
 		"appid":      a.Get("app_id"),
@@ -45,31 +39,31 @@ func (a *accessToken) sendRequest(s string) []byte {
 	//return m
 }
 
-func NewAccessToken(config Config, client Client) *accessToken {
-	return &accessToken{
+func NewAccessToken(config Config, client Client) *AccessToken {
+	return &AccessToken{
 		Config: config,
 		Client: client,
 	}
 }
 
-func (a *accessToken) Refresh() AccessToken {
+func (a *AccessToken) Refresh() wego.AccessToken {
 	a.getToken(true)
 	return a
 }
 
-func (a *accessToken) GetRefreshedToken() Token {
+func (a *AccessToken) GetRefreshedToken() Token {
 	return a.getToken(true)
 }
 
-func (a *accessToken) GetToken() Token {
+func (a *AccessToken) GetToken() Token {
 	return a.getToken(false)
 }
 
-func (a *accessToken) GetTokenWithRefresh() Token {
+func (a *AccessToken) GetTokenWithRefresh() Token {
 	return a.getToken(true)
 }
 
-func (a *accessToken) getToken(refresh bool) Token {
+func (a *AccessToken) getToken(refresh bool) Token {
 	key := a.getCacheKey()
 	cache := cache.GetCache()
 
@@ -89,22 +83,22 @@ func (a *accessToken) getToken(refresh bool) Token {
 	return token
 
 }
-func (a *accessToken) RequestToken(credentials string) Token {
+func (a *AccessToken) RequestToken(credentials string) Token {
 	response := a.sendRequest(credentials)
 	m := Token{}
 	json.Unmarshal(response, &m)
 	return m
 }
 
-func (a *accessToken) SetTokenWithLife(token string, lifeTime int) *accessToken {
+func (a *AccessToken) SetTokenWithLife(token string, lifeTime int) *AccessToken {
 	return a.setToken(token, lifeTime)
 }
 
-func (a *accessToken) SetToken(token string) *accessToken {
+func (a *AccessToken) SetToken(token string) *AccessToken {
 	return a.setToken(token, 7200)
 }
 
-func (a *accessToken) setToken(token string, lifeTime int) *accessToken {
+func (a *AccessToken) setToken(token string, lifeTime int) *AccessToken {
 	cache.GetCache().SetWithTTL(a.getCacheKey(), Token{
 		ACCESS_TOKEN_KEY: token,
 		"expires_in":     lifeTime,
@@ -112,12 +106,12 @@ func (a *accessToken) setToken(token string, lifeTime int) *accessToken {
 	return a
 }
 
-func (a *accessToken) getCredentials() string {
+func (a *AccessToken) getCredentials() string {
 	c := md5.Sum(a.credentials.ToJson())
 	return fmt.Sprintf("%x", c[:])
 }
 
-func (a *accessToken) getCacheKey() string {
+func (a *AccessToken) getCacheKey() string {
 	return "godcong.wego.access_token." + a.getCredentials()
 }
 

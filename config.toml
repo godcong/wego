@@ -16,7 +16,11 @@
         [domain.default]
             url = 'https://api.mch.weixin.qq.com'
         [domain.official_account]
-            url = 'https://api.weixin.qq.com'
+#通用域名(api.weixin.qq.com)，使用该域名将访问官方指定就近的接入点；
+#上海域名(sh.api.weixin.qq.com)，使用该域名将访问上海的接入点；
+#深圳域名(sz.api.weixin.qq.com)，使用该域名将访问深圳的接入点；
+#香港域名(hk.api.weixin.qq.com)，使用该域名将访问香港的接入点。
+#            url = 'https://api.weixin.qq.com'
 
 [official_account]
 #        [official_account.config]

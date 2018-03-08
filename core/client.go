@@ -9,22 +9,6 @@ import (
 	"strings"
 )
 
-type Client interface {
-	HttpClient() *http.Client
-	SetHttpClient(client *http.Client) Client
-	DataType() DataType
-	SetDataType(dataType DataType) Client
-	URL() string
-	SetDomain(domain Domain) Client
-	HttpGet(url string, m Map) *Response
-	HttpPost(url string, m Map) *Response
-	HttpPostJson(url string, m Map, query Map) *Response
-	Request(url string, params Map, method string, options Map) *Response
-	RequestRaw(url string, params Map, method string, options Map) *Response
-	SafeRequest(url string, params Map, method string, options Map) *Response
-	Link(string) string
-}
-
 type DataType string
 
 const (
@@ -32,45 +16,50 @@ const (
 	DATA_TYPE_JSON DataType = "json"
 )
 
-type client struct {
-	dataType    DataType
-	domain      Domain
-	app         *Application
-	accessToken *accessToken
-	request     *Request
-	response    *Response
-	client      *http.Client
+type URL struct {
+	token  *AccessToken
+	client *Client
+}
+
+type Client struct {
+	dataType DataType
+	domain   Domain
+	app      *Application
+	token    *AccessToken
+	request  *Request
+	response *Response
+	client   *http.Client
 	Config
 }
 
-func (c *client) SetDomain(domain Domain) Client {
+func (c *Client) SetDomain(domain Domain) *Client {
 	c.domain = domain
 	return c
 }
 
-func (c *client) URL() string {
+func (c *Client) URL() string {
 	return c.domain.URL()
 }
 
-func (c *client) HttpClient() *http.Client {
+func (c *Client) HttpClient() *http.Client {
 	return c.client
 }
 
-func (c *client) SetHttpClient(client *http.Client) Client {
+func (c *Client) SetHttpClient(client *http.Client) *Client {
 	c.client = client
 	return c
 }
 
-func (c *client) DataType() DataType {
+func (c *Client) DataType() DataType {
 	return c.dataType
 }
 
-func (c *client) SetDataType(dataType DataType) Client {
+func (c *Client) SetDataType(dataType DataType) *Client {
 	c.dataType = dataType
 	return c
 }
 
-func (c *client) HttpPostJson(url string, data Map, ops Map) *Response {
+func (c *Client) HttpPostJson(url string, data Map, ops Map) *Response {
 	ops = MapNilMake(ops)
 	if c.dataType == DATA_TYPE_JSON {
 		ops.Set(REQUEST_TYPE_JSON.String(), data)
@@ -81,42 +70,42 @@ func (c *client) HttpPostJson(url string, data Map, ops Map) *Response {
 	return c.Request(url, nil, "post", ops)
 }
 
-func (c *client) HttpGet(url string, m Map) *Response {
+func (c *Client) HttpGet(url string, m Map) *Response {
 	return c.Request(url, nil, "get", Map{REQUEST_TYPE_QUERY.String(): m})
 }
 
-func (c *client) HttpPost(url string, m Map) *Response {
+func (c *Client) HttpPost(url string, m Map) *Response {
 
 	return c.Request(url, nil, "post", Map{REQUEST_TYPE_FORM_PARAMS.String(): m})
 }
 
-func (c *client) Request(url string, params Map, method string, options Map) *Response {
+func (c *Client) Request(url string, params Map, method string, options Map) *Response {
 	c.client = buildTransport(c.Config)
 	resp := request(c, url, params, method, options)
 	c.response = resp
 	return resp
 }
 
-func (c *client) RequestRaw(url string, params Map, method string, options Map) *Response {
+func (c *Client) RequestRaw(url string, params Map, method string, options Map) *Response {
 	return c.Request(url, params, method, options)
 }
 
-func (c *client) SafeRequest(url string, params Map, method string, options Map) *Response {
+func (c *Client) SafeRequest(url string, params Map, method string, options Map) *Response {
 	c.client = buildSafeTransport(c.Config)
 	Debug("SafeRequest|httpClient", c.client)
 	c.response = request(c, url, params, method, options)
 	return c.response
 }
 
-func (c *client) Link(uri string) string {
+func (c *Client) Link(uri string) string {
 	if c.GetBool("sandbox") {
 		return c.URL() + SANDBOX_URL_SUFFIX + uri
 	}
 	return c.URL() + uri
 }
 
-func NewClient(config Config) Client {
-	return &client{
+func NewClient(config Config) *Client {
+	return &Client{
 		request:  DefaultRequest,
 		Config:   config,
 		dataType: DATA_TYPE_XML,
@@ -179,7 +168,7 @@ func buildSafeTransport(config Config) *http.Client {
 	}
 }
 
-func request(c *client, url string, params Map, method string, op Map) *Response {
+func request(c *Client, url string, params Map, method string, op Map) *Response {
 	Debug("request", c, url, params, method, op)
 	op = MapNilMake(op)
 	if params != nil {
@@ -200,7 +189,7 @@ func request(c *client, url string, params Map, method string, op Map) *Response
 	}
 }
 
-func toRequestData(client *client, p, op Map) *RequestData {
+func toRequestData(client *Client, p, op Map) *RequestData {
 	data := client.request.RequestDataCopy()
 	data.Query = processQuery(op.Get(REQUEST_TYPE_QUERY.String()))
 	if client.DataType() == DATA_TYPE_JSON {
@@ -252,4 +241,13 @@ func processQuery(i interface{}) string {
 		return v.UrlEncode()
 	}
 	return ""
+}
+
+func (u *URL) ShortUrl(url string) Map {
+	m := Map{
+		"action":   "long2short",
+		"long_url": url,
+	}
+	return u.client.HttpPostJson("cgi-bin/shorturl", m, nil).ToMap()
+
 }

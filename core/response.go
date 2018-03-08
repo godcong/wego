@@ -61,7 +61,7 @@ func (r *Response) ToString() string {
 	return string(r.responseData)
 }
 
-func ClientDo(client Client, request *Request) *Response {
+func ClientDo(client *Client, request *Request) *Response {
 	response := &Response{}
 
 	response.response, response.error = client.HttpClient().Do(request.HttpRequest())
