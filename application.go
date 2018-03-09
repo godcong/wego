@@ -19,7 +19,7 @@ type AccessToken interface {
 	GetToken() core.Token
 	GetTokenWithRefresh() core.Token
 	GetRefreshedToken() core.Token
-	Refresh() core.AccessToken
+	Refresh() *core.AccessToken
 }
 
 type Client interface {

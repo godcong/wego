@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/godcong/wego"
 	"github.com/godcong/wego/cache"
 )
 
@@ -13,7 +12,7 @@ type Token map[string]interface{}
 
 type AccessToken struct {
 	Config
-	Client
+	client      *Client
 	credentials Map
 	token       string
 }
@@ -34,19 +33,19 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"secret":     a.Get("secret"),
 	}
 
-	m := a.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.UrlEncode(), nil, "get", nil)
+	m := a.client.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.UrlEncode(), nil, "get", nil)
 	return m.ToBytes()
 	//return m
 }
 
-func NewAccessToken(config Config, client Client) *AccessToken {
+func NewAccessToken(config Config, client *Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
-		Client: client,
+		client: client,
 	}
 }
 
-func (a *AccessToken) Refresh() wego.AccessToken {
+func (a *AccessToken) Refresh() *AccessToken {
 	a.getToken(true)
 	return a
 }

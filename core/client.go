@@ -248,6 +248,14 @@ func (u *URL) ShortUrl(url string) Map {
 		"action":   "long2short",
 		"long_url": url,
 	}
-	return u.client.HttpPostJson("cgi-bin/shorturl", m, nil).ToMap()
+	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, nil)
+	Debug("URL|ShortUrl", *resp)
+	return resp.ToMap()
+}
 
+func NewURL(config Config, client *Client) *URL {
+	return &URL{
+		token:  NewAccessToken(config, client),
+		client: client,
+	}
 }
