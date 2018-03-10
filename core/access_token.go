@@ -73,6 +73,7 @@ func (a *AccessToken) getToken(refresh bool) Token {
 	}
 
 	token := a.RequestToken(a.getCredentials())
+	Debug("AccessToken|getToken", token)
 	if v := token.GetExpiresIn(); v != -1 {
 		a.SetTokenWithLife(token.GetKey(), int(v))
 	} else {

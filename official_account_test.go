@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -133,4 +134,11 @@ func TestGetApp(t *testing.T) {
 		core.Info(*msg, e)
 	}
 
+}
+
+func TestCoreUrl(t *testing.T) {
+	conf := core.GetConfig("payment.default")
+	url := core.NewURL(conf, core.NewClient(conf))
+	l := url.ShortUrl("https://y11e.com")
+	log.Println(l)
 }

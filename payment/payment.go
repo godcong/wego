@@ -7,8 +7,8 @@ import (
 
 type Payment struct {
 	config  core.Config
-	client  core.Client
-	token   core.AccessToken
+	client  *core.Client
+	token   *core.AccessToken
 	sandbox *core.Sandbox
 	app     *core.Application
 
@@ -38,12 +38,12 @@ func newPayment(s string) *Payment {
 	return payment0
 }
 
-func (p *Payment) SetClient(c core.Client) *Payment {
+func (p *Payment) SetClient(c *core.Client) *Payment {
 	p.client = c
 	return p
 }
 
-func (p *Payment) GetClient() core.Client {
+func (p *Payment) GetClient() *core.Client {
 	return p.client
 }
 
@@ -106,7 +106,7 @@ func (p *Payment) Refund() wego.Refund {
 	return p.refund
 }
 
-func (p *Payment) AccessToken() core.AccessToken {
+func (p *Payment) AccessToken() *core.AccessToken {
 	if p.token == nil {
 		p.token = core.NewAccessToken(p.config, p.client)
 	}

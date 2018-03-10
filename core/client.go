@@ -248,7 +248,13 @@ func (u *URL) ShortUrl(url string) Map {
 		"action":   "long2short",
 		"long_url": url,
 	}
-	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, nil)
+	token := u.token.GetToken()
+	ops := Map{
+		REQUEST_TYPE_QUERY.String(): Map{
+			"access_token": token.GetKey(),
+		},
+	}
+	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, ops)
 	Debug("URL|ShortUrl", *resp)
 	return resp.ToMap()
 }

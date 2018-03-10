@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -10,18 +11,23 @@ import (
 )
 
 var debug = false
+var logs = Log{
+	Level: "debug",
+	File:  "config.toml",
+}
 
 func initLog(system System) {
 	debug = system.Debug
+	logs = system.Log
 	if IsDebug() {
-		i := strings.LastIndexAny(system.Log.File, "/")
-		y := strings.LastIndexAny(system.Log.File, ".")
-		r := []rune(system.Log.File)
-		e := os.Rename(system.Log.File, string(r[:y])+"_"+time.Now().Format("060102150405")+string(r[y:]))
+		i := strings.LastIndexAny(logs.File, "/")
+		y := strings.LastIndexAny(logs.File, ".")
+		r := []rune(logs.File)
+		e := os.Rename(logs.File, string(r[:y])+"_"+time.Now().Format("060102150405")+string(r[y:]))
 		os.MkdirAll(string(r[:i]), os.ModePerm)
-		f, e := os.OpenFile(system.Log.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
+		f, e := os.OpenFile(logs.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if e != nil {
-			log.Println("cannot open_platform file: " + system.Log.File)
+			log.Println("cannot open_platform file: " + logs.File)
 		}
 		log.SetFlags(log.LstdFlags)
 		log.SetOutput(io.MultiWriter(os.Stdout, f))
@@ -42,31 +48,49 @@ func IsDebug() bool {
 }
 
 func Println(v ...interface{}) {
-	if IsDebug() {
-		_, f, l, _ := runtime.Caller(1)
-		log.Println(f, "|", l, "|", v)
-	}
-}
-
-func Debug(v ...interface{}) {
 	_, f, l, _ := runtime.Caller(1)
-	log.Println("Debug:", f, "|", l, "|", v)
-
-}
-
-func Error(v ...interface{}) {
-	_, f, l, _ := runtime.Caller(1)
-	log.Println("ERROR:", f, "|", l, "|", v)
-}
-
-func Info(v ...interface{}) {
-	_, f, l, _ := runtime.Caller(1)
-	log.Println("INFO:", f, "|", l, "|", v)
+	log.Println(fmt.Sprintf("%s|%d", f, l), v)
 }
 
 func Print(v ...interface{}) {
-	if IsDebug() {
+	_, f, l, _ := runtime.Caller(1)
+	log.Print(fmt.Sprintf("%s|%d", f, l), v)
+}
+
+func Debug(v ...interface{}) {
+	if DEBUG <= logs.LevelInt() || IsDebug() {
 		_, f, l, _ := runtime.Caller(1)
-		log.Print(f, "|", l, "|", v)
+		log.Println(fmt.Sprintf("[Debug]%s|%d", f, l), v)
 	}
+}
+
+func Error(v ...interface{}) {
+	if ERROR <= logs.LevelInt() {
+		_, f, l, _ := runtime.Caller(1)
+		log.Println(fmt.Sprintf("[ERROR]%s|%d", f, l), v)
+	}
+}
+
+func Info(v ...interface{}) {
+	if INFO <= logs.LevelInt() {
+		_, f, l, _ := runtime.Caller(1)
+		log.Println(fmt.Sprintf("[INFO]%s|%d", f, l), v)
+	}
+
+}
+
+func Warn(v ...interface{}) {
+	if WARN <= logs.LevelInt() {
+		_, f, l, _ := runtime.Caller(1)
+		log.Println(fmt.Sprintf("[WARN]%s|%d", f, l), v)
+	}
+
+}
+
+func Fatal(v ...interface{}) {
+	if FATAL <= logs.LevelInt() {
+		_, f, l, _ := runtime.Caller(1)
+		log.Println(fmt.Sprintf("[FATAL]%s|%d", f, l), v)
+	}
+
 }

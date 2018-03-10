@@ -11,8 +11,8 @@ import (
 //
 type OfficialAccount struct {
 	core.Config
-	client core.Client
-	token  core.AccessToken
+	client *core.Client
+	token  *core.AccessToken
 
 	app *core.Application
 
@@ -42,15 +42,15 @@ func newOfficialAccount() *OfficialAccount {
 		client: core.NewClient(config),
 		base: &Base{
 			Config: config,
-			Client: core.NewClient(config),
+			client: core.NewClient(config),
 		},
 	}
 	official0.client.SetDomain(core.NewDomain("official_account"))
 	official0.client.SetDataType(core.DATA_TYPE_JSON)
 	official0.base = &Base{
 		Config:          official0.Config,
-		Client:          official0.client,
-		AccessToken:     core.NewAccessToken(config, official0.client),
+		client:          official0.client,
+		token:           core.NewAccessToken(config, official0.client),
 		OfficialAccount: official0,
 	}
 

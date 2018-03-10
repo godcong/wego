@@ -12,6 +12,26 @@ import (
 const FileLoadError = "cannot find config file"
 const ConfigReadError = "cannot read config file"
 
+const (
+	OFF = iota
+	FATAL
+	ERROR
+	WARN
+	INFO
+	DEBUG
+	ALL
+)
+
+var logList = map[string]int{
+	"OFF":   OFF,
+	"FATAL": FATAL,
+	"ERROR": ERROR,
+	"WARN":  WARN,
+	"INFO":  INFO,
+	"DEBUG": DEBUG,
+	"ALL":   ALL,
+}
+
 type Tree toml.Tree
 
 type System struct {
@@ -140,4 +160,11 @@ func UseCache() bool {
 
 func DeployJoin(v ...string) string {
 	return strings.Join(v, ".")
+}
+
+func (l *Log) LevelInt() (i int) {
+	if v, b := logList[strings.ToUpper(l.Level)]; b {
+		i = v
+	}
+	return i
 }
