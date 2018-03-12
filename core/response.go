@@ -1,7 +1,6 @@
 package core
 
 import (
-	"io/ioutil"
 	"net/http"
 )
 

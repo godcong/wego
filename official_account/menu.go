@@ -45,6 +45,10 @@ func (m *Menu) Get() {
 
 }
 
+func (m *Menu) Current() {
+
+}
+
 //https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN
 func (m *Menu) Delete() {
 

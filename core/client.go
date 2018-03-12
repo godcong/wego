@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"io/ioutil"
@@ -192,10 +193,33 @@ func request(c *Client, url string, params Map, method string, op Map) *Response
 	data := toRequestData(c, params, op)
 
 	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
-		return ClientDo(c, r)
+		return Do(context.Background(), c, r)
 	} else {
 		return ErrorResponse(r.Error())
 	}
+}
+
+func Do(ctx context.Context, client Client, request *Request) *Response {
+	response := &Response{}
+
+	response.response, response.error = client.HttpClient().Do(request.HttpRequest().WithContext(ctx))
+	if response.error != nil {
+		select {
+		case <-ctx.Done():
+			response.error = ctx.Err()
+		default:
+		}
+		return response
+	}
+
+	response.responseData, response.error = ioutil.ReadAll(response.response.Body)
+	response.responseType = RESPONSE_TYPE_XML
+	if client.DataType() == DATA_TYPE_JSON {
+		response.responseType = RESPONSE_TYPE_JSON
+	}
+	Debug("ClientDo|response", *response)
+	Debug("ClientDo|response|data", string(response.responseData))
+	return response
 }
 
 func toRequestData(client *Client, p, op Map) *RequestData {

@@ -8,8 +8,7 @@ import (
 	"github.com/godcong/wego/cache"
 )
 
-type Token map[string]interface{}
-
+type Token Map
 type AccessToken struct {
 	Config
 	client      *Client
@@ -46,23 +45,28 @@ func NewAccessToken(config Config, client *Client) *AccessToken {
 }
 
 func (a *AccessToken) Refresh() *AccessToken {
+	Debug("AccessToken|Refresh")
 	a.getToken(true)
 	return a
 }
 
 func (a *AccessToken) GetRefreshedToken() Token {
+	Debug("AccessToken|GetRefreshedToken")
 	return a.getToken(true)
 }
 
 func (a *AccessToken) GetToken() Token {
+	Debug("AccessToken|GetToken")
 	return a.getToken(false)
 }
 
 func (a *AccessToken) GetTokenWithRefresh() Token {
+	Debug("AccessToken|GetTokenWithRefresh")
 	return a.getToken(true)
 }
 
 func (a *AccessToken) getToken(refresh bool) Token {
+
 	key := a.getCacheKey()
 	cache := cache.GetCache()
 
