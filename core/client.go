@@ -63,37 +63,38 @@ func (c *Client) HttpPostJson(url string, data Map, ops Map) *Response {
 	ops = MapNilMake(ops)
 	if c.dataType == DATA_TYPE_JSON {
 		ops.Set(REQUEST_TYPE_JSON.String(), data)
-	} else {
-		ops.Set(REQUEST_TYPE_XML.String(), data)
 	}
-
 	return c.Request(url, nil, "post", ops)
 }
 
-func (c *Client) HttpGet(url string, m Map) *Response {
-	return c.Request(url, nil, "get", Map{REQUEST_TYPE_QUERY.String(): m})
+func (c *Client) HttpGet(url string, ops Map) *Response {
+	return c.Request(url, nil, "get", ops)
 }
 
-func (c *Client) HttpPost(url string, m Map) *Response {
-
-	return c.Request(url, nil, "post", Map{REQUEST_TYPE_FORM_PARAMS.String(): m})
+func (c *Client) HttpPost(url string, ops Map) *Response {
+	return c.Request(url, nil, "post", ops)
 }
 
-func (c *Client) Request(url string, params Map, method string, options Map) *Response {
+func (c *Client) Request(url string, params Map, method string, ops Map) *Response {
 	c.client = buildTransport(c.Config)
-	resp := request(c, url, params, method, options)
+	resp := request(c, url, params, method, ops)
 	c.response = resp
 	return resp
 }
 
-func (c *Client) RequestRaw(url string, params Map, method string, options Map) *Response {
-	return c.Request(url, params, method, options)
+func (c *Client) RequestRaw(url string, params Map, method string, ops Map) *Response {
+	//ops = MapNilMake(ops)
+	//if c.dataType == DATA_TYPE_JSON {
+	//	ops.Set(REQUEST_TYPE_JSON.String(), params)
+	//}
+	//return c.Request(url, nil, "post", ops)
+	return c.Request(url, params, method, ops)
 }
 
-func (c *Client) SafeRequest(url string, params Map, method string, options Map) *Response {
+func (c *Client) SafeRequest(url string, params Map, method string, ops Map) *Response {
 	c.client = buildSafeTransport(c.Config)
 	Debug("SafeRequest|httpClient", c.client)
-	c.response = request(c, url, params, method, options)
+	c.response = request(c, url, params, method, ops)
 	return c.response
 }
 
@@ -102,6 +103,14 @@ func (c *Client) Link(uri string) string {
 		return c.URL() + SANDBOX_URL_SUFFIX + uri
 	}
 	return c.URL() + uri
+}
+
+func (c *Client) GetResponse() *Response {
+	return c.response
+}
+
+func (c *Client) GetRequest() *Request {
+	return c.request
 }
 
 func NewClient(config Config) *Client {
@@ -194,10 +203,12 @@ func toRequestData(client *Client, p, op Map) *RequestData {
 	data.Query = processQuery(op.Get(REQUEST_TYPE_QUERY.String()))
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
+		Debug("toRequestData|json", string(p.ToJson()))
 		data.Body = bytes.NewReader(p.ToJson())
 	}
 	if client.DataType() == DATA_TYPE_XML {
 		data.SetHeaderXml()
+		Debug("toRequestData|xml", p.ToXml())
 		data.Body = strings.NewReader(p.ToXml())
 	}
 
