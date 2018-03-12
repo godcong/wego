@@ -32,7 +32,7 @@ type MiniProgram interface {
 	AppCode() AppCode
 	//Client() core.Client
 	DataCube() DataCube
-	//accessToken() token.AccessTokenInterface
+	AccessToken() AccessToken
 }
 
 //func NewAppCode(application core.Application, config core.Config) AppCode {

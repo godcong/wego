@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -77,18 +78,13 @@ func (c *Client) HttpPost(url string, ops Map) *Response {
 }
 
 func (c *Client) Request(url string, params Map, method string, ops Map) *Response {
+	Debug("Request|httpClient", c.client)
 	c.client = buildTransport(c.Config)
-	resp := request(c, url, params, method, ops)
-	c.response = resp
-	return resp
+	c.response = request(c, url, params, method, ops)
+	return c.response
 }
 
 func (c *Client) RequestRaw(url string, params Map, method string, ops Map) *Response {
-	//ops = MapNilMake(ops)
-	//if c.dataType == DATA_TYPE_JSON {
-	//	ops.Set(REQUEST_TYPE_JSON.String(), params)
-	//}
-	//return c.Request(url, nil, "post", ops)
 	return c.Request(url, params, method, ops)
 }
 
@@ -114,12 +110,21 @@ func (c *Client) GetRequest() *Request {
 	return c.request
 }
 
+func DefaultClient() *Client {
+
+}
+
 func NewClient(config Config) *Client {
+	Debug("NewClient|config", config)
+	domain := NewDomain("default")
+	if config == nil {
+		config = defaultConfig
+	}
 	return &Client{
 		request:  DefaultRequest,
 		Config:   config,
 		dataType: DATA_TYPE_XML,
-		domain:   NewDomain("default"),
+		domain:   domain,
 	}
 }
 
@@ -179,7 +184,7 @@ func buildSafeTransport(config Config) *http.Client {
 }
 
 func request(c *Client, url string, params Map, method string, op Map) *Response {
-	Debug("request", c, url, params, method, op)
+	Debug("client|request", c, url, params, method, op)
 	op = MapNilMake(op)
 	if params != nil {
 		params.Set("mch_id", c.Get("mch_id"))
@@ -199,9 +204,8 @@ func request(c *Client, url string, params Map, method string, op Map) *Response
 	}
 }
 
-func Do(ctx context.Context, client Client, request *Request) *Response {
+func Do(ctx context.Context, client *Client, request *Request) *Response {
 	response := &Response{}
-
 	response.response, response.error = client.HttpClient().Do(request.HttpRequest().WithContext(ctx))
 	if response.error != nil {
 		select {
@@ -222,18 +226,25 @@ func Do(ctx context.Context, client Client, request *Request) *Response {
 	return response
 }
 
-func toRequestData(client *Client, p, op Map) *RequestData {
+func toRequestData(client *Client, params, ops Map) *RequestData {
 	data := client.request.RequestDataCopy()
-	data.Query = processQuery(op.Get(REQUEST_TYPE_QUERY.String()))
+	data.Query = processQuery(ops.Get(REQUEST_TYPE_QUERY.String()))
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
-		Debug("toRequestData|json", string(p.ToJson()))
-		data.Body = bytes.NewReader(p.ToJson())
+		if params == nil {
+			data.Body = processJson(ops.Get(REQUEST_TYPE_JSON.String()))
+		} else {
+			data.Body = bytes.NewReader(params.ToJson())
+		}
 	}
 	if client.DataType() == DATA_TYPE_XML {
 		data.SetHeaderXml()
-		Debug("toRequestData|xml", p.ToXml())
-		data.Body = strings.NewReader(p.ToXml())
+		if params == nil {
+			data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
+		} else {
+			data.Body = strings.NewReader(params.ToXml())
+		}
+
 	}
 
 	return data
@@ -248,24 +259,32 @@ func processFormParams(i interface{}) string {
 	}
 	return ""
 }
-func processXml(i interface{}) string {
+func processXml(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		return v
+		return strings.NewReader(v)
+	case []byte:
+		return bytes.NewReader(v)
 	case Map:
-		return v.ToXml()
+		return strings.NewReader(v.ToXml())
+	default:
+		return nil
 	}
-	return ""
+
 }
 
-func processJson(i interface{}) string {
+func processJson(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		return v
+		return strings.NewReader(v)
+	case []byte:
+		return bytes.NewReader(v)
 	case Map:
-		return string(v.ToJson())
+		return bytes.NewReader(v.ToJson())
+	default:
+		return nil
 	}
-	return ""
+
 }
 
 func processQuery(i interface{}) string {

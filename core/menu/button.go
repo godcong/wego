@@ -1,10 +1,11 @@
-package core
+package menu
 
 import (
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 )
 
-type Button Map
+type Button core.Map
 
 //{
 
@@ -18,62 +19,62 @@ type Button Map
 //}
 
 func NewClickButton(name, key string) *Button {
-	return newButton(message.EventClick.String(), Map{"name": name, "key": key})
+	return newButton(message.EventClick.String(), core.Map{"name": name, "key": key})
 
 }
 
 func NewViewButton(name, url string) *Button {
-	return newButton(message.EventView.String(), Map{"name": name, "url": url})
+	return newButton(message.EventView.String(), core.Map{"name": name, "url": url})
 }
 
 func NewScanCodeWaitMsgButton(name, key string) *Button {
-	return newButton(message.EventScancodeWaitmsg.String(), Map{"name": name, "key": key})
+	return newButton(message.EventScancodeWaitmsg.String(), core.Map{"name": name, "key": key})
 }
 
 func NewScanCodePushButton(name, key string) *Button {
-	return newButton(message.EventScancodePush.String(), Map{"name": name, "key": key})
+	return newButton(message.EventScancodePush.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicSysPhotoButton(name, key string) *Button {
-	return newButton(message.EventPicSysphoto.String(), Map{"name": name, "key": key})
+	return newButton(message.EventPicSysphoto.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicPhotoOrAlbumButton(name, key string) *Button {
-	return newButton(message.EventPicPhotoOrAlbum.String(), Map{"name": name, "key": key})
+	return newButton(message.EventPicPhotoOrAlbum.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicWeixinButton(name, key string) *Button {
-	return newButton(message.EventPicWeixin.String(), Map{"name": name, "key": key})
+	return newButton(message.EventPicWeixin.String(), core.Map{"name": name, "key": key})
 }
 
 func NewMediaIDButton(name, mediaId string) *Button {
-	return newButton("media_id", Map{"name": name, "media_id": mediaId})
+	return newButton("media_id", core.Map{"name": name, "media_id": mediaId})
 }
 
 func NewViewLimitedButton(name, mediaId string) *Button {
-	return newButton("view_limited", Map{"name": name, "media_id": mediaId})
+	return newButton("view_limited", core.Map{"name": name, "media_id": mediaId})
 }
 
 func NewMiniProgramButton(name, url, pagepath string) *Button {
-	return newButton("miniprogram", Map{"name": name, "url": url, "pagepath": pagepath})
+	return newButton("miniprogram", core.Map{"name": name, "url": url, "pagepath": pagepath})
 }
 
 func NewSubButton(name string, sub []*Button) *Button {
-	return newButton("", Map{"name": name, "sub_button": sub})
+	return newButton("", core.Map{"name": name, "key": "testkey", "sub_button": sub})
 }
 
-func newButton(typ string, val Map) *Button {
+func newButton(typ string, val core.Map) *Button {
 	v := make(Button)
 	if typ != "" {
-		(*Map)(&v).Set("type", typ)
+		(*core.Map)(&v).Set("type", typ)
 	}
-	(*Map)(&v).Join(val)
+	(*core.Map)(&v).Join(val)
 	return &v
 }
 
 func (b *Button) SetSub(name string, sub []*Button) *Button {
 	*b = make(Button)
-	(*Map)(b).Set("name", name)
-	(*Map)(b).Set("sub_button", sub)
+	(*core.Map)(b).Set("name", name)
+	(*core.Map)(b).Set("sub_button", sub)
 	return b
 }

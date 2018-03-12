@@ -1,14 +1,15 @@
 package mini_program
 
 import (
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
 )
 
 type MiniProgram struct {
 	core.Config
+	client   *core.Client
 	app      *core.Application
-	token    core.AccessToken
-	client   core.Client
+	token    *core.AccessToken
 	auth     *Auth
 	appCode  *AppCode
 	dataCube *DataCube
@@ -27,18 +28,19 @@ func newMiniProgram() *MiniProgram {
 		Config: config,
 		client: core.NewClient(config),
 	}
+	mini0.token = core.NewAccessToken(config, mini0.client)
 	return mini0
 }
 
-func (m *MiniProgram) SetClient(c core.Client) *MiniProgram {
+func (m *MiniProgram) SetClient(c *core.Client) *MiniProgram {
 	m.client = c
 	return m
 }
 
-func (m *MiniProgram) GetClient() core.Client {
+func (m *MiniProgram) GetClient() *core.Client {
 	return m.client
 }
-func (m *MiniProgram) Auth() *Auth {
+func (m *MiniProgram) Auth() wego.Auth {
 	if m.auth == nil {
 		m.auth = &Auth{
 			Config:      m.Config,
@@ -48,7 +50,7 @@ func (m *MiniProgram) Auth() *Auth {
 	return m.auth
 }
 
-func (m *MiniProgram) AppCode() *AppCode {
+func (m *MiniProgram) AppCode() wego.AppCode {
 	if m.appCode == nil {
 		m.appCode = &AppCode{
 			Config:      m.Config,
@@ -58,7 +60,7 @@ func (m *MiniProgram) AppCode() *AppCode {
 	return m.appCode
 }
 
-func (m *MiniProgram) DataCube() *DataCube {
+func (m *MiniProgram) DataCube() wego.DataCube {
 	if m.dataCube == nil {
 		m.dataCube = &DataCube{
 			Config:      m.Config,
@@ -78,7 +80,8 @@ func (m *MiniProgram) Template() *Template {
 	return m.template
 }
 
-func (m *MiniProgram) AccessToken() core.AccessToken {
+func (m *MiniProgram) AccessToken() wego.AccessToken {
+	core.Debug("MiniProgram|AccessToken")
 	if m.token == nil {
 		m.token = core.NewAccessToken(m.Config, m.client)
 	}

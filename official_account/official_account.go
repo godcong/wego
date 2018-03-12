@@ -5,15 +5,10 @@ import (
 	"github.com/godcong/wego/core"
 )
 
-//type OfficialAccount interface {
-//	accessToken() AccessTokenInterface
-//}
-//
 type OfficialAccount struct {
-	core.Config
+	app             *core.Application
 	client          *core.Client
 	token           *core.AccessToken
-	app             *core.Application
 	base            *Base
 	customerService *CustomerService
 }
@@ -26,33 +21,36 @@ func DataType() core.DataType {
 	return core.DATA_TYPE_XML
 }
 
+var defaultConfig core.Config
+
 func init() {
+	defaultConfig = core.GetConfig("official_account.default")
+
 	app := core.App()
 	app.Register("official_account", newOfficialAccount())
-	//app.Register(newOfficialAccount())
-
 }
 
 func newOfficialAccount() *OfficialAccount {
-	config := core.GetConfig("official_account.default")
-	official0 := &OfficialAccount{
-		Config: config,
-		client: core.NewClient(config),
-		base: &Base{
-			Config: config,
-			client: core.NewClient(config),
-		},
+	app := core.App()
+	client := core.NewClient(defaultConfig)
+	token := core.NewAccessToken(defaultConfig, client)
+	domain := core.NewDomain("official_account")
+	base := newBase(client, token)
+	account := &OfficialAccount{
+		app:    app,
+		client: client,
+		token:  token,
+		base:   base,
+		//customerService: nil,
 	}
-	official0.client.SetDomain(core.NewDomain("official_account"))
-	official0.client.SetDataType(core.DATA_TYPE_JSON)
-	official0.base = &Base{
-		Config:          official0.Config,
-		client:          official0.client,
-		token:           core.NewAccessToken(config, official0.client),
-		OfficialAccount: official0,
+	account.base = &Base{
+		Config: defaultConfig,
+		client: client,
+		token:  token,
 	}
-
-	return official0
+	client.SetDomain(domain)
+	client.SetDataType(core.DATA_TYPE_JSON)
+	return account
 }
 
 func (m *OfficialAccount) Server() wego.Server {

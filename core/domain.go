@@ -55,8 +55,8 @@ func newDomain(s string) *domain {
 	}
 }
 
-func NewDomain(url string) Domain {
-	return newDomain(url)
+func NewDomain(prefix string) Domain {
+	return newDomain(prefix)
 }
 
 //

@@ -14,6 +14,7 @@ type Application struct {
 
 var f = flag.String("f", "config.toml", "config file path")
 var app *Application
+var defaultConfig Config
 
 func initLoader() *Tree {
 	t := ConfigTree(*f)
@@ -49,13 +50,13 @@ func initApp(config Config) *Application {
 func init() {
 	c := cache.GetCache()
 	flag.Parse()
-	config := initLoader()
+	defaultConfig = initLoader()
 	if system.UseCache {
 		CacheOn()
-		c.Set("cache", config)
+		c.Set("cache", defaultConfig)
 	}
 	initLog(system)
-	initApp(config)
+	initApp(defaultConfig)
 }
 
 //func (a *Application) Get(v interface{}) {

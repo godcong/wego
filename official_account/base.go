@@ -6,7 +6,14 @@ type Base struct {
 	core.Config
 	client *core.Client
 	token  *core.AccessToken
-	*OfficialAccount
+}
+
+func newBase(client *core.Client, token *core.AccessToken) *Base {
+	return &Base{
+		Config: defaultConfig,
+		client: client,
+		token:  token,
+	}
 }
 
 func (b *Base) ClearQuota() core.Map {

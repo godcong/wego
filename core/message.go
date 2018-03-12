@@ -37,7 +37,7 @@ type Message struct {
 	ScanCodeInfo     message.ScanCodeInfo     //扫描信息
 	SendPicsInfo     message.SendPicsInfo     //发送的图片信息
 	SendLocationInfo message.SendLocationInfo //发送的位置信息
-
+	TransInfo        message.TransInfo        //
 	//attributes   Map
 	//properties   []string
 	//aliases      Map
