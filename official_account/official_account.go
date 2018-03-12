@@ -10,24 +10,21 @@ type OfficialAccount struct {
 	client          *core.Client
 	token           *core.AccessToken
 	base            *Base
+	menu            *Menu
+	server          *Server
 	customerService *CustomerService
 }
 
-func (m *OfficialAccount) Base() wego.Base {
-	return m.base
-}
-
-func DataType() core.DataType {
-	return core.DATA_TYPE_XML
-}
-
 var defaultConfig core.Config
+var account *OfficialAccount
 
 func init() {
+	core.Debug("OfficialAccount|init")
 	defaultConfig = core.GetConfig("official_account.default")
+	account = newOfficialAccount()
 
 	app := core.App()
-	app.Register("official_account", newOfficialAccount())
+	app.Register("official_account", account)
 }
 
 func newOfficialAccount() *OfficialAccount {
@@ -35,70 +32,69 @@ func newOfficialAccount() *OfficialAccount {
 	client := core.NewClient(defaultConfig)
 	token := core.NewAccessToken(defaultConfig, client)
 	domain := core.NewDomain("official_account")
-	base := newBase(client, token)
+
 	account := &OfficialAccount{
 		app:    app,
 		client: client,
 		token:  token,
-		base:   base,
-		//customerService: nil,
 	}
-	account.base = &Base{
-		Config: defaultConfig,
-		client: client,
-		token:  token,
-	}
+
 	client.SetDomain(domain)
 	client.SetDataType(core.DATA_TYPE_JSON)
 	return account
 }
 
 func (m *OfficialAccount) Server() wego.Server {
-	return NewServer()
+	if m.server == nil {
+		m.server = NewServer()
+	}
+	return m.server
 }
 
-func (m *OfficialAccount) Online() {
-
+func (m *OfficialAccount) Base() wego.Base {
+	if m.base == nil {
+		m.base = newBase(m)
+	}
+	return m.base
 }
 
-func (m *OfficialAccount) Create(account, nickname string) {
-
+func (m *OfficialAccount) Menu() wego.Menu {
+	if m.menu == nil {
+		m.menu = newMenu(m)
+	}
+	return m.menu
 }
 
-func (m *OfficialAccount) Update(account, nickname string) {
-
-}
-
-func (m *OfficialAccount) Delete(account string) {
-
-}
-
-func (m *OfficialAccount) Invite(account, wechatId string) {
-
-}
-
-func (m *OfficialAccount) SetAvatar(account, path string) {
-
-}
-
-func (m *OfficialAccount) Send(message core.Map) {
-
-}
-
-func (m *OfficialAccount) Message(message core.Map) {
-
-}
-
-//type OfficialAccountAccessToken struct {
+//
+//
+//func (m *OfficialAccount) Online() {
+//
 //}
 //
-//func NewOfficialAccount(application Application) OfficialAccount {
-//	return &officialAccount{
-//		Config: application.GetConfig("official_account.default"),
-//		app:    application,
-//	}
+//func (m *OfficialAccount) Create(account, nickname string) {
+//
 //}
 //
-//func (a *officialAccount) accessToken() AccessTokenInterface {
-//	return NewAccessToken(a.app, a.Config)
+//func (m *OfficialAccount) Update(account, nickname string) {
+//
+//}
+//
+//func (m *OfficialAccount) Delete(account string) {
+//
+//}
+//
+//func (m *OfficialAccount) Invite(account, wechatId string) {
+//
+//}
+//
+//func (m *OfficialAccount) SetAvatar(account, path string) {
+//
+//}
+//
+//func (m *OfficialAccount) Send(message core.Map) {
+//
+//}
+//
+//func (m *OfficialAccount) Message(message core.Map) {
+//
 //}

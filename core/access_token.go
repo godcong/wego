@@ -119,19 +119,19 @@ func (a *AccessToken) getCacheKey() string {
 	return "godcong.wego.access_token." + a.getCredentials()
 }
 
-func (t *Token) SetKey(s string) *Token {
-	(*t)[ACCESS_TOKEN_KEY] = s
+func (t Token) SetKey(s string) Token {
+	(t)[ACCESS_TOKEN_KEY] = s
 	return t
 }
 
-func (t *Token) GetKey() string {
-	if v, b := (*t)[ACCESS_TOKEN_KEY]; b {
+func (t Token) GetKey() string {
+	if v, b := (t)[ACCESS_TOKEN_KEY]; b {
 		return v.(string)
 	}
 	return ""
 }
 
-func (t *Token) KeyMap() Map {
+func (t Token) KeyMap() Map {
 	m := make(Map)
 	if v := t.GetKey(); v != "" {
 		m.Set(ACCESS_TOKEN_KEY, v)
@@ -139,20 +139,20 @@ func (t *Token) KeyMap() Map {
 	return m
 }
 
-func (t *Token) SetExpiresIn(i int64) *Token {
-	(*t)[ACCESS_TOKEN_EXPIRES_IN] = i
+func (t Token) SetExpiresIn(i int64) Token {
+	(t)[ACCESS_TOKEN_EXPIRES_IN] = i
 	return t
 }
 
-func (t *Token) GetExpiresIn() int64 {
-	if i, b := (*t)[ACCESS_TOKEN_EXPIRES_IN]; b {
+func (t Token) GetExpiresIn() int64 {
+	if i, b := (t)[ACCESS_TOKEN_EXPIRES_IN]; b {
 		return ParseInt(i)
 	}
 	return -1
 }
 
-func (t *Token) ToJson() string {
-	v, e := json.Marshal(*t)
+func (t Token) ToJson() string {
+	v, e := json.Marshal(t)
 	if e != nil {
 		return ""
 	}

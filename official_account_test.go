@@ -138,3 +138,13 @@ func TestCoreUrl(t *testing.T) {
 	l := url.ShortUrl("https://y11e.com")
 	log.Println(l)
 }
+
+func TestGetOfficialAccount(t *testing.T) {
+	oa := wego.GetOfficialAccount()
+	testBase(t, oa)
+}
+
+func testBase(t *testing.T, account wego.OfficialAccount) {
+	log.Println(account.Base().GetCallbackIp())
+	log.Println(account.Base().ClearQuota())
+}

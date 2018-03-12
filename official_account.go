@@ -9,6 +9,9 @@ import (
 
 type Base interface {
 	GetCallbackIp() core.Map
+	ClearQuota() core.Map
+}
+type Menu interface {
 }
 
 type Server interface {
@@ -18,6 +21,7 @@ type Server interface {
 
 type OfficialAccount interface {
 	Base() Base
+	Menu() Menu
 	Server() Server
 }
 

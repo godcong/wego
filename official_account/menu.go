@@ -6,31 +6,25 @@ import (
 )
 
 type Menu struct {
-	core.Config
+	config  core.Config
+	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
 	buttons core.Map
 }
 
-func newMenu(config core.Config, client *core.Client, token *core.AccessToken) *Menu {
-	//client.SetDomain(core.NewDomain("official_account"))
-	//client.SetDataType(core.DATA_TYPE_JSON)
+func newMenu(account *OfficialAccount) *Menu {
 	return &Menu{
-		client:  client,
-		token:   token,
-		buttons: core.Map{},
+		config:  defaultConfig,
+		account: account,
+		client:  account.client,
+		token:   account.token,
+		buttons: make(core.Map),
 	}
 }
 
-func NewMenu(config core.Config, client *core.Client) *Menu {
-	client.SetDomain(core.NewDomain("official_account"))
-	client.SetDataType(core.DATA_TYPE_JSON)
-	return newMenu(client)
-	}
-}
-
-func DefaultMenu() *Menu {
-
+func NewMenu() *Menu {
+	return newMenu(account)
 }
 
 func (m *Menu) SetButtons(b []*menu.Button) *Menu {
@@ -56,26 +50,44 @@ func (m *Menu) AddButton(b *menu.Button) *Menu {
 	return m
 }
 
+func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
+	m.buttons["matchrule"] = rule
+	core.Debug(string(m.buttons.ToJson()))
+	return m
+}
+
 //个性化创建
 //https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
+//成功:
+//{"errcode":0,"errmsg":"ok"}
 //自定义菜单
 //https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
-func (m *Menu) Create(matchRule core.Map) *core.Response {
+//成功:
+// {"menuid":429680901}]
+func (m *Menu) Create() *core.Response {
 	token := m.token.GetToken()
-	if matchRule == nil {
+	if _, b := m.buttons["matchrule"]; !b {
 		resp := m.client.HttpPost(m.client.Link(MENU_CREATE_URL_SUFFIX), core.Map{
-			core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()},
+			core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 			core.REQUEST_TYPE_JSON.String():  m.buttons,
 		})
 		return resp
 	}
-	return nil
+	//if rule != nil {
+	//	m.SetMatchRule(rule)
+	//}
+	resp := m.client.HttpPost(m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX), core.Map{
+		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		core.REQUEST_TYPE_JSON.String():  m.buttons,
+	})
+
+	return resp
 }
 
 func (m *Menu) List() *core.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()},
+		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp
 
@@ -84,7 +96,7 @@ func (m *Menu) List() *core.Response {
 func (m *Menu) Current() *core.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()},
+		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp
 }
@@ -92,7 +104,7 @@ func (m *Menu) Current() *core.Response {
 func (m *Menu) Delete() *core.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): core.Map{"access_token": token.GetKey()},
+		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp
 }

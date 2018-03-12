@@ -5,7 +5,6 @@ import (
 	"log"
 	"testing"
 
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/menu"
 	"github.com/godcong/wego/official_account"
 )
@@ -20,7 +19,7 @@ func TestCoreButton(t *testing.T) {
 }
 
 func TestCoreMenu(t *testing.T) {
-	menus := official_account.NewMenu(core.GetConfig("official_account.default"), core.NewClient(core.GetConfig("official_account.default")))
+	menus := official_account.NewMenu()
 
 	b1 := menu.NewClickButton("hello1", "run1")
 	b2 := menu.NewClickButton("hello2", "run2")

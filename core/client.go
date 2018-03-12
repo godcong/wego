@@ -111,7 +111,7 @@ func (c *Client) GetRequest() *Request {
 }
 
 func DefaultClient() *Client {
-
+	return nil
 }
 
 func NewClient(config Config) *Client {
