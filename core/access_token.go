@@ -127,6 +127,14 @@ func (t *Token) GetKey() string {
 	return ""
 }
 
+func (t *Token) KeyMap() Map {
+	m := make(Map)
+	if v := t.GetKey(); v != "" {
+		m.Set(ACCESS_TOKEN_KEY, v)
+	}
+	return m
+}
+
 func (t *Token) SetExpiresIn(i int64) *Token {
 	(*t)[ACCESS_TOKEN_EXPIRES_IN] = i
 	return t

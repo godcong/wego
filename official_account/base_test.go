@@ -9,4 +9,5 @@ import (
 
 func TestBase_GetCallbackIp(t *testing.T) {
 	o := core.App().Get("official_account").(official_account.OfficialAccount)
+	_ = o
 }

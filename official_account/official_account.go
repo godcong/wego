@@ -11,11 +11,9 @@ import (
 //
 type OfficialAccount struct {
 	core.Config
-	client *core.Client
-	token  *core.AccessToken
-
-	app *core.Application
-
+	client          *core.Client
+	token           *core.AccessToken
+	app             *core.Application
 	base            *Base
 	customerService *CustomerService
 }

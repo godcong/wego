@@ -109,8 +109,10 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 	var err error
 	data = dataProcess(r, method, data)
 	url = parseQuery(url, data.Query)
-	Debug("PerformRequest|data", *data)
 	Debug("PerformRequest|url", url)
+	Debug("PerformRequest|data", *data)
+	//Debug("PerformRequest|body", data.Body)
+	//Debug("PerformRequest|method", data.Method)
 	req, err = http.NewRequest(data.Method, url, data.Body)
 	if err != nil {
 		r.error = err
