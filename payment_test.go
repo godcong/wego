@@ -61,7 +61,8 @@ func TestOrder_Unify(t *testing.T) {
 const rltRefund = `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg><appid><![CDATA[wxbafed7010e0f4531]]></appid><mch_id><![CDATA[1497361732]]></mch_id><nonce_str><![CDATA[C7M5peUJulyD3ljQ]]></nonce_str><sign><![CDATA[AED925A15E9531F4DAF61C4EEA05B608]]></sign><result_code><![CDATA[SUCCESS]]></result_code><transaction_id><![CDATA[4200000059201803063688861057]]></transaction_id><out_trade_no><![CDATA[20180306145209635869487577]]></out_trade_no><out_refund_no><![CDATA[4200000059201803063688861057]]></out_refund_no><refund_id><![CDATA[50000106012018030603707835282]]></refund_id><refund_channel><![CDATA[]]></refund_channel><refund_fee>3</refund_fee><coupon_refund_fee>0</coupon_refund_fee><total_fee>3</total_fee><cash_fee>3</cash_fee><coupon_refund_count>0</coupon_refund_count><cash_refund_fee>3</cash_refund_fee></xml>]`
 
 func TestRefund_Refund(t *testing.T) {
-	r := wego.GetPayment().Refund().ByOutTradeNumber(`20180306171055516803547723`, `4200000076201803063772867054`, 3, 3, nil)
+	//r := wego.GetPayment().Refund().ByOutTradeNumber(`20180313160643671522177497`, `1`, 30, 30, nil)
+	r := wego.GetPayment().Refund().ByTransactionId(`4200000066201803138050731804`, `2`, 3, 3, nil)
 	log.Println(string(r.ToJson()))
 	//{"appid":"wx426b3015555a46be","err_code":"ORDERNOTEXIST","err_code_des":"订单不存在","mch_id":"1900009851","nonce_str":"kSGYwLY4WNZvw91Y","result_code":"FAIL","return_code":"SUCCESS","return_msg":"OK","sign":"CC8F6CD5E5CADB15EEECEAA1DB4791FF"}
 }

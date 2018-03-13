@@ -21,20 +21,19 @@ var account *OfficialAccount
 func init() {
 	core.Debug("OfficialAccount|init")
 	defaultConfig = core.GetConfig("official_account.default")
-	account = newOfficialAccount()
 
 	app := core.App()
+	account = newOfficialAccount(app)
 	app.Register("official_account", account)
 }
 
-func newOfficialAccount() *OfficialAccount {
-	app := core.App()
+func newOfficialAccount(application *core.Application) *OfficialAccount {
 	client := core.NewClient(defaultConfig)
 	token := core.NewAccessToken(defaultConfig, client)
 	domain := core.NewDomain("official_account")
 
 	account := &OfficialAccount{
-		app:    app,
+		app:    application,
 		client: client,
 		token:  token,
 	}

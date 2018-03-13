@@ -21,21 +21,32 @@ type Payment struct {
 	jssdk    *JSSDK
 }
 
+var defaultConfig core.Config
+var payment *Payment
+
 func init() {
+	defaultConfig = core.GetConfig(core.DeployJoin("payment", "default"))
 	app := core.App()
-	app.Register("payment", newPayment("default"))
-	//app.Register(newPayment("default"))
+
+	payment = newPayment(app)
+	app.Register("payment", payment)
 
 }
 
-func newPayment(s string) *Payment {
-	config := core.GetConfig(core.DeployJoin("payment", s))
-	payment0 := &Payment{
-		config: config,
-		client: core.NewClient(config),
+func newPayment(application *core.Application) *Payment {
+	client := core.NewClient(defaultConfig)
+	token := core.NewAccessToken(defaultConfig, client)
+	domain := core.NewDomain("payment")
+
+	payment = &Payment{
+		app:    application,
+		client: client,
+		token:  token,
 	}
-	payment0.client.SetDataType(core.DATA_TYPE_XML)
-	return payment0
+
+	client.SetDomain(domain)
+	client.SetDataType(core.DATA_TYPE_XML)
+	return payment
 }
 
 func (p *Payment) SetClient(c *core.Client) *Payment {
@@ -71,14 +82,6 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
 }
 
-//
-//func (p *Payment) Client() core.Client {
-//	if p.client == nil {
-//		p.client = app.Client(p.Config)
-//	}
-//	return p.client
-//}
-//
 func (p *Payment) Security() wego.Security {
 	if p.security == nil {
 		p.security = &Security{
@@ -89,13 +92,6 @@ func (p *Payment) Security() wego.Security {
 	return p.security
 }
 
-//func (p *Payment) RedPack() *RedPack {
-//	if p.redPack == nil {
-//		p.redPack = NewRedPack(p.app, p.Config)
-//	}
-//	return p.redPack
-//}
-//
 func (p *Payment) Refund() wego.Refund {
 	if p.refund == nil {
 		p.refund = &Refund{
@@ -113,7 +109,6 @@ func (p *Payment) AccessToken() *core.AccessToken {
 	return p.token
 }
 
-//
 func (p *Payment) Order() wego.Order {
 	if p.order == nil {
 		p.order = &Order{

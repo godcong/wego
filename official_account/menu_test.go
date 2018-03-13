@@ -10,9 +10,10 @@ import (
 func TestNewMenu(t *testing.T) {
 	menu := official_account.NewMenu()
 	t.Log(menu)
-	testMenu_List(t, menu)
-	testMenu_AddButton(t, menu)
-	testMenu_Create(t, menu)
+	//testMenu_List(t, menu)
+	//testMenu_AddButton(t, menu)
+	//testMenu_Create(t, menu)
+	testMenu_TryMatch(t, menu)
 }
 
 func testMenu_List(t *testing.T, m *official_account.Menu) {
@@ -35,5 +36,10 @@ func testMenu_Create(t *testing.T, m *official_account.Menu) {
 		//Language:           "zh_CN",
 	})
 	rlt := m.Create()
+	t.Log(rlt.ToString())
+}
+
+func testMenu_TryMatch(t *testing.T, m *official_account.Menu) {
+	rlt := m.TryMatch("ccdevil0910")
 	t.Log(rlt.ToString())
 }

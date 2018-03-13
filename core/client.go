@@ -24,6 +24,7 @@ type URL struct {
 }
 
 type Client struct {
+	Config
 	dataType DataType
 	domain   Domain
 	app      *Application
@@ -31,7 +32,6 @@ type Client struct {
 	request  *Request
 	response *Response
 	client   *http.Client
-	Config
 }
 
 func (c *Client) SetDomain(domain Domain) *Client {
@@ -63,9 +63,8 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 
 func (c *Client) HttpPostJson(url string, data Map, ops Map) *Response {
 	ops = MapNilMake(ops)
-	if c.dataType == DATA_TYPE_JSON {
-		ops.Set(REQUEST_TYPE_JSON.String(), data)
-	}
+	c.dataType = DATA_TYPE_JSON
+	ops.Set(REQUEST_TYPE_JSON.String(), data)
 	return c.Request(url, nil, "post", ops)
 }
 
@@ -192,7 +191,7 @@ func request(c *Client, url string, params Map, method string, op Map) *Response
 		params.Set("sub_mch_id", c.Get("sub_mch_id"))
 		params.Set("sub_appid", c.Get("sub_appid"))
 		params.Set("sign_type", SIGN_TYPE_MD5.String())
-		params.Set("sign", GenerateSignature(params, c.Get("aes_key"), SIGN_TYPE_MD5))
+		params.Set("sign", GenerateSignature(params, c.Get("key"), SIGN_TYPE_MD5))
 	}
 
 	data := toRequestData(c, params, op)

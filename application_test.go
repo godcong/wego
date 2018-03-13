@@ -38,7 +38,7 @@ func TestCoreMenu(t *testing.T) {
 	//menus.AddButton(m2)
 	//menus.AddButton(m3)
 
-	log.Println(menus.Create(nil).ToString())
+	log.Println(menus.Create().ToString())
 	log.Println(menus.List().ToString())
 	log.Println(menus.Current().ToString())
 }

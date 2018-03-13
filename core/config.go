@@ -115,6 +115,9 @@ func (t *Tree) GetConfig(s string) Config {
 }
 
 func (t *Tree) GetTree(s string) interface{} {
+	if t == nil {
+		return nil
+	}
 	return (*toml.Tree)(t).Get(s)
 }
 

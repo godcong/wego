@@ -11,6 +11,7 @@ type Menu struct {
 	client  *core.Client
 	token   *core.AccessToken
 	buttons core.Map
+	menuid  int
 }
 
 func newMenu(account *OfficialAccount) *Menu {
@@ -52,7 +53,11 @@ func (m *Menu) AddButton(b *menu.Button) *Menu {
 
 func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
 	m.buttons["matchrule"] = rule
-	core.Debug(string(m.buttons.ToJson()))
+	return m
+}
+
+func (m *Menu) SetMenuId(id int) *Menu {
+	m.menuid = id
 	return m
 }
 
@@ -67,20 +72,16 @@ func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
 func (m *Menu) Create() *core.Response {
 	token := m.token.GetToken()
 	if _, b := m.buttons["matchrule"]; !b {
-		resp := m.client.HttpPost(m.client.Link(MENU_CREATE_URL_SUFFIX), core.Map{
-			core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-			core.REQUEST_TYPE_JSON.String():  m.buttons,
-		})
+		resp := m.client.HttpPostJson(
+			m.client.Link(MENU_CREATE_URL_SUFFIX),
+			m.buttons,
+			core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 		return resp
 	}
-	//if rule != nil {
-	//	m.SetMatchRule(rule)
-	//}
-	resp := m.client.HttpPost(m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-		core.REQUEST_TYPE_JSON.String():  m.buttons,
-	})
-
+	resp := m.client.HttpPostJson(
+		m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX),
+		m.buttons,
+		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
 
@@ -101,10 +102,25 @@ func (m *Menu) Current() *core.Response {
 	return resp
 }
 
+func (m *Menu) TryMatch(userId string) *core.Response {
+	token := m.token.GetToken()
+	resp := m.client.HttpPostJson(m.client.Link(MENU_TRYMATCH_URL_SUFFIX),
+		core.Map{"user_id": userId},
+		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+	return resp
+}
+
 func (m *Menu) Delete() *core.Response {
 	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-	})
+	if m.menuid == 0 {
+		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), core.Map{
+			core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		})
+		return resp
+	}
+
+	resp := m.client.HttpPostJson(m.client.Link(MENU_DELETECONDITIONAL_URL_SUFFIX),
+		core.Map{"menuid": m.menuid},
+		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
