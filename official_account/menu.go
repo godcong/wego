@@ -65,6 +65,7 @@ func (m *Menu) SetMenuId(id int) *Menu {
 //https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
 //成功:
 //{"errcode":0,"errmsg":"ok"}
+
 //自定义菜单
 //https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
 //成功:

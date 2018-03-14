@@ -6,6 +6,7 @@ import (
 )
 
 type OfficialAccount struct {
+	core.Config
 	app             *core.Application
 	client          *core.Client
 	token           *core.AccessToken
@@ -23,13 +24,13 @@ func init() {
 	defaultConfig = core.GetConfig("official_account.default")
 
 	app := core.App()
-	account = newOfficialAccount(app)
+	account = newOfficialAccount(defaultConfig, app)
 	app.Register("official_account", account)
 }
 
-func newOfficialAccount(application *core.Application) *OfficialAccount {
-	client := core.NewClient(defaultConfig)
-	token := core.NewAccessToken(defaultConfig, client)
+func newOfficialAccount(config core.Config, application *core.Application) *OfficialAccount {
+	client := core.NewClient(config)
+	token := core.NewAccessToken(config, client)
 	domain := core.NewDomain("official_account")
 
 	account := &OfficialAccount{

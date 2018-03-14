@@ -11,7 +11,7 @@ type Base struct {
 
 func newBase(account *OfficialAccount) *Base {
 	return &Base{
-		config:  defaultConfig,
+		config:  account.Config,
 		account: account,
 		client:  account.client,
 		token:   account.token,

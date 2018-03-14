@@ -5,6 +5,8 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
+	"encoding/xml"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -261,12 +263,20 @@ func processFormParams(i interface{}) string {
 func processXml(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
+		Debug("processXml|string", v)
 		return strings.NewReader(v)
 	case []byte:
+		Debug("processXml|[]byte", v)
 		return bytes.NewReader(v)
 	case Map:
+		Debug("processXml|Map", v)
 		return strings.NewReader(v.ToXml())
 	default:
+		Debug("processXml|default", v)
+		if v0, e := xml.Marshal(v); e == nil {
+			Debug("processXml|v0", v0, e)
+			return bytes.NewReader(v0)
+		}
 		return nil
 	}
 
@@ -275,15 +285,22 @@ func processXml(i interface{}) io.Reader {
 func processJson(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
+		Debug("processJson|string", v)
 		return strings.NewReader(v)
 	case []byte:
+		Debug("processJson|[]byte", v)
 		return bytes.NewReader(v)
 	case Map:
+		Debug("processJson|Map", v)
 		return bytes.NewReader(v.ToJson())
 	default:
+		Debug("processJson|default", v)
+		if v0, e := json.Marshal(v); e == nil {
+			Debug("processJson|v0", string(v0), e)
+			return bytes.NewReader(v0)
+		}
 		return nil
 	}
-
 }
 
 func processQuery(i interface{}) string {
