@@ -47,7 +47,7 @@ func testTemplate_Send(t *testing.T, template *official_account.Template) {
 	//t.Log(rlt0.ToString())
 	//t.Log(rlt1.ToString())
 	rlt := template.Send(&message.Template{
-		ToUser:     "oLyBi0tDnybg0WFkhKsn5HRetX1I",
+		ToUser:     "oLyBi0hSYhggnD-kOIms0IzZFqrc",
 		TemplateId: "tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo",
 		Url:        "http://baidu.com",
 		Data: message.TemplateData{
