@@ -16,7 +16,7 @@ type Menu interface {
 
 type Server interface {
 	RegisterCallback(sc core.ServerCallback, types ...message.MsgType)
-	Monitor(w http.ResponseWriter, r *http.Request) error
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 type OfficialAccount interface {

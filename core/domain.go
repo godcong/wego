@@ -1,47 +1,48 @@
 package core
 
-//
-//import (
-//	"errors"
-//	"strconv"
-//	"sync"
-//
-//	"github.com/godcong/wopay/util"
-//)
-//
-//var (
-//	ErrprConnectTimeout = errors.New("ErrorConnectTimeout")
-//	ErrorUnknownHost    = errors.New("ErrorUnknownHostException")
-//)
-//
+import "strings"
 
-type Domain interface {
-	URL() string
-}
-
-type domain struct {
+type Domain struct {
 	url string
 	app *Application
 }
 
-func (d *domain) URL() string {
+func (d *Domain) URL() string {
 	if d.url == "" {
 		return BASE_DOMAIN
 	}
 	return d.url
 }
 
+func (d *Domain) Link(s string) string {
+	url := ""
+	switch {
+	case strings.Index(s, "/") == 0 && strings.LastIndex(d.URL(), "/") == (len(d.URL())-1):
+		url = d.URL() + s[1:]
+	case strings.Index(s, "/") == 0 && strings.LastIndex(d.URL(), "/") != (len(d.URL())-1):
+		url = d.URL() + s
+	case strings.Index(s, "/") != 0 && strings.LastIndex(d.URL(), "/") == (len(d.URL())-1):
+		url = d.URL() + s
+	case strings.Index(s, "/") != 0 && strings.LastIndex(d.URL(), "/") != (len(d.URL())-1):
+		url = d.URL() + "/" + s
+	}
+	Debug("Domain|Link", url)
+	return url
+}
+
 //func NewDomain(application Application) Domain {
-//	return &domain{
+//	return &Domain{
 //		Config: application.Config(),
 //		app:    application,
 //	}
 //}
 
-func newDomain(s string) *domain {
+func newDomain(s string) *Domain {
 	url := GetConfig(DeployJoin("domain", s)).Get("url")
 	if url == "" {
 		switch s {
+		case "host":
+			url = "localhost"
 		case "default":
 			url = BASE_DOMAIN
 		case "official_account":
@@ -50,13 +51,17 @@ func newDomain(s string) *domain {
 			url = BACK_DOMAIN
 		}
 	}
-	return &domain{
+	return &Domain{
 		url: url,
 	}
 }
 
-func NewDomain(prefix string) Domain {
+func NewDomain(prefix string) *Domain {
 	return newDomain(prefix)
+}
+
+func DomainHost() *Domain {
+	return newDomain("host")
 }
 
 //
@@ -66,15 +71,15 @@ func NewDomain(prefix string) Domain {
 //
 //}
 //
-//func NewDomainInfo(domain string, primary bool) *DomainInfo {
+//func NewDomainInfo(Domain string, primary bool) *DomainInfo {
 //	return &DomainInfo{
-//		Domain:        domain,
+//		Domain:        Domain,
 //		PrimaryDomain: primary,
 //	}
 //}
 //
 //func (info *DomainInfo) String() string {
-//	return "DomainInfo{" + "domain='" + info.Domain + "'" + ", primaryDomain=" + strconv.FormatBool(info.PrimaryDomain) + "}"
+//	return "DomainInfo{" + "Domain='" + info.Domain + "'" + ", primaryDomain=" + strconv.FormatBool(info.PrimaryDomain) + "}"
 //}
 //
 ////func (info *DomainInfo) Report(string, int64, error) {
@@ -102,16 +107,16 @@ func NewDomain(prefix string) Domain {
 ////var domainData = map[string]DomainStatics{}
 //
 //type DomainStatics struct {
-//	domain              string
+//	Domain              string
 //	succCount           int
 //	connectTimeoutCount int
 //	dnsErrorCount       int
 //	otherErrorCount     int
 //}
 //
-//func NewDomainStatics(domain string) *DomainStatics {
+//func NewDomainStatics(Domain string) *DomainStatics {
 //	return &DomainStatics{
-//		domain:              domain,
+//		Domain:              Domain,
 //		succCount:           0,
 //		connectTimeoutCount: 0,
 //		dnsErrorCount:       0,
@@ -147,13 +152,13 @@ func NewDomain(prefix string) Domain {
 //	}
 //}
 //
-//func (domain *payDomainSimpleImpl) Report(d string, elapsed int64, err error) {
-//	domain.Lock()
-//	defer domain.Unlock()
-//	info, b := domain.domainData[d]
+//func (Domain *payDomainSimpleImpl) Report(d string, elapsed int64, err error) {
+//	Domain.Lock()
+//	defer Domain.Unlock()
+//	info, b := Domain.domainData[d]
 //	if !b {
 //		info = NewDomainStatics(d)
-//		domain.domainData[d] = info
+//		Domain.domainData[d] = info
 //	}
 //
 //	if err == nil { //success
@@ -177,24 +182,24 @@ func NewDomain(prefix string) Domain {
 //	}
 //
 //}
-//func (domain *payDomainSimpleImpl) GetDomainInfo() *DomainInfo {
-//	domain.Lock()
-//	defer domain.Unlock()
-//	if domain == nil {
+//func (Domain *payDomainSimpleImpl) GetDomainInfo() *DomainInfo {
+//	Domain.Lock()
+//	defer Domain.Unlock()
+//	if Domain == nil {
 //		return nil
 //	}
-//	primaryDomain, b := domain.domainData[DOMAIN_API]
+//	primaryDomain, b := Domain.domainData[DOMAIN_API]
 //	if !b ||
 //		primaryDomain.isGood() {
 //		return NewDomainInfo(DOMAIN_API, true)
 //	}
 //
 //	now := util.CurrentTimeStampMS()
-//	if domain.domainTime == 0 { //first switch
-//		domain.domainTime = now
+//	if Domain.domainTime == 0 { //first switch
+//		Domain.domainTime = now
 //		return NewDomainInfo(DOMAIN_API2, false)
-//	} else if now-domain.domainTime < MIN_SWITCH_PRIMARY_MSEC {
-//		alternateDomain, b := domain.domainData[DOMAIN_API2]
+//	} else if now-Domain.domainTime < MIN_SWITCH_PRIMARY_MSEC {
+//		alternateDomain, b := Domain.domainData[DOMAIN_API2]
 //		if !b ||
 //			alternateDomain.isGood() ||
 //			alternateDomain.badCount() < primaryDomain.badCount() {
@@ -203,9 +208,9 @@ func NewDomain(prefix string) Domain {
 //			return NewDomainInfo(DOMAIN_API, true)
 //		}
 //	} else { //force switch back
-//		domain.domainTime = 0
+//		Domain.domainTime = 0
 //		primaryDomain.resetCount()
-//		alternateDomain, b := domain.domainData[DOMAIN_API2]
+//		alternateDomain, b := Domain.domainData[DOMAIN_API2]
 //		if !b {
 //			alternateDomain.resetCount()
 //		}

@@ -81,7 +81,7 @@ func TestGetApp(t *testing.T) {
 			count = 0
 		}
 
-		server.Monitor(w, r)
+		server.ServeHTTP(w, r)
 		//t.Log(string(body))
 		//var msg core.Message
 		//var msg core.Message

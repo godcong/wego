@@ -59,6 +59,7 @@ type Log struct {
 
 type Config interface {
 	Get(s string) string
+	GetD(s, d string) string
 	Set(k, v string) *Tree
 	GetBool(s string) bool
 	GetConfig(s string) Config
@@ -131,7 +132,13 @@ func (t *Tree) Get(s string) string {
 	} else {
 		return strconv.FormatInt(v0, 10)
 	}
+}
 
+func (t *Tree) GetD(s, d string) string {
+	if v := t.Get(s); v != "" {
+		return v
+	}
+	return d
 }
 
 func (t *Tree) Set(k, v string) *Tree {

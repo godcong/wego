@@ -1,7 +1,6 @@
 [system]
     debug = true
     response_type = 'map'
-
     use_cache = true
 
 [system.log]
@@ -13,47 +12,53 @@
             uri=  '/server'
 
 [domain]
+        [domain.host]
+            url = ''
         [domain.default]
             url = 'https://api.mch.weixin.qq.com'
         [domain.official_account]
-            url = 'https://api.weixin.qq.com'
+#通用域名(api.weixin.qq.com)，使用该域名将访问官方指定就近的接入点；
+#上海域名(sh.api.weixin.qq.com)，使用该域名将访问上海的接入点；
+#深圳域名(sz.api.weixin.qq.com)，使用该域名将访问深圳的接入点；
+#香港域名(hk.api.weixin.qq.com)，使用该域名将访问香港的接入点。
+#            url = 'https://api.weixin.qq.com'
 
 [official_account]
 #        [official_account.config]
 #            data_type = "json"
 
         [official_account.default]
-            app_id ='wx426b3015555a46be'                    #AppID
-            secret = '7813490da6f1265e4901ffb80afaa36f'     #AppSecret
-            token = 'your-token'                            #Token
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'    #EncodingAESKey
+            app_id =''                    #AppID
+            secret = ''     #AppSecret
+            token = ''                            #Token
+            aes_key = ''    #EncodingAESKey
 
         [official_account.oauth]
             scopes   = ['snsapi_userinfo']
-            callback = '/examples/oauth_callback'
+            callback = '/oauth_callback'
 
 
 [open_platform]
         [open_platform.default]
-            app_id ='wx426b3015555a46be'                      #AppID
-            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
+            app_id =''                      #AppID
+            secret = ''       #AppSecret
             token = 'your-token'                              #Token
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
+            aes_key = ''      #EncodingAESKey
 
 [mini_program]
         [mini_program.default]
-            app_id ='wx426b3015555a46be'                      #AppID
-            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
+            app_id =''                      #AppID
+            secret = ''       #AppSecret
             token = 'your-token'                              #Token
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
+            aes_key = ''      #EncodingAESKey
 
 [payment]
         [payment.default]
             sandbox = false
-            app_id ='wx426b3015555a46be'
-            mch_id = '1900009851'
-            key = '8934e7d15453e97507ef794cf7b0519d'
-            notify_url ='wxpay/notify'
+            app_id =''
+            mch_id = ''
+            key = ''
+            notify_url ='wego/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
             rootca_path = 'cert/rootca.pem'
@@ -62,6 +67,6 @@
 
 [work]
         [work.default]
-            corp_id = 'xxxxxxxxxxxxxxxxx'
+            corp_id = ''
             agent_id = 100020
             secret  = ''

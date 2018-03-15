@@ -29,23 +29,22 @@ func (s *Server) RegisterCallback(sc core.ServerCallback, types ...message.MsgTy
 		}
 	}
 }
-
-func (s *Server) Monitor(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	body, e := ioutil.ReadAll(r.Body)
 	if e != nil {
 		core.Error(e)
-		return e
+		return
 	}
 	message := new(core.Message)
 	e = xml.Unmarshal(body, message)
 	if e != nil {
 		core.Error(e)
-		return e
+		return
 	}
 	result := s.CallbackFunc(message)
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
-	return nil
+	return
 }
 
 func (s *Server) CallbackFunc(message *core.Message) []byte {

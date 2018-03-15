@@ -35,6 +35,7 @@ func newOfficialAccount(config core.Config, application *core.Application) *Offi
 
 	account := &OfficialAccount{
 		app:    application,
+		Config: config,
 		client: client,
 		token:  token,
 	}

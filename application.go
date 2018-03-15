@@ -28,7 +28,7 @@ type Client interface {
 	DataType() core.DataType
 	SetDataType(dataType core.DataType) Client
 	URL() string
-	SetDomain(domain core.Domain) Client
+	SetDomain(domain *core.Domain) Client
 	HttpGet(url string, m core.Map) *core.Response
 	HttpPost(url string, m core.Map) *core.Response
 	HttpPostJson(url string, m core.Map, query core.Map) *core.Response
@@ -36,6 +36,11 @@ type Client interface {
 	RequestRaw(url string, params core.Map, method string, options core.Map) *core.Response
 	SafeRequest(url string, params core.Map, method string, options core.Map) *core.Response
 	Link(string) string
+}
+
+type Domain interface {
+	URL() string
+	Link(s string) string
 }
 
 //type AccessToken interface {

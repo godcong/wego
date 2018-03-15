@@ -28,7 +28,7 @@ type URL struct {
 type Client struct {
 	Config
 	dataType DataType
-	domain   Domain
+	domain   *Domain
 	app      *Application
 	token    *AccessToken
 	request  *Request
@@ -36,7 +36,7 @@ type Client struct {
 	client   *http.Client
 }
 
-func (c *Client) SetDomain(domain Domain) *Client {
+func (c *Client) SetDomain(domain *Domain) *Client {
 	c.domain = domain
 	return c
 }

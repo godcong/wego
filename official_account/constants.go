@@ -19,3 +19,11 @@ const API_ADD_TEMPLATE_URL_SUFFIX = "/cgi-bin/template/api_add_template"
 const GET_ALL_PRIVATE_TEMPLATE_URL_SUFFIX = "/cgi-bin/template/get_all_private_template"
 const DEL_PRIVATE_TEMPLATE_URL_SUFFIX = "/cgi-bin/template/del_private_template"
 const MESSAGE_TEMPLATE_SEND_URL_SUFFIX = "/cgi-bin/message/template/send"
+
+const MEDIA_UPLOAD_URL_SUFFIX = "/cgi-bin/media/upload"
+const OAUTH2_ACCESS_TOKEN_URL_SUFFIX = "/sns/oauth2/access_token"
+const OAUTH2_AUTHORIZE_URL_SUFFIX = "https://open.weixin.qq.com/connect/oauth2/authorize"
+const DEFAULT_CALLBACK_URL_SUFFIX = "/oauth_callback"
+
+const SNSAPI_BASE = "snsapi_base"
+const SNSAPI_USERINFO = "snsapi_userinfo"
