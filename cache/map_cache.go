@@ -2,6 +2,7 @@ package cache
 
 import (
 	"sync"
+	"time"
 )
 
 type MapCache struct {
@@ -17,7 +18,7 @@ func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
 }
 
 //TODO: ttl not set
-func (m *MapCache) SetWithTTL(key string, val interface{}, ttl int) Cache {
+func (m *MapCache) SetWithTTL(key string, val interface{}, ttl time.Time) Cache {
 	m.Store(key, val)
 	return m
 }

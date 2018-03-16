@@ -18,10 +18,15 @@ func TestOAuth_AuthCodeURL(t *testing.T) {
 
 func TestOAuth_ServeHTTP(t *testing.T) {
 	oauth := official_account.NewOAuth()
+	oauth.RegisterCallback(func(w http.ResponseWriter, r *http.Request, token *core.Token) bool {
+		core.Debug(*token)
+		return false
+	})
 	ts := httptest.NewServer(http.HandlerFunc(oauth.ServeHTTP))
 	defer ts.Close()
+	//core.Debug("resp", oauth.GetResponse().ToString())
 
-	resp, e := http.Get(ts.URL + "/oauth_callback?code=0819yiqr16NBan0ml2tr1e1eqr19yiqp&state=run")
+	resp, e := http.Get(ts.URL + "/oauth_redirect?code=001V9bZR0lce192bq5XR0RZmZR0V9bZt&state=run")
 
 	b, e := ioutil.ReadAll(resp.Body)
 

@@ -14,6 +14,7 @@ import (
 )
 
 type DataType string
+type ContextKey struct{}
 
 const (
 	DATA_TYPE_XML  DataType = "xml"
@@ -35,6 +36,8 @@ type Client struct {
 	response *Response
 	client   *http.Client
 }
+
+var HTTPClient ContextKey
 
 func (c *Client) SetDomain(domain *Domain) *Client {
 	c.domain = domain
@@ -206,25 +209,36 @@ func request(c *Client, url string, params Map, method string, op Map) *Response
 }
 
 func Do(ctx context.Context, client *Client, request *Request) *Response {
-	response := &Response{}
-	response.response, response.error = client.HttpClient().Do(request.HttpRequest().WithContext(ctx))
-	if response.error != nil {
-		select {
-		case <-ctx.Done():
-			response.error = ctx.Err()
-		default:
+	var response Response
+	c := http.DefaultClient
+	if ctx != nil {
+		if hc, ok := ctx.Value(HTTPClient).(*http.Client); ok {
+			c = hc
 		}
-		return response
 	}
 
-	response.responseData, response.error = ioutil.ReadAll(response.response.Body)
+	r, err := c.Do(request.request.WithContext(ctx))
+	// If we got an error, and the context has been canceled,
+	// the context's error is probably more useful.
+	if err != nil {
+		select {
+		case <-ctx.Done():
+			err = ctx.Err()
+		default:
+		}
+		Debug("Do|Do", err)
+		response.error = err
+	}
+	defer r.Body.Close()
+
+	response.responseData, response.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
 	response.responseType = RESPONSE_TYPE_XML
 	if client.DataType() == DATA_TYPE_JSON {
 		response.responseType = RESPONSE_TYPE_JSON
 	}
-	Debug("ClientDo|response", *response)
+	Debug("ClientDo|response", response)
 	Debug("ClientDo|response|data", string(response.responseData))
-	return response
+	return &response
 }
 
 func toRequestData(client *Client, params, ops Map) *RequestData {
@@ -320,9 +334,7 @@ func (u *URL) ShortUrl(url string) Map {
 	}
 	token := u.token.GetToken()
 	ops := Map{
-		REQUEST_TYPE_QUERY.String(): Map{
-			"access_token": token.GetKey(),
-		},
+		REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	}
 	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, ops)
 	Debug("URL|ShortUrl", *resp)

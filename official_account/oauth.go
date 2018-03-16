@@ -2,6 +2,8 @@ package official_account
 
 import (
 	"bytes"
+	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
@@ -9,14 +11,17 @@ import (
 	"github.com/godcong/wego/core"
 )
 
+type CallbackFunc func(w http.ResponseWriter, r *http.Request, token *core.Token) bool
+
 type OAuth struct {
 	*OfficialAccount
 	core.Config
-	domain    *core.Domain
-	response  *core.Response
-	authorize string
-	scopes    string
-	callback  string
+	domain      *core.Domain
+	response    *core.Response
+	callback    CallbackFunc
+	authorize   string
+	scopes      string
+	redirectUri string
 }
 
 func newOAuth(officialAccount *OfficialAccount) *OAuth {
@@ -28,13 +33,18 @@ func newOAuth(officialAccount *OfficialAccount) *OAuth {
 	oauth.Config = core.GetConfig("official_account.oauth")
 	oauth.domain = core.DomainHost()
 	oauth.scopes = oauth.GetD("scopes", SNSAPI_BASE)
-	oauth.callback = oauth.GetD("callback", DEFAULT_CALLBACK_URL_SUFFIX)
+	oauth.redirectUri = oauth.GetD("oauth_redirect_uri", DEFAULT_OAUTH_REDIRECT_URI_SUFFIX)
 	oauth.authorize = oauth.GetD("redirect", OAUTH2_AUTHORIZE_URL_SUFFIX)
 	return oauth
 }
 
 func NewOAuth() *OAuth {
 	return newOAuth(account)
+}
+
+func (o *OAuth) RegisterCallback(callbackFunc CallbackFunc) *OAuth {
+	o.callback = callbackFunc
+	return o
 }
 
 func (o *OAuth) PrepareCallbackUrl() {
@@ -49,27 +59,47 @@ func (o *OAuth) PrepareCallbackUrl() {
 
 //失败：
 //{"errcode":40163,"errmsg":"code been used, hints: [ req_id: OsIKda0848th19 ]"}
+//{"errcode":40029,"errmsg":"invalid code, hints: [ req_id: 5u8NWa0990th40 ]"}
 //成功：
 //{"access_token":"7_0MSpG_WEPVwQki6eFQSFQbRwkEkTEhkvBjkuKTODS7_xe6vBOEsc88kcCu_781YvXXP2FwWC4M5m-B9WXs51rA","expires_in":7200,"refresh_token":"7_51Axvh89ev5cGH-WR4qPKb-rcPf2VQrMg25MNDs1899cHYb5UomPi4fnc1NAks07Vw5Bb0pTFvvritU-aQtxFg","openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","scope":"snsapi_base"}]
 func (o *OAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	if code := r.Form.Get("code"); code != "" {
 		config := o.OfficialAccount.Config
-		o.response = o.client.HttpGet(
+		v := core.Map{
+			"appid":      config.Get("app_id"),
+			"secret":     config.Get("secret"),
+			"code":       code,
+			"grant_type": "authorization_code",
+		}
+		if o.redirectUri != "" {
+			v.Set("redirect_uri", o.domain.Link(o.redirectUri))
+		}
+		response := o.client.HttpPost(
 			o.client.Link(OAUTH2_ACCESS_TOKEN_URL_SUFFIX),
 			core.Map{
-				core.REQUEST_TYPE_QUERY.String(): core.Map{
-					"appid":      config.Get("app_id"),
-					"secret":     config.Get("secret"),
-					"code":       code,
-					"grant_type": "authorization_code",
-				},
+				core.REQUEST_TYPE_QUERY.String(): v,
 			},
 		)
-		core.Debug("OAuth|ServeHTTP|response", o.response)
+		core.Debug("ServeHTTP|response", response)
+		var token core.Token
+		e := json.Unmarshal(response.ToBytes(), &token)
+		if e != nil {
+			core.Debug("ServeHTTP|e", e)
+		}
+		if o.callback != nil {
+			if b := o.callback(w, r, &token); b {
+				return
+			}
+		}
+		w.Write(response.ToJson())
 		return
 	}
 	http.Redirect(w, r, o.AuthCodeURL(""), http.StatusFound)
+}
+func retrieveToken(ctx context.Context, auth *OAuth, values url.Values) (*core.Token, error) {
+
+	return nil, nil
 }
 
 func (o *OAuth) AuthCodeURL(state string) string {
@@ -80,8 +110,8 @@ func (o *OAuth) AuthCodeURL(state string) string {
 		"response_type": {"code"},
 		"appid":         {o.OfficialAccount.Get("app_id")},
 	}
-	if o.callback != "" {
-		v.Set("redirect_uri", o.domain.Link(o.callback))
+	if o.redirectUri != "" {
+		v.Set("redirect_uri", o.domain.Link(o.redirectUri))
 	}
 	if o.scopes != "" {
 		v.Set("scope", o.scopes)
@@ -98,13 +128,11 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	return buf.String()
 }
 
-//func NewOAuth(application Application, config Config) OAuth {
-//	return &Oauth{
-//		Config: config,
-//		app:    application,
-//		//client: application.Client(),
-//	}
-//}
+func (o *OAuth) GetResponse() *core.Response {
+	return o.response
+}
 
-//qq回调配置
-//https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=310198347&redirect_uri=http%3A%2F%2Fwww.right.com.cn%2Fforum%2Fconnect.php%3Fmod%3Dlogin%26op%3Dcallback%26referer%3Dhttp%253A%252F%252Fwww.right.com.cn%252Fforum%252Fthread-147109-1-1.html&state=72a5eb8ae2eba26edc851175955d5094&scope=get_user_info%2Cadd_share%2Cadd_t%2Cadd_pic_t%2Cget_repost_list
+//https://api.weixin.qq.com/sns/oauth2/refresh_token
+func (o *OAuth) RefreshToken() {
+
+}

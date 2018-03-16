@@ -1,15 +1,11 @@
 package core
 
-import (
-	"net/http"
-)
-
 type Response struct {
 	responseType ResponseType
 	responseData []byte
 	responseMap  Map
-	response     *http.Response
-	error        error
+	//response     *http.Response
+	error error
 }
 
 type ResponseType string
