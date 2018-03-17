@@ -23,6 +23,10 @@ const MESSAGE_TEMPLATE_SEND_URL_SUFFIX = "/cgi-bin/message/template/send"
 const MEDIA_UPLOAD_URL_SUFFIX = "/cgi-bin/media/upload"
 
 const OAUTH2_ACCESS_TOKEN_URL_SUFFIX = "/sns/oauth2/access_token"
+const OAUTH2_REFRESH_TOKEN_URL_SUFFIX = "/sns/oauth2/refresh_token"
+const OAUTH2_USERINFO_URL_SUFFIX = "/sns/userinfo"
+const OAUTH2_AUTH_URL_SUFFIX = "/sns/auth"
+
 const OAUTH2_AUTHORIZE_URL_SUFFIX = "https://open.weixin.qq.com/connect/oauth2/authorize"
 const DEFAULT_OAUTH_REDIRECT_URI_SUFFIX = "/oauth_redirect"
 

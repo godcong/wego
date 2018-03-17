@@ -97,7 +97,7 @@ func GetConfig(path string) Config {
 	if v, b := c.GetTree(path).(*toml.Tree); b {
 		return (*Tree)(v)
 	}
-	return nil
+	return (*Tree)(nil)
 }
 
 func GetRootConfig() Config {
