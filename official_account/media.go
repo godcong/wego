@@ -7,7 +7,15 @@ import (
 )
 
 type Media struct {
+	config core.Config
 	*OfficialAccount
+}
+
+func newMedia(account *OfficialAccount) *Media {
+	return &Media{
+		config:          defaultConfig,
+		OfficialAccount: account,
+	}
 }
 
 //https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE
@@ -17,8 +25,9 @@ type Media struct {
 //media	是	form-data中媒体文件标识，有filename、filelength、content-type等信息
 func (m *Media) Upload(reader io.Reader, typ string) *core.Response {
 	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(MEDIA_UPLOAD_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-	})
+	resp := m.client.HttpPost(
+		m.client.Link(MEDIA_UPLOAD_URL_SUFFIX),
+		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+
 	return resp
 }
