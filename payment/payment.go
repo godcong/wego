@@ -58,28 +58,29 @@ func (p *Payment) GetClient() *core.Client {
 	return p.client
 }
 
-func (p *Payment) Request(url string, m core.Map) *core.Response {
-	return p.client.Request(p.client.Link(url), m, "post", nil)
+func (p *Payment) Request(url string, params core.Map) *core.Response {
+
+	return p.client.Request(p.client.Link(url), p.preRequest(params), "post", nil)
 }
 
-func (p *Payment) RequestRaw(url string, m core.Map) *core.Response {
-	return p.client.RequestRaw(p.client.Link(url), m, "post", nil)
+func (p *Payment) RequestRaw(url string, params core.Map) *core.Response {
+	return p.client.RequestRaw(p.client.Link(url), p.preRequest(params), "post", nil)
 }
 
-func (p *Payment) SafeRequest(url string, m core.Map) *core.Response {
-	return p.client.SafeRequest(p.client.Link(url), m, "post", nil)
+func (p *Payment) SafeRequest(url string, params core.Map) *core.Response {
+	return p.client.SafeRequest(p.client.Link(url), p.preRequest(params), "post", nil)
 }
 
-func (p *Payment) Pay(m core.Map) core.Map {
-	m.Set("appid", p.config.Get("app_id"))
-	return p.client.Request(MICROPAY_URL_SUFFIX, m, "post", nil).ToMap()
+func (p *Payment) Pay(params core.Map) core.Map {
+	params.Set("appid", p.config.Get("app_id"))
+	return p.client.Request(MICROPAY_URL_SUFFIX, p.preRequest(params), "post", nil).ToMap()
 }
 
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	m := make(core.Map)
 	m.Set("appid", p.config.Get("app_id"))
 	m.Set("auth_code", authCode)
-	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, m, "post", nil).ToMap()
+	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, p.preRequest(m), "post", nil).ToMap()
 }
 
 func (p *Payment) Security() wego.Security {
@@ -117,6 +118,18 @@ func (p *Payment) Order() wego.Order {
 		}
 	}
 	return p.order
+}
+
+func (p *Payment) preRequest(params core.Map) core.Map {
+	if params != nil {
+		params.Set("mch_id", p.client.Get("mch_id"))
+		params.Set("nonce_str", core.GenerateUUID())
+		params.Set("sub_mch_id", p.client.Get("sub_mch_id"))
+		params.Set("sub_appid", p.client.Get("sub_appid"))
+		params.Set("sign_type", core.SIGN_TYPE_MD5.String())
+		params.Set("sign", core.GenerateSignature(params, p.client.Get("key"), core.SIGN_TYPE_MD5))
+	}
+	return params
 }
 
 func (p *Payment) Link(url string) string {

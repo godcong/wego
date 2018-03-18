@@ -31,8 +31,9 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
 	}
-
-	m := a.client.Request(API_WEIXIN_URL_SUFFIX+CGI_BIN_TOKEN_URL_SUFFIX+"?"+m0.UrlEncode(), nil, "get", nil)
+	m := a.client.Request(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), nil, "get", Map{
+		REQUEST_TYPE_QUERY.String(): m0,
+	})
 	return m.ToBytes()
 	//return m
 }

@@ -66,11 +66,25 @@ func (m *Map) GetD(s string, d interface{}) interface{} {
 	return d
 }
 
+func (m *Map) GetMap(s string) Map {
+	if v, b := m.Get(s).(Map); b {
+		return v
+	}
+	return nil
+}
+
 func (m *Map) GetString(s string) string {
 	if v, b := m.Get(s).(string); b {
 		return v
 	}
 	return ""
+}
+
+func (m *Map) GetBytes(s string) []byte {
+	if v, b := m.Get(s).([]byte); b {
+		return v
+	}
+	return []byte(nil)
 }
 
 func (m *Map) GetStringD(s string, d string) string {

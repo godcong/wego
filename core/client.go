@@ -9,7 +9,9 @@ import (
 	"encoding/xml"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -17,8 +19,9 @@ type DataType string
 type ContextKey struct{}
 
 const (
-	DATA_TYPE_XML  DataType = "xml"
-	DATA_TYPE_JSON DataType = "json"
+	DATA_TYPE_XML       DataType = "xml"
+	DATA_TYPE_JSON      DataType = "json"
+	DATA_TYPE_MULTIPART DataType = "multipart"
 )
 
 type URL struct {
@@ -70,6 +73,13 @@ func (c *Client) HttpPostJson(url string, data Map, ops Map) *Response {
 	ops = MapNilMake(ops)
 	c.dataType = DATA_TYPE_JSON
 	ops.Set(REQUEST_TYPE_JSON.String(), data)
+	return c.Request(url, nil, "post", ops)
+}
+
+func (c *Client) HttpUpload(url string, data, ops Map) *Response {
+	ops = MapNilMake(ops)
+	c.dataType = DATA_TYPE_MULTIPART
+	ops.Set(REQUEST_TYPE_MULTIPART.String(), data)
 	return c.Request(url, nil, "post", ops)
 }
 
@@ -189,17 +199,7 @@ func buildSafeTransport(config Config) *http.Client {
 
 func request(c *Client, url string, params Map, method string, op Map) *Response {
 	Debug("client|request", c, url, params, method, op)
-	op = MapNilMake(op)
-	if params != nil {
-		params.Set("mch_id", c.Get("mch_id"))
-		params.Set("nonce_str", GenerateUUID())
-		params.Set("sub_mch_id", c.Get("sub_mch_id"))
-		params.Set("sub_appid", c.Get("sub_appid"))
-		params.Set("sign_type", SIGN_TYPE_MD5.String())
-		params.Set("sign", GenerateSignature(params, c.Get("key"), SIGN_TYPE_MD5))
-	}
-
-	data := toRequestData(c, params, op)
+	data := toRequestData(c, params, MapNilMake(op))
 
 	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
 		return Do(context.Background(), c, r)
@@ -216,7 +216,6 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 			c = hc
 		}
 	}
-
 	r, err := c.Do(request.request.WithContext(ctx))
 	// If we got an error, and the context has been canceled,
 	// the context's error is probably more useful.
@@ -228,22 +227,24 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 		}
 		Debug("Do|Do", err)
 		response.error = err
+		return &response
 	}
 	defer r.Body.Close()
 
 	response.responseData, response.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
-	response.responseType = RESPONSE_TYPE_XML
-	if client.DataType() == DATA_TYPE_JSON {
-		response.responseType = RESPONSE_TYPE_JSON
+	response.responseType = RESPONSE_TYPE_JSON
+	if client.DataType() == RESPONSE_TYPE_XML {
+		response.responseType = RESPONSE_TYPE_XML
 	}
-	Debug("ClientDo|response", response)
-	Debug("ClientDo|response|data", string(response.responseData))
+	Debug("ClientDo|response", response.responseType, response.error, response.responseMap)
+	Debug("ClientDo|response|data", len(response.responseData))
 	return &response
 }
 
 func toRequestData(client *Client, params, ops Map) *RequestData {
 	data := client.request.RequestDataCopy()
 	data.Query = processQuery(ops.Get(REQUEST_TYPE_QUERY.String()))
+	data.Body = nil
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
 		if params == nil {
@@ -262,7 +263,69 @@ func toRequestData(client *Client, params, ops Map) *RequestData {
 
 	}
 
+	// if client.DataType() == DATA_TYPE_XML {
+	// 	data.SetHeaderXml()
+	// 	if params == nil {
+	// 		data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
+	// 	} else {
+	// 		data.Body = strings.NewReader(params.ToXml())
+	// 	}
+	// }
+
+	if client.DataType() == DATA_TYPE_MULTIPART {
+		buf := bytes.Buffer{}
+		writer := multipart.NewWriter(&buf)
+		if params == nil {
+			writer = processMultipart(writer, ops.Get(REQUEST_TYPE_MULTIPART.String()))
+			data.Body = &buf
+			data.Header.Set("Content-Type", writer.FormDataContentType())
+		} else {
+			part, e := writer.CreateFormField("media")
+			if e == nil {
+				reader := bytes.NewReader(params.GetBytes("bytes"))
+				if _, e := io.Copy(part, reader); e != nil {
+					data.Body = &buf
+					data.Header.Set("Content-Type", writer.FormDataContentType())
+				}
+			}
+		}
+		defer writer.Close()
+	}
+
 	return data
+}
+func processMultipart(w *multipart.Writer, i interface{}) *multipart.Writer {
+	Debug("processMultipart|i", i)
+	switch v := i.(type) {
+	case Map:
+		path := v.GetString("media")
+		// Debug("processMultipart|name", name)
+
+		// Debug("processMultipart|path", path)
+		fh, e := os.Open(path)
+		if e != nil {
+			Debug("processMultipart|e", e)
+			return w
+		}
+		defer fh.Close()
+
+		fw, e := w.CreateFormFile("media", path)
+		if e != nil {
+			Debug("processMultipart|e", e)
+			return w
+		}
+
+		if _, e = io.Copy(fw, fh); e != nil {
+			Debug("processMultipart|e", e)
+			return w
+		}
+		des := v.GetMap("description")
+		if des != nil {
+			w.WriteField("description", string(des.ToJson()))
+		}
+
+	}
+	return w
 }
 
 func processFormParams(i interface{}) string {

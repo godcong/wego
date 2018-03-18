@@ -38,9 +38,6 @@ import (
 //	return &PayRequest{config: config}
 //}
 
-type RequestInterface interface {
-}
-
 type RequestType string
 
 const (
@@ -110,14 +107,20 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 	data = dataProcess(r, method, data)
 	url = parseQuery(url, data.Query)
 	Debug("PerformRequest|url", url)
-	Debug("PerformRequest|data", *data)
-	//Debug("PerformRequest|body", data.Body)
-	//Debug("PerformRequest|method", data.Method)
+	Debug("PerformRequest|data", data.Header, data.Method, data.Query)
+	// b, e := ioutil.ReadAll(data.Body)
+	// Debug("PerformRequest|data.Body", b, e)
+
 	req, err = http.NewRequest(data.Method, url, data.Body)
 	if err != nil {
 		r.error = err
 	}
-	req.Header = data.Header
+
+	for k := range data.Header {
+		req.Header.Set(k, data.Header.Get(k))
+	}
+
+	Debug(req.Header)
 	Debug("PerformRequest|req", req)
 	r.request = req
 	return r

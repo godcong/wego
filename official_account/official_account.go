@@ -66,6 +66,10 @@ func (m *OfficialAccount) Menu() wego.Menu {
 	return m.menu
 }
 
+func (m *OfficialAccount) AccessToken() *core.AccessToken {
+	return m.token
+}
+
 //
 //
 //func (m *OfficialAccount) Online() {

@@ -53,6 +53,9 @@ func (r *Response) ToBytes() []byte {
 }
 
 func (r *Response) ToString() string {
+	// if s := len(r.responseData); s > 2048 {
+	// 	return strconv.Itoa(s)
+	// }
 	return string(r.responseData)
 }
 

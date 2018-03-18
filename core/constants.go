@@ -15,11 +15,12 @@ func (t SignType) String() string {
 }
 
 const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
-const API_WEIXIN_URL_SUFFIX = "https://api.weixin.qq.com"
-const BACK_DOMAIN = "api2.mch.weixin.qq.com"
-const HK_DOMAIN = "apihk.mch.weixin.qq.com"
-const US_DOMAIN = "apius.mch.weixin.qq.com"
+const API_WEIXIN = "https://api.weixin.qq.com"
+const BACK_DOMAIN = "https://api2.mch.weixin.qq.com"
+const HK_DOMAIN = "https://apihk.mch.weixin.qq.com"
+const US_DOMAIN = "https://apius.mch.weixin.qq.com"
 const BIZPAYURL = "weixin://wxpay/bizpayurl?"
+const FILE_API_WEIXIN = "http://file.api.weixin.qq.com"
 
 const FAIL = "FAIL"
 const SUCCESS = "SUCCESS"

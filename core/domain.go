@@ -46,7 +46,9 @@ func newDomain(s string) *Domain {
 		case "default":
 			url = BASE_DOMAIN
 		case "official_account":
-			url = API_WEIXIN_URL_SUFFIX
+			url = API_WEIXIN
+		case "file":
+			url = FILE_API_WEIXIN
 		default:
 			url = BACK_DOMAIN
 		}
