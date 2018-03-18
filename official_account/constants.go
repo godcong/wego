@@ -34,6 +34,10 @@ const TAGS_MEMBERS_BATCHTAGGING_URL_SUFFIX = "/cgi-bin/tags/members/batchtagging
 const TAGS_MEMBERS_BATCHUNTAGGING_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
 const TAGS_GETIDLIST_URL_SUFFIX = "/cgi-bin/tags/getidlist"
 
+const USER_INFO_UPDATEREMARK_URL_SUFFIX = "/cgi-bin/user/info/updateremark"
+const USER_INFO_URL_SUFFIX = "/cgi-bin/user/info"
+const USER_INFO_BATCHGET_URL_SUFFIX = "/cgi-bin/user/info/batchget"
+
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
 // const tags_members_batchtagging_URL_SUFFIX = "/cgi-bin/tags/members/batchtagging"
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"

@@ -32,3 +32,18 @@ func TestTag_UserTagGet(t *testing.T) {
 	resp := t0.UserTagGet(2, "")
 	t.Log(resp.ToString())
 }
+
+func TestTag_MembersBatchTagging(t *testing.T) {
+	resp := t0.MembersBatchTagging(101, []string{"oLyBi0tDnybg0WFkhKsn5HRetX1I"})
+	t.Log(resp.ToString())
+}
+
+func TestTag_MembersBatchUntagging(t *testing.T) {
+	resp := t0.MembersBatchUntagging(101, []string{"oLyBi0tDnybg0WFkhKsn5HRetX1I"})
+	t.Log(resp.ToString())
+}
+
+func TestTag_GetIdList(t *testing.T) {
+	resp := t0.GetIdList("oLyBi0tDnybg0WFkhKsn5HRetX1I")
+	t.Log(resp.ToString())
+}
