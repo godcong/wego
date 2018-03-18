@@ -23,6 +23,6 @@ func TestUser_UserInfo(t *testing.T) {
 }
 
 func TestUser_BatchGet(t *testing.T) {
-	resp := u.BatchGet([]string{"oLyBi0tDnybg0WFkhKsn5HRetX1I"}, "zh_CN")
-	t.Log(resp.ToString())
+	resp := u.BatchGet([]string{"oLyBi0tDnybg0WFkhKsn5HRetX1I", "oLyBi0lCK5rQPuo0_cHJrjQ4J9XE"}, "")
+	t.Log(*resp[0], *resp[1])
 }

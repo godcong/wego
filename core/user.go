@@ -20,3 +20,8 @@ type UserInfo struct {
 	QrScene        int      `json:"qr_scene"`
 	QrSceneStr     string   `json:"qr_scene_str"`
 }
+
+type UserId struct {
+	OpenId string `json:"openid"`
+	Lang   string `json:"lang,omitempty"`
+}

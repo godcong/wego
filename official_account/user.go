@@ -75,29 +75,45 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN
-func (u *User) BatchGet(openids []string, lang string) *core.Response {
-
+// 成功:
+// {"user_info_list":[{"subscribe":1,"openid":"oLyBi0tDnybg0WFkhKsn5HRetX1I","nickname":"sean","sex":1,"language":"zh_CN","city":"浦东新区","province":"上海","country":"中国","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/anblvjPKYbMGjBnTVxw5gEZiasF6LiaMHheNxN4vWJcfCLRl8gEX0L6M7sNjtMkFYx8PJRCS1lr9RGxadkFlBibpA\/132","subscribe_time":1521022410,"remark":"nishi123","groupid":101,"tagid_list":[101],"subscribe_scene":"ADD_SCENE_PROFILE_CARD","qr_scene":0,"qr_scene_str":""},{"subscribe":1,"openid":"oLyBi0lCK5rQPuo0_cHJrjQ4J9XE","nickname":"🎀曉青青💋baby💞","sex":2,"language":"zh_CN","city":"浦东新区","province":"上海","country":"中国","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/ajNVdqHZLLAiae3G7CGiaF8I6nxDiczQIHSpEFSXwFQoP2v923ficqHdxnRoeZC1BAibXcQNkBOFsibBicMydnLE0UnKw\/132","subscribe_time":1521012452,"remark":"","groupid":0,"tagid_list":[],"subscribe_scene":"ADD_SCENE_QR_CODE","qr_scene":0,"qr_scene_str":""}]}
+// 失败:
+// {"errcode":40013,"errmsg":"invalid appid"}
+func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	core.Debug("User|BatchGet", openids, lang)
 	p := u.token.GetToken().KeyMap()
-	var list []struct {
-		OpenId string
-		Lang   string
-	}
-	// TODO:
-	// for _, v := range openids {
+	var list []*core.UserId
 
-	// list.Set("openid", v)
-	// if lang != "" {
-	// 	list.Set("lang", lang)
-	// }
-	// }
+	for _, v := range openids {
+		if lang != "" {
+			list = append(list, &core.UserId{
+				OpenId: v,
+				Lang:   lang,
+			})
+		} else {
+			list = append(list, &core.UserId{
+				OpenId: v,
+			})
+		}
+
+	}
 	resp := u.client.HttpPostJson(
-		u.client.Link(USER_INFO_URL_SUFFIX),
+		u.client.Link(USER_INFO_BATCHGET_URL_SUFFIX),
 		core.Map{
 			"user_list": list,
 		},
 		core.Map{
 			core.REQUEST_TYPE_QUERY.String(): p,
 		})
-	return resp
+
+	m := make(map[string][]*core.UserInfo)
+	e := json.Unmarshal(resp.ToBytes(), &m)
+	if e == nil {
+		if v, b := m["user_info_list"]; b {
+			return v
+		}
+	}
+	return nil
 }
+
+// TODO next :https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840
