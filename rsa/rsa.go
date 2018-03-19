@@ -3,6 +3,7 @@ package rsa
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha1"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
@@ -80,7 +81,7 @@ func Decrypt(pri string, text string) string {
 		return ""
 	}
 
-	b, e := rsa.DecryptPKCS1v15(rand.Reader, key, t)
+	b, e := rsa.DecryptOAEP(sha1.New(), rand.Reader, key, t, nil)
 	if e != nil {
 		return ""
 	}
@@ -93,19 +94,18 @@ func Encrypt(pub string, text string) string {
 		core.Debug(e)
 		return ""
 	}
-
 	key, e := ParseRSAPublicKeyFromPEM(publicKey)
 	if e != nil {
 		core.Debug(e)
 		return ""
 	}
-
-	b, e := rsa.EncryptPKCS1v15(rand.Reader, key, []byte(text))
-	if e != nil {
+	part, err := rsa.EncryptOAEP(sha1.New(), rand.Reader, key, []byte(text), nil)
+	if err != nil {
 		core.Debug(e)
 		return ""
 	}
-	return base64.StdEncoding.EncodeToString(b)
+
+	return base64.StdEncoding.EncodeToString(part)
 }
 
 func Base64Encode(b []byte) []byte {
