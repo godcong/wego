@@ -121,13 +121,14 @@ func mapToXml(m Map, needHeader bool) (string, error) {
 
 	enc.EncodeToken(xml.StartElement{Name: xml.Name{Local: "xml"}})
 	for k, v := range m {
-		if _, err := strconv.ParseInt(v.(string), 10, 0); err != nil {
-			enc.EncodeElement(
-				CDATA{Value: v.(string)}, xml.StartElement{Name: xml.Name{Local: k}})
-		} else {
-			enc.EncodeElement(v, xml.StartElement{Name: xml.Name{Local: k}})
+		if v0, b := v.(string); b {
+			if _, err := strconv.ParseInt(v0, 10, 0); err != nil {
+				enc.EncodeElement(
+					CDATA{Value: v0}, xml.StartElement{Name: xml.Name{Local: k}})
+				continue
+			}
 		}
-
+		enc.EncodeElement(v, xml.StartElement{Name: xml.Name{Local: k}})
 	}
 	enc.EncodeToken(xml.EndElement{Name: xml.Name{Local: "xml"}})
 	enc.Flush()
@@ -234,7 +235,9 @@ func GenerateSignature(m Map, key string, signType SignType) string {
 			continue
 		}
 		v := strings.TrimSpace(m.GetString(k))
+
 		if len(v) > 0 {
+			Debug(k, v)
 			sign = append(sign, strings.Join([]string{k, v}, "="))
 		}
 	}

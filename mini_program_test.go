@@ -11,10 +11,8 @@ import (
 func TestGetMiniProgram(t *testing.T) {
 	token := wego.GetMiniProgram().AccessToken().GetToken()
 	log.Println(token)
-
-	log.Println(token.GetKey())
+	log.Println(token.AccessToken)
 	//2018/02/25 16:47:09 map[access_token:7_H7C27Kt3UeVSrPr75bRvjDKzWTwIrMCwzdpB5oI9ClclterJ6xlnhnc8r9GdBEjPZvnbRBbmfQZMefPVnQqnwrs9_-3fq8k7uAPHJ2AlwpVvT8Oh3SxDfA0C-xnXG06--Mgo9OxllzHYnh-5ZTGiCIAFZM expires_in:7200]
-
 }
 
 func TestGetAuth(t *testing.T) {

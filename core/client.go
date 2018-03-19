@@ -165,6 +165,7 @@ func buildTransport(config Config) *http.Client {
 }
 
 func buildSafeTransport(config Config) *http.Client {
+	Debug("buildSafeTransport", config.Get("cert_path"), config.Get("key_path"), config.Get("rootca_path"))
 	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
 	if err != nil {
 		panic(err)
@@ -210,13 +211,8 @@ func request(c *Client, url string, params Map, method string, op Map) *Response
 
 func Do(ctx context.Context, client *Client, request *Request) *Response {
 	var response Response
-	c := http.DefaultClient
-	if ctx != nil {
-		if hc, ok := ctx.Value(HTTPClient).(*http.Client); ok {
-			c = hc
-		}
-	}
-	r, err := c.Do(request.request.WithContext(ctx))
+
+	r, err := client.client.Do(request.request.WithContext(ctx))
 	// If we got an error, and the context has been canceled,
 	// the context's error is probably more useful.
 	if err != nil {
@@ -225,7 +221,7 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 			err = ctx.Err()
 		default:
 		}
-		Debug("Do|Do", err)
+		Error("Client|Do", err)
 		response.error = err
 		return &response
 	}
@@ -258,6 +254,7 @@ func toRequestData(client *Client, params, ops Map) *RequestData {
 		if params == nil {
 			data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
 		} else {
+			Debug("toRequestData", params.ToXml())
 			data.Body = strings.NewReader(params.ToXml())
 		}
 
@@ -346,7 +343,7 @@ func processXml(i interface{}) io.Reader {
 		Debug("processXml|[]byte", v)
 		return bytes.NewReader(v)
 	case Map:
-		Debug("processXml|Map", v)
+		Debug("processXml|Map", v.ToXml())
 		return strings.NewReader(v.ToXml())
 	default:
 		Debug("processXml|default", v)

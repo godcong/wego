@@ -7,7 +7,18 @@ import (
 
 type Transfer struct {
 	core.Config
-	Payment
+	*Payment
+}
+
+func newTransfer(pay *Payment) *Transfer {
+	return &Transfer{
+		Config:  defaultConfig,
+		Payment: pay,
+	}
+}
+
+func NewTransfer() *Transfer {
+	return newTransfer(payment)
 }
 
 func (t *Transfer) QueryBalanceOrder(s string) core.Map {
@@ -48,9 +59,13 @@ func (t *Transfer) ToBankCard(m core.Map) core.Map {
 			}
 		}
 	}
+	m.Set("mch_id", t.client.Get("mch_id"))
+	m.Set("nonce_str", core.GenerateUUID())
 
-	m.Set("enc_bank_no", rsa.Encrypt(t.Config.Get("pubkey_path"), m.GetString("enc_bank_no")))
-	m.Set("enc_true_name", rsa.Encrypt(t.Config.Get("pubkey_path"), m.GetString("enc_true_name")))
-
-	return t.SafeRequest(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX, m).ToMap()
+	m.Set("enc_bank_no", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
+	m.Set("enc_true_name", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
+	m.Set("sign", core.GenerateSignature(m, t.client.Get("key"), core.SIGN_TYPE_MD5))
+	return t.client.SafeRequest(t.client.Link(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX), nil, "post", core.Map{
+		core.REQUEST_TYPE_XML.String(): m,
+	}).ToMap()
 }

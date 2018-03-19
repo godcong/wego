@@ -90,8 +90,11 @@ func (t *Template) GetIndustry() *core.Response {
 	return resp
 }
 
-//成功：
-//{"errcode":0,"errmsg":"ok","template_id":"tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo"}
+// 获取模板：https://mp.weixin.qq.com/advanced/tmplmsg?action=list&t=tmplmsg/list&token=93895307&lang=zh_CN
+// http请求方式: POST
+// https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
+// 成功：
+// {"errcode":0,"errmsg":"ok","template_id":"tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo"}
 func (t *Template) Add(shortId string) *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpPostJson(

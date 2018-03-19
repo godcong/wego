@@ -13,7 +13,8 @@
 
 [domain]
         [domain.host]
-            url = ''
+#配置本机域名用作微信回调地址
+            url = 'http://shop.commm.top/'
         [domain.default]
             url = 'https://api.mch.weixin.qq.com'
         [domain.official_account]
@@ -28,36 +29,36 @@
 #            data_type = "json"
 
         [official_account.default]
-            app_id =''                    #AppID
-            secret = ''     #AppSecret
-            token = ''                            #Token
-            aes_key = ''    #EncodingAESKey
+            app_id ='wxbafed7010e0f4531'                    #AppID
+            secret = '62dfc98746e2c4073ba4938574801097'     #AppSecret
+            token = 'wulianbo123'                            #Token
+            aes_key = 'TNwHN28RXXoyVxkMCUEqKuCL08eBpCKgWZTkWNVnGLu'    #EncodingAESKey
 
         [official_account.oauth]
             scopes   = ['snsapi_userinfo']
-            callback = '/oauth_callback'
+            redirect_uri = '/oauth_redirect'
 
 
 [open_platform]
         [open_platform.default]
-            app_id =''                      #AppID
-            secret = ''       #AppSecret
+            app_id ='wx426b3015555a46be'                      #AppID
+            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
             token = 'your-token'                              #Token
-            aes_key = ''      #EncodingAESKey
+            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
 
 [mini_program]
         [mini_program.default]
-            app_id =''                      #AppID
-            secret = ''       #AppSecret
+            app_id ='wx426b3015555a46be'                      #AppID
+            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
             token = 'your-token'                              #Token
-            aes_key = ''      #EncodingAESKey
+            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
 
 [payment]
         [payment.default]
             sandbox = false
-            app_id =''
-            mch_id = ''
-            key = ''
+            app_id ='wxbafed7010e0f4531'
+            mch_id = '1497361732'
+            key = 'nnwdq9tS2bzQgUAoC0B3pfHxQ69tRzZ0'
             notify_url ='wego/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
@@ -67,6 +68,6 @@
 
 [work]
         [work.default]
-            corp_id = ''
+            corp_id = 'xxxxxxxxxxxxxxxxx'
             agent_id = 100020
             secret  = ''

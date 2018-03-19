@@ -8,6 +8,8 @@ import (
 	"encoding/pem"
 	"errors"
 	"io/ioutil"
+
+	"github.com/godcong/wego/core"
 )
 
 var (
@@ -88,30 +90,33 @@ func Decrypt(pri string, text string) string {
 func Encrypt(pub string, text string) string {
 	publicKey, e := ioutil.ReadFile(pub)
 	if e != nil {
+		core.Debug(e)
 		return ""
 	}
 
 	key, e := ParseRSAPublicKeyFromPEM(publicKey)
 	if e != nil {
+		core.Debug(e)
 		return ""
 	}
 
 	b, e := rsa.EncryptPKCS1v15(rand.Reader, key, []byte(text))
 	if e != nil {
+		core.Debug(e)
 		return ""
 	}
-	return base64.RawURLEncoding.EncodeToString(b)
+	return base64.StdEncoding.EncodeToString(b)
 }
 
 func Base64Encode(b []byte) []byte {
-	buf := make([]byte, base64.RawURLEncoding.EncodedLen(len(b)))
-	base64.RawURLEncoding.Encode(buf, b)
+	buf := make([]byte, base64.StdEncoding.EncodedLen(len(b)))
+	base64.StdEncoding.Encode(buf, b)
 	return buf
 }
 
 // Base64Decode
 func Base64Decode(b []byte) ([]byte, error) {
-	buf := make([]byte, base64.RawURLEncoding.DecodedLen(len(b)))
-	n, err := base64.RawURLEncoding.Decode(buf, b)
+	buf := make([]byte, base64.StdEncoding.DecodedLen(len(b)))
+	n, err := base64.StdEncoding.Decode(buf, b)
 	return buf[:n], err
 }

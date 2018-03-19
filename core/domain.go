@@ -43,6 +43,8 @@ func newDomain(s string) *Domain {
 		switch s {
 		case "host":
 			url = "localhost"
+		case "payment":
+			fallthrough
 		case "default":
 			url = BASE_DOMAIN
 		case "official_account":

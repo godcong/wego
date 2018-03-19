@@ -18,6 +18,6 @@ func (r *RequestData) SetHeaderJson() *RequestData {
 }
 
 func (r *RequestData) SetHeaderXml() *RequestData {
-	r.Header.Set("Content-Type", "application/json")
+	r.Header.Set("Content-Type", "application/xml")
 	return r
 }

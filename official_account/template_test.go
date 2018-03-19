@@ -12,8 +12,8 @@ func TestNewTemplate(t *testing.T) {
 
 	//testTemplate_SetIndustry(t, t0)
 	//testTemplate_GetIndustry(t, t0)
-	//testTemplate_Add(t, t0)
-	testTemplate_Send(t, t0)
+	testTemplate_Add(t, t0)
+	//testTemplate_Send(t, t0)
 }
 
 func testTemplate_SetIndustry(t *testing.T, template *official_account.Template) {

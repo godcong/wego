@@ -25,7 +25,7 @@ var defaultConfig core.Config
 var payment *Payment
 
 func init() {
-	defaultConfig = core.GetConfig(core.DeployJoin("payment", "default"))
+	defaultConfig = core.GetConfig("payment.default")
 	app := core.App()
 
 	payment = newPayment(app)
@@ -36,9 +36,10 @@ func init() {
 func newPayment(application *core.Application) *Payment {
 	client := core.NewClient(defaultConfig)
 	token := core.NewAccessToken(defaultConfig, client)
-	domain := core.NewDomain("payment")
+	domain := core.NewDomain("default")
 
 	payment = &Payment{
+		config: defaultConfig,
 		app:    application,
 		client: client,
 		token:  token,
@@ -85,10 +86,7 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 
 func (p *Payment) Security() wego.Security {
 	if p.security == nil {
-		p.security = &Security{
-			Config:  p.config,
-			Payment: p,
-		}
+		p.security = NewSecurity()
 	}
 	return p.security
 }
@@ -124,11 +122,16 @@ func (p *Payment) preRequest(params core.Map) core.Map {
 	if params != nil {
 		params.Set("mch_id", p.client.Get("mch_id"))
 		params.Set("nonce_str", core.GenerateUUID())
-		params.Set("sub_mch_id", p.client.Get("sub_mch_id"))
-		params.Set("sub_appid", p.client.Get("sub_appid"))
+		if v := p.client.Get("sub_mch_id"); v != "" {
+			params.Set("sub_mch_id", v)
+		}
+		if v := p.client.Get("sub_appid"); v != "" {
+			params.Set("sub_appid", v)
+		}
 		params.Set("sign_type", core.SIGN_TYPE_MD5.String())
 		params.Set("sign", core.GenerateSignature(params, p.client.Get("key"), core.SIGN_TYPE_MD5))
 	}
+	core.Debug("preRequest", params)
 	return params
 }
 

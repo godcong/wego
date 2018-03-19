@@ -29,6 +29,7 @@ func newMiniProgram() *MiniProgram {
 		client: core.NewClient(config),
 	}
 	mini0.token = core.NewAccessToken(config, mini0.client)
+	mini0.client.SetDomain(core.NewDomain("default"))
 	return mini0
 }
 
@@ -80,16 +81,12 @@ func (m *MiniProgram) Template() *Template {
 	return m.template
 }
 
-func (m *MiniProgram) AccessToken() wego.AccessToken {
+func (m *MiniProgram) AccessToken() *core.AccessToken {
 	core.Debug("MiniProgram|AccessToken")
 	if m.token == nil {
 		m.token = core.NewAccessToken(m.Config, m.client)
 	}
 	return m.token
-}
-
-func (m *MiniProgram) prefix(s string) string {
-	return core.API_WEIXIN_URL_SUFFIX + s
 }
 
 //func (m *MiniProgram) accessToken() token.AccessTokenInterface {

@@ -9,6 +9,19 @@ type Security struct {
 	*Payment
 }
 
+func newSecurity(pay *Payment) *Security {
+	return &Security{
+		Config:  defaultConfig,
+		Payment: pay,
+	}
+}
+
+func NewSecurity() *Security {
+	return newSecurity(payment)
+}
+
 func (s *Security) GetPublicKey() core.Map {
-	return s.GetClient().SafeRequest(RISK_GETPUBLICKEY_URL_SUFFIX, core.Map{"sign_type": "MD5"}, "post", nil).ToMap()
+	m := s.preRequest(core.Map{"sign_type": "MD5"})
+	s.client.SetDataType(core.DATA_TYPE_XML)
+	return s.client.SafeRequest(RISK_GETPUBLICKEY_URL_SUFFIX, m, "post", nil).ToMap()
 }

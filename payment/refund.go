@@ -15,7 +15,7 @@ func (r *Refund) refund(num string, total, refund int, options core.Map) *core.R
 	options.NilSet("out_refund_no", num)
 	options.NilSet("total_fee", strconv.Itoa(total))
 	options.NilSet("refund_fee", strconv.Itoa(refund))
-	options.NilSet("appid", r.Config.Get("app_id"))
+	options.NilSet("appid", r.Get("app_id"))
 
 	return r.SafeRequest(REFUND_URL_SUFFIX, options)
 }
