@@ -14,6 +14,7 @@ func (t SignType) String() string {
 	return MD5
 }
 
+const MP_DOMAIN = "https://mp.weixin.qq.com"
 const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
 const API_WEIXIN = "https://api.weixin.qq.com"
 const BACK_DOMAIN = "https://api2.mch.weixin.qq.com"

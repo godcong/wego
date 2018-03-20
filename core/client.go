@@ -113,7 +113,7 @@ func (c *Client) Link(uri string) string {
 	if c.GetBool("sandbox") {
 		return c.URL() + SANDBOX_URL_SUFFIX + uri
 	}
-	return c.URL() + uri
+	return c.domain.Link(uri)
 }
 
 func (c *Client) GetResponse() *Response {
@@ -226,6 +226,10 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 		return &response
 	}
 	defer r.Body.Close()
+
+	if r.StatusCode != http.StatusOK {
+		Debug("Do|StatusCode", r.StatusCode)
+	}
 
 	response.responseData, response.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
 	response.responseType = RESPONSE_TYPE_JSON

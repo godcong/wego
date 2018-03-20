@@ -43,6 +43,7 @@ func newDomain(s string) *Domain {
 		switch s {
 		case "host":
 			url = "localhost"
+
 		case "payment":
 			fallthrough
 		case "default":
@@ -51,6 +52,8 @@ func newDomain(s string) *Domain {
 			url = API_WEIXIN
 		case "file":
 			url = FILE_API_WEIXIN
+		case "mp":
+			url = MP_DOMAIN
 		default:
 			url = BACK_DOMAIN
 		}

@@ -43,6 +43,9 @@ const USER_INFO_URL_SUFFIX = "/cgi-bin/user/info"
 const USER_INFO_BATCHGET_URL_SUFFIX = "/cgi-bin/user/info/batchget"
 const USER_GET_URL_SUFFIX = "/cgi-bin/user/get"
 
+const QRCODE_CREATE_URL_SUFFIX = "/cgi-bin/qrcode/create"
+const SHOWQRCODE_URL_SUFFIX = "/cgi-bin/showqrcode"
+
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
 // const tags_members_batchtagging_URL_SUFFIX = "/cgi-bin/tags/members/batchtagging"
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"

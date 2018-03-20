@@ -34,8 +34,8 @@ func (a *AccessToken) sendRequest(s string) []byte {
 	m := a.client.Request(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), nil, "get", Map{
 		REQUEST_TYPE_QUERY.String(): m0,
 	})
+	Debug("AccessToken|sendRequest", m.ToString())
 	return m.ToBytes()
-	//return m
 }
 
 func NewAccessToken(config Config, client *Client) *AccessToken {

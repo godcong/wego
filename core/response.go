@@ -1,5 +1,9 @@
 package core
 
+import (
+	"os"
+)
+
 type Response struct {
 	responseType ResponseType
 	responseData []byte
@@ -59,23 +63,14 @@ func (r *Response) ToString() string {
 	return string(r.responseData)
 }
 
-//func ClientDo(client *Client, request *Request) *Response {
-//	response := &Response{}
-//
-//	response.response, response.error = client.HttpClient().Do(request.HttpRequest())
-//	if response.error != nil {
-//		return response
-//	}
-//
-//	response.responseData, response.error = ioutil.ReadAll(response.response.Body)
-//	response.responseType = RESPONSE_TYPE_XML
-//	if client.DataType() == DATA_TYPE_JSON {
-//		response.responseType = RESPONSE_TYPE_JSON
-//	}
-//	Debug("ClientDo|response", *response)
-//	Debug("ClientDo|response|data", string(response.responseData))
-//	return response
-//}
+func (r *Response) ToFile(path string) {
+	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
+	if e != nil {
+		Debug("Response|ToFile", e)
+		return
+	}
+	file.Write(r.ToBytes())
+}
 
 func ErrorResponse(err error) *Response {
 	Debug("ErrorResponse|err", err)
