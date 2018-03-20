@@ -116,4 +116,20 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	return nil
 }
 
-// TODO next :https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840
+//http请求方式: GET（请使用https协议）
+//https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
+func (u *User) Get(nextOpenid string) *core.Response {
+	core.Debug("User|Get", nextOpenid)
+	query := u.token.GetToken().KeyMap()
+	if nextOpenid != "" {
+		query.Set("next_openid", nextOpenid)
+	}
+
+	resp := u.client.HttpGet(
+		u.client.Link(USER_GET_URL_SUFFIX),
+		core.Map{
+			core.REQUEST_TYPE_QUERY.String(): query,
+		})
+
+	return resp
+}

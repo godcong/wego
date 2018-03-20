@@ -174,3 +174,64 @@ func (t *Tag) GetIdList(openid string) *core.Response {
 		})
 	return resp
 }
+
+//http请求方式：POST（请使用https协议）
+//https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN
+func (t *Tag) GetBlackList(beginOpenid string) *core.Response {
+	core.Debug("Tag|GetBlackList", beginOpenid)
+	var param core.Map
+	if beginOpenid != "" {
+		param = core.Map{"begin_openid": beginOpenid}
+	}
+
+	query := t.token.GetToken().KeyMap()
+	resp := t.client.HttpPostJson(
+		t.client.Link(TAGS_MEMBERS_GETBLACKLIST_URL_SUFFIX),
+		param,
+		core.Map{
+			core.REQUEST_TYPE_QUERY.String(): query,
+		})
+	return resp
+}
+
+// http请求方式：POST（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=ACCESS_TOKEN
+// 成功:
+// {"errcode":0,"errmsg":"ok"}
+func (t *Tag) BatchBlackList(openidList []string) *core.Response {
+	core.Debug("Tag|BatchBlackList", openidList)
+	var param core.Map
+	if l := len(openidList); l > 0 && l <= 20 {
+		param = core.Map{"openid_list": openidList}
+	}
+
+	query := t.token.GetToken().KeyMap()
+	resp := t.client.HttpPostJson(
+		t.client.Link(TAGS_MEMBERS_BATCHBLACKLIST_URL_SUFFIX),
+		param,
+		core.Map{
+			core.REQUEST_TYPE_QUERY.String(): query,
+		})
+	return resp
+}
+
+// http请求方式：POST（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN
+// 成功:
+// {"errcode":0,"errmsg":"ok"}
+func (t *Tag) BatchUnblackList(openidList []string) *core.Response {
+	core.Debug("Tag|BatchUnblackList", openidList)
+	var param core.Map
+	if l := len(openidList); l > 0 && l <= 20 {
+		param = core.Map{"openid_list": openidList}
+	}
+
+	query := t.token.GetToken().KeyMap()
+	resp := t.client.HttpPostJson(
+		t.client.Link(TAGS_MEMBERS_BATCHUNBLACKLIST_URL_SUFFIX),
+		param,
+		core.Map{
+			core.REQUEST_TYPE_QUERY.String(): query,
+		})
+	return resp
+}

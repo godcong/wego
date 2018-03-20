@@ -47,3 +47,18 @@ func TestTag_GetIdList(t *testing.T) {
 	resp := t0.GetIdList("oLyBi0tDnybg0WFkhKsn5HRetX1I")
 	t.Log(resp.ToString())
 }
+
+func TestTag_GetBlackList(t *testing.T) {
+	resp := t0.GetBlackList("oLyBi0tDnybg0WFkhKsn5HRetX1I")
+	t.Log(resp.ToString())
+}
+
+func TestTag_BatchBlackList(t *testing.T) {
+	resp := t0.BatchBlackList([]string{"oLyBi0tDnybg0WFkhKsn5HRetX1I"})
+	t.Log(resp.ToString())
+}
+
+func TestTag_BatchUnblackList(t *testing.T) {
+	resp := t0.BatchUnblackList([]string{"oLyBi0tDnybg0WFkhKsn5HRetX1I"})
+	t.Log(resp.ToString())
+}
