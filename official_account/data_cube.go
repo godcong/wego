@@ -134,14 +134,75 @@ func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *core.Response
 	)
 }
 
-// TODO:
 // 获取消息发送概况数据（getupstreammsg）	7	https://api.weixin.qq.com/datacube/getupstreammsg?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSG_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息分送分时数据（getupstreammsghour）	1	https://api.weixin.qq.com/datacube/getupstreammsghour?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGHOUR_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息发送周数据（getupstreammsgweek）	30	https://api.weixin.qq.com/datacube/getupstreammsgweek?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGWEEK_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息发送月数据（getupstreammsgmonth）	30	https://api.weixin.qq.com/datacube/getupstreammsgmonth?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgMonth", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGMONTH_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息发送分布数据（getupstreammsgdist）	15	https://api.weixin.qq.com/datacube/getupstreammsgdist?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGDIST_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息发送分布周数据（getupstreammsgdistweek）	30	https://api.weixin.qq.com/datacube/getupstreammsgdistweek?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGDISTWEEK_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
+
 // 获取消息发送分布月数据（getupstreammsgdistmonth）	30	https://api.weixin.qq.com/datacube/getupstreammsgdistmonth?access_token=ACCESS_TOKEN
+func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *core.Response {
+	core.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
+	return d.get(
+		DATACUBE_GETUPSTREAMMSGDISTMONTH_URL_SUFFIX,
+		beginDate.Format("2006-01-02"),
+		endDate.Format("2006-01-02"),
+	)
+}
 
 func (d *DataCube) get(url, beginDate, endDate string) *core.Response {
 	key := d.token.GetToken().KeyMap()

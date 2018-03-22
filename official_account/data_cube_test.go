@@ -68,3 +68,31 @@ func testDataCube_GetUserShareHour(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUserShareHour(t0, t1)
 	t.Log(resp.ToString())
 }
+
+func TestDataCube_GetUpstreamMsg(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgDist(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgDistMonth(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgDistWeek(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgHour(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgMonth(t *testing.T) {
+
+}
+
+func TestDataCube_GetUpstreamMsgWeek(t *testing.T) {
+
+}
