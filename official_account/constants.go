@@ -65,6 +65,8 @@ const DATACUBE_GETUPSTREAMMSGDIST_URL_SUFFIX = "/datacube/getupstreammsgdist"
 const DATACUBE_GETUPSTREAMMSGMONTH_URL_SUFFIX = "/datacube/getupstreammsgmonth"
 const DATACUBE_GETUPSTREAMMSGDISTWEEK_URL_SUFFIX = "/datacube/getupstreammsgdistweek"
 const DATACUBE_GETUPSTREAMMSGDISTMONTH_URL_SUFFIX = "/datacube/getupstreammsgdistmonth"
+const DATACUBE_GETINTERFACESUMMARY_URL_SUFFIX = "/datacube/getinterfacesummary"
+const DATACUBE_GETINTERFACESUMMARYHOUR_URL_SUFFIX = "/datacube/getinterfacesummaryhour"
 
 const MATERIAL_ADD_NEWS_URL_SUFFIX = "/cgi-bin/material/add_news"
 const MATERIAL_ADD_MATERIAL_URL_SUFFIX = "/cgi-bin/material/add_material"

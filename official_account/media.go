@@ -104,16 +104,25 @@ func (m *Media) GetJssdk(mediaId string) *core.Response {
 // curl -F media=@test.jpg "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN"
 // 成功:
 // {"url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0"}
-func (m *Media) UploadImg(filePath string) *core.Response {
+func (m *Media) UploadMediaImg(filePath string) *core.Response {
+	return m.uploadImg("media", filePath)
+}
+
+// HTTP请求方式: POST/FROMURL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
+// 调用示例（使用curl命令，用FORM表单方式上传一个图片）：curl –Fbuffer=@test.jpg
+func (m *Media) UploadBufferImg(filePath string) *core.Response {
+	return m.uploadImg("buffer", filePath)
+}
+
+func (m *Media) uploadImg(name string, filePath string) *core.Response {
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpUpload(
 		m.client.Link(MEDIA_UPLOADIMG_URL_SUFFIX),
 		core.Map{
-			"media": filePath,
+			name: filePath,
 		},
 		core.Map{
 			core.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
-
 }
