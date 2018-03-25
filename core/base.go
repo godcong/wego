@@ -215,14 +215,19 @@ func SHA1(s string) string {
 }
 
 func ParseInt(v interface{}) int64 {
-	var t int64
-	switch v.(type) {
+	switch v0 := v.(type) {
 	case int, int32, int64, uint, uint32, uint64:
-		t = v.(int64)
+		log.Println(v0)
+		return int64(v0)
+	case float64, float32:
+		log.Println(v0)
+		return int64(v0)
+
 	default:
-		return -1
+		log.Println(v0)
+
 	}
-	return t
+	return -1
 }
 
 //GenerateSignature make sign from map data

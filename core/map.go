@@ -73,6 +73,18 @@ func (m *Map) GetMap(s string) Map {
 	return nil
 }
 
+func (m *Map) GetNumber(s string) int64 {
+	return ParseInt(m.Get(s))
+}
+
+func (m *Map) GetNumberD(s string, i int64) int64 {
+	n := m.GetNumber(s)
+	if n >= 0 {
+		return n
+	}
+	return i
+}
+
 func (m *Map) GetString(s string) string {
 	if v, b := m.Get(s).(string); b {
 		return v
