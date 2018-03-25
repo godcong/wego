@@ -215,17 +215,14 @@ func SHA1(s string) string {
 }
 
 func ParseNumber(v interface{}) float64 {
-	v0 := ParseInt(v)
-	if v0 >= 0 {
-		return float64(v0)
-	} else {
-		switch v.(type) {
-		case float64:
-			return v.(float64)
-		case float32:
-			return float64(v.(float32))
-		}
+
+	switch v.(type) {
+	case float64:
+		return v.(float64)
+	case float32:
+		return float64(v.(float32))
 	}
+
 	return -1
 }
 
