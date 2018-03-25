@@ -73,11 +73,11 @@ func (m *Map) GetMap(s string) Map {
 	return nil
 }
 
-func (m *Map) GetNumber(s string) int64 {
-	return ParseInt(m.Get(s))
+func (m *Map) GetNumber(s string) float64 {
+	return ParseNumber(m.Get(s))
 }
 
-func (m *Map) GetNumberD(s string, i int64) int64 {
+func (m *Map) GetNumberD(s string, i float64) float64 {
 	n := m.GetNumber(s)
 	if n >= 0 {
 		return n

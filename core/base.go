@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/godcong/wego/core/message"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
 const CUSTOM_HEADER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
@@ -51,7 +51,7 @@ func GenerateUUID() string {
 	return string(run)
 }
 
-//MapToString
+// MapToString
 func MapToString(data Map) string {
 	var keys sort.StringSlice
 	for k := range data {
@@ -90,7 +90,7 @@ func ToUrlParams(data Map) string {
 
 }
 
-//MakeSignMD5 make sign with md5
+// MakeSignMD5 make sign with md5
 func MakeSignMD5(data string) string {
 	m := md5.New()
 	io.WriteString(m, data)
@@ -98,7 +98,7 @@ func MakeSignMD5(data string) string {
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
-//MakeSignHMACSHA256 make sign with hmac-sha256
+// MakeSignHMACSHA256 make sign with hmac-sha256
 func MakeSignHMACSHA256(data, key string) string {
 	m := hmac.New(sha256.New, []byte(key))
 	m.Write([]byte(data))
@@ -156,16 +156,16 @@ func xmlToMap(contentXml []byte, hasHeader bool) Map {
 		// 处理元素开始（标签）
 		case xml.StartElement:
 			ele = token.Name.Local
-			//fmt.Printf("This is the sta: %s\n", ele)
+			// fmt.Printf("This is the sta: %s\n", ele)
 			if strings.ToLower(ele) == "xml" {
-				//xmlFlag = true
+				// xmlFlag = true
 				continue
 			}
 
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
-			//fmt.Printf("This is the end: %s\n", name)
+			// fmt.Printf("This is the end: %s\n", name)
 			if strings.ToLower(name) == "xml" {
 				break
 			}
@@ -176,10 +176,10 @@ func xmlToMap(contentXml []byte, hasHeader bool) Map {
 			}
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
-			//content := string(token)
-			//fmt.Printf("This is the content: %v\n", content)
+			// content := string(token)
+			// fmt.Printf("This is the content: %v\n", content)
 			val = string(token)
-			//异常处理(Log输出）
+			// 异常处理(Log输出）
 		default:
 			Println(token)
 		}
@@ -189,17 +189,17 @@ func xmlToMap(contentXml []byte, hasHeader bool) Map {
 	return m
 }
 
-//CurrentTimeStampMS get current time with millisecond
+// CurrentTimeStampMS get current time with millisecond
 func CurrentTimeStampMS() int64 {
 	return time.Now().UnixNano() / time.Millisecond.Nanoseconds()
 }
 
-//CurrentTimeStampNS get current time with nanoseconds
+// CurrentTimeStampNS get current time with nanoseconds
 func CurrentTimeStampNS() int64 {
 	return time.Now().UnixNano()
 }
 
-//CurrentTimeStamp get current time with unix
+// CurrentTimeStamp get current time with unix
 func CurrentTimeStamp() int64 {
 	return time.Now().Unix()
 }
@@ -214,23 +214,41 @@ func SHA1(s string) string {
 	return fmt.Sprintf("%x", m.Sum(nil))
 }
 
-func ParseInt(v interface{}) int64 {
-	switch v0 := v.(type) {
-	case int, int32, int64, uint, uint32, uint64:
-		log.Println(v0)
-		return int64(v0)
-	case float64, float32:
-		log.Println(v0)
-		return int64(v0)
-
-	default:
-		log.Println(v0)
-
+func ParseNumber(v interface{}) float64 {
+	v0 := ParseInt(v)
+	if v0 >= 0 {
+		return float64(v0)
+	} else {
+		switch v.(type) {
+		case float64:
+			return v.(float64)
+		case float32:
+			return float64(v.(float32))
+		}
 	}
 	return -1
 }
 
-//GenerateSignature make sign from map data
+func ParseInt(v interface{}) int64 {
+	switch v0 := v.(type) {
+	case int:
+		return int64(v0)
+	case int32:
+		return int64(v0)
+	case int64:
+		return int64(v0)
+	case uint:
+		return int64(v0)
+	case uint32:
+		return int64(v0)
+	case uint64:
+		return int64(v0)
+	default:
+	}
+	return -1
+}
+
+// GenerateSignature make sign from map data
 func GenerateSignature(m Map, key string, signType SignType) string {
 	keys := m.SortKeys()
 	var sign []string
@@ -256,15 +274,15 @@ func GenerateSignature(m Map, key string, signType SignType) string {
 
 }
 
-//SandboxSignKey get wechat sandbox sign key
+// SandboxSignKey get wechat sandbox sign key
 func SandboxSignKey(config Config) []byte {
 	m := make(Map)
 	m.Set("mch_id", config.Get("mch_id"))
 	m.Set("nonce_str", GenerateNonceStr())
 	sign := GenerateSignature(m, config.Get("aes_key"), SIGN_TYPE_MD5)
 	m.Set("sign", sign)
-	//_ = NewApplication(config)
-	//return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
+	// _ = NewApplication(config)
+	// return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)
 	return []byte(nil)
 }
 
