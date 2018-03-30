@@ -78,13 +78,9 @@ func (m *Map) GetMap(s string) Map {
 }
 
 func (m *Map) GetMapD(s string, d Map) Map {
-	if v, b := m.Get(s).(map[string]interface{}); b {
-		return Map(v)
+	if v := m.GetMap(s); v != nil {
+		return v
 	}
-
-	// if v, b := m.Get(s).(Map); b {
-	// 	return v
-	// }
 	return d
 }
 
