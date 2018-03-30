@@ -71,9 +71,9 @@ func (m *Map) GetMap(s string) Map {
 		return v
 	}
 
-	if v, b := m.Get(s).(Map); b {
-		return v
-	}
+	// if v, b := m.Get(s).(Map); b {
+	// 	return v
+	// }
 	return nil
 }
 
