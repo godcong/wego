@@ -209,21 +209,17 @@ func CurrentTimeStampString() string {
 }
 
 func SHA1(s string) string {
-	m := sha1.New()
-	m.Write([]byte(s))
-	return fmt.Sprintf("%x", m.Sum(nil))
+	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
 
 func ParseNumber(v interface{}) float64 {
-
 	switch v.(type) {
 	case float64:
 		return v.(float64)
 	case float32:
 		return float64(v.(float32))
 	}
-
-	return -1
+	return 0
 }
 
 func ParseInt(v interface{}) int64 {
@@ -242,7 +238,25 @@ func ParseInt(v interface{}) int64 {
 		return int64(v0)
 	default:
 	}
-	return -1
+	return 0
+}
+
+func SignatureSHA1(m Map) string {
+	keys := m.SortKeys()
+	var sign []string
+	for _, k := range keys {
+
+		if v := strings.TrimSpace(m.GetString(k)); v != "" {
+			Debug(k, v)
+			sign = append(sign, strings.Join([]string{k, v}, "="))
+		} else if v := m.GetInt64(k); v != 0 {
+			Debug(k, v)
+			sign = append(sign, strings.Join([]string{k, strconv.FormatInt(v, 10)}, "="))
+		}
+
+	}
+	sb := strings.Join(sign, "&")
+	return SHA1(sb)
 }
 
 // GenerateSignature make sign from map data

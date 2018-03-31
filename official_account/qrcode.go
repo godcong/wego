@@ -11,15 +11,40 @@ type QrCodeScene struct {
 	SceneStr string `json:"scene_str,omitempty"`
 }
 
+type QrCodeCard struct {
+	CardId       string `json:"card_id,omitempty"`   // "card_id": "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
+	Code         string `json:"code"`                // "code": "198374613512",
+	OpenId       string `json:"openid,omitempty"`    // "openid": "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
+	IsUniqueCode bool   `json:"openid,omitempty"`    // "is_unique_code": false,
+	OuterStr     string `json:"outer_str,omitempty"` // "outer_str":"12b"
+}
+
+type QrCodeCardList struct {
+	CardId   string `json:"card_id,omitempty"`   // "card_id": "p1Pj9jgj3BcomSgtuW8B1wl-wo88",
+	Code     string `json:"code"`                // "code": "198374613512",
+	OuterStr string `json:"outer_str,omitempty"` // "outer_str":"12b"
+}
+
 type QrCodeActionInfo struct {
-	Scene QrCodeScene `json:"scene"`
+	Scene    QrCodeScene      `json:"scene,omitempty"`
+	Card     QrCodeCard       `json:"card,omitempty"`
+	CardList []QrCodeCardList `json:"card_list,omitempty"`
 }
 
 type QrCodeAction struct {
-	ExpireSeconds int              `json:"expire_seconds"`
-	ActionName    string           `json:"action_name"`
+	ExpireSeconds int              `json:"expire_seconds,omitempty"`
+	ActionName    QrCodeActionName `json:"action_name"`
 	ActionInfo    QrCodeActionInfo `json:"action_info"`
 }
+
+type QrCodeActionName string
+
+const (
+	QR_MULTIPLE_CARD   QrCodeActionName = "QR_MULTIPLE_CARD"
+	QR_CARD            QrCodeActionName = "QR_CARD"
+	QR_SCENE           QrCodeActionName = "QR_SCENE"
+	QR_LIMIT_STR_SCENE QrCodeActionName = "QR_LIMIT_STR_SCENE"
+)
 
 type QrCode struct {
 	core.Config
@@ -79,4 +104,8 @@ func (q *QrCode) ShowQrCode(ticket string) *core.Response {
 			},
 		})
 	return resp
+}
+
+func (n QrCodeActionName) String() string {
+	return string(n)
 }

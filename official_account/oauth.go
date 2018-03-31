@@ -38,7 +38,7 @@ func newOAuth(officialAccount *OfficialAccount) *OAuth {
 	oauth.Config = core.GetConfig("official_account.oauth")
 	oauth.domain = core.DomainHost()
 	oauth.scopes = oauth.GetD("scopes", SNSAPI_BASE)
-	oauth.redirectUri = oauth.GetD("redirect_uri", DEFAULT_OAUTH_REDIRECT_URI_SUFFIX)
+	oauth.redirectUri = oauth.GetD("redirect_uri", DEFAULT_OAUTH_REDIRECT_URL_SUFFIX)
 	oauth.authorize = oauth.GetD("authorize", OAUTH2_AUTHORIZE_URL_SUFFIX)
 	return oauth
 }

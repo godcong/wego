@@ -33,8 +33,8 @@ func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) *core.Response {
 	core.Debug("DataCube|GetUserSummary", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERSUMMARY_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -47,8 +47,8 @@ func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) *core.Response 
 	core.Debug("DataCube|GetUserCumulate", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERCUMULATE_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -61,8 +61,8 @@ func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) *core.Respons
 	core.Debug("DataCube|GetArticleSummary", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETARTICLESUMMARY_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -75,8 +75,8 @@ func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) *core.Response 
 	core.Debug("DataCube|GetArticleTotal", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETARTICLETOTAL_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -89,8 +89,8 @@ func (d *DataCube) GetUserRead(beginDate, endDate time.Time) *core.Response {
 	core.Debug("DataCube|GetUserRead", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERREAD_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -103,8 +103,8 @@ func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) *core.Response 
 	core.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERREADHOUR_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -117,8 +117,8 @@ func (d *DataCube) GetUserShare(beginDate, endDate time.Time) *core.Response {
 	core.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERSHARE_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -129,8 +129,8 @@ func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *core.Response
 	core.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUSERSHAREHOUR_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -141,8 +141,8 @@ func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *core.Response {
 	core.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSG_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -153,8 +153,8 @@ func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *core.Respon
 	core.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGHOUR_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -165,8 +165,8 @@ func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *core.Respon
 	core.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGWEEK_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -177,8 +177,8 @@ func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *core.Respo
 	core.Debug("DataCube|GetUpstreamMsgMonth", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGMONTH_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -189,8 +189,8 @@ func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *core.Respon
 	core.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGDIST_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -201,8 +201,8 @@ func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *core.Re
 	core.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGDISTWEEK_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -213,8 +213,8 @@ func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *core.R
 	core.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETUPSTREAMMSGDISTMONTH_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -225,8 +225,8 @@ func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) *core.Respo
 	core.Debug("DataCube|GetInterfaceSummary", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETINTERFACESUMMARY_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 
@@ -237,8 +237,8 @@ func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) *core.R
 	core.Debug("DataCube|GetInterfaceSummaryHour", beginDate, endDate)
 	return d.get(
 		DATACUBE_GETINTERFACESUMMARYHOUR_URL_SUFFIX,
-		beginDate.Format("2006-01-02"),
-		endDate.Format("2006-01-02"),
+		beginDate.Format(DATACUBE_TIME_LAYOUT),
+		endDate.Format(DATACUBE_TIME_LAYOUT),
 	)
 }
 

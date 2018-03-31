@@ -11,7 +11,7 @@ func TestMedia_Upload(t *testing.T) {
 	media := official_account.NewMedia()
 	var resp *core.Response
 	// resp = media.UploadImage(`test.jpg`)
-	resp = media.UploadImg(`test.jpg`)
+	resp = media.UploadMediaImg(`test.jpg`)
 	t.Log(resp.ToString())
 
 	// resp = media.UploadVoice(`D:\temp\3.mp3`)

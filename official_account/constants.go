@@ -46,6 +46,8 @@ const USER_GET_URL_SUFFIX = "/cgi-bin/user/get"
 const QRCODE_CREATE_URL_SUFFIX = "/cgi-bin/qrcode/create"
 const SHOWQRCODE_URL_SUFFIX = "/cgi-bin/showqrcode"
 
+const DATACUBE_TIME_LAYOUT = "2006-01-02"
+
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
 // const tags_members_batchtagging_URL_SUFFIX = "/cgi-bin/tags/members/batchtagging"
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
@@ -90,7 +92,9 @@ const OAUTH2_USERINFO_URL_SUFFIX = "/sns/userinfo"
 const OAUTH2_AUTH_URL_SUFFIX = "/sns/auth"
 
 const OAUTH2_AUTHORIZE_URL_SUFFIX = "https://open.weixin.qq.com/connect/oauth2/authorize"
-const DEFAULT_OAUTH_REDIRECT_URI_SUFFIX = "/oauth_redirect"
+const DEFAULT_OAUTH_REDIRECT_URL_SUFFIX = "/oauth_redirect"
 
 const SNSAPI_BASE = "snsapi_base"
 const SNSAPI_USERINFO = "snsapi_userinfo"
+
+const GETTICKET_URL_SUFFIX = "/cgi-bin/ticket/getticket"
