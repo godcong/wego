@@ -366,10 +366,10 @@ func processJson(i interface{}) io.Reader {
 		Debug("processJson|string", v)
 		return strings.NewReader(v)
 	case []byte:
-		Debug("processJson|[]byte", v)
+		Debug("processJson|[]byte", string(v))
 		return bytes.NewReader(v)
 	case Map:
-		Debug("processJson|Map", v)
+		Debug("processJson|Map", v.String())
 		return bytes.NewReader(v.ToJson())
 	default:
 		Debug("processJson|default", v)

@@ -98,3 +98,13 @@ const SNSAPI_BASE = "snsapi_base"
 const SNSAPI_USERINFO = "snsapi_userinfo"
 
 const GETTICKET_URL_SUFFIX = "/cgi-bin/ticket/getticket"
+
+const CARD_LANDINGPAGE_CREATE_URL_SUFFIX = "/card/landingpage/create"
+const CARD_CODE_DEPOSIT_URL_SUFFIX = "/card/code/deposit"
+const CARD_CODE_GETDEPOSITCOUNT_URL_SUFFIX = "/card/code/getdepositcount"
+const CARD_QRCODE_CREATE_URL_SUFFIX = "/card/qrcode/create"
+const CARD_CODE_CHECKCODE_URL_SUFFIX = "/card/code/checkcode"
+const CARD_CODE_GET_URL_SUFFIX = "/card/code/get"
+const CARD_MPNEWS_GETHTML_URL_SUFFIX = "/card/mpnews/gethtml"
+const CARD_TESTWHITELIST_SET_URL_SUFFIX = "/card/testwhitelist/set"
+const CARD_CREATE_URL_SUFFIX = "/card/create"

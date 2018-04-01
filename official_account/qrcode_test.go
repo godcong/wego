@@ -18,7 +18,7 @@ func TestQrCode_Create(t *testing.T) {
 			ExpireSeconds: 2592000,
 			ActionName:    "QR_STR_SCENE",
 			ActionInfo: official_account.QrCodeActionInfo{
-				Scene: official_account.QrCodeScene{
+				Scene: &official_account.QrCodeScene{
 					// SceneId:  0,
 					SceneStr: "igettheteickkka:///fdsaowkkkdfsaoowjkwodf",
 				},

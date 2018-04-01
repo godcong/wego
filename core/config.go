@@ -127,7 +127,7 @@ func (t *Tree) Get(s string) string {
 	if v, b := v.(string); b {
 		return v
 	}
-	if v0 := ParseInt(v); v0 == -1 {
+	if v0 := ParseInt(v); v0 == 0 {
 		return ""
 	} else {
 		return strconv.FormatInt(v0, 10)

@@ -25,10 +25,14 @@ type QrCodeCardList struct {
 	OuterStr string `json:"outer_str,omitempty"` // "outer_str":"12b"
 }
 
-type QrCodeActionInfo struct {
-	Scene    QrCodeScene      `json:"scene,omitempty"`
-	Card     QrCodeCard       `json:"card,omitempty"`
+type QrCodeMultipleCard struct {
 	CardList []QrCodeCardList `json:"card_list,omitempty"`
+}
+
+type QrCodeActionInfo struct {
+	Scene        *QrCodeScene        `json:"scene,omitempty"`
+	Card         *QrCodeCard         `json:"card,omitempty"`
+	MultipleCard *QrCodeMultipleCard `json:"multiple_card,omitempty"`
 }
 
 type QrCodeAction struct {
