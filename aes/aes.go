@@ -1,10 +1,8 @@
 package aes
 
 import (
-	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"encoding/hex"
 	"log"
 
 	"github.com/godcong/wego/core"
@@ -42,30 +40,34 @@ func (c *DataCrypt) Decrypt(data, iv string) (core.Map, error) {
 	// NewCipher calls. (Obviously don't use this example key for anything
 	// real.) If you want to convert a passphrase to a key, use a suitable
 	// package like bcrypt or scrypt.
-	b, e := rsa.Base64Decode([]byte(c.key))
-	log.Println(b)
-	key, e := hex.DecodeString(string(b))
-	log.Println(key)
+	key, e := rsa.Base64Decode([]byte(c.key))
+	//log.Println(b)
+	//key, e := hex.DecodeString(string(b))
 	if e != nil {
-		//return nil, e
-	}
-	d1, e := rsa.Base64Decode([]byte(data))
-	log.Println("data", string(d1))
-	dec := hex.NewDecoder(bytes.NewReader(d1))
-	decodeData, e := hex.DecodeString(string(d1))
-	var by []byte
-	dec.Read(by)
-	log.Println("data", by)
-	if e != nil {
+		log.Println(e)
 		return nil, e
 	}
-	decodeIv, e := hex.DecodeString(iv)
+	decodeData, e := rsa.Base64Decode([]byte(data))
+	//log.Println("data", string(d1))
+	//dec := hex.NewDecoder(bytes.NewReader(d1))
+	//decodeData, e := hex.DecodeString(string(d1))
+	//var by []byte
+	//dec.Read(by)
+	//log.Println("data", by)
 	if e != nil {
+		log.Println(e)
+		return nil, e
+	}
+	//decodeIv, e := hex.DecodeString(iv)
+	decodeIv, e := rsa.Base64Decode([]byte(iv))
+	if e != nil {
+		log.Println(e)
 		return nil, e
 	}
 
 	block, e := aes.NewCipher(key)
 	if e != nil {
+		log.Println(e)
 		return nil, e
 	}
 
@@ -95,7 +97,7 @@ func (c *DataCrypt) Decrypt(data, iv string) (core.Map, error) {
 	// using crypto/hmac) before being decrypted in order to avoid creating
 	// a padding oracle.
 
-	log.Println(decodeData)
+	log.Println("dec", decodeData)
 	// Output: exampleplaintext
 	return nil, nil
 }
