@@ -16,19 +16,25 @@ type MiniProgram struct {
 	template *Template
 }
 
+var defaultConfig core.Config
+var program *MiniProgram
+
 func init() {
+	defaultConfig = core.GetConfig("mini_program.default")
 	app := core.App()
-	app.Register("mini_program", newMiniProgram())
+	program = newMiniProgram(defaultConfig, app)
+	app.Register("mini_program", program)
 	//app.Register(newMiniProgram())
 }
 
-func newMiniProgram() *MiniProgram {
-	config := core.GetConfig("mini_program.default")
+func newMiniProgram(config core.Config, application *core.Application) *MiniProgram {
 	mini0 := &MiniProgram{
-		Config: config,
-		client: core.NewClient(config),
+		Config: defaultConfig,
+		app:    application,
+		client: core.NewClient(defaultConfig),
 	}
-	mini0.token = core.NewAccessToken(config, mini0.client)
+	mini0.token = core.NewAccessToken(defaultConfig, mini0.client)
+	mini0.client.SetDataType(core.DATA_TYPE_JSON)
 	mini0.client.SetDomain(core.NewDomain("default"))
 	return mini0
 }

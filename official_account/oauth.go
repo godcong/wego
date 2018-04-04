@@ -216,7 +216,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 			core.REQUEST_TYPE_QUERY.String(): v,
 		},
 	)
-	core.Debug("AccessToken|response", response)
+	core.Debug("AccessToken|response", response.ToString())
 	var token core.Token
 	e := json.Unmarshal(response.ToBytes(), &token)
 	if e != nil {

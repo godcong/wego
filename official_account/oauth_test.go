@@ -47,7 +47,7 @@ func TestOAuth_ServeHTTP(t *testing.T) {
 
 func TestOAuth_AccessToken(t *testing.T) {
 	oauth := official_account.NewOAuth()
-	token := oauth.AccessToken("011q8FPP01yR9b2ADoRP0ebYPP0q8FPk")
+	token := oauth.AccessToken("012QfESl1absJl0S73Tl1R7DSl1QfES4")
 	t.Log(*token)
 }
 
