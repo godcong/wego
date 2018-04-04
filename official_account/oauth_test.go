@@ -35,12 +35,12 @@ func TestOAuth_ServeHTTP(t *testing.T) {
 	})
 
 	oauth.RegisterInfoCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
-		core.Debug(val)
+		core.Debug(val.Type, *(val.Value.(*core.UserInfo)))
 		return nil
 	})
 	ts := httptest.NewServer(http.HandlerFunc(oauth.ServeHTTP))
 	defer ts.Close()
-	resp, e := http.Get(ts.URL + "/oauth_callback?code=071nVzbH0vTdwh2R2j9H032zbH0nVzbj&state=run")
+	resp, e := http.Get(ts.URL + "/oauth_callback?code=061FbdY41MrphL15MHX41U21Y41FbdYe&state=run")
 	b, e := ioutil.ReadAll(resp.Body)
 	core.Info(string(b), e)
 }

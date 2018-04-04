@@ -75,3 +75,12 @@ func (t *Token) SetScopes(s []string) *Token {
 	strings.Join(s, ",")
 	return t
 }
+
+func ParseToken(j string) (*Token, error) {
+	t := new(Token)
+	e := json.Unmarshal([]byte(j), t)
+	if e != nil {
+		return nil, e
+	}
+	return t, nil
+}
