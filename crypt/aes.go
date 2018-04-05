@@ -7,45 +7,41 @@ import (
 )
 
 type DataCrypt struct {
-	id  string
-	key string
-	//cipher string
-	//length int
+	id string
 }
 
-func NewDataCrypt(id, key string) *DataCrypt {
+func NewDataCrypt(id string) *DataCrypt {
 	return &DataCrypt{
-		id:  id,
-		key: key,
+		id: id,
 	}
 }
 
-func (c *DataCrypt) Decrypt(data, iv string) ([]byte, error) {
-	key, e := Base64Decode([]byte(c.key))
+func (c *DataCrypt) Decrypt(data, iv, key string) ([]byte, error) {
+	dKey, e := Base64Decode([]byte(key))
 	if e != nil {
 		return nil, e
 	}
-	decodeData, e := Base64Decode([]byte(data))
-	if e != nil {
-		return nil, e
-	}
-
-	decodeIv, e := Base64Decode([]byte(iv))
+	dData, e := Base64Decode([]byte(data))
 	if e != nil {
 		return nil, e
 	}
 
-	block, e := aes.NewCipher(key)
+	dIv, e := Base64Decode([]byte(iv))
 	if e != nil {
 		return nil, e
 	}
 
-	mode := cipher.NewCBCDecrypter(block, decodeIv)
+	block, e := aes.NewCipher(dKey)
+	if e != nil {
+		return nil, e
+	}
 
-	mode.CryptBlocks(decodeData, decodeData)
+	mode := cipher.NewCBCDecrypter(block, dIv)
+
+	mode.CryptBlocks(dData, dData)
 
 	//过滤所有 结尾
-	idx := strings.LastIndex(string(decodeData), "}") + 1
+	idx := strings.LastIndex(string(dData), "}") + 1
 
-	return decodeData[:idx], nil
+	return dData[:idx], nil
 }

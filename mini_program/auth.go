@@ -1,16 +1,21 @@
 package mini_program
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/crypt"
+)
 
 type Auth struct {
 	core.Config
 	*MiniProgram
+	dc *crypt.DataCrypt
 }
 
 func newAuth(program *MiniProgram) *Auth {
 	return &Auth{
 		Config:      defaultConfig,
 		MiniProgram: program,
+		dc:          crypt.NewDataCrypt(defaultConfig.Get("app_id")),
 	}
 }
 
@@ -37,12 +42,18 @@ func (a *Auth) Session(code string) core.Map {
 	return resp.ToMap()
 }
 
-func (a *Auth) UserInfo(code, encrypted, iv string) core.Map {
+func (a *Auth) UserInfo(code, encrypted, iv string) []byte {
 	p := a.Session(code)
 	if p.Has("errcode") {
+		core.Error(p)
 		return nil
 	}
-	//sessionKey := p.GetString("session_key")
-	//userInfo :=
-	return nil
+	sessionKey := p.GetString("session_key")
+	//mp := core.Map{}
+	r, e := a.dc.Decrypt(encrypted, iv, sessionKey)
+	if e != nil {
+		core.Error(e)
+	}
+	return r
+	//return mp.ParseJson(r)
 }
