@@ -58,39 +58,19 @@ func (t CardType) String() string {
 }
 
 const (
-	//card_type	是	string(24)	GROUPON	团购券类型。
-	//base_info	是	JSON结构	见上述示例。	基本的卡券数据 ，见下表，所有卡券类型通用。
-	//deal_detail	是	string( 3072 )	双人套餐\n -进口红酒一支。\n孜然牛肉一份。	团购券专用，团购详情。
-	CARD_TYPE_GROUPON = "GROUPON"
-
-	//card_type	是	string(24)	CASH	代金券类型。
-	//base_info	是	JSON结构	见上述示例。	基本的卡券数据，见下表，所有卡券通用。
-	//least_cost	是	int	10000	代金券专用，表示起用金额（单位为分）,如果无起用门槛则填0。
-	//reduce_cost	是	int	10000	代金券专用，表示减免金额。（单位为分）
-	CARD_TYPE_CASH = "CASH"
-
-	//card_type	是	string(24)	DISCOUNT	折扣券类型。
-	//base_info	是	Json结构	见上述示例。	基本的卡券数据 ，见下表，所有卡券通用。
-	//discount	是	int	30	折扣券专用，表示打折额度（百分比）。填30就是七折。
-	CARD_TYPE_DISCOUNT = "DISCOUNT"
-
-	//card_type	是	string(24)	GIFT	兑换券类型。
-	//base_info	是	Json结构	见上述示例。	基本的卡券数据 ，所有卡券通用。
-	//gift	是	string(3072)	可兑换音乐木盒一个。	兑换券专用，填写兑换内容的名称。
-	CARD_TYPE_GIFT = "GIFT"
-
-	//card_type	是	string(24)	GENERAL_COUPON	优惠券类型。
-	//base_info	是	Json结构	见上述示例。	基本的卡券数据 ，见下表，所有卡券通用。
-	//default_detail	是	string(3072)	音乐木盒。	优惠券专用，填写优惠详情。
-	CARD_TYPE_GENERAL_COUPON = "GENERAL_COUPON"
+	CARD_TYPE_GROUPON        = "GROUPON"        // GROUPON 团购券类型。
+	CARD_TYPE_CASH           = "CASH"           // CASH	代金券类型。
+	CARD_TYPE_DISCOUNT       = "DISCOUNT"       // DISCOUNT	折扣券类型。
+	CARD_TYPE_GIFT           = "GIFT"           // GIFT 兑换券类型。
+	CARD_TYPE_GENERAL_COUPON = "GENERAL_COUPON" // GENERAL_COUPON 优惠券类型。
 )
 
 type CardDataInfo struct {
 	Type           string `json:"type"`             //	type	是	string	DATE_TYPE_FIX _TIME_RANGE 表示固定日期区间，DATETYPE FIX_TERM 表示固定时长 （自领取后按天算。	使用时间的类型，旧文档采用的1和2依然生效。
 	BeginTimestamp int64  `json:"begin_timestamp"`  //	begin_time stamp	是	unsigned int	14300000	type为DATE_TYPE_FIX_TIME_RANGE时专用，表示起用时间。从1970年1月1日00:00:00至起用时间的秒数，最终需转换为字符串形态传入。（东八区时间,UTC+8，单位为秒）
 	EndTimestamp   int64  `json:"end_timestamp"`    //	end_time stamp	是	unsigned int	15300000	表示结束时间 ， 建议设置为截止日期的23:59:59过期 。 （ 东八区时间,UTC+8，单位为秒 ）
-	FixedTerm      int    `json:"fixed_term"`       // fixed_term	是	int	15	type为DATE_TYPE_FIX_TERM时专用，表示自领取后多少天内有效，不支持填写0。
-	FixedBeginTerm int    `json:"fixed_begin_term"` // fixed_begin_term	是	int	0	type为DATE_TYPE_FIX_TERM时专用，表示自领取后多少天开始生效，领取后当天生效填写0。（单位为天）
+	FixedTerm      int    `json:"fixed_term"`       //  fixed_term	是	int	15	type为DATE_TYPE_FIX_TERM时专用，表示自领取后多少天内有效，不支持填写0。
+	FixedBeginTerm int    `json:"fixed_begin_term"` //  fixed_begin_term	是	int	0	type为DATE_TYPE_FIX_TERM时专用，表示自领取后多少天开始生效，领取后当天生效填写0。（单位为天）
 }
 
 type CardSku struct {
@@ -104,12 +84,12 @@ func (t CardCodeType) String() string {
 }
 
 const (
-	CARD_CODE_TYPE_TEXT         CardCodeType = "CODE_TYPE_TEXT"         //文 本
-	CARD_CODE_TYPE_BARCODE      CardCodeType = "CODE_TYPE_BARCODE"      //一维码
-	CARD_CODE_TYPE_QRCODE       CardCodeType = "CODE_TYPE_QRCODE"       //二维码
-	CARD_CODE_TYPE_ONLY_QRCODE  CardCodeType = "CODE_TYPE_ONLY_QRCODE"  //二维码无code显示
-	CARD_CODE_TYPE_ONLY_BARCODE CardCodeType = "CODE_TYPE_ONLY_BARCODE" //一维码无code显示
-	CARD_CODE_TYPE_NONE         CardCodeType = "CODE_TYPE_NONE"         //不显示code和条形码类型
+	CARD_CODE_TYPE_TEXT         CardCodeType = "CODE_TYPE_TEXT"         // 文 本
+	CARD_CODE_TYPE_BARCODE      CardCodeType = "CODE_TYPE_BARCODE"      // 一维码
+	CARD_CODE_TYPE_QRCODE       CardCodeType = "CODE_TYPE_QRCODE"       // 二维码
+	CARD_CODE_TYPE_ONLY_QRCODE  CardCodeType = "CODE_TYPE_ONLY_QRCODE"  // 二维码无code显示
+	CARD_CODE_TYPE_ONLY_BARCODE CardCodeType = "CODE_TYPE_ONLY_BARCODE" // 一维码无code显示
+	CARD_CODE_TYPE_NONE         CardCodeType = "CODE_TYPE_NONE"         // 不显示code和条形码类型
 )
 
 type CardBaseInfo struct {
@@ -131,22 +111,22 @@ type CardBaseInfo struct {
 	CanShare                  bool         `json:"can_share,omitempty"`                     //	can_share	否	bool	false	卡券领取页面是否可分享。
 	CanGiveFriend             bool         `json:"can_give_friend,omitempty"`               //	can_give_friend否boolfalse卡券是否可转赠。
 	LocationIdList            []int        `json:"location_id_list,omitempty"`              //	location_id_list	否	array	1234，2312	门店位置poiid。 调用 POI门店管理接 口 获取门店位置poiid。具备线下门店 的商户为必填。
-	UseAllLocations           bool         `json:"use_all_locations,omitempty"`             //    use_all_locations	否	bool	true	设置本卡券支持全部门店，与location_id_list互斥
+	UseAllLocations           bool         `json:"use_all_locations,omitempty"`             //  use_all_locations	否	bool	true	设置本卡券支持全部门店，与location_id_list互斥
 	CenterTitle               string       `json:"center_title,omitempty"`                  //	center_title	否	string（18）	立即使用	卡券顶部居中的按钮，仅在卡券状 态正常(可以核销)时显示
 	CenterSubTitle            string       `json:"center_sub_title,omitempty"`              //	center_sub_title	否	string（24）	立即享受优惠	显示在入口下方的提示语 ，仅在卡券状态正常(可以核销)时显示。
 	CenterUrl                 string       `json:"center_url,omitempty"`                    //	center_url	否	string（128）	www.qq.com	顶部居中的url ，仅在卡券状态正常(可以核销)时显示。
-	CenterAppBrandUserName    string       `json:"center_app_brand_user_name,omitempty"`    //    center_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
-	CenterAppBrandPass        string       `json:"center_app_brand_pass,omitempty"`         //    center_app_brand_pass	否	string（128）	API/cardPage	卡券跳转的小程序的path
+	CenterAppBrandUserName    string       `json:"center_app_brand_user_name,omitempty"`    //  center_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
+	CenterAppBrandPass        string       `json:"center_app_brand_pass,omitempty"`         //  center_app_brand_pass	否	string（128）	API/cardPage	卡券跳转的小程序的path
 	CustomUrlName             string       `json:"custom_url_name,omitempty"`               //	custom_url_name	否	string（15）	立即使用	自定义跳转外链的入口名字。
 	CustomUrl                 string       `json:"custom_url,omitempty"`                    //	custom_url	否	string（128）	www.qq.com	自定义跳转的URL。
 	CustomUrlSubTitle         string       `json:"custom_url_sub_title,omitempty"`          //	custom_url_sub_title	否	string（18）	更多惊喜	显示在入口右侧的提示语。
-	CustomAppBrandUserName    string       `json:"custom_app_brand_user_name,omitempty"`    //    custom_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
-	CustomAppBrandPass        string       `json:"custom_app_brand_pass,omitempty"`         //    custom _app_brand_pass否string（128）API/cardPage卡券跳转的小程序的path
+	CustomAppBrandUserName    string       `json:"custom_app_brand_user_name,omitempty"`    //  custom_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
+	CustomAppBrandPass        string       `json:"custom_app_brand_pass,omitempty"`         //  custom _app_brand_pass否string（128）API/cardPage卡券跳转的小程序的path
 	PromotionUrlName          string       `json:"promotion_url_name,omitempty"`            //	promotion_url_name	否	string（15）	产品介绍	营销场景的自定义入口名称。
 	PromotionUrl              string       `json:"promotion_url,omitempty"`                 //	promotion_url	否	string（128）	www.qq.com	入口跳转外链的地址链接。
-	PromotionUrlSubTitle      string       `json:"promotion_url_sub_title,omitempty"`       //promotion_url_sub_title	否	string（18）	卖场大优惠。	显示在营销入口右侧的提示语。
-	PromotionAppBrandUserName string       `json:"promotion_app_brand_user_name,omitempty"` //promotion_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
-	PromotionAppBrandPass     string       `json:"promotion_app_brand_pass,omitempty"`      //promotion_app_brand_pass	否	string（128）	API/cardPage	卡券跳转的小程序的path
+	PromotionUrlSubTitle      string       `json:"promotion_url_sub_title,omitempty"`       //  promotion_url_sub_title	否	string（18）	卖场大优惠。	显示在营销入口右侧的提示语。
+	PromotionAppBrandUserName string       `json:"promotion_app_brand_user_name,omitempty"` //  promotion_app_brand_user_name	否	string（128）	gh_86a091e50ad4@app	卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
+	PromotionAppBrandPass     string       `json:"promotion_app_brand_pass,omitempty"`      //  promotion_app_brand_pass	否	string（128）	API/cardPage	卡券跳转的小程序的path
 	Source                    string       `json:"source"`                                  //	"source": "大众点评"
 }
 
@@ -189,12 +169,18 @@ type OneCard struct {
 	data     core.Map
 }
 
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
-// 失败:
-// {"errcode":48001,"errmsg":"api unauthorized hint: [9JA27a06332890]"}
-// 成功:
-// {"errcode":0,"errmsg":"ok","url":"https:\/\/open.weixin.qq.com\/connect\/oauth2\/authorize?appid=wx3be6367203f983ac&redirect_uri=https%3A%2F%2Fmp.weixin.qq.com%2Fbizmall%2Fcardlandingpage%3Fbiz%3DMzAwNjkzNzgzMA%3D%3D%26page_id%3D1%26scene%3D1&response_type=code&scope=snsapi_base#wechat_redirect","page_id":1}
+/*
+CreateLandingPage 创建货架接口
+
+ HTTP请求方式: POST
+ URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
+
+ 失败:
+ {"errcode":48001,"errmsg":"api unauthorized hint: [9JA27a06332890]"}
+
+ 成功:
+ {"errcode":0,"errmsg":"ok","url":"https:\/\/open.weixin.qq.com\/connect\/oauth2\/authorize?appid=wx3be6367203f983ac&redirect_uri=https%3A%2F%2Fmp.weixin.qq.com%2Fbizmall%2Fcardlandingpage%3Fbiz%3DMzAwNjkzNzgzMA%3D%3D%26page_id%3D1%26scene%3D1&response_type=code&scope=snsapi_base#wechat_redirect","page_id":1}
+*/
 func (c *Card) CreateLandingPage(page *CardLandingPage) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
@@ -206,64 +192,86 @@ func (c *Card) CreateLandingPage(page *CardLandingPage) *core.Response {
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
-// 失败:
-// {"errcode":48001,"errmsg":"api unauthorized hint: [gM8quA01752947]"}
-func (c *Card) Deposit(cid string, code []string) *core.Response {
+/*
+Deposit 导入code接口
+
+ HTTP请求方式: POST
+ URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
+
+ 失败:
+ {"errcode":48001,"errmsg":"api unauthorized hint: [gM8quA01752947]"}
+*/
+func (c *Card) Deposit(cardId string, code []string) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
 		c.client.Link(CARD_CODE_DEPOSIT_URL_SUFFIX),
 		core.Map{
 			core.REQUEST_TYPE_QUERY.String(): key,
 			core.REQUEST_TYPE_JSON.String(): core.Map{
-				"card_id": cid,
+				"card_id": cardId,
 				"code":    code,
 			},
 		})
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL:http://api.weixin.qq.com/card/code/getdepositcount?access_token=ACCESS_TOKEN
-// 失败:
-// {"errcode":48001,"errmsg":"api unauthorized hint: [TQ2Iga07222944]"}
-func (c *Card) GetDepositCount(cid string) *core.Response {
+/*
+GetDepositCount 查询导入code数目
+
+  HTTP请求方式: POST
+  URL:http://api.weixin.qq.com/card/code/getdepositcount?access_token=ACCESS_TOKEN
+
+ 失败:
+ {"errcode":48001,"errmsg":"api unauthorized hint: [TQ2Iga07222944]"}
+*/
+func (c *Card) GetDepositCount(cardId string) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
 		c.client.Link(CARD_CODE_GETDEPOSITCOUNT_URL_SUFFIX),
 		core.Map{
 			core.REQUEST_TYPE_QUERY.String(): key,
 			core.REQUEST_TYPE_JSON.String(): core.Map{
-				"card_id": cid,
+				"card_id": cardId,
 			},
 		})
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
-// 失败:
-// {"errcode":48001,"errmsg":"api unauthorized hint: [xxvWsa08782921]"}
-func (c *Card) CheckCode(cid string, code []string) *core.Response {
+/*
+CheckCode 核查code接口
+
+ HTTP请求方式: POST
+ URL:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
+
+ 失败:
+ {"errcode":48001,"errmsg":"api unauthorized hint: [xxvWsa08782921]"}
+*/
+func (c *Card) CheckCode(cardId string, code []string) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
 		c.client.Link(CARD_CODE_CHECKCODE_URL_SUFFIX),
 		core.Map{
 			core.REQUEST_TYPE_QUERY.String(): key,
 			core.REQUEST_TYPE_JSON.String(): core.Map{
-				"card_id": cid,
+				"card_id": cardId,
 				"code":    code,
 			},
 		})
 	return resp
 }
 
-//HTTP请求方式: POST
-//URL:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
-//code	是	string(20)	110201201245	单张卡券的唯一标准。
-//card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
-//check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
+/*
+GetCode 查询 Code 接口
+
+  HTTP请求方式: POST
+  URL:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
+
+参数说明:
+ 参数名	必填	类型	示例值	描述
+ code	是	string(20)	110201201245	单张卡券的唯一标准。
+ card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
+ check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
+*/
 func (c *Card) GetCode(p core.Map) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
@@ -275,8 +283,12 @@ func (c *Card) GetCode(p core.Map) *core.Response {
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
+/*
+GetHtml 图文消息群发卡券
+
+ HTTP请求方式: POST
+ URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
+*/
 func (c *Card) GetHtml(cid string) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
@@ -290,22 +302,29 @@ func (c *Card) GetHtml(cid string) *core.Response {
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
+/*
+SetTestWhiteListByName 设置测试白名单(by openid)
+*/
 func (c *Card) SetTestWhiteListById(list []string) *core.Response {
 	return c.SetTestWhiteList("openid", list)
 }
 
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
+/*
+SetTestWhiteListByName 设置测试白名单(by username)
+*/
 func (c *Card) SetTestWhiteListByName(list []string) *core.Response {
 	return c.SetTestWhiteList("username", list)
 }
 
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
-// 成功:
-// {"errcode":0,"errmsg":"ok","white_list_size":1,"success_openid":["o5jo6s3RZ6rxuVAW33IpTjYWQOg4"],"success_username":[]}
+/*
+SetTestWhiteList 设置测试白名单
+
+ HTTP请求方式: POST
+ URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
+
+ 成功:
+ {"errcode":0,"errmsg":"ok","white_list_size":1,"success_openid":["o5jo6s3RZ6rxuVAW33IpTjYWQOg4"],"success_username":[]}
+*/
 func (c *Card) SetTestWhiteList(typ string, list []string) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
@@ -319,10 +338,15 @@ func (c *Card) SetTestWhiteList(typ string, list []string) *core.Response {
 	return resp
 }
 
-//HTTP请求方式: POST
-//URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
-//成功:
-//{"errcode":0,"errmsg":"ok","ticket":"gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA","expire_seconds":1800,"url":"http:\/\/weixin.qq.com\/q\/02ucSHcjCW8WP1_2v0Nq4g","show_qrcode_url":"https:\/\/mp.weixin.qq.com\/cgi-bin\/showqrcode?ticket=gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA"}
+/*
+CreateQrCode 创建二维码
+
+ HTTP请求方式: POST
+ URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
+
+ 成功:
+ {"errcode":0,"errmsg":"ok","ticket":"gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA","expire_seconds":1800,"url":"http:\/\/weixin.qq.com\/q\/02ucSHcjCW8WP1_2v0Nq4g","show_qrcode_url":"https:\/\/mp.weixin.qq.com\/cgi-bin\/showqrcode?ticket=gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA"}
+*/
 func (c *Card) CreateQrCode(action *QrCodeAction) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPost(
@@ -334,12 +358,18 @@ func (c *Card) CreateQrCode(action *QrCodeAction) *core.Response {
 	return resp
 }
 
-// HTTP请求方式: POST
-// URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
-// 失败:
-// {"errcode":48001,"errmsg":"api unauthorized hint: [wk0hOa0525e193]"}
-// 成功:
-// {"errcode":0,"errmsg":"ok","card_id":"p5jo6s-f42donkk9mmZ0VILQXOME"}
+/*
+Create 创建卡券
+
+ HTTP请求方式: POST
+ URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
+
+ 失败:
+ {"errcode":48001,"errmsg":"api unauthorized hint: [wk0hOa0525e193]"}
+
+ 成功:
+ {"errcode":0,"errmsg":"ok","card_id":"p5jo6s-f42donkk9mmZ0VILQXOME"}
+*/
 func (c *Card) Create(card *OneCard) *core.Response {
 	key := c.token.GetToken().KeyMap()
 	_, d := card.Get()
@@ -352,6 +382,12 @@ func (c *Card) Create(card *OneCard) *core.Response {
 	return resp
 }
 
+/*
+NewOneCard 创建卡券信息
+参数:
+	cardType 卡券类型
+	data	卡券信息 (可传nil)
+*/
 func NewOneCard(cardType CardType, data core.Map) *OneCard {
 	ct := strings.ToLower(cardType.String())
 	return &OneCard{
@@ -362,14 +398,24 @@ func NewOneCard(cardType CardType, data core.Map) *OneCard {
 		},
 	}
 }
+
+/*
+AddAdvancedInfo 添加卡券advanced_info
+*/
 func (c *OneCard) AddAdvancedInfo(info *CardAdvancedInfo) *OneCard {
 	return c.add("advanced_info", info)
 }
 
+/*
+AddBaseInfo 添加卡券base_info
+*/
 func (c *OneCard) AddBaseInfo(info *CardBaseInfo) *OneCard {
 	return c.add("base_info", info)
 }
 
+/*
+AddDealDetail 添加卡券deal_detail
+*/
 func (c *OneCard) AddDealDetail(d string) *OneCard {
 	return c.add("deal_detail", d)
 }
@@ -398,6 +444,9 @@ func (c *OneCard) add(name string, info interface{}) *OneCard {
 	return c
 }
 
+/*
+Set 设置卡券信息(包含base_info,advanced_info,deal_detail)
+*/
 func (c *OneCard) Set(cardType CardType, data core.Map) {
 	ct := strings.ToLower(cardType.String())
 	c.CardType = cardType
@@ -407,6 +456,9 @@ func (c *OneCard) Set(cardType CardType, data core.Map) {
 	}
 }
 
+/*
+Get 获取卡券类型,卡券信息
+*/
 func (c *OneCard) Get() (CardType, core.Map) {
 	return c.CardType, c.data
 }
