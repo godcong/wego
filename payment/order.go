@@ -26,10 +26,6 @@ func (o *Order) Unify(m core.Map) core.Map {
 	return o.Request(UNIFIEDORDER_URL_SUFFIX, m).ToMap()
 }
 
-//func (o *order) request(url string, m Map) Map {
-//	return o.Request(o.Link(url), m, "post", nil)
-//}
-
 /**
 * 作用：关闭订单
 * 场景：公共号支付、扫码支付、APP支付

@@ -158,11 +158,12 @@ func (m *Map) ToJson() []byte {
 	return v
 }
 
-func (m *Map) ParseJson(b []byte) {
+func (m *Map) ParseJson(b []byte) Map {
 	tmp := Map{}
 	if e := json.Unmarshal(b, &tmp); e == nil {
 		m.Join(tmp)
 	}
+	return *m
 }
 
 func (m *Map) UrlEncode() string {
