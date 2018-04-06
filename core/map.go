@@ -196,3 +196,11 @@ func (m *Map) Join(s Map) *Map {
 func (m *Map) SaveAs(p string, f string) {
 
 }
+
+func (m *Map) Only(columns []string) Map {
+	p := Map{}
+	for _, v := range columns {
+		p.Set(v, m.Get(v))
+	}
+	return p
+}
