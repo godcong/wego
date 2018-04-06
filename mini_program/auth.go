@@ -42,18 +42,19 @@ func (a *Auth) Session(code string) core.Map {
 	return resp.ToMap()
 }
 
-func (a *Auth) UserInfo(code, encrypted, iv string) []byte {
+func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
 	p := a.Session(code)
-	if p.Has("errcode") {
-		core.Error(p)
-		return nil
+	if !p.Has("errcode") {
+		return a.UserInfo(p.GetString("session_key"), encrypted, iv)
 	}
-	sessionKey := p.GetString("session_key")
-	//mp := core.Map{}
-	r, e := a.dc.Decrypt(encrypted, iv, sessionKey)
+	return nil
+}
+
+func (a *Auth) UserInfo(key, encrypted, iv string) []byte {
+	r, e := a.dc.Decrypt(encrypted, iv, key)
 	if e != nil {
 		core.Error(e)
+		return nil
 	}
 	return r
-	//return mp.ParseJson(r)
 }
