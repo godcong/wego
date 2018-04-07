@@ -7,6 +7,17 @@ type Reverse struct {
 	*Payment
 }
 
+func newReverse(p *Payment) *Reverse {
+	return &Reverse{
+		Config:  defaultConfig,
+		Payment: p,
+	}
+}
+
+func NewReverse() *Reverse {
+	return newReverse(payment)
+}
+
 func (r *Reverse) ByOutTradeNumber(num string) core.Map {
 	return r.reverse(core.Map{"out_trade_no": num}).ToMap()
 }

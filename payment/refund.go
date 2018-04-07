@@ -11,6 +11,17 @@ type Refund struct {
 	*Payment
 }
 
+func newRefund(p *Payment) *Refund {
+	return &Refund{
+		Config:  defaultConfig,
+		Payment: p,
+	}
+}
+
+func NewRefund() *Refund {
+	return newRefund(payment)
+}
+
 func (r *Refund) refund(num string, total, refund int, options core.Map) *core.Response {
 	options.NilSet("out_refund_no", num)
 	options.NilSet("total_fee", strconv.Itoa(total))

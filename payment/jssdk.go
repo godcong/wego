@@ -11,6 +11,17 @@ type JSSDK struct {
 	*Payment
 }
 
+func newJSSDK(p *Payment) *JSSDK {
+	return &JSSDK{
+		Config:  defaultConfig,
+		Payment: p,
+	}
+}
+
+func NewJSSDK() *JSSDK {
+	return newJSSDK(payment)
+}
+
 func (j *JSSDK) getUrl() string {
 	return core.GetServerIp()
 }

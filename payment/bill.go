@@ -9,6 +9,16 @@ type Bill struct {
 	*Payment
 }
 
+func newBill(p *Payment) *Bill {
+	return &Bill{
+		Config:  defaultConfig,
+		Payment: p,
+	}
+}
+
+func NewBill() *Bill {
+	return newBill(payment)
+}
 func (b *Bill) Get(bd string, bt string, op core.Map) core.Map {
 	m := make(core.Map)
 	m.Set("appid", b.Config.Get("app_id"))

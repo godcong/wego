@@ -2,7 +2,7 @@ package payment
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/rsa"
+	"github.com/godcong/wego/crypt"
 )
 
 type Transfer struct {
@@ -62,8 +62,8 @@ func (t *Transfer) ToBankCard(m core.Map) core.Map {
 	m.Set("mch_id", t.client.Get("mch_id"))
 	m.Set("nonce_str", core.GenerateUUID())
 
-	m.Set("enc_bank_no", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
-	m.Set("enc_true_name", rsa.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
+	m.Set("enc_bank_no", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
+	m.Set("enc_true_name", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
 	m.Set("sign", core.GenerateSignature(m, t.client.Get("key"), core.SIGN_TYPE_MD5))
 	return t.client.SafeRequest(t.client.Link(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX), nil, "post", core.Map{
 		core.REQUEST_TYPE_XML.String(): m,

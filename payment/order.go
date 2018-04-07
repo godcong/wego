@@ -9,6 +9,17 @@ type Order struct {
 	*Payment
 }
 
+func newOrder(p *Payment) *Order {
+	return &Order{
+		Config:  defaultConfig,
+		Payment: p,
+	}
+}
+
+func NewOrder() *Order {
+	return newOrder(payment)
+}
+
 func (o *Order) Unify(m core.Map) core.Map {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
