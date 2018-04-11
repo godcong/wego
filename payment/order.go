@@ -20,7 +20,7 @@ func NewOrder() *Order {
 	return newOrder(payment)
 }
 
-func (o *Order) Unify(m core.Map) core.Map {
+func (o *Order) Unify(m core.Map) *core.Response {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIp())
@@ -34,7 +34,7 @@ func (o *Order) Unify(m core.Map) core.Map {
 	if !m.Has("notify_url") {
 		m.Set("notify_url", o.Config.Get("notify_url"))
 	}
-	return o.Request(UNIFIEDORDER_URL_SUFFIX, m).ToMap()
+	return o.Request(UNIFIEDORDER_URL_SUFFIX, m)
 }
 
 /**
@@ -43,11 +43,11 @@ func (o *Order) Unify(m core.Map) core.Map {
 * @param data 向wxpay post的请求数据
 * @return PayData, error API返回数据
  */
-func (o *Order) Close(no string) core.Map {
+func (o *Order) Close(no string) *core.Response {
 	m := make(core.Map)
 	m.Set("appid", o.Config.Get("app_id"))
 	m.Set("out_trade_no", no)
-	return o.Request(CLOSEORDER_URL_SUFFIX, m).ToMap()
+	return o.Request(CLOSEORDER_URL_SUFFIX, m)
 }
 
 /** QueryOrder
@@ -63,10 +63,10 @@ func (o *Order) query(m core.Map) *core.Response {
 	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
 
-func (o *Order) QueryByTransactionId(id string) core.Map {
-	return o.query(core.Map{"transaction_id": id}).ToMap()
+func (o *Order) QueryByTransactionId(id string) *core.Response {
+	return o.query(core.Map{"transaction_id": id})
 }
 
-func (o *Order) QueryByOutTradeNumber(no string) core.Map {
-	return o.query(core.Map{"out_trade_no": no}).ToMap()
+func (o *Order) QueryByOutTradeNumber(no string) *core.Response {
+	return o.query(core.Map{"out_trade_no": no})
 }

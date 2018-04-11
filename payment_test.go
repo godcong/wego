@@ -42,13 +42,16 @@ func TestOrder_QueryByTransactionId(t *testing.T) {
 func TestOrder_Unify(t *testing.T) {
 	m := make(core.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
-	m.Set("out_trade_no", out_trade_no+"2")
+	m.Set("out_trade_no", out_trade_no+"3")
 	//m.Set("device_info", "")
 	////m.Set("fee_type", "CNY")
 	m.Set("total_fee", "1")
 	////m.Set("spbill_create_ip", "123.12.12.123")
 	//m.Set("notify_url", "https://test.letiantian.me/wxpay/notify")
-	m.Set("trade_type", "NATIVE")
+	m.Set("trade_type", "JSAPI")
+	//m.Set("openid", "oLyBi0hSYhggnD-kOIms0IzZFqrc")
+	//m.Set("openid", "oE_gl0Yr54fUjBhU5nBlP4hS2efo")
+
 	////m.Set("product_id", "12")
 	r := wego.GetPayment().Order().Unify(m)
 

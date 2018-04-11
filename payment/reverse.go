@@ -18,12 +18,12 @@ func NewReverse() *Reverse {
 	return newReverse(payment)
 }
 
-func (r *Reverse) ByOutTradeNumber(num string) core.Map {
-	return r.reverse(core.Map{"out_trade_no": num}).ToMap()
+func (r *Reverse) ByOutTradeNumber(num string) *core.Response {
+	return r.reverse(core.Map{"out_trade_no": num})
 }
 
-func (r *Reverse) ByTransactionId(id string) core.Map {
-	return r.reverse(core.Map{"transaction_id": id}).ToMap()
+func (r *Reverse) ByTransactionId(id string) *core.Response {
+	return r.reverse(core.Map{"transaction_id": id})
 }
 
 func (r *Reverse) reverse(m core.Map) *core.Response {

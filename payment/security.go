@@ -20,8 +20,8 @@ func NewSecurity() *Security {
 	return newSecurity(payment)
 }
 
-func (s *Security) GetPublicKey() core.Map {
+func (s *Security) GetPublicKey() *core.Response {
 	m := s.preRequest(core.Map{"sign_type": "MD5"})
 	s.client.SetDataType(core.DATA_TYPE_XML)
-	return s.client.SafeRequest(RISK_GETPUBLICKEY_URL_SUFFIX, m, "post", nil).ToMap()
+	return s.client.SafeRequest(RISK_GETPUBLICKEY_URL_SUFFIX, m, "post", nil)
 }
