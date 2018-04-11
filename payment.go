@@ -5,14 +5,14 @@ import (
 )
 
 type Security interface {
-	GetPublicKey() core.Map
+	GetPublicKey() *core.Response
 }
 type Order interface {
-	Unify(m core.Map) core.Map
-	Close(no string) core.Map
+	Unify(m core.Map) *core.Response
+	Close(no string) *core.Response
 	//Query(Map) Map
-	QueryByTransactionId(id string) core.Map
-	QueryByOutTradeNumber(no string) core.Map
+	QueryByTransactionId(id string) *core.Response
+	QueryByOutTradeNumber(no string) *core.Response
 }
 
 type JSSDK interface {
@@ -23,30 +23,30 @@ type JSSDK interface {
 }
 
 type Bill interface {
-	Get(string, string, core.Map) core.Map
+	Get(string, string, core.Map) *core.Response
 }
 
 type RedPack interface {
-	Info(core.Map) core.Map
-	SendNormal(core.Map) core.Map
-	SendGroup(core.Map) core.Map
+	Info(core.Map) *core.Response
+	SendNormal(core.Map) *core.Response
+	SendGroup(core.Map) *core.Response
 }
 
 type Refund interface {
-	ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) core.Map
-	ByTransactionId(tid, num string, total, refund int, options core.Map) core.Map
-	QueryByRefundId(id string) core.Map
-	QueryByOutRefundNumber(id string) core.Map
-	QueryByOutTradeNumber(id string) core.Map
-	QueryByTransactionId(id string) core.Map
+	ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) *core.Response
+	ByTransactionId(tid, num string, total, refund int, options core.Map) *core.Response
+	QueryByRefundId(id string) *core.Response
+	QueryByOutRefundNumber(id string) *core.Response
+	QueryByOutTradeNumber(id string) *core.Response
+	QueryByTransactionId(id string) *core.Response
 
 	//Refund(string, int, int, Map) Map
 	//Query(Map) Map
 }
 
 type Reverse interface {
-	ByOutTradeNumber(string) core.Map
-	ByTransactionId(string) core.Map
+	ByOutTradeNumber(string) *core.Response
+	ByTransactionId(string) *core.Response
 }
 
 type Sandbox interface {
@@ -54,10 +54,10 @@ type Sandbox interface {
 	GetCacheKey() string
 }
 type Transfer interface {
-	QueryBalanceOrder(string) core.Map
-	ToBalance(core.Map) core.Map
-	QueryBankCardOrder(string) core.Map
-	ToBankCard(core.Map) core.Map
+	QueryBalanceOrder(string) *core.Response
+	ToBalance(core.Map) *core.Response
+	QueryBankCardOrder(string) *core.Response
+	ToBankCard(core.Map) *core.Response
 }
 type Payment interface {
 	//Sandbox() Sandbox
