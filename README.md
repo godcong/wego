@@ -18,6 +18,6 @@
 >参考config.toml.example
 
 
-[支付README](LINK:https://github.com/godcong/wego/blob/master/payment/README.md)
-[公众号README](LINK:https://github.com/godcong/wego/blob/master/official_account/README.md)
+[支付README](https://github.com/godcong/wego/blob/master/payment/README.md)  
+[公众号README](https://github.com/godcong/wego/blob/master/official_account/README.md)
 
