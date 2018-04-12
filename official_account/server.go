@@ -11,11 +11,11 @@ import (
 
 type Server struct {
 	message         *core.Message
-	defaultCallback []core.ServerCallback
-	callback        map[message.MsgType][]core.ServerCallback
+	defaultCallback []core.MessageCallback
+	callback        map[message.MsgType][]core.MessageCallback
 }
 
-func (s *Server) RegisterCallback(sc core.ServerCallback, types ...message.MsgType) {
+func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgType) {
 	size := len(types)
 	if size == 0 {
 		s.defaultCallback = append(s.defaultCallback, sc)
@@ -25,7 +25,7 @@ func (s *Server) RegisterCallback(sc core.ServerCallback, types ...message.MsgTy
 		if callback, b := s.callback[t]; b {
 			s.callback[t] = append(callback, sc)
 		} else {
-			s.callback[t] = []core.ServerCallback{sc}
+			s.callback[t] = []core.MessageCallback{sc}
 		}
 	}
 }
@@ -77,7 +77,7 @@ func MessageProcess(msg *core.Message) string {
 func NewServer() *Server {
 	return &Server{
 		message:         nil,
-		defaultCallback: []core.ServerCallback{},
-		callback:        map[message.MsgType][]core.ServerCallback{},
+		defaultCallback: []core.MessageCallback{},
+		callback:        map[message.MsgType][]core.MessageCallback{},
 	}
 }
