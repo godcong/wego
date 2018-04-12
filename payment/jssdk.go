@@ -40,7 +40,7 @@ func (j *JSSDK) BridgeConfig(pid string) core.Map {
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.SIGN_TYPE_MD5))
+	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("key"), core.SIGN_TYPE_MD5))
 
 	return m
 }
