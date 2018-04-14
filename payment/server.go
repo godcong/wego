@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"encoding/xml"
 	"net/http"
 
 	"github.com/godcong/wego/core"
@@ -13,8 +14,9 @@ type Server struct {
 }
 
 type ActionResult struct {
-	ReturnCode string `xml:"return_code"`
-	ReturnMsg  string `xml:"return_msg"`
+	XMLName    xml.Name `xml:"xml"`
+	ReturnCode string   `xml:"return_code"`
+	ReturnMsg  string   `xml:"return_msg"`
 }
 
 var ACTION_SUCCESS = ActionResult{
