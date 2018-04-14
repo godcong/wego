@@ -12,8 +12,20 @@ type Server struct {
 	callback []core.PaymentCallback
 }
 
-var SUCCESS = core.Map{"return_code": "SUCCESS", "return_msg": "OK"}
-var FAIL = core.Map{"return_code": "FAIL", "return_msg": "OK"}
+type ActionResult struct {
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
+}
+
+var ACTION_SUCCESS = ActionResult{
+	ReturnCode: "SUCCESS",
+	ReturnMsg:  "OK",
+}
+
+var ACTION_FAIL = ActionResult{
+	ReturnCode: "FAIL",
+	ReturnMsg:  "OK",
+}
 
 func newServer(p *Payment) *Server {
 	return &Server{
@@ -50,21 +62,18 @@ func (s *Server) GetCallback() []core.PaymentCallback {
 	return s.callback
 }
 
-func (s *Server) ProcessCallback(p core.Map) core.Map {
-	rlt := core.Map{
-		"return_code": "SUCCESS",
-		"return_msg":  "OK",
-	}
+func (s *Server) ProcessCallback(p core.Map) *ActionResult {
+	rlt := ACTION_SUCCESS
 	if s.callback == nil {
-		rlt.Set("return_msg", "UNPROCESSED")
-		return rlt
+		rlt.ReturnMsg = "UNPROCESSED"
+		return &rlt
 	}
 
 	for _, v := range s.callback {
-		rlt.Set("return_msg", "PROCESSED")
+		rlt.ReturnMsg = "PROCESSED"
 		if v(p) == false {
-			rlt.Set("return_code", "FAIL")
+			rlt.ReturnCode = "FAIL"
 		}
 	}
-	return rlt
+	return &rlt
 }
