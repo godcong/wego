@@ -14,19 +14,27 @@ type Server struct {
 }
 
 type ActionResult struct {
-	XMLName    xml.Name `xml:"xml"`
-	ReturnCode string   `xml:"return_code"`
-	ReturnMsg  string   `xml:"return_msg"`
+	XMLName    xml.Name   `xml:"xml"`
+	ReturnCode core.CDATA `xml:"return_code"`
+	ReturnMsg  core.CDATA `xml:"return_msg"`
 }
 
 var ACTION_SUCCESS = ActionResult{
-	ReturnCode: "SUCCESS",
-	ReturnMsg:  "OK",
+	ReturnCode: core.CDATA{
+		Value: "SUCCESS",
+	},
+	ReturnMsg: core.CDATA{
+		Value: "OK",
+	},
 }
 
 var ACTION_FAIL = ActionResult{
-	ReturnCode: "FAIL",
-	ReturnMsg:  "OK",
+	ReturnCode: core.CDATA{
+		Value: "FAIL",
+	},
+	ReturnMsg: core.CDATA{
+		Value: "OK",
+	},
 }
 
 func newServer(p *Payment) *Server {
