@@ -75,14 +75,21 @@ func (s *Server) GetCallback() []core.PaymentCallback {
 func (s *Server) ProcessCallback(p core.Map) *ActionResult {
 	rlt := ACTION_SUCCESS
 	if s.callback == nil {
-		rlt.ReturnMsg = "UNPROCESSED"
+		rlt.ReturnMsg = core.CDATA{
+			Value: "UNPROCESSED",
+		}
+
 		return &rlt
 	}
 
 	for _, v := range s.callback {
-		rlt.ReturnMsg = "PROCESSED"
+		rlt.ReturnMsg = core.CDATA{
+			Value: "PROCESSED",
+		}
 		if v(p) == false {
-			rlt.ReturnCode = "FAIL"
+			rlt.ReturnCode = core.CDATA{
+				Value: "FAIL",
+			}
 		}
 	}
 	return &rlt
