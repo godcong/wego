@@ -63,7 +63,7 @@ const DATACUBE_DAILYSUMMARYTREND_URL_SUFFIX = "/datacube/getweanalysisappiddaily
 const TEMPLATE_ADD_URL_SUFFIX = "/cgi-bin/wxopen/template/add"
 const TEMPLATE_DEL_URL_SUFFIX = "/cgi-bin/wxopen/template/del"
 const TEMPLATE_LIST_URL_SUFFIX = "/cgi-bin/wxopen/template/list"
-const TEMPLATE_SEND_URL_SUFFIX = "/cgi-bin/message/wxopen/template/send"
+
 const TEMPLATE_LIBRARY_LIST_URL_SUFFIX = "/cgi-bin/wxopen/template/library/list"
 const TEMPLATE_LIBRARY_GET_URL_SUFFIX = "/cgi-bin/wxopen/template/library/get"
 

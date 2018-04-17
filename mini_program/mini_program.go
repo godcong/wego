@@ -35,7 +35,7 @@ func newMiniProgram(config core.Config, application *core.Application) *MiniProg
 	}
 	mini0.token = core.NewAccessToken(defaultConfig, mini0.client)
 	mini0.client.SetDataType(core.DATA_TYPE_JSON)
-	mini0.client.SetDomain(core.NewDomain("default"))
+	mini0.client.SetDomain(core.NewDomain("mini_program"))
 	return mini0
 }
 
