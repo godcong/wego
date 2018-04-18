@@ -48,11 +48,10 @@ func (t *Template) Add(id string, keyword core.Map) core.Map {
 func (t *Template) Send(template *message.Template) *core.Response {
 	token := t.token.GetToken()
 
-	resp := t.client.HttpPost(
+	resp := t.client.HttpPostJson(
 		t.client.Link(TEMPLATE_SEND_URL_SUFFIX),
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-			core.REQUEST_TYPE_JSON.String(): template,
-		},
+		token.KeyMap(),
+		template,
 	)
 	return resp
 }

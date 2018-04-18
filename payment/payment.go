@@ -60,28 +60,39 @@ func (p *Payment) GetClient() *core.Client {
 }
 
 func (p *Payment) Request(url string, params core.Map) *core.Response {
+	m := core.Map{
+		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+	}
 
-	return p.client.Request(p.client.Link(url), p.preRequest(params), "post", nil)
+	return p.client.Request(p.client.Link(url), m, "post")
 }
 
 func (p *Payment) RequestRaw(url string, params core.Map) *core.Response {
-	return p.client.RequestRaw(p.client.Link(url), p.preRequest(params), "post", nil)
+	m := core.Map{
+		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+	}
+
+	return p.client.RequestRaw(p.client.Link(url), m, "post")
 }
 
 func (p *Payment) SafeRequest(url string, params core.Map) *core.Response {
-	return p.client.SafeRequest(p.client.Link(url), p.preRequest(params), "post", nil)
+	m := core.Map{
+		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+	}
+
+	return p.client.SafeRequest(p.client.Link(url), m, "post")
 }
 
 func (p *Payment) Pay(params core.Map) core.Map {
 	params.Set("appid", p.config.Get("app_id"))
-	return p.client.Request(MICROPAY_URL_SUFFIX, p.preRequest(params), "post", nil).ToMap()
+	return p.client.Request(MICROPAY_URL_SUFFIX, p.preRequest(params), "post").ToMap()
 }
 
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
 	m := make(core.Map)
 	m.Set("appid", p.config.Get("app_id"))
 	m.Set("auth_code", authCode)
-	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, p.preRequest(m), "post", nil).ToMap()
+	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, p.preRequest(m), "post").ToMap()
 }
 
 func (p *Payment) Security() wego.Security {

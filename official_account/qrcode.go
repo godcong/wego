@@ -84,13 +84,12 @@ func NewQrCode() *QrCode {
 // {"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
 func (q *QrCode) Create(action *QrCodeAction) *core.Response {
 	core.Debug("QrCode|Create", action)
-	p := q.token.GetToken().KeyMap()
-	resp := q.client.HttpPost(
+	resp := q.client.HttpPostJson(
 		q.client.Link(QRCODE_CREATE_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
-			core.REQUEST_TYPE_JSON.String():  action,
-		})
+
+		q.token.GetToken().KeyMap(),
+		action,
+	)
 	return resp
 }
 

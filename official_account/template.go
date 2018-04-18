@@ -110,13 +110,12 @@ func (t *Template) Add(shortId string) *core.Response {
 //成功:
 //{"errcode":0,"errmsg":"ok","msgid":191569096301903872}
 func (t *Template) Send(template *message.Template) *core.Response {
-	token := t.token.GetToken()
 
-	resp := t.client.HttpPost(
+	resp := t.client.HttpPostJson(
 		t.client.Link(MESSAGE_TEMPLATE_SEND_URL_SUFFIX),
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-			core.REQUEST_TYPE_JSON.String(): template,
-		},
+
+		t.token.GetToken().KeyMap(),
+		template,
 	)
 	return resp
 }

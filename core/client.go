@@ -69,43 +69,74 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 	return c
 }
 
-func (c *Client) HttpPostJson(url string, data Map, ops Map) *Response {
-	ops = MapNilMake(ops)
+func (c *Client) HttpPostJson(url string, query Map, json interface{}) *Response {
 	c.dataType = DATA_TYPE_JSON
-	ops.Set(REQUEST_TYPE_JSON.String(), data)
-	return c.Request(url, nil, "post", ops)
+	p := Map{
+		REQUEST_TYPE_JSON.String(): json,
+	}
+	if query != nil {
+		p.Set(REQUEST_TYPE_QUERY.String(), query)
+	}
+	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpUpload(url string, data, ops Map) *Response {
-	ops = MapNilMake(ops)
+func (c *Client) HttpPostXml(url string, query Map, xml interface{}) *Response {
+	c.dataType = DATA_TYPE_XML
+	p := Map{
+		REQUEST_TYPE_XML.String(): xml,
+	}
+	if query != nil {
+		p.Set(REQUEST_TYPE_QUERY.String(), query)
+	}
+	return c.Request(url, p, "post")
+}
+
+func (c *Client) HttpUpload(url string, query, multi Map) *Response {
 	c.dataType = DATA_TYPE_MULTIPART
-	ops.Set(REQUEST_TYPE_MULTIPART.String(), data)
-	return c.Request(url, nil, "post", ops)
+	p := Map{
+		REQUEST_TYPE_MULTIPART.String(): multi,
+	}
+	if query != nil {
+		p.Set(REQUEST_TYPE_QUERY.String(), query)
+	}
+
+	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpGet(url string, ops Map) *Response {
-	return c.Request(url, nil, "get", ops)
+func (c *Client) HttpGet(url string, query Map) *Response {
+	p := Map{}
+	if query != nil {
+		p.Set(REQUEST_TYPE_QUERY.String(), query)
+	}
+	return c.Request(url, p, "get")
 }
 
-func (c *Client) HttpPost(url string, ops Map) *Response {
-	return c.Request(url, nil, "post", ops)
+func (c *Client) HttpPost(url string, query Map, ops Map) *Response {
+	p := Map{}
+	if query != nil {
+		p.Set(REQUEST_TYPE_QUERY.String(), query)
+	}
+	if ops != nil {
+		p.ReplaceJoin(ops)
+	}
+	return c.Request(url, p, "post")
 }
 
-func (c *Client) Request(url string, params Map, method string, ops Map) *Response {
+func (c *Client) Request(url string, ops Map, method string) *Response {
 	Debug("Request|httpClient", c.client)
 	c.client = buildTransport(c.Config)
-	c.response = request(c, url, params, method, ops)
+	c.response = request(c, url, ops, method)
 	return c.response
 }
 
-func (c *Client) RequestRaw(url string, params Map, method string, ops Map) *Response {
-	return c.Request(url, params, method, ops)
+func (c *Client) RequestRaw(url string, ops Map, method string) *Response {
+	return c.Request(url, ops, method)
 }
 
-func (c *Client) SafeRequest(url string, params Map, method string, ops Map) *Response {
+func (c *Client) SafeRequest(url string, ops Map, method string) *Response {
 	c.client = buildSafeTransport(c.Config)
 	Debug("SafeRequest|httpClient", c.client)
-	c.response = request(c, url, params, method, ops)
+	c.response = request(c, url, ops, method)
 	return c.response
 }
 
@@ -198,9 +229,9 @@ func buildSafeTransport(config Config) *http.Client {
 	}
 }
 
-func request(c *Client, url string, params Map, method string, op Map) *Response {
-	Debug("client|request", c, url, params, method, op)
-	data := toRequestData(c, params, MapNilMake(op))
+func request(c *Client, url string, ops Map, method string) *Response {
+	Debug("client|request", c, url, ops, method)
+	data := toRequestData(c, ops)
 
 	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
 		return Do(context.Background(), c, r)
@@ -241,55 +272,25 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 	return &response
 }
 
-func toRequestData(client *Client, params, ops Map) *RequestData {
+func toRequestData(client *Client, ops Map) *RequestData {
 	data := client.request.RequestDataCopy()
 	data.Query = processQuery(ops.Get(REQUEST_TYPE_QUERY.String()))
 	data.Body = nil
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
-		if params == nil {
-			data.Body = processJson(ops.Get(REQUEST_TYPE_JSON.String()))
-		} else {
-			data.Body = bytes.NewReader(params.ToJson())
-		}
+		data.Body = processJson(ops.Get(REQUEST_TYPE_JSON.String()))
 	}
 	if client.DataType() == DATA_TYPE_XML {
 		data.SetHeaderXml()
-		if params == nil {
-			data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
-		} else {
-			Debug("toRequestData", params.ToXml())
-			data.Body = strings.NewReader(params.ToXml())
-		}
-
+		data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
 	}
-
-	// if client.DataType() == DATA_TYPE_XML {
-	// 	data.SetHeaderXml()
-	// 	if params == nil {
-	// 		data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
-	// 	} else {
-	// 		data.Body = strings.NewReader(params.ToXml())
-	// 	}
-	// }
 
 	if client.DataType() == DATA_TYPE_MULTIPART {
 		buf := bytes.Buffer{}
 		writer := multipart.NewWriter(&buf)
-		if params == nil {
-			writer = processMultipart(writer, ops.Get(REQUEST_TYPE_MULTIPART.String()))
-			data.Body = &buf
-			data.Header.Set("Content-Type", writer.FormDataContentType())
-		} else {
-			part, e := writer.CreateFormField("media")
-			if e == nil {
-				reader := bytes.NewReader(params.GetBytes("bytes"))
-				if _, e := io.Copy(part, reader); e != nil {
-					data.Body = &buf
-					data.Header.Set("Content-Type", writer.FormDataContentType())
-				}
-			}
-		}
+		writer = processMultipart(writer, ops.Get(REQUEST_TYPE_MULTIPART.String()))
+		data.Body = &buf
+		data.Header.Set("Content-Type", writer.FormDataContentType())
 		defer writer.Close()
 	}
 

@@ -20,6 +20,15 @@ func NewOrder() *Order {
 	return newOrder(payment)
 }
 
+/*
+接口链接
+URL地址：https://api.mch.weixin.qq.com/pay/unifiedorder
+
+是否需要证书
+否
+
+
+*/
 func (o *Order) Unify(m core.Map) *core.Response {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {

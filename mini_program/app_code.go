@@ -41,7 +41,7 @@ func (a *AppCode) getStream(url string, m core.Map) []byte {
 	token := token0.KeyMap()
 	//strings.Join([]string{"access_token", token0.GetKey()}, "=")
 
-	resp := a.GetClient().RequestRaw(url+"?"+token.UrlEncode(), nil, "post", core.Map{core.REQUEST_TYPE_QUERY.String(): token, core.REQUEST_TYPE_JSON.String(): m})
+	resp := a.GetClient().RequestRaw(url+"?"+token.UrlEncode(), core.Map{core.REQUEST_TYPE_QUERY.String(): token, core.REQUEST_TYPE_JSON.String(): m}, "post")
 	panic(resp)
 	return nil
 }

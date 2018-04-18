@@ -63,7 +63,7 @@ func (t *Transfer) ToBankCard(m core.Map) *core.Response {
 	m.Set("enc_bank_no", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
 	m.Set("enc_true_name", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
 	m.Set("sign", core.GenerateSignature(m, t.client.Get("key"), core.SIGN_TYPE_MD5))
-	return t.client.SafeRequest(t.client.Link(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX), nil, "post", core.Map{
+	return t.client.SafeRequest(t.client.Link(MMPAYSPTRANS_PAY_BANK_URL_SUFFIX), core.Map{
 		core.REQUEST_TYPE_XML.String(): m,
-	})
+	}, "post")
 }

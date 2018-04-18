@@ -26,7 +26,7 @@ func (s *Sandbox) SandboxSignKey() []byte {
 	m.Set("nonce_str", GenerateNonceStr())
 	sign := GenerateSignature(m, s.Get("aes_key"), SIGN_TYPE_MD5)
 	m.Set("sign", sign)
-	resp := s.client.Request(s.client.Link(SANDBOX_SIGNKEY_URL_SUFFIX), m, "post", nil)
+	resp := s.client.Request(s.client.Link(SANDBOX_SIGNKEY_URL_SUFFIX), m, "post")
 
 	return resp.ToBytes()
 

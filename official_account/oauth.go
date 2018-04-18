@@ -185,9 +185,8 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	}
 	response := o.client.HttpPost(
 		o.client.Link(OAUTH2_REFRESH_TOKEN_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): v,
-		},
+		v,
+		nil,
 	)
 	core.Debug("RefreshToken|response", response)
 	var token core.Token
@@ -212,9 +211,8 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 	}
 	response := o.client.HttpPost(
 		o.client.Link(OAUTH2_ACCESS_TOKEN_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): v,
-		},
+		v,
+		nil,
 	)
 	core.Debug("AccessToken|response", response.ToString())
 	var token core.Token
