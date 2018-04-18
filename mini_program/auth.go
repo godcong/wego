@@ -35,10 +35,10 @@ func (a *Auth) Session(code string) core.Map {
 		"grant_type": "authorization_code",
 	}
 	a.client.SetDomain(core.NewDomain("mini_program"))
-	resp := a.client.HttpGet(a.client.Link(core.SNS_JSCODE2SESSION_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): params,
-		})
+	resp := a.client.HttpGet(
+		a.client.Link(core.SNS_JSCODE2SESSION_URL_SUFFIX),
+		params,
+	)
 	return resp.ToMap()
 }
 
