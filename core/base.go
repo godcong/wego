@@ -316,9 +316,13 @@ func GetServerIp() string {
 }
 
 func GetClientIp(r *http.Request) string {
-	ip := r.Header.Get("Remote_addr")
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err == nil && ip != "127.0.0.1" {
+		return ip
+	}
+	ip = r.Header.Get("X-Forwarded-For")
 	if ip == "" {
-		ip = r.RemoteAddr
+		return "127.0.0.1"
 	}
 	return ip
 }

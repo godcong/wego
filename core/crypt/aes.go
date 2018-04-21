@@ -7,12 +7,12 @@ import (
 )
 
 type DataCrypt struct {
-	id string
+	appId string
 }
 
 func NewDataCrypt(id string) *DataCrypt {
 	return &DataCrypt{
-		id: id,
+		appId: id,
 	}
 }
 

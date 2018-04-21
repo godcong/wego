@@ -60,7 +60,6 @@ func (s *Server) CallbackFunc(message *core.Message) []byte {
 			if r := v(message); r != nil {
 				result = r
 			}
-
 		}
 	}
 	return result

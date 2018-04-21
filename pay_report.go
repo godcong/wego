@@ -20,7 +20,7 @@ package wego
 //	"strings"
 //	"sync"
 //
-//	"github.com/godcong/wopay/util"
+//	"github.com/godcong/wopay/tool"
 //)
 //
 //const DEFAULT_CONNECT_TIMEOUT_MS = 6 * 1000
@@ -68,7 +68,7 @@ package wego
 //	firstDomain string, primaryDomain bool, firstConnectTimeoutMillis,
 //	firstReadTimeoutMillis int, firstHasDnsError, firstHasConnectTimeout,
 //	firstHasReadTimeout bool) {
-//	currentTimestamp := util.CurrentTimeStamp()
+//	currentTimestamp := tool.CurrentTimeStamp()
 //	reportInfo := NewReportInfo(uuid,
 //		currentTimestamp,
 //		elapsedTimeMillis,
@@ -140,7 +140,7 @@ package wego
 //		strconv.FormatInt(int64(r.FirstHasReadTimeout), 10),
 //	}
 //	s := strings.Join(obj, ",") + ","
-//	return s + util.MakeSignHMACSHA256(s, key)
+//	return s + tool.MakeSignHMACSHA256(s, key)
 //}
 //
 //func ParseInt(b bool) (i int) {

@@ -39,7 +39,7 @@ const FIELD_SIGN_TYPE = "sign_type"
 //const SSLKEY_PATH = "./cert/apiclient_key.pem"
 
 const REPORT_URL_SUFFIX = "/payitil/report"
-const SHORTURL_URL_SUFFIX = "/tools/shorturl"
+const SHORTURL_URL_SUFFIX = "/tool/shorturl"
 
 const SANDBOX_URL_SUFFIX = "/sandboxnew"
 const SANDBOX_SIGNKEY_URL_SUFFIX = SANDBOX_URL_SUFFIX + "/pay/getsignkey"

@@ -200,7 +200,7 @@ func DomainHost() *Domain {
 //		return NewDomainInfo(DOMAIN_API, true)
 //	}
 //
-//	now := util.CurrentTimeStampMS()
+//	now := tool.CurrentTimeStampMS()
 //	if Domain.domainTime == 0 { //first switch
 //		Domain.domainTime = now
 //		return NewDomainInfo(DOMAIN_API2, false)

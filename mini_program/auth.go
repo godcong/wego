@@ -2,7 +2,7 @@ package mini_program
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/crypt"
+	"github.com/godcong/wego/core/crypt"
 )
 
 type Auth struct {

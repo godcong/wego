@@ -21,11 +21,17 @@ func TestXmlToMap(t *testing.T) {
 
 func TestSignatureSHA1(t *testing.T) {
 	// s := "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg&noncestr=Wm3WZYTPz0wzccnW×tamp=1414587457&url=http://mp.weixin.qq.com?params=value"
+
 	p := core.Map{
-		"noncestr":     "Wm3WZYTPz0wzccnW",
-		"jsapi_ticket": "9KwiourQPRN3vx3Nn1c_iX9qGaI3Cf8dwVy7qqYeYKcd3BK4Zd_jSlol7E7baUfgOY0E2ybaw2OrlhkChKaS7w",
-		"timestamp":    1414587457,
-		"url":          "http://mp.weixin.qq.com?params=value",
+		//"echostr":   "16420382348977101771",
+		"timestamp": "1524159299",
+		"nonce":     "4225726225",
+		"token":     "godcong",
+	}
+	//"signature=00320cf3b221cb00f8018bc83070947b1287ba27&echostr=16420382348977101771&timestamp=1524159299&nonce=4225726225"
+	s0 := core.SignatureSHA1(p)
+	if s0 != "00320cf3b221cb00f8018bc83070947b1287ba27" {
+		t.Error(s0)
 	}
 	s := core.SignatureSHA1(core.Map{
 		"noncestr":     "Wm3WZYTPz0wzccnW",

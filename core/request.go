@@ -21,7 +21,7 @@ import (
 //	"log"
 //	"time"
 //
-//	"github.com/godcong/wopay/util"
+//	"github.com/godcong/wopay/tool"
 //)
 //
 //type PayRequest struct {
