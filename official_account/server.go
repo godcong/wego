@@ -123,7 +123,7 @@ func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
 
 func MessageProcess(msg *core.Message) string {
 	switch msg.GetType() {
-	case message.TypeImage:
+	case message.MsgTypeImage:
 
 	}
 	return ""
