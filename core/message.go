@@ -89,9 +89,9 @@ func (m *Message) GetType() message.MsgType {
 	return m.MsgType.MsgType
 }
 
-func (m *Message) Text() message.Text {
-	var text message.Text
-	text.Message = m.Message
-	text.Content = m.Content
-	return text
-}
+//func (m *Message) Text() message.Text {
+//	var text message.Text
+//	text.Message = m.Message
+//	text.Content = m.Content
+//	return text
+//}

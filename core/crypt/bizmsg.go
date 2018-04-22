@@ -67,15 +67,14 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	return p.ToXml(), nil
 }
 
-func (m *BizMsg) Decrypt(text string, timeStamp, nonce string) (string, error) {
+func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]byte, error) {
 	p := core.XmlToMap([]byte(text))
 	enpt := p.GetString("Encrypt")
-	sSign := p.GetString("MsgSignature")
 	tSign := SHA1(m.token, timeStamp, nonce, enpt)
-	if sSign != tSign {
-		return "", errors.New("ValidateSignatureError")
+	if msgSignature != tSign {
+		return nil, errors.New("ValidateSignatureError")
 	}
 	prp := NewPrp(m.encodingAESKey)
 	b, err := prp.Decrypt([]byte(enpt), m.appId)
-	return string(b), err
+	return b, err
 }

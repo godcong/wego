@@ -70,7 +70,6 @@ func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
-
 func (c *PrpCrypt) Decrypt(ciphertext []byte, appId string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
 	if err != nil {
@@ -84,20 +83,24 @@ func (c *PrpCrypt) Decrypt(ciphertext []byte, appId string) ([]byte, error) {
 	blockModel := cipher.NewCBCDecrypter(block, iv)
 	plantText := make([]byte, len(ciphertext))
 	blockModel.CryptBlocks(plantText, ciphertext)
-	plantText = PKCS7UnPadding(plantText, block.BlockSize())
+	plantText = PKCS7UnPadding(plantText)
 	content := plantText[16:]
 	xmlLen := c.BytesLength(content[0:4])
-	xmlContent := content[4:xmlLen]
+	xmlContent := content[4 : xmlLen+4]
 	fromAppId := content[xmlLen+4:]
 	if string(fromAppId) != appId {
 		return nil, errors.New("ValidateAppidError")
 	}
+
 	return xmlContent, nil
 }
 
-func PKCS7UnPadding(plantText []byte, blockSize int) []byte {
+func PKCS7UnPadding(plantText []byte) []byte {
 	length := len(plantText)
 	unpadding := int(plantText[length-1])
+	if unpadding < 1 || unpadding > 32 {
+		unpadding = 0
+	}
 	return plantText[:(length - unpadding)]
 }
 

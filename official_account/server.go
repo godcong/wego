@@ -1,16 +1,20 @@
 package official_account
 
 import (
+	"bytes"
 	"encoding/xml"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/crypt"
 	"github.com/godcong/wego/core/message"
 )
 
 type Server struct {
 	message         *core.Message
+	mType           string
+	bizMsg          *crypt.BizMsg
 	defaultCallback []core.MessageCallback
 	callback        map[message.MsgType][]core.MessageCallback
 }
@@ -29,35 +33,87 @@ func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgT
 		}
 	}
 }
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	body, e := ioutil.ReadAll(r.Body)
-	if e != nil {
-		core.Error(e)
-		return
+func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var bodyBytes []byte
+	var rltXml []byte
+	var err error
+	if req.Body != nil {
+		bodyBytes, _ = ioutil.ReadAll(req.Body)
 	}
+	// Restore the io.ReadCloser to its original state
+	req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	if len(bodyBytes) == 0 {
+		w.WriteHeader(http.StatusOK)
+	}
+	if req.Form == nil {
+		req.ParseForm()
+	}
+	encryptType := req.Form.Get("encrypt_type")
+	ts := req.Form.Get("timestamp")
+	nonce := req.Form.Get("nonce")
+	msgSignature := req.Form.Get("msg_signature")
+
+	if encryptType == "aes" {
+		core.Debug(ts, nonce, msgSignature, string(bodyBytes))
+		bodyBytes, err = s.bizMsg.Decrypt(string(bodyBytes), msgSignature, ts, nonce)
+		if err != nil {
+			core.Error(err)
+			w.WriteHeader(http.StatusOK)
+		}
+	}
+
 	message := new(core.Message)
-	e = xml.Unmarshal(body, message)
-	if e != nil {
-		core.Error(e)
+	core.Debug(string(bodyBytes))
+	err = xml.Unmarshal(bodyBytes, message)
+	if err != nil {
+		core.Error(err)
 		return
 	}
 	result := s.CallbackFunc(message)
 	w.WriteHeader(http.StatusOK)
-	w.Write(result)
+
+	rltXml, err = result.ToXml()
+	if err != nil {
+		core.Error(err)
+		return
+	}
+
+	if encryptType == "aes" {
+		tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
+		if err != nil {
+			core.Error(err)
+			return
+		}
+		rltXml = []byte(tmpStr)
+	}
+	if s.mType == "xml" {
+		header := w.Header()
+		if val := header["Content-Type"]; len(val) == 0 {
+			header["Content-Type"] = []string{"application/xml; charset=utf-8"}
+		}
+	} else {
+		header := w.Header()
+		if val := header["Content-Type"]; len(val) == 0 {
+			header["Content-Type"] = []string{"application/json; charset=utf-8"}
+		}
+	}
+	core.Debug(string(rltXml))
+	w.Write(rltXml)
 	return
 }
 
-func (s *Server) CallbackFunc(message *core.Message) []byte {
-	var result []byte
+func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
+	var result message.Messager
 	for _, v := range s.defaultCallback {
-		if r := v(message); r != nil {
+		if r := v(msg); r != nil {
 			result = r
 		}
 	}
 
-	if v0, b := s.callback[message.GetType()]; b {
+	if v0, b := s.callback[msg.GetType()]; b {
 		for _, v := range v0 {
-			if r := v(message); r != nil {
+			if r := v(msg); r != nil {
 				result = r
 			}
 		}
@@ -73,10 +129,17 @@ func MessageProcess(msg *core.Message) string {
 	return ""
 }
 
-func NewServer() *Server {
+func newServer(token, key, id string) *Server {
 	return &Server{
+		mType:           "xml",
+		bizMsg:          crypt.NewBizMsg(token, key, id),
 		message:         nil,
 		defaultCallback: []core.MessageCallback{},
 		callback:        map[message.MsgType][]core.MessageCallback{},
 	}
+}
+
+func NewServer() *Server {
+	core.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
+	return newServer(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
 }

@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+type Messager interface {
+	ToXml() ([]byte, error)
+	ToJson() ([]byte, error)
+}
+
 type CDATA struct {
 	Value string `xml:",cdata"`
 }
