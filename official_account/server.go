@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/crypt"
@@ -12,6 +13,7 @@ import (
 )
 
 type Server struct {
+	CryptResponse   bool
 	message         *core.Message
 	mType           string
 	bizMsg          *crypt.BizMsg
@@ -33,6 +35,7 @@ func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgT
 		}
 	}
 }
+
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var bodyBytes []byte
 	var rltXml []byte
@@ -46,13 +49,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if len(bodyBytes) == 0 {
 		w.WriteHeader(http.StatusOK)
 	}
-	if req.Form == nil {
-		req.ParseForm()
-	}
-	encryptType := req.Form.Get("encrypt_type")
-	ts := req.Form.Get("timestamp")
-	nonce := req.Form.Get("nonce")
-	msgSignature := req.Form.Get("msg_signature")
+	query := url.ParseQuery(req.URL.RawQuery)
+	encryptType := query.Get("encrypt_type")
+	ts := query.Get("timestamp")
+	nonce := query.Get("nonce")
+	msgSignature := query.Get("msg_signature")
 
 	if encryptType == "aes" {
 		core.Debug(ts, nonce, msgSignature, string(bodyBytes))
@@ -79,14 +80,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if encryptType == "aes" {
-		tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
-		if err != nil {
-			core.Error(err)
-			return
-		}
-		rltXml = []byte(tmpStr)
-	}
+	//if encryptType == "aes" {
+	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
+	//	if err != nil {
+	//		core.Error(err)
+	//		return
+	//	}
+	//	rltXml = []byte(tmpStr)
+	//}
 	if s.mType == "xml" {
 		header := w.Header()
 		if val := header["Content-Type"]; len(val) == 0 {

@@ -38,7 +38,7 @@ type MSGCDATA struct {
 type Message struct {
 	XMLName      xml.Name `xml:"xml"`
 	MsgType      MSGCDATA `xml:"MsgType"`
-	MsgId        int64
+	MsgId        int64    `xml:"MsgId,omitempty"`
 	ToUserName   CDATA
 	FromUserName CDATA
 	CreateTime   int64

@@ -19,32 +19,32 @@ type Button core.Map
 //}
 
 func NewClickButton(name, key string) *Button {
-	return newButton(message.EventClick.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypeClick.String(), core.Map{"name": name, "key": key})
 
 }
 
 func NewViewButton(name, url string) *Button {
-	return newButton(message.EventView.String(), core.Map{"name": name, "url": url})
+	return newButton(message.EventTypeView.String(), core.Map{"name": name, "url": url})
 }
 
 func NewScanCodeWaitMsgButton(name, key string) *Button {
-	return newButton(message.EventScancodeWaitmsg.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypeScancodeWaitmsg.String(), core.Map{"name": name, "key": key})
 }
 
 func NewScanCodePushButton(name, key string) *Button {
-	return newButton(message.EventScancodePush.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypeScancodePush.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicSysPhotoButton(name, key string) *Button {
-	return newButton(message.EventPicSysphoto.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypePicSysphoto.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicPhotoOrAlbumButton(name, key string) *Button {
-	return newButton(message.EventPicPhotoOrAlbum.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypePicPhotoOrAlbum.String(), core.Map{"name": name, "key": key})
 }
 
 func NewPicWeixinButton(name, key string) *Button {
-	return newButton(message.EventPicWeixin.String(), core.Map{"name": name, "key": key})
+	return newButton(message.EventTypePicWeixin.String(), core.Map{"name": name, "key": key})
 }
 
 func NewMediaIDButton(name, mediaId string) *Button {
