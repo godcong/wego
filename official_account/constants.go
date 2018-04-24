@@ -108,3 +108,6 @@ const CARD_CODE_GET_URL_SUFFIX = "/card/code/get"
 const CARD_MPNEWS_GETHTML_URL_SUFFIX = "/card/mpnews/gethtml"
 const CARD_TESTWHITELIST_SET_URL_SUFFIX = "/card/testwhitelist/set"
 const CARD_CREATE_URL_SUFFIX = "/card/create"
+
+const POI_ADDPOI_URL_SUFFIX = "/cgi-bin/poi/addpoi"
+const POI_GETPOI_URL_SUFFIX = "/cgi-bin/poi/getpoi"

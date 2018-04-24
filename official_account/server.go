@@ -49,7 +49,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if len(bodyBytes) == 0 {
 		w.WriteHeader(http.StatusOK)
 	}
-	query := url.ParseQuery(req.URL.RawQuery)
+	query, err := url.ParseQuery(req.URL.RawQuery)
+	if err != nil {
+		core.Error(err)
+		w.WriteHeader(http.StatusOK)
+	}
 	encryptType := query.Get("encrypt_type")
 	ts := query.Get("timestamp")
 	nonce := query.Get("nonce")

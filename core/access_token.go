@@ -93,7 +93,10 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 func (a *AccessToken) RequestToken(credentials string) Token {
 	response := a.sendRequest(credentials)
 	m := Token{}
-	json.Unmarshal(response, &m)
+	err := json.Unmarshal(response, &m)
+	if err != nil {
+		Error(err)
+	}
 	return m
 }
 
