@@ -20,12 +20,12 @@ const (
 	EventTypeTemplateSendJobFinish      EventType = "TEMPLATESENDJOBFINISH"        // 发送模板消息推送通知
 	EventTypeUserEnterTempsession       EventType = "user_enter_tempsession"       // 会话事件
 	EventTypeQualificationVerifySuccess EventType = "qualification_verify_success" // 资质认证成功（此时立即获得接口权限）
-	EventTypeQualificationVerifyFail EventType = "qualification_verify_fail"       // 资质认证失败
-	EventTypeNamingVerifySuccess     EventType = "naming_verify_success"           // 名称认证成功（即命名成功）
-	EventTypeNamingVerifyFail        EventType = "naming_verify_fail"              // 名称认证失败（这时虽然客户端不打勾，但仍有接口权限）
-	EventTypeAnnualRenew             EventType = "annual_renew"                    // 年审通知
-	EventTypeVerifyExpired           EventType = "verify_expired"                  // 认证过期失效通知审通知
-	EventTypePoiCheckNotify          EventType = "poi_check_notify"                //审核事件推送
+	EventTypeQualificationVerifyFail    EventType = "qualification_verify_fail"    // 资质认证失败
+	EventTypeNamingVerifySuccess        EventType = "naming_verify_success"        // 名称认证成功（即命名成功）
+	EventTypeNamingVerifyFail           EventType = "naming_verify_fail"           // 名称认证失败（这时虽然客户端不打勾，但仍有接口权限）
+	EventTypeAnnualRenew                EventType = "annual_renew"                 // 年审通知
+	EventTypeVerifyExpired              EventType = "verify_expired"               // 认证过期失效通知审通知
+	EventTypePoiCheckNotify             EventType = "poi_check_notify"             // 审核事件推送
 )
 
 type EVTCDATA struct {
