@@ -111,3 +111,7 @@ const CARD_CREATE_URL_SUFFIX = "/card/create"
 
 const POI_ADDPOI_URL_SUFFIX = "/cgi-bin/poi/addpoi"
 const POI_GETPOI_URL_SUFFIX = "/cgi-bin/poi/getpoi"
+const POI_UPDATEPOI_URL_SUFFIX = "/cgi-bin/poi/updatepoi"
+const POI_GETLISTPOI_URL_SUFFIX = "/cgi-bin/poi/getpoilist"
+const POI_DELPOI_URL_SUFFIX = "/cgi-bin/poi/delpoi"
+const POI_GETWXCATEGORY_URL_SUFFIX = "/cgi-bin/poi/getwxcategory"
