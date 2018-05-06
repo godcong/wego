@@ -1,19 +1,5 @@
 package core
 
-type SignType int
-
-const (
-	SIGN_TYPE_MD5        SignType = iota
-	SIGN_TYPE_HMACSHA256 SignType = iota
-)
-
-func (t SignType) String() string {
-	if t == SIGN_TYPE_HMACSHA256 {
-		return HMACSHA256
-	}
-	return MD5
-}
-
 const MP_DOMAIN = "https://mp.weixin.qq.com"
 const BASE_DOMAIN = "https://api.mch.weixin.qq.com"
 const API_WEIXIN = "https://api.weixin.qq.com"
@@ -28,12 +14,12 @@ const SUCCESS = "SUCCESS"
 const HMACSHA256 = "HMAC-SHA256"
 const MD5 = "MD5"
 
+const FIELD_SIGN = "sign"
+const FIELD_SIGN_TYPE = "sign_type"
+
 const SYSTEMERROR = "SYSTEMERROR"
 const BANKERROR = "BANKERROR"
 const USERPAYING = "USERPAYING"
-
-const FIELD_SIGN = "sign"
-const FIELD_SIGN_TYPE = "sign_type"
 
 //const SSLCERT_PATH = "./cert/apiclient_cert.pem"
 //const SSLKEY_PATH = "./cert/apiclient_key.pem"

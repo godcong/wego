@@ -1,6 +1,9 @@
 package payment
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
+)
 
 type Reverse struct {
 	core.Config
@@ -19,14 +22,14 @@ func NewReverse() *Reverse {
 }
 
 func (r *Reverse) ByOutTradeNumber(num string) *core.Response {
-	return r.reverse(core.Map{"out_trade_no": num})
+	return r.reverse(util.Map{"out_trade_no": num})
 }
 
 func (r *Reverse) ByTransactionId(id string) *core.Response {
-	return r.reverse(core.Map{"transaction_id": id})
+	return r.reverse(util.Map{"transaction_id": id})
 }
 
-func (r *Reverse) reverse(m core.Map) *core.Response {
+func (r *Reverse) reverse(m util.Map) *core.Response {
 	m.Set("appid", r.Config.Get("app_id"))
 	return r.SafeRequest(REVERSE_URL_SUFFIX, m)
 }

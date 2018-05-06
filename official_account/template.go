@@ -2,11 +2,14 @@ package official_account
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
 	"github.com/godcong/wego/core/message"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type Template struct {
-	config  core.Config
+	config  config.Config
 	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
@@ -74,8 +77,8 @@ func (t *Template) SetIndustry(id1, id2 string) *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpPostJson(
 		t.client.Link(API_SET_INDUSTRY_URL_SUFFIX),
-		core.Map{"industry_id1": id1, "industry_id2": id2},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{"industry_id1": id1, "industry_id2": id2},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 
 }
@@ -86,7 +89,7 @@ func (t *Template) GetIndustry() *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpGet(
 		t.client.Link(GET_INDUSTRY_URL_SUFFIX),
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
 
@@ -99,8 +102,8 @@ func (t *Template) Add(shortId string) *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpPostJson(
 		t.client.Link(API_ADD_TEMPLATE_URL_SUFFIX),
-		core.Map{"template_id_short": shortId},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{"template_id_short": shortId},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
 
@@ -127,7 +130,7 @@ func (t *Template) GetAllPrivate() *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpGet(
 		t.client.Link(GET_ALL_PRIVATE_TEMPLATE_URL_SUFFIX),
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()},
 	)
 	return resp
 }
@@ -139,8 +142,8 @@ func (t *Template) DelAllPrivate(templateID string) *core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HttpPostJson(
 		t.client.Link(DEL_PRIVATE_TEMPLATE_URL_SUFFIX),
-		core.Map{"template_id": templateID},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()},
+		util.Map{"template_id": templateID},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()},
 	)
 	return resp
 

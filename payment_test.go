@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 	_ "github.com/godcong/wego/payment"
 )
 
@@ -40,7 +40,7 @@ func TestOrder_QueryByTransactionId(t *testing.T) {
 }
 
 func TestOrder_Unify(t *testing.T) {
-	m := make(core.Map)
+	m := make(util.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
 	m.Set("out_trade_no", out_trade_no+"4")
 	//m.Set("device_info", "")

@@ -7,12 +7,15 @@ import (
 	"time"
 
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type AccessToken struct {
-	Config
+	config.Config
 	client      *Client
-	credentials Map
+	credentials util.Map
 	token       string
 }
 
@@ -21,26 +24,26 @@ const ACCESS_TOKEN_EXPIRES_IN = "expires_in"
 
 const ACCESS_TOKEN_SAFE_SECONDS = 500
 
-func (a *AccessToken) getQuery() Map {
+func (a *AccessToken) getQuery() util.Map {
 	panic("implement me")
 }
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	m0 := Map{
+	m0 := util.Map{
 		"grant_type": "client_credential",
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
 	}
-	//m := a.client.Request(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), nil, "get", Map{
+	//m := a.client.Request(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), nil, "get", util.Map{
 	//	REQUEST_TYPE_QUERY.String(): m0,
 	//})
 	m := a.client.HttpGet(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), m0)
 
-	Debug("AccessToken|sendRequest", m.ToString())
+	log.Debug("AccessToken|sendRequest", m.ToString())
 	return m.ToBytes()
 }
 
-func NewAccessToken(config Config, client *Client) *AccessToken {
+func NewAccessToken(config config.Config, client *Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
 		client: client,
@@ -48,23 +51,23 @@ func NewAccessToken(config Config, client *Client) *AccessToken {
 }
 
 func (a *AccessToken) Refresh() *AccessToken {
-	Debug("AccessToken|Refresh")
+	log.Debug("AccessToken|Refresh")
 	a.getToken(true)
 	return a
 }
 
 func (a *AccessToken) GetRefreshedToken() *Token {
-	Debug("AccessToken|GetRefreshedToken")
+	log.Debug("AccessToken|GetRefreshedToken")
 	return a.getToken(true)
 }
 
 func (a *AccessToken) GetToken() *Token {
-	Debug("AccessToken|GetToken")
+	log.Debug("AccessToken|GetToken")
 	return a.getToken(false)
 }
 
 func (a *AccessToken) GetTokenWithRefresh() *Token {
-	Debug("AccessToken|GetTokenWithRefresh")
+	log.Debug("AccessToken|GetTokenWithRefresh")
 	return a.getToken(true)
 }
 
@@ -80,7 +83,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	}
 
 	token := a.RequestToken(a.getCredentials())
-	Debug("AccessToken|getToken", token)
+	log.Debug("AccessToken|getToken", token)
 	if v := token.ExpiresIn; v != 0 {
 		a.SetTokenWithLife(token.AccessToken, time.Unix(v, 0))
 	} else {
@@ -95,7 +98,7 @@ func (a *AccessToken) RequestToken(credentials string) Token {
 	m := Token{}
 	err := json.Unmarshal(response, &m)
 	if err != nil {
-		Error(err)
+		log.Error(err)
 	}
 	return m
 }

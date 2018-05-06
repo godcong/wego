@@ -4,16 +4,20 @@ import (
 	"encoding/json"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type User struct {
-	config core.Config
+	config.Config
 	*OfficialAccount
 }
 
 func newUser(account *OfficialAccount) *User {
 	return &User{
-		config:          defaultConfig,
+		Config:          defaultConfig,
 		OfficialAccount: account,
 	}
 }
@@ -35,16 +39,16 @@ func NewUser() *User {
 // 失败:
 // {"errcode":40013,"errmsg":"invalid appid"}
 func (u *User) UpdateRemark(openid, remark string) *core.Response {
-	core.Debug("User|UpdateRemark", openid, remark)
+	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
 	resp := u.client.HttpPostJson(
 		u.client.Link(USER_INFO_UPDATEREMARK_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"openid": openid,
 			"remark": remark,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -55,7 +59,7 @@ func (u *User) UpdateRemark(openid, remark string) *core.Response {
 // 成功:
 // {"subscribe":1,"openid":"o6_bmjrPTlm6_2sgVt7hMZOPfL2M","nickname":"Band","sex":1,"language":"zh_CN","city":"广州","province":"广东","country":"中国","headimgurl":"http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0","subscribe_time":1382694957,"unionid":"o6_bmasdasdsad6_2sgVt7hMZOPfL""remark":"","groupid":0,"tagid_list":[128,2],"subscribe_scene":"ADD_SCENE_QR_CODE","qr_scene":98765,"qr_scene_str":""}
 func (u *User) UserInfo(openid, lang string) *core.UserInfo {
-	core.Debug("User|UpdateRemark", openid, lang)
+	log.Debug("User|UpdateRemark", openid, lang)
 	p := u.token.GetToken().KeyMap()
 	p.Set("openid", openid)
 	if lang != "" {
@@ -64,8 +68,8 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 
 	resp := u.client.HttpGet(
 		u.client.Link(USER_INFO_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	var info core.UserInfo
 	json.Unmarshal(resp.ToBytes(), &info)
@@ -80,7 +84,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 // 失败:
 // {"errcode":40013,"errmsg":"invalid appid"}
 func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
-	core.Debug("User|BatchGet", openids, lang)
+	log.Debug("User|BatchGet", openids, lang)
 	p := u.token.GetToken().KeyMap()
 	var list []*core.UserId
 
@@ -99,11 +103,11 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	}
 	resp := u.client.HttpPostJson(
 		u.client.Link(USER_INFO_BATCHGET_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"user_list": list,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 
 	m := make(map[string][]*core.UserInfo)
@@ -119,7 +123,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 //http请求方式: GET（请使用https协议）
 //https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
 func (u *User) Get(nextOpenid string) *core.Response {
-	core.Debug("User|Get", nextOpenid)
+	log.Debug("User|Get", nextOpenid)
 	query := u.token.GetToken().KeyMap()
 	if nextOpenid != "" {
 		query.Set("next_openid", nextOpenid)
@@ -127,8 +131,8 @@ func (u *User) Get(nextOpenid string) *core.Response {
 
 	resp := u.client.HttpGet(
 		u.client.Link(USER_GET_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): query,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): query,
 		})
 
 	return resp

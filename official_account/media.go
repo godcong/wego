@@ -2,10 +2,14 @@ package official_account
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type Media struct {
-	config core.Config
+	config config.Config
 	*OfficialAccount
 }
 
@@ -31,16 +35,16 @@ func NewMedia() *Media {
 // 失败:
 // {"errcode":41005,"errmsg":"media data missing hint: [1HqFUa09681538]"}
 func (m *Media) Upload(filePath string, mediaType core.MediaType) *core.Response {
-	core.Debug("Media|Upload", filePath, mediaType)
+	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.HttpUpload(
 		m.client.Link(MEDIA_UPLOAD_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media": filePath,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -70,13 +74,13 @@ func (m *Media) UploadImage(filePath string) *core.Response {
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
 func (m *Media) Get(mediaId string) *core.Response {
-	core.Debug("Media|Get", mediaId)
+	log.Debug("Media|Get", mediaId)
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaId)
 	resp := m.client.HttpGet(
 		m.client.Link(MEDIA_GET_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -92,8 +96,8 @@ func (m *Media) GetJssdk(mediaId string) *core.Response {
 	p.Set("media_id", mediaId)
 	resp := m.client.HttpGet(
 		m.client.Link(MEDIA_GET_JSSDK_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -118,11 +122,11 @@ func (m *Media) uploadImg(name string, filePath string) *core.Response {
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpUpload(
 		m.client.Link(MEDIA_UPLOADIMG_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			name: filePath,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }

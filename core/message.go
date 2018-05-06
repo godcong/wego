@@ -7,47 +7,47 @@ import (
 type Message struct {
 	message.Message
 	/*message*/
-	Content      CDATA
-	PicUrl       CDATA // 图片链接（由系统生成）
-	MediaId      CDATA // 图片消息媒体id，可以调用多媒体文件下载接口拉取数据。
-	Title        CDATA // 标题
-	AppId        CDATA // 小程序appid
-	PagePath     CDATA // 小程序页面路径
-	ThumbUrl     CDATA // 封面图片的临时cdn链接
-	ThumbMediaId CDATA // 封面图片的临时素材id
+	Content      message.CDATA
+	PicUrl       message.CDATA // 图片链接（由系统生成）
+	MediaId      message.CDATA // 图片消息媒体id，可以调用多媒体文件下载接口拉取数据。
+	Title        message.CDATA // 标题
+	AppId        message.CDATA // 小程序appid
+	PagePath     message.CDATA // 小程序页面路径
+	ThumbUrl     message.CDATA // 封面图片的临时cdn链接
+	ThumbMediaId message.CDATA // 封面图片的临时素材id
 	Items        []*message.NewItem
-	Format       CDATA // 语音格式，如amr，speex等
-	Recognition  CDATA // 语音识别结果，UTF8编码
+	Format       message.CDATA // 语音格式，如amr，speex等
+	Recognition  message.CDATA // 语音识别结果，UTF8编码
 	Location_X   float64
 	Location_Y   float64
 	Scale        int64
-	Label        CDATA
-	Description  CDATA // 消息描述
-	Url          CDATA
+	Label        message.CDATA
+	Description  message.CDATA // 消息描述
+	Url          message.CDATA
 	/*event*/
 	message.Event
-	EventKey  CDATA   // 事件KEY值，qrscene_为前缀，后面为二维码的参数值
-	Ticket    CDATA   // 二维码的ticket，可用来换取二维码图片
-	Latitude  float64 // 地理位置纬度
-	Longitude float64 // 地理位置经度
-	Precision float64 // 地理位置精度
+	EventKey  message.CDATA // 事件KEY值，qrscene_为前缀，后面为二维码的参数值
+	Ticket    message.CDATA // 二维码的ticket，可用来换取二维码图片
+	Latitude  float64       // 地理位置纬度
+	Longitude float64       // 地理位置经度
+	Precision float64       // 地理位置精度
 
-	MenuID CDATA // 指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。
+	MenuID message.CDATA // 指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。
 
 	ScanCodeInfo     message.ScanCodeInfo     // 扫描信息
 	SendPicsInfo     message.SendPicsInfo     // 发送的图片信息
 	SendLocationInfo message.SendLocationInfo // 发送的位置信息
 
-	Status CDATA // 	发送状态为成功
+	Status message.CDATA // 	发送状态为成功
 
-	ExpiredTime int64 // 有效期 (整形)，指的是时间戳，将于该时间戳认证过期
-	FailTime    int64 // 失败发生时间 (整形)，时间戳
-	FailReason  CDATA // 认证失败的原因
+	ExpiredTime int64         // 有效期 (整形)，指的是时间戳，将于该时间戳认证过期
+	FailTime    int64         // 失败发生时间 (整形)，时间戳
+	FailReason  message.CDATA // 认证失败的原因
 	// 名称认证成功（即命名成功）
-	UniqId CDATA
-	PoiId  CDATA
-	Result CDATA
-	Msg    CDATA `xml:"msg"`
+	UniqId message.CDATA
+	PoiId  message.CDATA
+	Result message.CDATA
+	Msg    message.CDATA `xml:"msg"`
 }
 
 // type Article struct {

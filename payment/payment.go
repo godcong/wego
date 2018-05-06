@@ -3,6 +3,8 @@ package payment
 import (
 	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type Payment struct {
@@ -12,7 +14,7 @@ type Payment struct {
 	sandbox *core.Sandbox
 	app     *core.Application
 
-	sub      core.Map
+	sub      util.Map
 	bill     *Bill
 	redPack  *RedPack
 	order    *Order
@@ -59,37 +61,37 @@ func (p *Payment) GetClient() *core.Client {
 	return p.client
 }
 
-func (p *Payment) Request(url string, params core.Map) *core.Response {
-	m := core.Map{
+func (p *Payment) Request(url string, params util.Map) *core.Response {
+	m := util.Map{
 		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.Request(p.client.Link(url), m, "post")
 }
 
-func (p *Payment) RequestRaw(url string, params core.Map) *core.Response {
-	m := core.Map{
+func (p *Payment) RequestRaw(url string, params util.Map) *core.Response {
+	m := util.Map{
 		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.RequestRaw(p.client.Link(url), m, "post")
 }
 
-func (p *Payment) SafeRequest(url string, params core.Map) *core.Response {
-	m := core.Map{
+func (p *Payment) SafeRequest(url string, params util.Map) *core.Response {
+	m := util.Map{
 		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.SafeRequest(p.client.Link(url), m, "post")
 }
 
-func (p *Payment) Pay(params core.Map) core.Map {
+func (p *Payment) Pay(params util.Map) util.Map {
 	params.Set("appid", p.config.Get("app_id"))
 	return p.client.Request(MICROPAY_URL_SUFFIX, p.preRequest(params), "post").ToMap()
 }
 
-func (p *Payment) AuthCodeToOpenid(authCode string) core.Map {
-	m := make(core.Map)
+func (p *Payment) AuthCodeToOpenid(authCode string) util.Map {
+	m := make(util.Map)
 	m.Set("appid", p.config.Get("app_id"))
 	m.Set("auth_code", authCode)
 	return p.client.Request(AUTHCODETOOPENID_URL_SUFFIX, p.preRequest(m), "post").ToMap()
@@ -129,7 +131,7 @@ func (p *Payment) Order() wego.Order {
 	return p.order
 }
 
-func (p *Payment) preRequest(params core.Map) core.Map {
+func (p *Payment) preRequest(params util.Map) util.Map {
 	if params != nil {
 		params.Set("mch_id", p.client.Get("mch_id"))
 		params.Set("nonce_str", core.GenerateUUID())
@@ -142,7 +144,7 @@ func (p *Payment) preRequest(params core.Map) core.Map {
 		params.Set("sign_type", core.SIGN_TYPE_MD5.String())
 		params.Set("sign", core.GenerateSignature(params, p.client.Get("key"), core.SIGN_TYPE_MD5))
 	}
-	core.Debug("preRequest", params)
+	log.Debug("preRequest", params)
 	return params
 }
 

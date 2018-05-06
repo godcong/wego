@@ -2,7 +2,10 @@ package official_account
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/core/media"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type Material struct {
@@ -22,12 +25,12 @@ func NewMaterial() *Material {
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
 func (m *Material) AddNews(articles []*media.Article) *core.Response {
-	core.Debug("Material|AddNews", articles)
+	log.Debug("Material|AddNews", articles)
 	key := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
 		m.client.Link(MATERIAL_ADD_NEWS_URL_SUFFIX),
-		core.Map{"articles": articles},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): key})
+		util.Map{"articles": articles},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): key})
 	return resp
 }
 
@@ -37,20 +40,20 @@ func (m *Material) AddNews(articles []*media.Article) *core.Response {
 // 成功:
 // {"media_id":"HIWcj9t3AI_b8qCQSu8lrY5DkGL1LMl8_eTrDv4aUo8","url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0?wx_fmt=jpeg"}
 func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *core.Response {
-	core.Debug("Material|AddMaterial", filePath, mediaType)
+	log.Debug("Material|AddMaterial", filePath, mediaType)
 	if mediaType == core.MediaTypeVideo {
-		core.Error("please use Material.UploadVideo() function")
+		log.Error("please use Material.UploadVideo() function")
 	}
 
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.HttpUpload(
 		m.client.Link(MATERIAL_ADD_MATERIAL_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media": filePath,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -58,20 +61,20 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *core.
 // 成功:
 // {"media_id":"HIWcj9t3AI_b8qCQSu8lrTBEyIAO-uPSQhTiI2uoENk"}
 func (m *Material) UploadVideo(filePath string, title, introduction string) *core.Response {
-	core.Debug("Media|UploadVideo", filePath, title, introduction)
+	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
 	resp := m.client.HttpUpload(
 		m.client.Link(MATERIAL_ADD_MATERIAL_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media": filePath,
-			"description": core.Map{
+			"description": util.Map{
 				"title":        title,
 				"introduction": introduction,
 			},
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -83,15 +86,15 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) *cor
 // 成功:
 // {"title":"ceshi2","description":"only test","down_url":"http:\/\/203.205.158.71\/vweixinp.tc.qq.com\/1007_ad755ea12b3043e893e174d18de97f24.f10.mp4?vkey=22A7BCCDB429DF3613D50C1CAC510BDDCD12030895D782B3FAE00FB6989E4FFA640EB7EB8B498E560D08C84D808EF352BFFB0B15FA743556DB96BBF0239FC41F6DAFEEBA1024DBCA0954FBE09A66AA5381AB9CA50D1F8AE2&sha=0&save=1"}
 func (m *Material) Get(mediaId string) *core.Response {
-	core.Debug("Material|Get", mediaId)
+	log.Debug("Material|Get", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
 		m.client.Link(MATERIAL_GET_MATERIAL_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media_id": mediaId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -103,15 +106,15 @@ func (m *Material) Get(mediaId string) *core.Response {
 // 失败:
 // {"errcode":-1,"errmsg":"system error hint: [NX0zcA05993060]"}
 func (m *Material) Del(mediaId string) *core.Response {
-	core.Debug("Material|Del", mediaId)
+	log.Debug("Material|Del", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
 		m.client.Link(MATERIAL_DEL_MATERIAL_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media_id": mediaId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 
@@ -120,17 +123,17 @@ func (m *Material) Del(mediaId string) *core.Response {
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN
 func (m *Material) UpdateNews(mediaId string, index int, articles []*media.Article) *core.Response {
-	core.Debug("Material|UpdateNews", mediaId)
+	log.Debug("Material|UpdateNews", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
 		m.client.Link(MATERIAL_UPDATE_NEWS_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"media_id": mediaId,
 			"index":    index,
 			"articles": articles,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 
@@ -143,12 +146,12 @@ func (m *Material) UpdateNews(mediaId string, index int, articles []*media.Artic
 // 失败:
 // {"errcode":-1,"errmsg":"system error"}
 func (m *Material) GetMaterialCount() *core.Response {
-	core.Debug("Material|GetMaterialCount")
+	log.Debug("Material|GetMaterialCount")
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpGet(
 		m.client.Link(MATERIAL_GET_MATERIALCOUNT_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -160,17 +163,17 @@ func (m *Material) GetMaterialCount() *core.Response {
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
 func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) *core.Response {
-	core.Debug("Material|BatchGet", mediaType, offset, count)
+	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
 		m.client.Link(MATERIAL_BATCHGET_MATERIAL_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"type":   mediaType.String(),
 			"offset": offset,
 			"count":  count,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 

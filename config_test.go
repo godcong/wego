@@ -1,6 +1,7 @@
 package wego_test
 
 import (
+	"log"
 	"testing"
 
 	"github.com/godcong/wego/core"
@@ -8,8 +9,8 @@ import (
 
 func TestConfig(t *testing.T) {
 	t.Log(core.IsDebug())
-	core.Debug("test")
-	core.Error("test")
+	log.Debug("test")
+	log.Error("test")
 	core.Info("test")
 	core.Warn("test")
 	core.Fatal("test")

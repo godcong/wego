@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 )
 
 type Refund struct {
@@ -22,7 +23,7 @@ func NewRefund() *Refund {
 	return newRefund(payment)
 }
 
-func (r *Refund) refund(num string, total, refund int, options core.Map) *core.Response {
+func (r *Refund) refund(num string, total, refund int, options util.Map) *core.Response {
 	options.NilSet("out_refund_no", num)
 	options.NilSet("total_fee", strconv.Itoa(total))
 	options.NilSet("refund_fee", strconv.Itoa(refund))
@@ -51,8 +52,8 @@ func (r *Refund) refund(num string, total, refund int, options core.Map) *core.R
 //<coupon_refund_count>0</coupon_refund_count>
 //<cash_refund_fee>30</cash_refund_fee>
 //</xml>
-func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) *core.Response {
-	options = core.MapNilMake(options)
+func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *core.Response {
+	options = util.MapNilMake(options)
 	options.NilSet("out_trade_no", tradeNum)
 	return r.refund(num, total, refund, options)
 }
@@ -77,29 +78,29 @@ func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, optio
 //<coupon_refund_count>0</coupon_refund_count>
 //<cash_refund_fee>3</cash_refund_fee>
 //</xml>
-func (r *Refund) ByTransactionId(tid, num string, total, refund int, options core.Map) *core.Response {
-	options = core.MapNilMake(options)
+func (r *Refund) ByTransactionId(tid, num string, total, refund int, options util.Map) *core.Response {
+	options = util.MapNilMake(options)
 	options.NilSet("transaction_id", tid)
 	return r.refund(num, total, refund, options)
 }
 
-func (r *Refund) query(m core.Map) *core.Response {
+func (r *Refund) query(m util.Map) *core.Response {
 	m.Set("appid", r.Config.Get("app_id"))
 	return r.Request(REFUNDQUERY_URL_SUFFIX, m)
 }
 
 func (r *Refund) QueryByRefundId(id string) *core.Response {
-	return r.query(core.Map{"refund_id": id})
+	return r.query(util.Map{"refund_id": id})
 }
 
 func (r *Refund) QueryByOutRefundNumber(id string) *core.Response {
-	return r.query(core.Map{"out_refund_no": id})
+	return r.query(util.Map{"out_refund_no": id})
 }
 
 func (r *Refund) QueryByOutTradeNumber(id string) *core.Response {
-	return r.query(core.Map{"out_trade_no": id})
+	return r.query(util.Map{"out_trade_no": id})
 }
 
 func (r *Refund) QueryByTransactionId(id string) *core.Response {
-	return r.query(core.Map{"transaction_id": id})
+	return r.query(util.Map{"transaction_id": id})
 }

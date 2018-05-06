@@ -13,6 +13,11 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type DataType string
@@ -30,17 +35,36 @@ type URL struct {
 }
 
 type Client struct {
-	Config
+	config.Config
 	dataType DataType
 	domain   *Domain
 	app      *Application
 	token    *AccessToken
-	request  *Request
-	response *Response
+	request  *net.Request
+	response *net.Response
 	client   *http.Client
 }
 
-var HTTPClient ContextKey
+var defaultCa = []byte(`
+-----BEGIN CERTIFICATE-----
+MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV
+UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy
+dGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1
+MVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx
+dWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B
+AQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f
+BeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A
+cJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC
+AwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ
+MA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm
+aWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw
+ODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj
+IBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF
+MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA
+A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
+7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh
+1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
+-----END CERTIFICATE-----`)
 
 func (c *Client) SetDomain(domain *Domain) *Client {
 	c.domain = domain
@@ -69,52 +93,52 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 	return c
 }
 
-func (c *Client) HttpPostJson(url string, query Map, json interface{}) *Response {
+func (c *Client) HttpPostJson(url string, query util.Map, json interface{}) *net.Response {
 	c.dataType = DATA_TYPE_JSON
-	p := Map{
-		REQUEST_TYPE_JSON.String(): json,
+	p := util.Map{
+		net.REQUEST_TYPE_JSON.String(): json,
 	}
 	if query != nil {
-		p.Set(REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
 	}
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpPostXml(url string, query Map, xml interface{}) *Response {
+func (c *Client) HttpPostXml(url string, query util.Map, xml interface{}) *net.Response {
 	c.dataType = DATA_TYPE_XML
-	p := Map{
-		REQUEST_TYPE_XML.String(): xml,
+	p := util.Map{
+		net.REQUEST_TYPE_XML.String(): xml,
 	}
 	if query != nil {
-		p.Set(REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
 	}
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpUpload(url string, query, multi Map) *Response {
+func (c *Client) HttpUpload(url string, query, multi util.Map) *net.Response {
 	c.dataType = DATA_TYPE_MULTIPART
-	p := Map{
-		REQUEST_TYPE_MULTIPART.String(): multi,
+	p := util.Map{
+		net.REQUEST_TYPE_MULTIPART.String(): multi,
 	}
 	if query != nil {
-		p.Set(REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
 	}
 
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpGet(url string, query Map) *Response {
-	p := Map{}
+func (c *Client) HttpGet(url string, query util.Map) *net.Response {
+	p := util.Map{}
 	if query != nil {
-		p.Set(REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
 	}
 	return c.Request(url, p, "get")
 }
 
-func (c *Client) HttpPost(url string, query Map, ops Map) *Response {
-	p := Map{}
+func (c *Client) HttpPost(url string, query util.Map, ops util.Map) *net.Response {
+	p := util.Map{}
 	if query != nil {
-		p.Set(REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
 	}
 	if ops != nil {
 		p.ReplaceJoin(ops)
@@ -122,20 +146,20 @@ func (c *Client) HttpPost(url string, query Map, ops Map) *Response {
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) Request(url string, ops Map, method string) *Response {
-	Debug("Request|httpClient", c.client)
+func (c *Client) Request(url string, ops util.Map, method string) *net.Response {
+	log.Debug("Request|httpClient", c.client)
 	c.client = buildTransport(c.Config)
 	c.response = request(c, url, ops, method)
 	return c.response
 }
 
-func (c *Client) RequestRaw(url string, ops Map, method string) *Response {
+func (c *Client) RequestRaw(url string, ops util.Map, method string) *net.Response {
 	return c.Request(url, ops, method)
 }
 
-func (c *Client) SafeRequest(url string, ops Map, method string) *Response {
+func (c *Client) SafeRequest(url string, ops util.Map, method string) *net.Response {
 	c.client = buildSafeTransport(c.Config)
-	Debug("SafeRequest|httpClient", c.client)
+	log.Debug("SafeRequest|httpClient", c.client)
 	c.response = request(c, url, ops, method)
 	return c.response
 }
@@ -147,11 +171,11 @@ func (c *Client) Link(uri string) string {
 	return c.domain.Link(uri)
 }
 
-func (c *Client) GetResponse() *Response {
+func (c *Client) GetResponse() *net.Response {
 	return c.response
 }
 
-func (c *Client) GetRequest() *Request {
+func (c *Client) GetRequest() *net.Request {
 	return c.request
 }
 
@@ -159,21 +183,21 @@ func DefaultClient() *Client {
 	return nil
 }
 
-func NewClient(config Config) *Client {
-	Debug("NewClient|config", config)
+func NewClient(config config.Config) *Client {
+	log.Debug("NewClient|config", config)
 	domain := NewDomain("default")
 	if config == nil {
 		config = defaultConfig
 	}
 	return &Client{
-		request:  DefaultRequest,
+		request:  net.DefaultRequest,
 		Config:   config,
 		dataType: DATA_TYPE_XML,
 		domain:   domain,
 	}
 }
 
-func buildTransport(config Config) *http.Client {
+func buildTransport(config config.Config) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
 			//Dial: (&net.Dialer{
@@ -195,8 +219,8 @@ func buildTransport(config Config) *http.Client {
 
 }
 
-func buildSafeTransport(config Config) *http.Client {
-	Debug("buildSafeTransport", config.Get("cert_path"), config.Get("key_path"), config.Get("rootca_path"))
+func buildSafeTransport(config config.Config) *http.Client {
+	log.Debug("buildSafeTransport", config.Get("cert_path"), config.Get("key_path"), config.Get("rootca_path"))
 	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
 	if err != nil {
 		panic(err)
@@ -204,7 +228,7 @@ func buildSafeTransport(config Config) *http.Client {
 
 	caFile, err := ioutil.ReadFile(config.Get("rootca_path"))
 	if err != nil {
-		panic(err)
+		caFile = defaultCa
 	}
 	certPool := x509.NewCertPool()
 	certPool.AppendCertsFromPEM(caFile)
@@ -229,21 +253,21 @@ func buildSafeTransport(config Config) *http.Client {
 	}
 }
 
-func request(c *Client, url string, ops Map, method string) *Response {
-	Debug("client|request", c, url, ops, method)
+func request(c *Client, url string, ops util.Map, method string) *net.Response {
+	log.Debug("client|request", c, url, ops, method)
 	data := toRequestData(c, ops)
 
 	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
 		return Do(context.Background(), c, r)
 	} else {
-		return ErrorResponse(r.Error())
+		return net.ErrorResponse(r.Error())
 	}
 }
 
-func Do(ctx context.Context, client *Client, request *Request) *Response {
-	var response Response
+func Do(ctx context.Context, client *Client, request *net.Request) *net.Response {
+	var response *net.Response
 
-	r, err := client.client.Do(request.request.WithContext(ctx))
+	r, err := client.client.Do(request.HttpRequest().WithContext(ctx))
 	// If we got an error, and the context has been canceled,
 	// the context's error is probably more useful.
 	if err != nil {
@@ -252,43 +276,36 @@ func Do(ctx context.Context, client *Client, request *Request) *Response {
 			err = ctx.Err()
 		default:
 		}
-		Error("Client|Do", err)
-		response.error = err
-		return &response
+		log.Error("Client|Do", err)
+		return net.ErrorResponse(err)
 	}
 	defer r.Body.Close()
 
 	if r.StatusCode != http.StatusOK {
-		Debug("Do|StatusCode", r.StatusCode)
+		log.Debug("Do|StatusCode", r.StatusCode)
 	}
+	response = net.ParseResponse(r)
 
-	response.responseData, response.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
-	response.responseType = RESPONSE_TYPE_JSON
-	if client.DataType() == RESPONSE_TYPE_XML {
-		response.responseType = RESPONSE_TYPE_XML
-	}
-	Debug("ClientDo|response", response.responseType, response.error, response.responseMap)
-	Debug("ClientDo|response|data", len(response.responseData))
-	return &response
+	return response
 }
 
-func toRequestData(client *Client, ops Map) *RequestData {
+func toRequestData(client *Client, ops util.Map) *net.RequestData {
 	data := client.request.RequestDataCopy()
-	data.Query = processQuery(ops.Get(REQUEST_TYPE_QUERY.String()))
+	data.Query = processQuery(ops.Get(net.REQUEST_TYPE_QUERY.String()))
 	data.Body = nil
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
-		data.Body = processJson(ops.Get(REQUEST_TYPE_JSON.String()))
+		data.Body = processJson(ops.Get(net.REQUEST_TYPE_JSON.String()))
 	}
 	if client.DataType() == DATA_TYPE_XML {
 		data.SetHeaderXml()
-		data.Body = processXml(ops.Get(REQUEST_TYPE_XML.String()))
+		data.Body = processXml(ops.Get(net.REQUEST_TYPE_XML.String()))
 	}
 
 	if client.DataType() == DATA_TYPE_MULTIPART {
 		buf := bytes.Buffer{}
 		writer := multipart.NewWriter(&buf)
-		writer = processMultipart(writer, ops.Get(REQUEST_TYPE_MULTIPART.String()))
+		writer = processMultipart(writer, ops.Get(net.REQUEST_TYPE_MULTIPART.String()))
 		data.Body = &buf
 		data.Header.Set("Content-Type", writer.FormDataContentType())
 		defer writer.Close()
@@ -297,28 +314,28 @@ func toRequestData(client *Client, ops Map) *RequestData {
 	return data
 }
 func processMultipart(w *multipart.Writer, i interface{}) *multipart.Writer {
-	Debug("processMultipart|i", i)
+	log.Debug("processMultipart|i", i)
 	switch v := i.(type) {
-	case Map:
+	case util.Map:
 		path := v.GetString("media")
-		// Debug("processMultipart|name", name)
+		// log.Debug("processMultipart|name", name)
 
-		// Debug("processMultipart|path", path)
+		// log.Debug("processMultipart|path", path)
 		fh, e := os.Open(path)
 		if e != nil {
-			Debug("processMultipart|e", e)
+			log.Debug("processMultipart|e", e)
 			return w
 		}
 		defer fh.Close()
 
 		fw, e := w.CreateFormFile("media", path)
 		if e != nil {
-			Debug("processMultipart|e", e)
+			log.Debug("processMultipart|e", e)
 			return w
 		}
 
 		if _, e = io.Copy(fw, fh); e != nil {
-			Debug("processMultipart|e", e)
+			log.Debug("processMultipart|e", e)
 			return w
 		}
 		des := v.GetMap("description")
@@ -334,7 +351,7 @@ func processFormParams(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v
-	case Map:
+	case util.Map:
 		return v.ToXml()
 	}
 	return ""
@@ -342,18 +359,18 @@ func processFormParams(i interface{}) string {
 func processXml(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		Debug("processXml|string", v)
+		log.Debug("processXml|string", v)
 		return strings.NewReader(v)
 	case []byte:
-		Debug("processXml|[]byte", v)
+		log.Debug("processXml|[]byte", v)
 		return bytes.NewReader(v)
-	case Map:
-		Debug("processXml|Map", v.ToXml())
+	case util.Map:
+		log.Debug("processXml|util.Map", v.ToXml())
 		return strings.NewReader(v.ToXml())
 	default:
-		Debug("processXml|default", v)
+		log.Debug("processXml|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
-			Debug("processXml|v0", v0, e)
+			log.Debug("processXml|v0", v0, e)
 			return bytes.NewReader(v0)
 		}
 		return nil
@@ -364,18 +381,18 @@ func processXml(i interface{}) io.Reader {
 func processJson(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		Debug("processJson|string", v)
+		log.Debug("processJson|string", v)
 		return strings.NewReader(v)
 	case []byte:
-		Debug("processJson|[]byte", string(v))
+		log.Debug("processJson|[]byte", string(v))
 		return bytes.NewReader(v)
-	case Map:
-		Debug("processJson|Map", v.String())
+	case util.Map:
+		log.Debug("processJson|util.Map", v.String())
 		return bytes.NewReader(v.ToJson())
 	default:
-		Debug("processJson|default", v)
+		log.Debug("processJson|default", v)
 		if v0, e := json.Marshal(v); e == nil {
-			Debug("processJson|v0", string(v0), e)
+			log.Debug("processJson|v0", string(v0), e)
 			return bytes.NewReader(v0)
 		}
 		return nil
@@ -386,27 +403,27 @@ func processQuery(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v
-	case Map:
+	case util.Map:
 		return v.UrlEncode()
 	}
 	return ""
 }
 
-func (u *URL) ShortUrl(url string) Map {
-	m := Map{
+func (u *URL) ShortUrl(url string) util.Map {
+	m := util.Map{
 		"action":   "long2short",
 		"long_url": url,
 	}
 	token := u.token.GetToken()
-	ops := Map{
-		REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+	ops := util.Map{
+		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	}
 	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, ops)
-	Debug("URL|ShortUrl", *resp)
+	log.Debug("URL|ShortUrl", *resp)
 	return resp.ToMap()
 }
 
-func NewURL(config Config, client *Client) *URL {
+func NewURL(config config.Config, client *Client) *URL {
 	return &URL{
 		token:  NewAccessToken(config, client),
 		client: client,

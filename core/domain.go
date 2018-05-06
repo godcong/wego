@@ -1,6 +1,11 @@
 package core
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+)
 
 type Domain struct {
 	url string
@@ -26,7 +31,7 @@ func (d *Domain) Link(s string) string {
 	case strings.Index(s, "/") != 0 && strings.LastIndex(d.URL(), "/") != (len(d.URL())-1):
 		url = d.URL() + "/" + s
 	}
-	Debug("Domain|Link", url)
+	log.Debug("Domain|Link", url)
 	return url
 }
 
@@ -36,9 +41,12 @@ func (d *Domain) Link(s string) string {
 //		app:    application,
 //	}
 //}
+func DeployJoin(v ...string) string {
+	return strings.Join(v, ".")
+}
 
 func newDomain(s string) *Domain {
-	url := GetConfig(DeployJoin("domain", s)).Get("url")
+	url := config.GetConfig(DeployJoin("domain", s)).Get("url")
 	if url == "" {
 		switch s {
 		case "host":

@@ -1,11 +1,16 @@
 package core
 
+import (
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/util"
+)
+
 type Sandbox struct {
-	Config
+	config.Config
 	client *Client
 }
 
-func NewSandbox(config Config) *Sandbox {
+func NewSandbox(config config.Config) *Sandbox {
 	return &Sandbox{
 		Config: config,
 		client: NewClient(config),
@@ -21,10 +26,10 @@ func (s *Sandbox) GetCacheKey() string {
 }
 
 func (s *Sandbox) SandboxSignKey() []byte {
-	m := make(Map)
+	m := make(util.Map)
 	m.Set("mch_id", s.Get("mch_id"))
-	m.Set("nonce_str", GenerateNonceStr())
-	sign := GenerateSignature(m, s.Get("aes_key"), SIGN_TYPE_MD5)
+	m.Set("nonce_str", util.GenerateNonceStr())
+	sign := GenerateSignature(m, s.Get("aes_key"), MakeSignMD5)
 	m.Set("sign", sign)
 	resp := s.client.Request(s.client.Link(SANDBOX_SIGNKEY_URL_SUFFIX), m, "post")
 

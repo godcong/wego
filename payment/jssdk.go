@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 )
 
 type JSSDK struct {
@@ -26,13 +27,13 @@ func (j *JSSDK) getUrl() string {
 	return core.GetServerIp()
 }
 
-func (j *JSSDK) BridgeConfig(pid string) core.Map {
+func (j *JSSDK) BridgeConfig(pid string) util.Map {
 	appid := j.Config.Get("sub_appid")
 	if appid == "" {
 		appid = j.Config.Get("app_id")
 	}
 
-	m := core.Map{
+	m := util.Map{
 		"appId":     appid,
 		"timeStamp": core.Time(),
 		"nonceStr":  core.GenerateNonceStr(),
@@ -45,7 +46,7 @@ func (j *JSSDK) BridgeConfig(pid string) core.Map {
 	return m
 }
 
-func (j *JSSDK) SdkConfig(pid string) core.Map {
+func (j *JSSDK) SdkConfig(pid string) util.Map {
 	config := j.BridgeConfig(pid)
 
 	config.Set("timestamp", config.Get("timeStamp"))
@@ -54,8 +55,8 @@ func (j *JSSDK) SdkConfig(pid string) core.Map {
 	return config
 }
 
-func (j *JSSDK) AppConfig(pid string) core.Map {
-	m := core.Map{
+func (j *JSSDK) AppConfig(pid string) util.Map {
+	m := util.Map{
 		"appid":     j.Config.Get("app_id"),
 		"partnerid": j.Config.Get("mch_id"),
 		"prepayid":  pid,
@@ -68,7 +69,7 @@ func (j *JSSDK) AppConfig(pid string) core.Map {
 	return m
 }
 
-func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
+func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 	token := ""
 	switch v := accessToken.(type) {
 	case core.AccessToken:
@@ -77,7 +78,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 	case string:
 		token = accessToken.(string)
 	}
-	m := core.Map{
+	m := util.Map{
 		"appId":     j.Config.Get("app_id"),
 		"scope":     "jsapi_address",
 		"timeStamp": core.Time(),
@@ -85,7 +86,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) core.Map {
 		"signType":  "SHA1",
 	}
 
-	sm := core.Map{
+	sm := util.Map{
 		"appid":       m.Get("appId"),
 		"url":         j.getUrl(),
 		"timestamp":   m.Get("timeStamp"),

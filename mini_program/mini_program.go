@@ -3,6 +3,7 @@ package mini_program
 import (
 	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
 )
 
 type MiniProgram struct {
@@ -88,7 +89,7 @@ func (m *MiniProgram) Template() *Template {
 }
 
 func (m *MiniProgram) AccessToken() *core.AccessToken {
-	core.Debug("MiniProgram|AccessToken")
+	log.Debug("MiniProgram|AccessToken")
 	if m.token == nil {
 		m.token = core.NewAccessToken(m.Config, m.client)
 	}
@@ -131,8 +132,8 @@ func (m *MiniProgram) AccessToken() *core.AccessToken {
 //	}
 //}
 //
-//func (m *MiniProgramAccessToken) getCredentials() core.Map {
-//	return core.Map{
+//func (m *MiniProgramAccessToken) getCredentials() util.Map {
+//	return util.Map{
 //		"grant_type": "client_credential",
 //		"appid":      m.Get("app_id"),
 //		"secret":     m.Get("secret"),

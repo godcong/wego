@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 	"github.com/godcong/wego/official_account"
 )
 
@@ -159,7 +159,7 @@ func TestCard_CreateQrCode(t *testing.T) {
 }
 
 func TestCard_GetCode(t *testing.T) {
-	resp := card.GetCode(core.Map{
+	resp := card.GetCode(util.Map{
 		"card_id": "card_id_123+",
 	})
 	t.Log(resp.ToString())

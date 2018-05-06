@@ -1,4 +1,4 @@
-package core
+package log
 
 import (
 	"fmt"
@@ -10,15 +10,42 @@ import (
 	"time"
 )
 
+const (
+	OFF   = iota
+	FATAL
+	ERROR
+	WARN
+	INFO
+	DEBUG
+	ALL
+)
+
+var logList = map[string]int{
+	"OFF":   OFF,
+	"FATAL": FATAL,
+	"ERROR": ERROR,
+	"WARN":  WARN,
+	"INFO":  INFO,
+	"DEBUG": DEBUG,
+	"ALL":   ALL,
+}
+
+type Log struct {
+	//level = 'debug'
+	Level string
+	//file = 'logs/wechat.log'
+	File string
+}
+
 var debug = false
 var logs = Log{
 	Level: "debug",
 	File:  "config.toml",
 }
 
-func initLog(system System) {
-	debug = system.Debug
-	logs = system.Log
+func initLog(l Log, d bool) {
+	debug = d
+	logs = l
 	if IsDebug() {
 		i := strings.LastIndexAny(logs.File, "/")
 		y := strings.LastIndexAny(logs.File, ".")
@@ -33,6 +60,10 @@ func initLog(system System) {
 		log.SetOutput(io.MultiWriter(os.Stdout, f))
 	}
 
+}
+
+func InitLog(l Log, d bool) {
+	initLog(l, d)
 }
 
 func DebugOn() {
@@ -93,4 +124,11 @@ func Fatal(v ...interface{}) {
 		log.Println(fmt.Sprintf("[FATAL]%s|%d", f, l), v)
 	}
 
+}
+
+func (l *Log) LevelInt() (i int) {
+	if v, b := logList[strings.ToUpper(l.Level)]; b {
+		i = v
+	}
+	return i
 }

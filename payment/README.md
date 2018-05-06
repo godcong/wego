@@ -21,7 +21,7 @@ oauth.UserInfo(token)
 
 数据初始化：
 
-data := make(core.Map)
+data := make(util.Map)
 data.Set("body", "腾讯充值中心-QQ会员充值")
 data.Set("out_trade_no", out_trade_no)
 data.Set("device_info", "")
@@ -33,7 +33,7 @@ data.Set("trade_type", "NATIVE")
 data.Set("product_id", "12")
 //或者直接初始化
 
-data := core.Map{
+data := util.Map{
 "body":"腾讯充值中心-QQ会员充值",
 ...,
 }

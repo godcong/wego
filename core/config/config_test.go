@@ -1,4 +1,4 @@
-package core_test
+package config
 
 import (
 	"log"

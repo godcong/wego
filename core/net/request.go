@@ -1,10 +1,12 @@
-package core
+package net
 
 import (
 	"bytes"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/godcong/wego/core/log"
 )
 
 //
@@ -106,8 +108,8 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 	var err error
 	data = dataProcess(r, method, data)
 	url = parseQuery(url, data.Query)
-	Debug("PerformRequest|url", url)
-	Debug("PerformRequest|data", data.Header, data.Method, data.Query)
+	log.Debug("PerformRequest|url", url)
+	log.Debug("PerformRequest|data", data.Header, data.Method, data.Query)
 	// b, e := ioutil.ReadAll(data.Body)
 	// Debug("PerformRequest|data.Body", b, e)
 
@@ -120,8 +122,8 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 		req.Header.Set(k, data.Header.Get(k))
 	}
 
-	Debug(req.Header)
-	Debug("PerformRequest|req", req)
+	log.Debug(req.Header)
+	log.Debug("PerformRequest|req", req)
 	r.request = req
 	return r
 }

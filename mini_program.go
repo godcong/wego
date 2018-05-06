@@ -1,30 +1,31 @@
 package wego
 
 import (
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type Auth interface {
-	Session(code string) core.Map
+	Session(code string) util.Map
 }
 
 type DataCube interface {
-	UserPortrait(from, to string) core.Map
-	SummaryTrend(from, to string) core.Map
-	DailyVisitTrend(from, to string) core.Map
-	WeeklyVisitTrend(from, to string) core.Map
-	MonthlyVisitTrend(from, to string) core.Map
-	VisitDistribution(from, to string) core.Map
-	DailyRetainInfo(from, to string) core.Map
-	WeeklyRetainInfo(from, to string) core.Map
-	MonthlyRetainInfo(from, to string) core.Map
-	VisitPage(from, to string) core.Map
+	UserPortrait(from, to string) util.Map
+	SummaryTrend(from, to string) util.Map
+	DailyVisitTrend(from, to string) util.Map
+	WeeklyVisitTrend(from, to string) util.Map
+	MonthlyVisitTrend(from, to string) util.Map
+	VisitDistribution(from, to string) util.Map
+	DailyRetainInfo(from, to string) util.Map
+	WeeklyRetainInfo(from, to string) util.Map
+	MonthlyRetainInfo(from, to string) util.Map
+	VisitPage(from, to string) util.Map
 }
 
 type AppCode interface {
-	Get(path string, optionals core.Map) core.Map
-	GetQrCode(path string, width int) core.Map
-	GetUnlimit(scene string, optionals core.Map) core.Map
+	Get(path string, optionals util.Map) util.Map
+	GetQrCode(path string, width int) util.Map
+	GetUnlimit(scene string, optionals util.Map) util.Map
 }
 
 type MiniProgram interface {
@@ -44,7 +45,7 @@ type MiniProgram interface {
 
 func GetMiniProgram() MiniProgram {
 	obj := GetApp().Get("mini_program").(MiniProgram)
-	core.Debug("GetMiniProgram|obj:", obj)
+	log.Debug("GetMiniProgram|obj:", obj)
 	return obj
 }
 

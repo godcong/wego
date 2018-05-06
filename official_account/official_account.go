@@ -3,10 +3,12 @@ package official_account
 import (
 	"github.com/godcong/wego"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
 )
 
 type OfficialAccount struct {
-	core.Config
+	config.Config
 	app             *core.Application
 	client          *core.Client
 	token           *core.AccessToken
@@ -16,19 +18,19 @@ type OfficialAccount struct {
 	customerService *CustomerService
 }
 
-var defaultConfig core.Config
+var defaultConfig config.Config
 var account *OfficialAccount
 
 func init() {
-	core.Debug("OfficialAccount|init")
-	defaultConfig = core.GetConfig("official_account.default")
+	log.Debug("OfficialAccount|init")
+	defaultConfig = config.GetConfig("official_account.default")
 
 	app := core.App()
 	account = newOfficialAccount(defaultConfig, app)
 	app.Register("official_account", account)
 }
 
-func newOfficialAccount(config core.Config, application *core.Application) *OfficialAccount {
+func newOfficialAccount(config config.Config, application *core.Application) *OfficialAccount {
 	client := core.NewClient(config)
 	token := core.NewAccessToken(config, client)
 	domain := core.NewDomain("official_account")
@@ -96,10 +98,10 @@ func (m *OfficialAccount) AccessToken() *core.AccessToken {
 //
 //}
 //
-//func (m *OfficialAccount) Send(message core.Map) {
+//func (m *OfficialAccount) Send(message util.Map) {
 //
 //}
 //
-//func (m *OfficialAccount) Message(message core.Map) {
+//func (m *OfficialAccount) Message(message util.Map) {
 //
 //}

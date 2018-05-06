@@ -4,10 +4,13 @@ import (
 	"strings"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type Card struct {
-	core.Config
+	config.Config
 	*OfficialAccount
 }
 
@@ -166,7 +169,7 @@ type CardAdvancedInfo struct {
 
 type OneCard struct {
 	CardType CardType `json:"card_type"`
-	data     core.Map
+	data     util.Map
 }
 
 /*
@@ -203,7 +206,7 @@ func (c *Card) Deposit(cardId string, code []string) *core.Response {
 	resp := c.client.HttpPostJson(
 		c.client.Link(CARD_CODE_DEPOSIT_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"card_id": cardId,
 			"code":    code,
 		},
@@ -224,7 +227,7 @@ func (c *Card) GetDepositCount(cardId string) *core.Response {
 	resp := c.client.HttpPost(
 		c.client.Link(CARD_CODE_GETDEPOSITCOUNT_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"card_id": cardId,
 		},
 	)
@@ -244,7 +247,7 @@ func (c *Card) CheckCode(cardId string, code []string) *core.Response {
 	resp := c.client.HttpPost(
 		c.client.Link(CARD_CODE_CHECKCODE_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"card_id": cardId,
 			"code":    code,
 		},
@@ -264,7 +267,7 @@ GetCode 查询 Code 接口
  card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
  check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
 */
-func (c *Card) GetCode(p core.Map) *core.Response {
+func (c *Card) GetCode(p util.Map) *core.Response {
 	resp := c.client.HttpPostJson(
 		c.client.Link(CARD_CODE_GET_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
@@ -283,7 +286,7 @@ func (c *Card) GetHtml(cid string) *core.Response {
 	resp := c.client.HttpPostJson(
 		c.client.Link(CARD_MPNEWS_GETHTML_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"card_id": cid,
 		},
 	)
@@ -317,7 +320,7 @@ func (c *Card) SetTestWhiteList(typ string, list []string) *core.Response {
 	resp := c.client.HttpPostJson(
 		c.client.Link(CARD_TESTWHITELIST_SET_URL_SUFFIX),
 		c.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			typ: list,
 		},
 	)
@@ -359,9 +362,9 @@ func (c *Card) Create(card *OneCard) *core.Response {
 	_, d := card.Get()
 	resp := c.client.HttpPostJson(
 		c.client.Link(CARD_CREATE_URL_SUFFIX),
-		core.Map{"card": d},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): key,
+		util.Map{"card": d},
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): key,
 		})
 	return resp
 }
@@ -372,11 +375,11 @@ NewOneCard 创建卡券信息
 	cardType 卡券类型
 	data	卡券信息 (可传nil)
 */
-func NewOneCard(cardType CardType, data core.Map) *OneCard {
+func NewOneCard(cardType CardType, data util.Map) *OneCard {
 	ct := strings.ToLower(cardType.String())
 	return &OneCard{
 		CardType: cardType,
-		data: core.Map{
+		data: util.Map{
 			"card_type": cardType,
 			ct:          data,
 		},
@@ -407,20 +410,20 @@ func (c *OneCard) AddDealDetail(d string) *OneCard {
 func (c *OneCard) add(name string, info interface{}) *OneCard {
 	ct := strings.ToLower(c.CardType.String())
 	if c.data != nil {
-		if v, b := c.data[ct].(core.Map); b {
+		if v, b := c.data[ct].(util.Map); b {
 			if v != nil {
 				v[name] = info
 			} else {
-				v = core.Map{
+				v = util.Map{
 					name: info,
 				}
 			}
 			c.data[ct] = v
 		}
 	} else {
-		c.data = core.Map{
+		c.data = util.Map{
 			"card_type": c.CardType,
-			ct: core.Map{
+			ct: util.Map{
 				name: info,
 			},
 		}
@@ -431,10 +434,10 @@ func (c *OneCard) add(name string, info interface{}) *OneCard {
 /*
 Set 设置卡券信息(包含base_info,advanced_info,deal_detail)
 */
-func (c *OneCard) Set(cardType CardType, data core.Map) {
+func (c *OneCard) Set(cardType CardType, data util.Map) {
 	ct := strings.ToLower(cardType.String())
 	c.CardType = cardType
-	c.data = core.Map{
+	c.data = util.Map{
 		"card_type": ct,
 		ct:          data,
 	}
@@ -443,6 +446,6 @@ func (c *OneCard) Set(cardType CardType, data core.Map) {
 /*
 Get 获取卡券类型,卡券信息
 */
-func (c *OneCard) Get() (CardType, core.Map) {
+func (c *OneCard) Get() (CardType, util.Map) {
 	return c.CardType, c.data
 }

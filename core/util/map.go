@@ -1,4 +1,4 @@
-package core
+package util
 
 import (
 	"encoding/json"
@@ -203,4 +203,16 @@ func (m *Map) Only(columns []string) Map {
 		p.Set(v, m.Get(v))
 	}
 	return p
+}
+
+func (m *Map) Clone() Map {
+	m0 := make(Map)
+	for k, v := range *m {
+		m0[k] = v
+	}
+	return m0
+}
+
+func (m *Map) UrlSHA1() string {
+	return signatureSHA1(*m)
 }

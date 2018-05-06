@@ -1,9 +1,14 @@
 package official_account
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
+)
 
 type Comment struct {
-	config core.Config
+	config config.Config
 	*OfficialAccount
 }
 
@@ -34,12 +39,12 @@ func (c *Comment) Open(id, index int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_OPEN_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -57,12 +62,12 @@ func (c *Comment) Close(id, index int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_CLOSE_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -80,15 +85,15 @@ func (c *Comment) List(id, index, begin, count, typ int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_LIST_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 			"begin":       begin,
 			"count":       count,
 			"type":        typ,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -108,13 +113,13 @@ func (c *Comment) Markelect(id, index, userCommentId int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_MARKELECT_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -135,13 +140,13 @@ func (c *Comment) Unmarkelect(id, index, userCommentId int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_UNMARKELECT_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -162,13 +167,13 @@ func (c *Comment) Delete(id, index, userCommentId int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_DELETE_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -189,14 +194,14 @@ func (c *Comment) ReplyAdd(id, index, userCommentId int, content string) *core.R
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_REPLY_ADD_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentId,
 			"content":         content,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -216,13 +221,13 @@ func (c *Comment) ReplyDelete(id, index, userCommentId int) *core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.HttpPostJson(
 		c.client.Link(COMMENT_REPLY_DELETE_URL_SUFFIX),
-		core.Map{
+		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentId,
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }

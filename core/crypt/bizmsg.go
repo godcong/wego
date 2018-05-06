@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 )
 
 type BizMsg struct {
@@ -58,7 +58,7 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 		return "", err
 	}
 
-	p := core.Map{
+	p := util.Map{
 		"Encrypt":      string(b),
 		"MsgSignature": SHA1(m.token, timeStamp, nonce, string(b)),
 		"TimeStamp":    timeStamp,
@@ -68,7 +68,7 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 }
 
 func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]byte, error) {
-	p := core.XmlToMap([]byte(text))
+	p := util.XmlToMap([]byte(text))
 	enpt := p.GetString("Encrypt")
 	tSign := SHA1(m.token, timeStamp, nonce, enpt)
 	if msgSignature != tSign {

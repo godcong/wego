@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/official_account"
 )
 
@@ -19,30 +20,30 @@ func TestOAuth_AuthCodeURL(t *testing.T) {
 func TestOAuth_ServeHTTP(t *testing.T) {
 	oauth := official_account.NewOAuth()
 	oauth.RegisterCodeCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
-		core.Debug(val)
+		log.Debug(val)
 
 		return nil
 	})
 
 	oauth.RegisterStateCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
-		core.Debug(val)
+		log.Debug(val)
 		return nil
 	})
 
 	oauth.RegisterAllCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
-		core.Debug(val)
+		log.Debug(val)
 		return nil
 	})
 
 	oauth.RegisterInfoCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
-		core.Debug(val.Type, *(val.Value.(*core.UserInfo)))
+		log.Debug(val.Type, *(val.Value.(*core.UserInfo)))
 		return nil
 	})
 	ts := httptest.NewServer(http.HandlerFunc(oauth.ServeHTTP))
 	defer ts.Close()
 	resp, e := http.Get(ts.URL + "/oauth_callback?code=061FbdY41MrphL15MHX41U21Y41FbdYe&state=run")
 	b, e := ioutil.ReadAll(resp.Body)
-	core.Info(string(b), e)
+	log.Info(string(b), e)
 }
 
 func TestOAuth_AccessToken(t *testing.T) {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 )
 
 type Application interface {
@@ -29,12 +30,12 @@ type Client interface {
 	SetDataType(dataType core.DataType) Client
 	URL() string
 	SetDomain(domain *core.Domain) Client
-	HttpGet(url string, m core.Map) *core.Response
-	HttpPost(url string, m core.Map) *core.Response
-	HttpPostJson(url string, m core.Map, query core.Map) *core.Response
-	Request(url string, params core.Map, method string, options core.Map) *core.Response
-	RequestRaw(url string, params core.Map, method string, options core.Map) *core.Response
-	SafeRequest(url string, params core.Map, method string, options core.Map) *core.Response
+	HttpGet(url string, m util.Map) *core.Response
+	HttpPost(url string, m util.Map) *core.Response
+	HttpPostJson(url string, m util.Map, query util.Map) *core.Response
+	Request(url string, params util.Map, method string, options util.Map) *core.Response
+	RequestRaw(url string, params util.Map, method string, options util.Map) *core.Response
+	SafeRequest(url string, params util.Map, method string, options util.Map) *core.Response
 	Link(string) string
 }
 

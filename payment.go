@@ -2,13 +2,15 @@ package wego
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type Security interface {
 	GetPublicKey() *core.Response
 }
 type Order interface {
-	Unify(m core.Map) *core.Response
+	Unify(m util.Map) *core.Response
 	Close(no string) *core.Response
 	//Query(Map) Map
 	QueryByTransactionId(id string) *core.Response
@@ -16,25 +18,25 @@ type Order interface {
 }
 
 type JSSDK interface {
-	BridgeConfig(pid string) core.Map
-	SdkConfig(pid string) core.Map
-	AppConfig(pid string) core.Map
-	ShareAddressConfig(accessToken interface{}) core.Map
+	BridgeConfig(pid string) util.Map
+	SdkConfig(pid string) util.Map
+	AppConfig(pid string) util.Map
+	ShareAddressConfig(accessToken interface{}) util.Map
 }
 
 type Bill interface {
-	Get(string, string, core.Map) *core.Response
+	Get(string, string, util.Map) *core.Response
 }
 
 type RedPack interface {
-	Info(core.Map) *core.Response
-	SendNormal(core.Map) *core.Response
-	SendGroup(core.Map) *core.Response
+	Info(util.Map) *core.Response
+	SendNormal(util.Map) *core.Response
+	SendGroup(util.Map) *core.Response
 }
 
 type Refund interface {
-	ByOutTradeNumber(tradeNum, num string, total, refund int, options core.Map) *core.Response
-	ByTransactionId(tid, num string, total, refund int, options core.Map) *core.Response
+	ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *core.Response
+	ByTransactionId(tid, num string, total, refund int, options util.Map) *core.Response
 	QueryByRefundId(id string) *core.Response
 	QueryByOutRefundNumber(id string) *core.Response
 	QueryByOutTradeNumber(id string) *core.Response
@@ -55,9 +57,9 @@ type Sandbox interface {
 }
 type Transfer interface {
 	QueryBalanceOrder(string) *core.Response
-	ToBalance(core.Map) *core.Response
+	ToBalance(util.Map) *core.Response
 	QueryBankCardOrder(string) *core.Response
-	ToBankCard(core.Map) *core.Response
+	ToBankCard(util.Map) *core.Response
 }
 type Payment interface {
 	//Sandbox() Sandbox
@@ -66,11 +68,11 @@ type Payment interface {
 	Refund() Refund
 	Security() Security
 
-	Pay(core.Map) core.Map
-	Request(url string, m core.Map) *core.Response
-	RequestRaw(url string, m core.Map) *core.Response
-	SafeRequest(url string, m core.Map) *core.Response
-	AuthCodeToOpenid(string) core.Map
+	Pay(util.Map) util.Map
+	Request(url string, m util.Map) *core.Response
+	RequestRaw(url string, m util.Map) *core.Response
+	SafeRequest(url string, m util.Map) *core.Response
+	AuthCodeToOpenid(string) util.Map
 }
 
 //
@@ -133,28 +135,28 @@ type Payment interface {
 
 func GetPayment() Payment {
 	obj := GetApp().Get("payment").(Payment)
-	core.Debug("GetPayment|obj:", obj)
+	log.Debug("GetPayment|obj:", obj)
 	return obj
 	//obj := new(payment.Payment)
 	//GetApp().Get(obj)
-	//core.Debug("GetPayment|obj:", obj)
+	//log.Debug("GetPayment|obj:", obj)
 	//return obj
 }
 
 func GetSecurity() Security {
 	obj := GetPayment().Security()
-	core.Debug("GetSecurity|obj:", obj)
+	log.Debug("GetSecurity|obj:", obj)
 	return obj
 }
 
 func GetOrder() Order {
 	obj := GetPayment().Order()
-	core.Debug("GetOrder|obj:", obj)
+	log.Debug("GetOrder|obj:", obj)
 	return obj
 }
 
 func GetRefund() Refund {
 	obj := GetPayment().Refund()
-	core.Debug("GetRefund|obj:", obj)
+	log.Debug("GetRefund|obj:", obj)
 	return obj
 }

@@ -10,7 +10,7 @@ import (
 	"errors"
 	"io/ioutil"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
 )
 
 var (
@@ -91,17 +91,17 @@ func Decrypt(pri string, text string) string {
 func Encrypt(pub string, text string) string {
 	publicKey, e := ioutil.ReadFile(pub)
 	if e != nil {
-		core.Debug(e)
+		log.Debug(e)
 		return ""
 	}
 	key, e := ParseRSAPublicKeyFromPEM(publicKey)
 	if e != nil {
-		core.Debug(e)
+		log.Debug(e)
 		return ""
 	}
 	part, err := rsa.EncryptOAEP(sha1.New(), rand.Reader, key, []byte(text), nil)
 	if err != nil {
-		core.Debug(e)
+		log.Debug(e)
 		return ""
 	}
 

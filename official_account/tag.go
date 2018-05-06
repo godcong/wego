@@ -1,15 +1,21 @@
 package official_account
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
+)
 
 type Tag struct {
-	config core.Config
+	config.Config
 	*OfficialAccount
 }
 
 func newTag(account *OfficialAccount) *Tag {
 	return &Tag{
-		config:          defaultConfig,
+		Config:          defaultConfig,
 		OfficialAccount: account,
 	}
 }
@@ -23,15 +29,15 @@ func NewTag() *Tag {
 // 成功:
 // {"tag":{"id":100,"name":"testtag"}}
 func (t *Tag) Create(name string) *core.Response {
-	core.Debug("Tag|Create", name)
+	log.Debug("Tag|Create", name)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_CREATE_URL_SUFFIX),
-		core.Map{
-			"tag": core.Map{"name": name},
+		util.Map{
+			"tag": util.Map{"name": name},
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -41,12 +47,12 @@ func (t *Tag) Create(name string) *core.Response {
 // 成功:
 // {"tags":[{"id":2,"name":"星标组","count":0},{"id":100,"name":"testtag","count":0}]}
 func (t *Tag) Get() *core.Response {
-	core.Debug("Tag|Get")
+	log.Debug("Tag|Get")
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpGet(
 		t.client.Link(TAGS_GET_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -56,15 +62,15 @@ func (t *Tag) Get() *core.Response {
 // 成功:
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) Update(id int, name string) *core.Response {
-	core.Debug("Tag|Update", id, name)
+	log.Debug("Tag|Update", id, name)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_UPDATE_URL_SUFFIX),
-		core.Map{
-			"tag": core.Map{"id": id, "name": name},
+		util.Map{
+			"tag": util.Map{"id": id, "name": name},
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -76,15 +82,15 @@ func (t *Tag) Update(id int, name string) *core.Response {
 // 失败:
 // {"errcode":45058,"errmsg":"can't modify sys tag hint: [eOA5oa07591527]"}
 func (t *Tag) Delete(id int) *core.Response {
-	core.Debug("Tag|Update", id)
+	log.Debug("Tag|Update", id)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_DELETE_URL_SUFFIX),
-		core.Map{
-			"tag": core.Map{"id": id},
+		util.Map{
+			"tag": util.Map{"id": id},
 		},
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -94,9 +100,9 @@ func (t *Tag) Delete(id int) *core.Response {
 // 成功:
 // {"count":5,"data":{"openid":["oLyBi0tDnybg0WFkhKsn5HRetX1I","oLyBi0lCK5rQPuo0_cHJrjQ4J9XE","oLyBi0sjcrB44VQeAY7oer9st874","oLyBi0i5qhS-eO1monY34_KKTbfY","oLyBi0hSYhggnD-kOIms0IzZFqrc"]},"next_openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc"}
 func (t *Tag) UserTagGet(id int, nextOpenid string) *core.Response {
-	core.Debug("Tag|Update", id, nextOpenid)
-	params := core.Map{
-		"tag": core.Map{"id": id},
+	log.Debug("Tag|Update", id, nextOpenid)
+	params := util.Map{
+		"tag": util.Map{"id": id},
 	}
 	if nextOpenid != "" {
 		params.Set("next_openid", nextOpenid)
@@ -105,8 +111,8 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) *core.Response {
 	resp := t.client.HttpPostJson(
 		t.client.Link(USER_TAG_GET_URL_SUFFIX),
 		params,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -116,8 +122,8 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) *core.Response {
 // 成功:
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) MembersBatchTagging(id int, openids []string) *core.Response {
-	core.Debug("Tag|Update", id, openids)
-	params := core.Map{
+	log.Debug("Tag|Update", id, openids)
+	params := util.Map{
 		"tagid": id,
 	}
 	if openids != nil {
@@ -127,8 +133,8 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) *core.Response {
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_MEMBERS_BATCHTAGGING_URL_SUFFIX),
 		params,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -138,8 +144,8 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) *core.Response {
 // 成功:
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) MembersBatchUntagging(id int, openids []string) *core.Response {
-	core.Debug("Tag|Update", id, openids)
-	params := core.Map{
+	log.Debug("Tag|Update", id, openids)
+	params := util.Map{
 		"tagid": id,
 	}
 	if openids != nil {
@@ -149,8 +155,8 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) *core.Response {
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_MEMBERS_BATCHUNTAGGING_URL_SUFFIX),
 		params,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -160,8 +166,8 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) *core.Response {
 // 成功:
 // {"tagid_list":[101]}
 func (t *Tag) GetIdList(openid string) *core.Response {
-	core.Debug("Tag|GetIdList", openid)
-	params := core.Map{
+	log.Debug("Tag|GetIdList", openid)
+	params := util.Map{
 		"openid": openid,
 	}
 
@@ -169,8 +175,8 @@ func (t *Tag) GetIdList(openid string) *core.Response {
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_GETIDLIST_URL_SUFFIX),
 		params,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -178,18 +184,18 @@ func (t *Tag) GetIdList(openid string) *core.Response {
 //http请求方式：POST（请使用https协议）
 //https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN
 func (t *Tag) GetBlackList(beginOpenid string) *core.Response {
-	core.Debug("Tag|GetBlackList", beginOpenid)
-	var param core.Map
+	log.Debug("Tag|GetBlackList", beginOpenid)
+	var param util.Map
 	if beginOpenid != "" {
-		param = core.Map{"begin_openid": beginOpenid}
+		param = util.Map{"begin_openid": beginOpenid}
 	}
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_MEMBERS_GETBLACKLIST_URL_SUFFIX),
 		param,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): query,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): query,
 		})
 	return resp
 }
@@ -199,18 +205,18 @@ func (t *Tag) GetBlackList(beginOpenid string) *core.Response {
 // 成功:
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) BatchBlackList(openidList []string) *core.Response {
-	core.Debug("Tag|BatchBlackList", openidList)
-	var param core.Map
+	log.Debug("Tag|BatchBlackList", openidList)
+	var param util.Map
 	if l := len(openidList); l > 0 && l <= 20 {
-		param = core.Map{"openid_list": openidList}
+		param = util.Map{"openid_list": openidList}
 	}
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_MEMBERS_BATCHBLACKLIST_URL_SUFFIX),
 		param,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): query,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): query,
 		})
 	return resp
 }
@@ -220,18 +226,18 @@ func (t *Tag) BatchBlackList(openidList []string) *core.Response {
 // 成功:
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) BatchUnblackList(openidList []string) *core.Response {
-	core.Debug("Tag|BatchUnblackList", openidList)
-	var param core.Map
+	log.Debug("Tag|BatchUnblackList", openidList)
+	var param util.Map
 	if l := len(openidList); l > 0 && l <= 20 {
-		param = core.Map{"openid_list": openidList}
+		param = util.Map{"openid_list": openidList}
 	}
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
 		t.client.Link(TAGS_MEMBERS_BATCHUNBLACKLIST_URL_SUFFIX),
 		param,
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): query,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): query,
 		})
 	return resp
 }

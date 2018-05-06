@@ -8,6 +8,10 @@ import (
 	"strings"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type CallbackValue struct {
@@ -19,7 +23,7 @@ type CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValu
 
 type OAuth struct {
 	*OfficialAccount
-	core.Config
+	config.Config
 	domain      *core.Domain
 	response    *core.Response
 	callback    map[string]CallbackFunc
@@ -29,13 +33,13 @@ type OAuth struct {
 }
 
 func newOAuth(officialAccount *OfficialAccount) *OAuth {
-	core.Debug("newOAuth", officialAccount)
+	log.Debug("newOAuth", officialAccount)
 	oauth := &OAuth{
 		OfficialAccount: officialAccount,
 		callback:        map[string]CallbackFunc{},
 	}
 
-	oauth.Config = core.GetConfig("official_account.oauth")
+	oauth.Config = config.GetConfig("official_account.oauth")
 	oauth.domain = core.DomainHost()
 	oauth.scopes = oauth.GetD("scopes", SNSAPI_BASE)
 	oauth.redirectUri = oauth.GetD("redirect_uri", DEFAULT_OAUTH_REDIRECT_URL_SUFFIX)
@@ -80,15 +84,15 @@ func (o *OAuth) registerCallback(name string, callbackFunc CallbackFunc) *OAuth 
 // {"access_token":"7_0MSpG_WEPVwQki6eFQSFQbRwkEkTEhkvBjkuKTODS7_xe6vBOEsc88kcCu_781YvXXP2FwWC4M5m-B9WXs51rA","expires_in":7200,"refresh_token":"7_51Axvh89ev5cGH-WR4qPKb-rcPf2VQrMg25MNDs1899cHYb5UomPi4fnc1NAks07Vw5Bb0pTFvvritU-aQtxFg","openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","scope":"snsapi_base"}]
 func (o *OAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	token := o.hookAccessToken(w, r)
-	core.Debug("ServeHTTP|token", *token)
+	log.Debug("ServeHTTP|token", *token)
 	if token != nil {
 		info := o.hookUserInfo(w, r, token)
-		core.Debug("ServeHTTP|info", *info)
+		log.Debug("ServeHTTP|info", *info)
 		return
 	}
 
 	uri := o.hookState(w, r)
-	core.Debug("ServeHTTP|uri", uri)
+	log.Debug("ServeHTTP|uri", uri)
 	http.Redirect(w, r, uri, http.StatusFound)
 	return
 }
@@ -141,7 +145,7 @@ func (o *OAuth) hookAccessToken(w http.ResponseWriter, r *http.Request) *core.To
 }
 
 func (o *OAuth) AuthCodeURL(state string) string {
-	core.Debug("AuthCodeURL|OfficialAccount", o.OfficialAccount)
+	log.Debug("AuthCodeURL|OfficialAccount", o.OfficialAccount)
 	var buf bytes.Buffer
 	buf.WriteString(o.authorize)
 	v := url.Values{
@@ -175,7 +179,7 @@ func (o *OAuth) GetResponse() *core.Response {
 // {"openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","access_token":"7_EVGE1V1XzagA0PXMPFUbLApiA4BCGO5oVSxkDRbZ-aiTfwpP32DSNxsdFBN0AuERGrEtCBuBfNzTpTv_mYi-NQ","expires_in":7200,"refresh_token":"7_XxwLIQsmfEHnuVsw91q8fK1WWRcq37z2-rTTlMjrouJussoQff77jE9043qtiIQMr8CJuBWc3hmMGONJbB_EQQ","scope":"snsapi_base,snsapi_userinfo,"}
 func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	config := o.OfficialAccount.Config
-	v := core.Map{
+	v := util.Map{
 		"appid":         config.Get("app_id"),
 		"grant_type":    "refresh_token",
 		"refresh_token": refresh,
@@ -188,11 +192,11 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 		v,
 		nil,
 	)
-	core.Debug("RefreshToken|response", response)
+	log.Debug("RefreshToken|response", response)
 	var token core.Token
 	e := json.Unmarshal(response.ToBytes(), &token)
 	if e != nil {
-		core.Debug("RefreshToken|e", e)
+		log.Debug("RefreshToken|e", e)
 		return nil
 	}
 	return &token
@@ -200,7 +204,7 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 
 func (o *OAuth) AccessToken(code string) *core.Token {
 	config := o.OfficialAccount.Config
-	v := core.Map{
+	v := util.Map{
 		"appid":      config.Get("app_id"),
 		"secret":     config.Get("secret"),
 		"code":       code,
@@ -214,11 +218,11 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 		v,
 		nil,
 	)
-	core.Debug("AccessToken|response", response.ToString())
+	log.Debug("AccessToken|response", response.ToString())
 	var token core.Token
 	e := json.Unmarshal(response.ToBytes(), &token)
 	if e != nil {
-		core.Debug("AccessToken|e", e)
+		log.Debug("AccessToken|e", e)
 		return nil
 	}
 	return &token
@@ -231,21 +235,21 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 // 失败:
 // {"errcode":41001,"errmsg":"access_token missing, hints: [ req_id: 8mfAmA0205s158 ]"}
 func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
-	p := core.Map{
+	p := util.Map{
 		"access_token": token.AccessToken,
 		"openid":       token.OpenId,
 		"lang":         "zh_CN",
 	}
 	response := o.client.HttpGet(
 		o.client.Link(OAUTH2_USERINFO_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		},
 	)
 	var info core.UserInfo
 	err := json.Unmarshal(response.ToBytes(), &info)
 	if err != nil {
-		core.Debug(err)
+		log.Debug(err)
 		return nil
 	}
 	return &info
@@ -256,16 +260,16 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 // 失败:
 // {"errcode":40003,"errmsg":"invalid openid"}
 func (o *OAuth) Validate(token *core.Token) bool {
-	p := core.Map{
+	p := util.Map{
 		"access_token": token.AccessToken,
 		"openid":       token.OpenId,
 	}
 	response := o.client.HttpGet(
 		o.client.Link(OAUTH2_AUTH_URL_SUFFIX),
-		core.Map{
-			core.REQUEST_TYPE_QUERY.String(): p,
+		util.Map{
+			net.REQUEST_TYPE_QUERY.String(): p,
 		},
 	)
-	core.Debug(response.ToString())
+	log.Debug(response.ToString())
 	return false
 }

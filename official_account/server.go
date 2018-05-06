@@ -9,6 +9,7 @@ import (
 
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/crypt"
+	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/core/message"
 )
 
@@ -51,7 +52,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	query, err := url.ParseQuery(req.URL.RawQuery)
 	if err != nil {
-		core.Error(err)
+		log.Error(err)
 		w.WriteHeader(http.StatusOK)
 	}
 	encryptType := query.Get("encrypt_type")
@@ -60,19 +61,19 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	msgSignature := query.Get("msg_signature")
 
 	if encryptType == "aes" {
-		core.Debug(ts, nonce, msgSignature, string(bodyBytes))
+		log.Debug(ts, nonce, msgSignature, string(bodyBytes))
 		bodyBytes, err = s.bizMsg.Decrypt(string(bodyBytes), msgSignature, ts, nonce)
 		if err != nil {
-			core.Error(err)
+			log.Error(err)
 			w.WriteHeader(http.StatusOK)
 		}
 	}
 
 	message := new(core.Message)
-	core.Debug(string(bodyBytes))
+	log.Debug(string(bodyBytes))
 	err = xml.Unmarshal(bodyBytes, message)
 	if err != nil {
-		core.Error(err)
+		log.Error(err)
 		return
 	}
 	result := s.CallbackFunc(message)
@@ -80,14 +81,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	rltXml, err = result.ToXml()
 	if err != nil {
-		core.Error(err)
+		log.Error(err)
 		return
 	}
 
 	//if encryptType == "aes" {
 	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
 	//	if err != nil {
-	//		core.Error(err)
+	//		log.Error(err)
 	//		return
 	//	}
 	//	rltXml = []byte(tmpStr)
@@ -103,7 +104,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			header["Content-Type"] = []string{"application/json; charset=utf-8"}
 		}
 	}
-	core.Debug(string(rltXml))
+	log.Debug(string(rltXml))
 	w.Write(rltXml)
 	return
 }
@@ -145,6 +146,6 @@ func newServer(token, key, id string) *Server {
 }
 
 func NewServer() *Server {
-	core.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
+	log.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
 	return newServer(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
 }

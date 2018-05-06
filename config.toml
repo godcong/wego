@@ -13,6 +13,8 @@
             uri=  '/server'
 
 [domain]
+       [domain.host]
+            url = 'http://shop.commm.top'
         [domain.default]
             url = 'https://api.mch.weixin.qq.com'
         [domain.official_account]
@@ -25,17 +27,24 @@
 [official_account]
 #        [official_account.config]
 #            data_type = "json"
-
+        [official_account.sandbox]
+            app_id = 'wx3c69535993f4651d'
+            secret = 'f8c7a2cf0c6ed44e2c719964bbe13b1e'
+#            1	牛排	o5jo6s6M67vRRRcfmnXNkvUplIgc	移除
+#            2	moto	o5jo6sy4lPrEPfORJV_BPd3caL9Y	移除
+#            3	聪神不是神	o5jo6s3RZ6rxuVAW33IpTjYWQOg4	移除
+#            4	Patrick	o5jo6syEsFrBQ5rSl1p973vm3sgk	移除
         [official_account.default]
-            app_id ='wx426b3015555a46be'                    #AppID
-            secret = '7813490da6f1265e4901ffb80afaa36f'     #AppSecret
-            token = 'your-token'                            #Token
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'    #EncodingAESKey
+#            app_id ='wxbafed7010e0f4531'                    #AppID
+#            secret = '62dfc98746e2c4073ba4938574801097'     #AppSecret
+            app_id = 'wx3c69535993f4651d'
+            secret = 'f8c7a2cf0c6ed44e2c719964bbe13b1e'
+            token = 'godcong'                            #Token
+            aes_key = 'TNwHN28RXXoyVxkMCUEqKuCL08eBpCKgWZTkWNVnGLu'    #EncodingAESKey
 
         [official_account.oauth]
             scopes   = ['snsapi_userinfo']
-            callback = '/examples/oauth_callback'
-
+            redirect_uri ="/oauth_callback"
 
 [open_platform]
         [open_platform.default]
@@ -46,18 +55,22 @@
 
 [mini_program]
         [mini_program.default]
-            app_id ='wx426b3015555a46be'                      #AppID
-            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
-            token = 'your-token'                              #Token
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
+#            app_id ='wx426b3015555a46be'                      #AppID
+#            secret = '7813490da6f1265e4901ffb80afaa36f'       #AppSecret
+                app_id ='wx1ad61aeef1903b93'                      #AppID
+                secret = 'c96956c2fd5ce7bfd7a0db1f7679ff6d'       #AppSecret
+                token = 'your-token'                              #Token
+                aes_key = '8934e7d15453e97507ef794cf7b0519d'      #EncodingAESKey
 
 [payment]
         [payment.default]
             sandbox = false
-            app_id ='wx426b3015555a46be'
-            mch_id = '1900009851'
-            aes_key = '8934e7d15453e97507ef794cf7b0519d'
-#            secret = '7813490da6f1265e4901ffb80afaa36f'
+#            app_id ='wxbafed7010e0f4531'
+#            mch_id = '1497361732'
+#            key = 'nnwdq9tS2bzQgUAoC0B3pfHxQ69tRzZ0'
+            app_id ='wxbafed7010e0f4531'
+            mch_id = '1497361732'
+            key = 'nnwdq9tS2bzQgUAoC0B3pfHxQ69tRzZ0'
             notify_url ='wego/notify'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'

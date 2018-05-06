@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/tool"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type PrpCrypt struct {
@@ -30,7 +30,7 @@ func NewPrp(key []byte) *PrpCrypt {
 }
 
 func (c *PrpCrypt) Random() string {
-	return tool.GenerateRandomString(16, tool.T_RAND_ALL)
+	return util.GenerateRandomString(16, util.T_RAND_ALL)
 }
 
 func (c *PrpCrypt) LengthBytes(s string) []byte {
@@ -107,6 +107,6 @@ func PKCS7UnPadding(plantText []byte) []byte {
 func SHA1(text ...string) string {
 	sort.Strings(text)
 	s := strings.Join(text, "")
-	core.Debug(s)
+	log.Debug(s)
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }

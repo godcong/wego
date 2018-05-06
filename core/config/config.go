@@ -1,57 +1,20 @@
-package core
+package config
 
 import (
-	"log"
 	"strconv"
-	"strings"
 
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 	"github.com/pelletier/go-toml"
 )
 
 const FileLoadError = "cannot find config file"
 const ConfigReadError = "cannot read config file"
 
-const (
-	OFF = iota
-	FATAL
-	ERROR
-	WARN
-	INFO
-	DEBUG
-	ALL
-)
-
-var logList = map[string]int{
-	"OFF":   OFF,
-	"FATAL": FATAL,
-	"ERROR": ERROR,
-	"WARN":  WARN,
-	"INFO":  INFO,
-	"DEBUG": DEBUG,
-	"ALL":   ALL,
-}
-
 type Tree toml.Tree
 
-type System struct {
-	//debug = true
-	Debug bool `toml:"debug"`
-	//response_type = 'array'
-	ResponseType string `toml:"response_type"`
-	//use_cache = true
-	//DataType DataType `toml:"data_type"`
-
-	UseCache bool `toml:"use_cache"`
-	Log      Log
-}
-
-type Log struct {
-	//level = 'debug'
-	Level string
-	//file = 'logs/wechat.log'
-	File string
-}
+var useCache = false
 
 //type config struct {
 //	Content *Tree
@@ -66,21 +29,14 @@ type Config interface {
 	GetTree(s string) interface{}
 }
 
-var system System
-var useCache = false
-
-func ConfigTree(f string) *Tree {
+func ConfigTree(f string) (*Tree, error) {
 	t, e := toml.LoadFile(f)
 	if e != nil {
 		log.Println("filepath: " + f)
 		log.Println(e.Error())
-		panic(FileLoadError)
+		return nil, e
 	}
-	return (*Tree)(t)
-}
-
-func initSystem(v interface{}) {
-	v.(*toml.Tree).Unmarshal(&system)
+	return (*Tree)(t), nil
 }
 
 func treeLoader() *Tree {
@@ -88,11 +44,17 @@ func treeLoader() *Tree {
 	if UseCache() {
 		return c.Get("cache").(*Tree)
 	}
-	return ConfigTree(c.GetD("cache_path", "config.toml").(string))
+
+	t, err := ConfigTree(c.GetD("cache_path", "config.toml").(string))
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	return t
 }
 
 func GetConfig(path string) Config {
-	Debug("GetConfig|path", path)
+	log.Debug("GetConfig|path", path)
 	c := treeLoader()
 	if v, b := c.GetTree(path).(*toml.Tree); b {
 		return (*Tree)(v)
@@ -102,10 +64,6 @@ func GetConfig(path string) Config {
 
 func GetRootConfig() Config {
 	return treeLoader()
-}
-
-func GetSystemConfig() System {
-	return system
 }
 
 func (t *Tree) GetConfig(s string) Config {
@@ -127,7 +85,7 @@ func (t *Tree) Get(s string) string {
 	if v, b := v.(string); b {
 		return v
 	}
-	if v0 := ParseInt(v); v0 == 0 {
+	if v0 := util.ParseInt(v); v0 == 0 {
 		return ""
 	} else {
 		return strconv.FormatInt(v0, 10)
@@ -166,15 +124,4 @@ func CacheOff() {
 
 func UseCache() bool {
 	return useCache
-}
-
-func DeployJoin(v ...string) string {
-	return strings.Join(v, ".")
-}
-
-func (l *Log) LevelInt() (i int) {
-	if v, b := logList[strings.ToUpper(l.Level)]; b {
-		i = v
-	}
-	return i
 }

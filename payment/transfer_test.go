@@ -3,14 +3,14 @@ package payment_test
 import (
 	"testing"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 	"github.com/godcong/wego/payment"
 )
 
 var tran = payment.NewTransfer()
 
 func TestNewTransfer(t *testing.T) {
-	m := core.Map{}
+	m := util.Map{}
 	// 商户企业付款单号 partner_trade_no
 	// 收款方银行卡号 enc_bank_no
 	// 收款方用户名 enc_true_name

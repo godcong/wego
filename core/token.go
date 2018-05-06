@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+
+	"github.com/godcong/wego/core/util"
 )
 
 // type Token Map
@@ -42,8 +44,8 @@ type Token struct {
 	Raw interface{}
 }
 
-func (t *Token) KeyMap() Map {
-	m := make(Map)
+func (t *Token) KeyMap() util.Map {
+	m := make(util.Map)
 	if t.AccessToken != "" {
 		m.Set(ACCESS_TOKEN_KEY, t.AccessToken)
 	}

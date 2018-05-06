@@ -3,6 +3,8 @@ package mini_program
 import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/crypt"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type Auth struct {
@@ -27,8 +29,8 @@ func NewAuth() *Auth {
 // {"openid":"oE_gl0Yr54fUjBhU5nBlP4hS2efo","session_key":"UaPsfKqS9eJYxi1PCYYxuA=="}
 // 失败:
 // {"errcode":40163,"errmsg":"code been used, hints: [ req_id: gjUEFA0981th20 ]"}
-func (a *Auth) Session(code string) core.Map {
-	params := core.Map{
+func (a *Auth) Session(code string) util.Map {
+	params := util.Map{
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
 		"js_code":    code,
@@ -53,7 +55,7 @@ func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
 func (a *Auth) UserInfo(key, encrypted, iv string) []byte {
 	r, e := a.dc.Decrypt(encrypted, iv, key)
 	if e != nil {
-		core.Error(e)
+		log.Error(e)
 		return nil
 	}
 	return r

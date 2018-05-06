@@ -1,9 +1,14 @@
 package official_account
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
+)
 
 type Base struct {
-	config  core.Config
+	config  config.Config
 	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
@@ -29,13 +34,13 @@ func NewBase() *Base {
   成功:
   {"errcode":0,"errmsg":"ok"}
 */
-func (b *Base) ClearQuota() core.Map {
+func (b *Base) ClearQuota() util.Map {
 	token := b.token.GetToken()
-	params := core.Map{
+	params := util.Map{
 		"appid": b.config.Get("app_id"),
 	}
-	resp := b.client.HttpPostJson(b.client.Link(CLEAR_QUOTA_URL_SUFFIX), params, core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+	resp := b.client.HttpPostJson(b.client.Link(CLEAR_QUOTA_URL_SUFFIX), params, util.Map{
+		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
 }
@@ -49,10 +54,10 @@ GetCallbackIp 请求微信的服务器IP列表
   失败:
   {"errcode":40013,"errmsg":"invalid appid"}
 */
-func (b *Base) GetCallbackIp() core.Map {
+func (b *Base) GetCallbackIp() util.Map {
 	token := b.token.GetToken()
-	resp := b.client.HttpGet(b.client.Link(GETCALLBACKIP_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+	resp := b.client.HttpGet(b.client.Link(GETCALLBACKIP_URL_SUFFIX), util.Map{
+		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
 }

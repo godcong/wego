@@ -4,43 +4,82 @@ import (
 	"flag"
 
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
+	"github.com/pelletier/go-toml"
 )
 
 type Application struct {
-	Config
+	config.Config
 	Client
-	obj Map
+	obj util.Map
 }
 
 var f = flag.String("f", "config.toml", "config file path")
 var app *Application
-var defaultConfig Config
+var defaultConfig config.Config
 
-func initLoader() *Tree {
-	t := ConfigTree(*f)
+type System struct {
+	//debug = true
+	Debug bool `toml:"debug"`
+	//response_type = 'array'
+	ResponseType string `toml:"response_type"`
+	//use_cache = true
+	//DataType DataType `toml:"data_type"`
+
+	UseCache bool `toml:"use_cache"`
+	Log      log.Log
+}
+
+var system System
+var useCache = false
+
+func initLoader() *config.Tree {
+	t, err := config.ConfigTree(*f)
+	if err != nil {
+		t = &config.Tree{}
+	}
 	initSystem(t.GetTree("system"))
 	return t
 }
 
+func initSystem(v interface{}) {
+	if v == nil {
+		system = System{
+			Debug:        false,
+			ResponseType: "array",
+			UseCache:     false,
+			Log: log.Log{
+				Level: "debug",
+				File:  "logs/wechat.log",
+			},
+		}
+		return
+	}
+	v.(*toml.Tree).Unmarshal(&system)
+	return
+}
+
 func newApplication(v ...interface{}) *Application {
 	app := &Application{
-		obj: Map{},
+		obj: util.Map{},
 	}
 	for _, value := range v {
 		switch v := value.(type) {
-		case Config:
+		case config.Config:
 			app.Register("config", v)
 			app.Config = v
 		}
 	}
 	if app.Get("config") == nil {
-		app.Register("config", GetRootConfig())
-		app.Config = GetRootConfig()
+		app.Config = config.GetRootConfig()
+		app.Register("config", app.Config)
 	}
 	return app
 }
 
-func initApp(config Config) *Application {
+func initApp(config config.Config) *Application {
 	if app == nil {
 		app = newApplication(config)
 	}
@@ -52,10 +91,10 @@ func init() {
 	flag.Parse()
 	defaultConfig = initLoader()
 	if system.UseCache {
-		CacheOn()
+		config.CacheOn()
 		c.Set("cache", defaultConfig)
 	}
-	initLog(system)
+	log.InitLog(system.Log, system.Debug)
 	initApp(defaultConfig)
 }
 
@@ -66,6 +105,9 @@ func init() {
 //		v = v0
 //	}
 //}
+func GetSystemConfig() System {
+	return system
+}
 
 func (a *Application) Get(name string) interface{} {
 	if v, b := (*a).obj[name]; b {
@@ -83,7 +125,7 @@ func (a *Application) Register(name string, v interface{}) {
 }
 
 func App() *Application {
-	Debug("app:", app)
+	log.Debug("app:", app)
 	return app
 }
 
@@ -93,23 +135,23 @@ func (a *Application) InSandbox() bool {
 }
 
 func (a *Application) GetKey(s string) string {
-	c := a.Get("sandbox").(*Sandbox)
+	b := a.Get("sandbox").(*Sandbox)
 	if a.InSandbox() {
-		c.GetKey()
+		b.GetKey()
 	}
-	return c.Get("aes_key")
+	return b.Get("aes_key")
 
 }
 
 func (a *Application) Scheme(id string) string {
 	//c := a.Config
-	m := make(Map)
+	m := make(util.Map)
 	m.Set("appid", a.Config.Get("app_id"))
 	m.Set("mch_id", a.Config.Get("mch_id"))
-	m.Set("time_stamp", Time(nil))
-	m.Set("nonce_str", GenerateNonceStr())
+	m.Set("time_stamp", util.Time(nil))
+	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("product_id", id)
-	m.Set("sign", GenerateSignature(m, a.Config.Get("aes_key"), SIGN_TYPE_MD5))
+	m.Set("sign", GenerateSignature(m, a.Config.Get("aes_key"), MakeSignMD5))
 	return BIZPAYURL + m.UrlEncode()
 }
 

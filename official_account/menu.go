@@ -2,15 +2,18 @@ package official_account
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
 	"github.com/godcong/wego/core/menu"
+	"github.com/godcong/wego/core/net"
+	"github.com/godcong/wego/core/util"
 )
 
 type Menu struct {
-	config  core.Config
+	config  config.Config
 	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
-	buttons core.Map
+	buttons util.Map
 	menuid  int
 }
 
@@ -20,7 +23,7 @@ func newMenu(account *OfficialAccount) *Menu {
 		account: account,
 		client:  account.client,
 		token:   account.token,
-		buttons: make(core.Map),
+		buttons: make(util.Map),
 	}
 }
 
@@ -76,20 +79,20 @@ func (m *Menu) Create() *core.Response {
 		resp := m.client.HttpPostJson(
 			m.client.Link(MENU_CREATE_URL_SUFFIX),
 			m.buttons,
-			core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+			util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 		return resp
 	}
 	resp := m.client.HttpPostJson(
 		m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX),
 		m.buttons,
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
 
 func (m *Menu) List() *core.Response {
 	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX), util.Map{
+		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp
 
@@ -97,8 +100,8 @@ func (m *Menu) List() *core.Response {
 
 func (m *Menu) Current() *core.Response {
 	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX), core.Map{
-		core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX), util.Map{
+		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp
 }
@@ -106,22 +109,22 @@ func (m *Menu) Current() *core.Response {
 func (m *Menu) TryMatch(userId string) *core.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpPostJson(m.client.Link(MENU_TRYMATCH_URL_SUFFIX),
-		core.Map{"user_id": userId},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{"user_id": userId},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }
 
 func (m *Menu) Delete() *core.Response {
 	token := m.token.GetToken()
 	if m.menuid == 0 {
-		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), core.Map{
-			core.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), util.Map{
+			net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 		})
 		return resp
 	}
 
 	resp := m.client.HttpPostJson(m.client.Link(MENU_DELETECONDITIONAL_URL_SUFFIX),
-		core.Map{"menuid": m.menuid},
-		core.Map{core.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		util.Map{"menuid": m.menuid},
+		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
 	return resp
 }

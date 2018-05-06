@@ -2,6 +2,9 @@ package official_account
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/config"
+	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/core/util"
 )
 
 type PoiPhotoUrl struct {
@@ -9,14 +12,14 @@ type PoiPhotoUrl struct {
 }
 
 type PoiBaseInfo struct {
-	Poi          string `json:"poi,omitempty"`                 // "poi_id ":"271864249"
-	Sid          string `json:"sid,omitempty"`                 // "sid":"33788392",
-	BusinessName string `json:"business_name"`                 //"business_name":"15个汉字或30个英文字符内",
-	BranchName   string `json:"branch_name"`                   //"branch_name":"不超过10个字，不能含有括号和特殊字符",
-	Province     string `json:"province"`                      //"province":"不超过10个字",
-	City         string `json:"city"`                          //"city":"不超过30个字",
-	District     string `json:"district"`                      //"district":"不超过10个字",
-	Address      string `json:"address"`                       //"address":"门店所在的详细街道地址（不要填写省市信息）：不超过80个字",
+	Poi          string        `json:"poi,omitempty"`          // "poi_id ":"271864249"
+	Sid          string        `json:"sid,omitempty"`          // "sid":"33788392",
+	BusinessName string        `json:"business_name"`          //"business_name":"15个汉字或30个英文字符内",
+	BranchName   string        `json:"branch_name"`            //"branch_name":"不超过10个字，不能含有括号和特殊字符",
+	Province     string        `json:"province"`               //"province":"不超过10个字",
+	City         string        `json:"city"`                   //"city":"不超过30个字",
+	District     string        `json:"district"`               //"district":"不超过10个字",
+	Address      string        `json:"address"`                //"address":"门店所在的详细街道地址（不要填写省市信息）：不超过80个字",
 	Telephone    string        `json:"telephone"`              //"telephone":"不超53个字符（不可以出现文字）",
 	Categories   []string      `json:"categories"`             //"categories":["美食,小吃快餐"],
 	OffsetType   int           `json:"offset_type"`            //"offset_type":1,
@@ -31,7 +34,7 @@ type PoiBaseInfo struct {
 }
 
 type Poi struct {
-	config core.Config
+	config config.Config
 	*OfficialAccount
 }
 
@@ -64,13 +67,13 @@ Add 创建门店
 	}
 */
 func (p *Poi) Add(biz *PoiBaseInfo) *core.Response {
-	core.Debug("Poi|Add", *biz)
+	log.Debug("Poi|Add", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
 		p.client.Link(POI_ADDPOI_URL_SUFFIX),
 		p.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"business": biz,
 		})
 	return resp
@@ -83,13 +86,13 @@ http请求方式	POST
 POST数据格式	json
 */
 func (p *Poi) Get(poiId string) *core.Response {
-	core.Debug("Poi|Get", poiId)
+	log.Debug("Poi|Get", poiId)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
 		p.client.Link(POI_GETPOI_URL_SUFFIX),
 		p.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"poi_id": poiId,
 		})
 	return resp
@@ -112,13 +115,13 @@ POST数据格式	buffer
 }
 */
 func (p *Poi) Update(biz *PoiBaseInfo) *core.Response {
-	core.Debug("Poi|Update", *biz)
+	log.Debug("Poi|Update", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
 		p.client.Link(POI_UPDATEPOI_URL_SUFFIX),
 		p.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"business": biz,
 		})
 	return resp
@@ -212,13 +215,13 @@ GetList 查询门店列表
 失败返回:
 */
 func (p *Poi) GetList(begin int, limit int) *core.Response {
-	core.Debug("Poi|GetList", begin, limit)
+	log.Debug("Poi|GetList", begin, limit)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
 		p.client.Link(POI_GETLISTPOI_URL_SUFFIX),
 		p.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"begin": begin,
 			"limit": limit,
 		})
@@ -234,13 +237,13 @@ POST数据格式	buffer
 
 */
 func (p *Poi) Del(poiId string) *core.Response {
-	core.Debug("Poi|Del", poiId)
+	log.Debug("Poi|Del", poiId)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
 		p.client.Link(POI_DELPOI_URL_SUFFIX),
 		p.token.GetToken().KeyMap(),
-		core.Map{
+		util.Map{
 			"poi_id": poiId,
 		})
 	return resp
@@ -257,7 +260,7 @@ http请求方式	GET
 }
 */
 func (p *Poi) GetCategory() *core.Response {
-	core.Debug("Poi|GetCategory")
+	log.Debug("Poi|GetCategory")
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpGet(

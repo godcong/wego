@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/core/message"
+	"github.com/godcong/wego/core/util"
 )
 
 type Base interface {
-	GetCallbackIp() core.Map
-	ClearQuota() core.Map
+	GetCallbackIp() util.Map
+	ClearQuota() util.Map
 }
 type Menu interface {
 }
@@ -27,6 +29,6 @@ type OfficialAccount interface {
 
 func GetOfficialAccount() OfficialAccount {
 	obj := GetApp().Get("official_account").(OfficialAccount)
-	core.Debug("GetOfficialAccount|obj:", obj)
+	log.Debug("GetOfficialAccount|obj:", obj)
 	return obj
 }

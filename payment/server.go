@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/util"
 )
 
 type Server struct {
@@ -72,7 +73,7 @@ func (s *Server) GetCallback() []core.PaymentCallback {
 	return s.callback
 }
 
-func (s *Server) ProcessCallback(p core.Map) *ActionResult {
+func (s *Server) ProcessCallback(p util.Map) *ActionResult {
 	rlt := ACTION_SUCCESS
 	if s.callback == nil {
 		rlt.ReturnMsg = core.CDATA{
