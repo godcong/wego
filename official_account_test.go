@@ -9,11 +9,11 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
+	_ "github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/log"
-	_ "github.com/godcong/wego/official_account"
 )
 
 func TestOfficialAccount(t *testing.T) {

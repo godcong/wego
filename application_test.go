@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
+	"github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/core/menu"
-	"github.com/godcong/wego/official_account"
 )
 
 func TestCoreButton(t *testing.T) {

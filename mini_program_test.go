@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
-	_ "github.com/godcong/wego/mini_program"
+	_ "github.com/godcong/wego/app/mini_program"
 )
 
 func TestGetMiniProgram(t *testing.T) {

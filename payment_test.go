@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
-	_ "github.com/godcong/wego/payment"
+	_ "github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/util"
 )
 
