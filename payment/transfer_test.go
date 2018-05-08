@@ -3,8 +3,8 @@ package payment_test
 import (
 	"testing"
 
-	"github.com/godcong/wego/core/util"
 	"github.com/godcong/wego/payment"
+	"github.com/godcong/wego/util"
 )
 
 var tran = payment.NewTransfer()

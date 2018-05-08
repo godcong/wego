@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/godcong/wego/core/log"
-	"github.com/satori/go.uuid"
+	"github.com/godcong/wego/log"
+	uuid "github.com/satori/go.uuid"
 )
 
 const CUSTOM_HEADER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`

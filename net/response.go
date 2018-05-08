@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 type Response struct {

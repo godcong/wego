@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/godcong/wego/core/util"
 	"github.com/godcong/wego/official_account"
+	"github.com/godcong/wego/util"
 )
 
 var card = official_account.NewCard()

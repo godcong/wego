@@ -7,11 +7,11 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type CallbackValue struct {
@@ -25,7 +25,7 @@ type OAuth struct {
 	*OfficialAccount
 	config.Config
 	domain      *core.Domain
-	response    *core.Response
+	response    *net.Response
 	callback    map[string]CallbackFunc
 	authorize   string
 	scopes      string
@@ -170,7 +170,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	return buf.String()
 }
 
-func (o *OAuth) GetResponse() *core.Response {
+func (o *OAuth) GetResponse() *net.Response {
 	return o.response
 }
 

@@ -3,6 +3,8 @@ package message
 import (
 	"encoding/xml"
 	"strings"
+
+	"github.com/godcong/wego/util"
 )
 
 type Messager interface {
@@ -10,9 +12,7 @@ type Messager interface {
 	ToJson() ([]byte, error)
 }
 
-type CDATA struct {
-	Value string `xml:",cdata"`
-}
+type CDATA = util.CDATA
 
 type MsgType string
 

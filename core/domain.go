@@ -3,8 +3,8 @@ package core
 import (
 	"strings"
 
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/log"
 )
 
 type Domain struct {

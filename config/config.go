@@ -4,8 +4,8 @@ import (
 	"strconv"
 
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 	"github.com/pelletier/go-toml"
 )
 

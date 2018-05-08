@@ -1,12 +1,13 @@
 package payment
 
 import (
-	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Bill struct {
-	core.Config
+	config.Config
 	*Payment
 }
 
@@ -20,7 +21,7 @@ func newBill(p *Payment) *Bill {
 func NewBill() *Bill {
 	return newBill(payment)
 }
-func (b *Bill) Get(bd string, bt string, op util.Map) *core.Response {
+func (b *Bill) Get(bd string, bt string, op util.Map) *net.Response {
 	m := make(util.Map)
 	m.Set("appid", b.Config.Get("app_id"))
 	m.Set("bill_date", bd)

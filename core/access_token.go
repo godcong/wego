@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 type AccessToken struct {
@@ -104,6 +104,7 @@ func (a *AccessToken) RequestToken(credentials string) Token {
 }
 
 func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {
+
 	return a.setToken(token, lifeTime)
 }
 

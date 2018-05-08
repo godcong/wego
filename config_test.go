@@ -1,17 +1,16 @@
 package wego_test
 
 import (
-	"log"
 	"testing"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/log"
 )
 
 func TestConfig(t *testing.T) {
-	t.Log(core.IsDebug())
+	t.Log(log.IsDebug())
 	log.Debug("test")
 	log.Error("test")
-	core.Info("test")
-	core.Warn("test")
-	core.Fatal("test")
+	log.Info("test")
+	log.Warn("test")
+	log.Fatal("test")
 }

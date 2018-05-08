@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/official_account"
 )
 

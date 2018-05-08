@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
+	"github.com/godcong/wego/log"
 	_ "github.com/godcong/wego/official_account"
 )
 
@@ -55,14 +56,14 @@ func TestGetApp(t *testing.T) {
 
 	server := wego.GetOfficialAccount().Server()
 	//s := official_account.NewServer()
-	server.RegisterCallback(func(mess *core.Message) []byte {
-		mess.Location_X = 123456789444
-		v, _ := xml.Marshal(*mess)
-		core.Info(string(v))
-		if mess.Event.Compare(message.EventView) == 0 {
-			core.Info(message.EventView)
-		}
-		return v
+	server.RegisterCallback(func(mess *core.Message) message.Messager {
+		//mess.Location_X = 123456789444
+		//v, _ := xml.Marshal(*mess)
+		//log.Info(string(v))
+		//if mess.Event.Compare(message.EventView) == 0 {
+		//	log.Info(message.EventView)
+		//}
+		return message.NewText(&mess.Message, "msg")
 	})
 
 	rlist := [][]byte{
@@ -127,13 +128,13 @@ func TestGetApp(t *testing.T) {
 		b, e := ioutil.ReadAll(resp.Body)
 
 		xml.Unmarshal(b, msg)
-		core.Info(msg, e)
+		log.Info(msg, e)
 	}
 
 }
 
 func TestCoreUrl(t *testing.T) {
-	conf := core.GetConfig("payment.default")
+	conf := config.GetConfig("payment.default")
 	url := core.NewURL(conf, core.NewClient(conf))
 	l := url.ShortUrl("https://y11e.com")
 	log.Println(l)

@@ -2,12 +2,13 @@ package mini_program
 
 import (
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/log"
 )
 
 type MiniProgram struct {
-	core.Config
+	config.Config
 	client   *core.Client
 	app      *core.Application
 	token    *core.AccessToken
@@ -17,24 +18,24 @@ type MiniProgram struct {
 	template *Template
 }
 
-var defaultConfig core.Config
+var defaultConfig config.Config
 var program *MiniProgram
 
 func init() {
-	defaultConfig = core.GetConfig("mini_program.default")
+	defaultConfig = config.GetConfig("mini_program.default")
 	app := core.App()
 	program = newMiniProgram(defaultConfig, app)
 	app.Register("mini_program", program)
 	//app.Register(newMiniProgram())
 }
 
-func newMiniProgram(config core.Config, application *core.Application) *MiniProgram {
+func newMiniProgram(config config.Config, application *core.Application) *MiniProgram {
 	mini0 := &MiniProgram{
-		Config: defaultConfig,
+		Config: config,
 		app:    application,
-		client: core.NewClient(defaultConfig),
+		client: core.NewClient(config),
 	}
-	mini0.token = core.NewAccessToken(defaultConfig, mini0.client)
+	mini0.token = core.NewAccessToken(config, mini0.client)
 	mini0.client.SetDataType(core.DATA_TYPE_JSON)
 	mini0.client.SetDomain(core.NewDomain("mini_program"))
 	return mini0
@@ -121,7 +122,7 @@ func (m *MiniProgram) AccessToken() *core.AccessToken {
 //
 //type MiniProgramAccessToken struct {
 //	token.accessToken
-//	core.Config
+//	config.Config
 //	app core.Application
 //}
 //

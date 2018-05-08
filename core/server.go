@@ -2,7 +2,7 @@ package core
 
 import (
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 type MessageCallback func(message *Message) message.Messager

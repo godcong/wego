@@ -3,13 +3,13 @@ package official_account_test
 import (
 	"testing"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/official_account"
 )
 
 func TestMedia_Upload(t *testing.T) {
 	media := official_account.NewMedia()
-	var resp *core.Response
+	var resp *net.Response
 	// resp = media.UploadImage(`test.jpg`)
 	resp = media.UploadMediaImg(`test.jpg`)
 	t.Log(resp.ToString())

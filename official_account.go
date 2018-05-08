@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 type Base interface {

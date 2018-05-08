@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 // type Token Map

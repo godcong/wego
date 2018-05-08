@@ -4,7 +4,8 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Application interface {
@@ -30,12 +31,12 @@ type Client interface {
 	SetDataType(dataType core.DataType) Client
 	URL() string
 	SetDomain(domain *core.Domain) Client
-	HttpGet(url string, m util.Map) *core.Response
-	HttpPost(url string, m util.Map) *core.Response
-	HttpPostJson(url string, m util.Map, query util.Map) *core.Response
-	Request(url string, params util.Map, method string, options util.Map) *core.Response
-	RequestRaw(url string, params util.Map, method string, options util.Map) *core.Response
-	SafeRequest(url string, params util.Map, method string, options util.Map) *core.Response
+	HttpGet(url string, m util.Map) *net.Response
+	HttpPost(url string, m util.Map) *net.Response
+	HttpPostJson(url string, m util.Map, query util.Map) *net.Response
+	Request(url string, params util.Map, method string, options util.Map) *net.Response
+	RequestRaw(url string, params util.Map, method string, options util.Map) *net.Response
+	SafeRequest(url string, params util.Map, method string, options util.Map) *net.Response
 	Link(string) string
 }
 
@@ -87,7 +88,7 @@ func GetApp() Application {
 //	return a.request
 //}
 //
-//func (a *application) Client(config core.Config) Client {
+//func (a *application) Client(config config.Config) Client {
 //	return NewClient(a, config, a.Request())
 //}
 //
@@ -97,7 +98,7 @@ func GetApp() Application {
 //	return newApplication(v)
 //}
 //
-//func (a *application) GetConfig(s string) core.Config {
+//func (a *application) GetConfig(s string) config.Config {
 //	if s == "" {
 //		return a.config
 //	}

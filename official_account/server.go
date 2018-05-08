@@ -8,9 +8,9 @@ import (
 	"net/url"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/crypt"
-	"github.com/godcong/wego/core/log"
 	"github.com/godcong/wego/core/message"
+	"github.com/godcong/wego/crypt"
+	"github.com/godcong/wego/log"
 )
 
 type Server struct {

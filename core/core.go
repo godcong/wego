@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/util"
 )
 
 type SignType int

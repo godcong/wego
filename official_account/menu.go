@@ -1,11 +1,11 @@
 package official_account
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
 	"github.com/godcong/wego/core/menu"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Menu struct {
@@ -73,7 +73,7 @@ func (m *Menu) SetMenuId(id int) *Menu {
 //https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
 //成功:
 // {"menuid":429680901}]
-func (m *Menu) Create() *core.Response {
+func (m *Menu) Create() *net.Response {
 	token := m.token.GetToken()
 	if _, b := m.buttons["matchrule"]; !b {
 		resp := m.client.HttpPostJson(
@@ -89,7 +89,7 @@ func (m *Menu) Create() *core.Response {
 	return resp
 }
 
-func (m *Menu) List() *core.Response {
+func (m *Menu) List() *net.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX), util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
@@ -98,7 +98,7 @@ func (m *Menu) List() *core.Response {
 
 }
 
-func (m *Menu) Current() *core.Response {
+func (m *Menu) Current() *net.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX), util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
@@ -106,7 +106,7 @@ func (m *Menu) Current() *core.Response {
 	return resp
 }
 
-func (m *Menu) TryMatch(userId string) *core.Response {
+func (m *Menu) TryMatch(userId string) *net.Response {
 	token := m.token.GetToken()
 	resp := m.client.HttpPostJson(m.client.Link(MENU_TRYMATCH_URL_SUFFIX),
 		util.Map{"user_id": userId},
@@ -114,7 +114,7 @@ func (m *Menu) TryMatch(userId string) *core.Response {
 	return resp
 }
 
-func (m *Menu) Delete() *core.Response {
+func (m *Menu) Delete() *net.Response {
 	token := m.token.GetToken()
 	if m.menuid == 0 {
 		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), util.Map{

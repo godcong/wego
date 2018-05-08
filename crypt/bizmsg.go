@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 type BizMsg struct {

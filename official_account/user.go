@@ -3,11 +3,11 @@ package official_account
 import (
 	"encoding/json"
 
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type User struct {
@@ -38,7 +38,7 @@ func NewUser() *User {
 // {"errcode":0,"errmsg":"ok"}
 // 失败:
 // {"errcode":40013,"errmsg":"invalid appid"}
-func (u *User) UpdateRemark(openid, remark string) *core.Response {
+func (u *User) UpdateRemark(openid, remark string) *net.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
 	resp := u.client.HttpPostJson(
@@ -122,7 +122,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 
 //http请求方式: GET（请使用https协议）
 //https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
-func (u *User) Get(nextOpenid string) *core.Response {
+func (u *User) Get(nextOpenid string) *net.Response {
 	log.Debug("User|Get", nextOpenid)
 	query := u.token.GetToken().KeyMap()
 	if nextOpenid != "" {

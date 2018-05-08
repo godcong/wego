@@ -3,11 +3,11 @@ package official_account
 import (
 	"net/url"
 
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type QrCodeScene struct {
@@ -86,7 +86,7 @@ func NewQrCode() *QrCode {
 // {"action_name": "QR_LIMIT_STR_SCENE", "action_info": {"scene": {"scene_str": "test"}}}
 // 成功:
 // {"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
-func (q *QrCode) Create(action *QrCodeAction) *core.Response {
+func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.HttpPostJson(
 		q.client.Link(QRCODE_CREATE_URL_SUFFIX),
@@ -99,7 +99,7 @@ func (q *QrCode) Create(action *QrCodeAction) *core.Response {
 
 // HTTP GET请求（请使用https协议）https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
 // 提醒：TICKET记得进行UrlEncode
-func (q *QrCode) ShowQrCode(ticket string) *core.Response {
+func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
 	q.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))

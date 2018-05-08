@@ -1,10 +1,10 @@
 package official_account
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Base struct {

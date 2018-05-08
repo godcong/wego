@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 func TestLocalAddress(t *testing.T) {

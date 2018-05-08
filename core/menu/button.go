@@ -2,7 +2,7 @@ package menu
 
 import (
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 type Button util.Map

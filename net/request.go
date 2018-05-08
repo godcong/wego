@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/log"
 )
 
 //

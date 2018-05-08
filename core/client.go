@@ -14,10 +14,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/net"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type DataType string

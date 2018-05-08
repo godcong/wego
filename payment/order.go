@@ -1,12 +1,14 @@
 package payment
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Order struct {
-	core.Config
+	config.Config
 	*Payment
 }
 
@@ -30,7 +32,7 @@ URL地址：https://api.mch.weixin.qq.com/pay/unifiedorder
 
 
 */
-func (o *Order) Unify(m util.Map) *core.Response {
+func (o *Order) Unify(m util.Map) *net.Response {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIp())
@@ -53,7 +55,7 @@ func (o *Order) Unify(m util.Map) *core.Response {
 * @param data 向wxpay post的请求数据
 * @return PayData, error API返回数据
  */
-func (o *Order) Close(no string) *core.Response {
+func (o *Order) Close(no string) *net.Response {
 	m := make(util.Map)
 	m.Set("appid", o.Config.Get("app_id"))
 	m.Set("out_trade_no", no)
@@ -68,15 +70,15 @@ func (o *Order) Close(no string) *core.Response {
 * @param readTimeoutMs 读超时时间，单位是毫秒
 * @return PayData, error API返回数据
  */
-func (o *Order) query(m util.Map) *core.Response {
+func (o *Order) query(m util.Map) *net.Response {
 	m.Set("appid", o.Config.Get("app_id"))
 	return o.Request(ORDERQUERY_URL_SUFFIX, m)
 }
 
-func (o *Order) QueryByTransactionId(id string) *core.Response {
+func (o *Order) QueryByTransactionId(id string) *net.Response {
 	return o.query(util.Map{"transaction_id": id})
 }
 
-func (o *Order) QueryByOutTradeNumber(no string) *core.Response {
+func (o *Order) QueryByOutTradeNumber(no string) *net.Response {
 	return o.query(util.Map{"out_trade_no": no})
 }

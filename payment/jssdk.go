@@ -3,12 +3,13 @@ package payment
 import (
 	"strings"
 
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/util"
 )
 
 type JSSDK struct {
-	core.Config
+	config.Config
 	*Payment
 }
 
@@ -35,13 +36,13 @@ func (j *JSSDK) BridgeConfig(pid string) util.Map {
 
 	m := util.Map{
 		"appId":     appid,
-		"timeStamp": core.Time(),
-		"nonceStr":  core.GenerateNonceStr(),
+		"timeStamp": util.Time(),
+		"nonceStr":  util.GenerateNonceStr(),
 		"package":   strings.Join([]string{"prepay_id", pid}, "="),
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("key"), core.SIGN_TYPE_MD5))
+	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("key"), core.MakeSignMD5))
 
 	return m
 }
@@ -60,12 +61,12 @@ func (j *JSSDK) AppConfig(pid string) util.Map {
 		"appid":     j.Config.Get("app_id"),
 		"partnerid": j.Config.Get("mch_id"),
 		"prepayid":  pid,
-		"noncestr":  core.GenerateNonceStr(),
-		"timestamp": core.Time(),
+		"noncestr":  util.GenerateNonceStr(),
+		"timestamp": util.Time(),
 		"package":   "Sign=WXPay",
 	}
 
-	m.Set("sign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.SIGN_TYPE_MD5))
+	m.Set("sign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.MakeSignMD5))
 	return m
 }
 
@@ -81,8 +82,8 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 	m := util.Map{
 		"appId":     j.Config.Get("app_id"),
 		"scope":     "jsapi_address",
-		"timeStamp": core.Time(),
-		"nonceStr":  core.GenerateNonceStr(),
+		"timeStamp": util.Time(),
+		"nonceStr":  util.GenerateNonceStr(),
 		"signType":  "SHA1",
 	}
 
@@ -94,7 +95,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 		"accesstoken": token,
 	}
 
-	m.Set("addrSign", core.SHA1(sm.UrlEncode()))
+	m.Set("addrSign", util.SHA1(sm.UrlEncode()))
 
 	return m
 }

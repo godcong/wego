@@ -1,12 +1,14 @@
 package payment
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Security struct {
-	core.Config
+	config.Config
 	*Payment
 }
 
@@ -21,9 +23,9 @@ func NewSecurity() *Security {
 	return newSecurity(payment)
 }
 
-func (s *Security) GetPublicKey() *core.Response {
+func (s *Security) GetPublicKey() *net.Response {
 	s.client.SetDataType(core.DATA_TYPE_XML)
 	return s.client.SafeRequest(RISK_GETPUBLICKEY_URL_SUFFIX, util.Map{
-		core.REQUEST_TYPE_XML.String(): s.preRequest(util.Map{"sign_type": "MD5"}),
+		net.REQUEST_TYPE_XML.String(): s.preRequest(util.Map{"sign_type": "MD5"}),
 	}, "post")
 }

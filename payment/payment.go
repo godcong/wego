@@ -2,13 +2,15 @@ package payment
 
 import (
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Payment struct {
-	config  core.Config
+	config  config.Config
 	client  *core.Client
 	token   *core.AccessToken
 	sandbox *core.Sandbox
@@ -23,11 +25,11 @@ type Payment struct {
 	jssdk    *JSSDK
 }
 
-var defaultConfig core.Config
+var defaultConfig config.Config
 var payment *Payment
 
 func init() {
-	defaultConfig = core.GetConfig("payment.default")
+	defaultConfig = config.GetConfig("payment.default")
 	app := core.App()
 
 	payment = newPayment(app)
@@ -61,25 +63,25 @@ func (p *Payment) GetClient() *core.Client {
 	return p.client
 }
 
-func (p *Payment) Request(url string, params util.Map) *core.Response {
+func (p *Payment) Request(url string, params util.Map) *net.Response {
 	m := util.Map{
-		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+		net.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.Request(p.client.Link(url), m, "post")
 }
 
-func (p *Payment) RequestRaw(url string, params util.Map) *core.Response {
+func (p *Payment) RequestRaw(url string, params util.Map) *net.Response {
 	m := util.Map{
-		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+		net.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.RequestRaw(p.client.Link(url), m, "post")
 }
 
-func (p *Payment) SafeRequest(url string, params util.Map) *core.Response {
+func (p *Payment) SafeRequest(url string, params util.Map) *net.Response {
 	m := util.Map{
-		core.REQUEST_TYPE_XML.String(): p.preRequest(params),
+		net.REQUEST_TYPE_XML.String(): p.preRequest(params),
 	}
 
 	return p.client.SafeRequest(p.client.Link(url), m, "post")
@@ -134,7 +136,7 @@ func (p *Payment) Order() wego.Order {
 func (p *Payment) preRequest(params util.Map) util.Map {
 	if params != nil {
 		params.Set("mch_id", p.client.Get("mch_id"))
-		params.Set("nonce_str", core.GenerateUUID())
+		params.Set("nonce_str", util.GenerateUUID())
 		if v := p.client.Get("sub_mch_id"); v != "" {
 			params.Set("sub_mch_id", v)
 		}
@@ -142,7 +144,7 @@ func (p *Payment) preRequest(params util.Map) util.Map {
 			params.Set("sub_appid", v)
 		}
 		params.Set("sign_type", core.SIGN_TYPE_MD5.String())
-		params.Set("sign", core.GenerateSignature(params, p.client.Get("key"), core.SIGN_TYPE_MD5))
+		params.Set("sign", core.GenerateSignature(params, p.client.Get("key"), core.MakeSignMD5))
 	}
 	log.Debug("preRequest", params)
 	return params

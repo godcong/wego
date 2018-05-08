@@ -1,6 +1,6 @@
 package work
 
-import "github.com/godcong/wego/core"
+import "github.com/godcong/wego/config"
 
 type Message interface {
 }
@@ -8,6 +8,6 @@ type Message interface {
 type message struct {
 }
 
-func NewMessage(application Application, config core.Config) {
+func NewMessage(application Application, config config.Config) {
 
 }

@@ -1,14 +1,15 @@
 package mini_program
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/crypt"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/crypt"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 type Auth struct {
-	core.Config
+	config.Config
 	*MiniProgram
 	dc *crypt.DataCrypt
 }

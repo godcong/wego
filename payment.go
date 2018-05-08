@@ -1,20 +1,20 @@
 package wego
 
 import (
-	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Security interface {
-	GetPublicKey() *core.Response
+	GetPublicKey() *net.Response
 }
 type Order interface {
-	Unify(m util.Map) *core.Response
-	Close(no string) *core.Response
+	Unify(m util.Map) *net.Response
+	Close(no string) *net.Response
 	//Query(Map) Map
-	QueryByTransactionId(id string) *core.Response
-	QueryByOutTradeNumber(no string) *core.Response
+	QueryByTransactionId(id string) *net.Response
+	QueryByOutTradeNumber(no string) *net.Response
 }
 
 type JSSDK interface {
@@ -25,30 +25,30 @@ type JSSDK interface {
 }
 
 type Bill interface {
-	Get(string, string, util.Map) *core.Response
+	Get(string, string, util.Map) *net.Response
 }
 
 type RedPack interface {
-	Info(util.Map) *core.Response
-	SendNormal(util.Map) *core.Response
-	SendGroup(util.Map) *core.Response
+	Info(util.Map) *net.Response
+	SendNormal(util.Map) *net.Response
+	SendGroup(util.Map) *net.Response
 }
 
 type Refund interface {
-	ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *core.Response
-	ByTransactionId(tid, num string, total, refund int, options util.Map) *core.Response
-	QueryByRefundId(id string) *core.Response
-	QueryByOutRefundNumber(id string) *core.Response
-	QueryByOutTradeNumber(id string) *core.Response
-	QueryByTransactionId(id string) *core.Response
+	ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *net.Response
+	ByTransactionId(tid, num string, total, refund int, options util.Map) *net.Response
+	QueryByRefundId(id string) *net.Response
+	QueryByOutRefundNumber(id string) *net.Response
+	QueryByOutTradeNumber(id string) *net.Response
+	QueryByTransactionId(id string) *net.Response
 
 	//Refund(string, int, int, Map) Map
 	//Query(Map) Map
 }
 
 type Reverse interface {
-	ByOutTradeNumber(string) *core.Response
-	ByTransactionId(string) *core.Response
+	ByOutTradeNumber(string) *net.Response
+	ByTransactionId(string) *net.Response
 }
 
 type Sandbox interface {
@@ -56,10 +56,10 @@ type Sandbox interface {
 	GetCacheKey() string
 }
 type Transfer interface {
-	QueryBalanceOrder(string) *core.Response
-	ToBalance(util.Map) *core.Response
-	QueryBankCardOrder(string) *core.Response
-	ToBankCard(util.Map) *core.Response
+	QueryBalanceOrder(string) *net.Response
+	ToBalance(util.Map) *net.Response
+	QueryBankCardOrder(string) *net.Response
+	ToBankCard(util.Map) *net.Response
 }
 type Payment interface {
 	//Sandbox() Sandbox
@@ -69,42 +69,42 @@ type Payment interface {
 	Security() Security
 
 	Pay(util.Map) util.Map
-	Request(url string, m util.Map) *core.Response
-	RequestRaw(url string, m util.Map) *core.Response
-	SafeRequest(url string, m util.Map) *core.Response
+	Request(url string, m util.Map) *net.Response
+	RequestRaw(url string, m util.Map) *net.Response
+	SafeRequest(url string, m util.Map) *net.Response
 	AuthCodeToOpenid(string) util.Map
 }
 
 //
-//func NewJSSDK(application Application, config core.Config) *payment.JSSDK {
+//func NewJSSDK(application Application, config config.Config) *payment.JSSDK {
 //	return &payment.JSSDK{
 //		Config: config,
 //		//app:    application,
 //	}
 //}
 //
-//func NewRedPack(application core.Application, config core.Config) *payment.RedPack {
+//func NewRedPack(application core.Application, config config.Config) *payment.RedPack {
 //	return &payment.RedPack{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewBill(application Application, config core.Config) *payment.Bill {
+//func NewBill(application Application, config config.Config) *payment.Bill {
 //	return &payment.Bill{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewSecurity(application Application, config core.Config) *payment.Security {
+//func NewSecurity(application Application, config config.Config) *payment.Security {
 //	return &payment.Security{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewOrder(application Application, config core.Config) *payment.Order {
+//func NewOrder(application Application, config config.Config) *payment.Order {
 //	return &payment.Order{
 //		//app:    application,
 //		//Payment: application.Payment(),
@@ -112,21 +112,21 @@ type Payment interface {
 //	}
 //}
 //
-//func NewSandbox(application Application, config core.Config) *core.Sandbox {
+//func NewSandbox(application Application, config config.Config) *core.Sandbox {
 //	return &core.Sandbox{
 //		Config: config,
 //		//app:    application,
 //	}
 //}
 //
-//func NewReverse(application Application, config core.Config) *payment.Reverse {
+//func NewReverse(application Application, config config.Config) *payment.Reverse {
 //	return &payment.Reverse{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewTransfer(application Application, config core.Config) *payment.Transfer {
+//func NewTransfer(application Application, config config.Config) *payment.Transfer {
 //	return &payment.Transfer{
 //		Config: config,
 //		//Payment: application.Payment(),

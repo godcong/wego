@@ -1,13 +1,15 @@
 package mini_program
 
 import (
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/util"
 )
 
 type Template struct {
-	core.Config
+	config.Config
 	*MiniProgram
 	//client *core.Client
 }
@@ -46,7 +48,7 @@ func (t *Template) Add(id string, keyword util.Map) util.Map {
 	return t.GetClient().HttpPostJson(t.client.Link(core.TEMPLATE_ADD_URL_SUFFIX), util.Map{"id": id, "keyword_id_list": keyword}, nil).ToMap()
 }
 
-func (t *Template) Send(template *message.Template) *core.Response {
+func (t *Template) Send(template *message.Template) *net.Response {
 	token := t.token.GetToken()
 
 	resp := t.client.HttpPostJson(

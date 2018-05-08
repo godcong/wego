@@ -4,36 +4,38 @@ import (
 	"encoding/xml"
 	"net/http"
 
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/core/message"
+	"github.com/godcong/wego/util"
 )
 
 type Server struct {
-	core.Config
+	config.Config
 	*Payment
 	callback []core.PaymentCallback
 }
 
 type ActionResult struct {
-	XMLName    xml.Name   `xml:"xml"`
-	ReturnCode core.CDATA `xml:"return_code"`
-	ReturnMsg  core.CDATA `xml:"return_msg"`
+	XMLName    xml.Name      `xml:"xml"`
+	ReturnCode message.CDATA `xml:"return_code"`
+	ReturnMsg  message.CDATA `xml:"return_msg"`
 }
 
 var ACTION_SUCCESS = ActionResult{
-	ReturnCode: core.CDATA{
+	ReturnCode: message.CDATA{
 		Value: "SUCCESS",
 	},
-	ReturnMsg: core.CDATA{
+	ReturnMsg: message.CDATA{
 		Value: "OK",
 	},
 }
 
 var ACTION_FAIL = ActionResult{
-	ReturnCode: core.CDATA{
+	ReturnCode: message.CDATA{
 		Value: "FAIL",
 	},
-	ReturnMsg: core.CDATA{
+	ReturnMsg: message.CDATA{
 		Value: "OK",
 	},
 }
@@ -76,7 +78,7 @@ func (s *Server) GetCallback() []core.PaymentCallback {
 func (s *Server) ProcessCallback(p util.Map) *ActionResult {
 	rlt := ACTION_SUCCESS
 	if s.callback == nil {
-		rlt.ReturnMsg = core.CDATA{
+		rlt.ReturnMsg = message.CDATA{
 			Value: "UNPROCESSED",
 		}
 
@@ -84,11 +86,11 @@ func (s *Server) ProcessCallback(p util.Map) *ActionResult {
 	}
 
 	for _, v := range s.callback {
-		rlt.ReturnMsg = core.CDATA{
+		rlt.ReturnMsg = message.CDATA{
 			Value: "PROCESSED",
 		}
 		if v(p) == false {
-			rlt.ReturnCode = core.CDATA{
+			rlt.ReturnCode = message.CDATA{
 				Value: "FAIL",
 			}
 		}

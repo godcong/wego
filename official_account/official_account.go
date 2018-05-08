@@ -2,9 +2,9 @@ package official_account
 
 import (
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/config"
-	"github.com/godcong/wego/core/log"
+	"github.com/godcong/wego/log"
 )
 
 type OfficialAccount struct {

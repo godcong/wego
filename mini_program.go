@@ -1,8 +1,8 @@
 package wego
 
 import (
-	"github.com/godcong/wego/core/log"
-	"github.com/godcong/wego/core/util"
+	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 type Auth interface {
@@ -36,7 +36,7 @@ type MiniProgram interface {
 	AccessToken() AccessToken
 }
 
-//func NewAppCode(application core.Application, config core.Config) AppCode {
+//func NewAppCode(application core.Application, config config.Config) AppCode {
 //	return &mini_program.AppCode{
 //		Config: config,
 //		//mini_program:   application.MiniProgram(),
