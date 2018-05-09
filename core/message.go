@@ -44,10 +44,11 @@ type Message struct {
 	FailTime    int64         // 失败发生时间 (整形)，时间戳
 	FailReason  message.CDATA // 认证失败的原因
 	// 名称认证成功（即命名成功）
-	UniqId message.CDATA
-	PoiId  message.CDATA
-	Result message.CDATA
-	Msg    message.CDATA `xml:"msg"`
+	UniqId      message.CDATA
+	PoiId       message.CDATA
+	Result      message.CDATA
+	Msg         message.CDATA `xml:"msg"`
+	SessionFrom message.CDATA
 }
 
 // type Article struct {

@@ -62,3 +62,6 @@ const KFACCOUNT_DEL_URL_SUFFIX = "/customservice/kfaccount/del"
 const KFACCOUNT_INVITEWORKER_URL_SUFFIX = "/customservice/kfaccount/inviteworker"
 const KFACCOUNT_UPLOADHEADIMG_URL_SUFFIX = "/customservice/kfaccount/uploadheadimg"
 const MSGRECORD_GETMSGLIST_URL_SUFFIX = "/customservice/msgrecord/getmsglist"
+
+const CLEAR_QUOTA_URL_SUFFIX = "/cgi-bin/clear_quota"
+const GETCALLBACKIP_URL_SUFFIX = "/cgi-bin/getcallbackip"

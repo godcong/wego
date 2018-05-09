@@ -3,7 +3,7 @@ package mini_program_test
 import (
 	"testing"
 
-	"github.com/godcong/wego/mini_program"
+	"github.com/godcong/wego/app/mini_program"
 )
 
 var auth = mini_program.NewAuth()

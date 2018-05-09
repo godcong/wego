@@ -3,17 +3,17 @@ package mini_program_test
 import (
 	"testing"
 
+	"github.com/godcong/wego/app/mini_program"
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/mini_program"
 )
 
 func TestNewTemplate(t *testing.T) {
-	t0 := mini_program.NewTemplate()
+	//t0 := mini_program.NewTemplate()
 
 	//testTemplate_SetIndustry(t, t0)
 	//testTemplate_GetIndustry(t, t0)
 	//testTemplate_Add(t, t0)
-	testTemplate_Send(t, t0)
+	//testTemplate_Send(t, t0)
 }
 
 //func testTemplate_SetIndustry(t *testing.T, template *mini_program.Template) {
