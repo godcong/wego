@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/godcong/wego/cache"
@@ -35,9 +36,6 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"secret":     a.Get("secret"),
 	}
 
-	//m := a.client.Request(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), nil, "get", util.Map{
-	//	REQUEST_TYPE_QUERY.String(): m0,
-	//})
 	m := a.client.HttpGet(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), m0)
 
 	log.Debug("AccessToken|sendRequest", m.ToString())
@@ -73,13 +71,13 @@ func (a *AccessToken) GetTokenWithRefresh() *Token {
 }
 
 func (a *AccessToken) getToken(refresh bool) *Token {
-
 	key := a.getCacheKey()
 	cache := cache.GetCache()
 
 	if !refresh && cache.Has(key) {
-		if v, b := cache.Get(key).(Token); b {
-			return &v
+		log.Debug("cached token", reflect.TypeOf(cache.Get(key)))
+		if v, b := cache.Get(key).(*Token); b {
+			return v
 		}
 	}
 
@@ -105,7 +103,6 @@ func (a *AccessToken) RequestToken(credentials string) Token {
 }
 
 func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {
-
 	return a.setToken(token, lifeTime)
 }
 

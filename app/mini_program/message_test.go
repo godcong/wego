@@ -42,4 +42,5 @@ var imageMessage = util.Map{
 func TestMessage_Send(t *testing.T) {
 	msg := NewMessage()
 	t.Log(msg.Send(linkMessage).ToString())
+	t.Log(msg.Send(linkMessage).ToString())
 }
