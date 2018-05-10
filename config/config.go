@@ -14,7 +14,7 @@ const ConfigReadError = "cannot read config file"
 
 type Tree toml.Tree
 
-var useCache = false
+var useCache = true
 
 //type config struct {
 //	Content *Tree
@@ -42,13 +42,19 @@ func ConfigTree(f string) (*Tree, error) {
 func treeLoader() *Tree {
 	c := cache.GetCache()
 	if UseCache() {
-		return c.Get("cache").(*Tree)
+		t, b := c.Get("cache").(*Tree)
+		if t != nil && b {
+			return t
+		}
 	}
 
-	t, err := ConfigTree(c.GetD("cache_path", "config.toml").(string))
+	t, err := ConfigTree("config.toml")
 	if err != nil {
 		log.Error(err)
 		return nil
+	}
+	if UseCache() {
+		c.Set("cache", t)
 	}
 	return t
 }

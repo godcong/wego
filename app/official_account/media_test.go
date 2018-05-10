@@ -3,15 +3,15 @@ package official_account_test
 import (
 	"testing"
 
+	"github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/net"
-	"github.com/godcong/wego/official_account"
 )
 
 func TestMedia_Upload(t *testing.T) {
 	media := official_account.NewMedia()
 	var resp *net.Response
 	// resp = media.UploadImage(`test.jpg`)
-	resp = media.UploadMediaImg(`test.jpg`)
+	resp = media.UploadImage(`qrcode_for_gh_21a63d8d20b5_344.jpg`)
 	t.Log(resp.ToString())
 
 	// resp = media.UploadVoice(`D:\temp\3.mp3`)

@@ -3,8 +3,8 @@ package official_account_test
 import (
 	"testing"
 
+	"github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/core/menu"
-	"github.com/godcong/wego/official_account"
 )
 
 func TestNewMenu(t *testing.T) {

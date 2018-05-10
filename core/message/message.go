@@ -55,3 +55,19 @@ func (e MsgType) Compare(msgType MsgType) int {
 func (e *Message) Compare(msgType MsgType) int {
 	return e.MsgType.Compare(msgType)
 }
+
+func New(msgType MsgType, toUser, fromUser string, msgId, createTime int64) *Message {
+	return &Message{
+		MsgType: MSGCDATA{
+			MsgType: msgType,
+		},
+		MsgId: msgId,
+		ToUserName: CDATA{
+			Value: toUser,
+		},
+		FromUserName: CDATA{
+			Value: fromUser,
+		},
+		CreateTime: createTime,
+	}
+}

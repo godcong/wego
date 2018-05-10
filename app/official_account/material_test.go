@@ -3,10 +3,10 @@ package official_account_test
 import (
 	"testing"
 
+	"github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/media"
 	"github.com/godcong/wego/net"
-	"github.com/godcong/wego/official_account"
 )
 
 func TestNewMaterial(t *testing.T) {

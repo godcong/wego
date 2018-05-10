@@ -3,6 +3,8 @@ package message
 import (
 	"encoding/json"
 	"encoding/xml"
+
+	"github.com/godcong/wego/util"
 )
 
 type Text struct {
@@ -15,6 +17,19 @@ func (t *Text) ToXml() ([]byte, error) {
 }
 func (t *Text) ToJson() ([]byte, error) {
 	return json.Marshal(*t)
+}
+
+func (t *Text) ToMap() util.Map {
+	//TODO
+	txt := util.Map{}
+	//	"msgtype":t.MsgType,
+	//	"touser":t.ToUserName.Value,
+	//	FromUserName CDATA
+	//	CreateTime   int64
+	//
+	//}
+
+	return txt
 }
 
 //NewText 初始化文本消息

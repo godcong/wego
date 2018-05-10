@@ -9,8 +9,8 @@ import (
 )
 
 func TestMapCache_SetWithTTL(t *testing.T) {
-	c := cache.GetCache().SetWithTTL("hello", "nihao", 10)
-	c = cache.GetCache().SetWithTTL("hello1", "nihao1", 100)
+	c := cache.GetCache().SetWithTTL("hello", "nihao", time.Now())
+	c = cache.GetCache().SetWithTTL("hello1", "nihao1", time.Now())
 	log.Println(c.Get("hello"))
 	time.Sleep(time.Duration(10) * time.Second)
 	log.Println(c.Get("hello"))

@@ -3,7 +3,6 @@ package core
 import (
 	"flag"
 
-	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
@@ -87,12 +86,12 @@ func initApp(config config.Config) *Application {
 }
 
 func init() {
-	c := cache.GetCache()
+	//c := cache.GetCache()
 	flag.Parse()
 	defaultConfig = initLoader()
-	if system.UseCache {
-		config.CacheOn()
-		c.Set("cache", defaultConfig)
+	if !system.UseCache {
+		config.CacheOff()
+		//c.Set("cache", defaultConfig)
 	}
 	log.InitLog(system.Log, system.Debug)
 	initApp(defaultConfig)

@@ -40,11 +40,9 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response 
 	p.Set("type", mediaType.String())
 	resp := m.client.HttpUpload(
 		m.client.Link(MEDIA_UPLOAD_URL_SUFFIX),
+		p,
 		util.Map{
 			"media": filePath,
-		},
-		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
@@ -122,11 +120,9 @@ func (m *Media) uploadImg(name string, filePath string) *net.Response {
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpUpload(
 		m.client.Link(MEDIA_UPLOADIMG_URL_SUFFIX),
+		p,
 		util.Map{
 			name: filePath,
-		},
-		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }

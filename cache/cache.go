@@ -1,6 +1,8 @@
 package cache
 
-import "time"
+import (
+	"time"
+)
 
 type Cache interface {
 	Get(key string) interface{}
@@ -15,6 +17,7 @@ type Cache interface {
 	DeleteMultiple(keys []string) Cache
 }
 
+//var cache sync.Map
 var cache map[string]Cache
 
 const DefaultCacheName = "map_cache"

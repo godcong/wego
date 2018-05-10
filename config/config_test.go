@@ -1,14 +1,15 @@
-package config
+package config_test
 
 import (
-	"log"
 	"testing"
 
-	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/config"
 )
 
 func TestConfigLoader(t *testing.T) {
+	for i := 0; i < 1000; i++ {
+		go config.GetRootConfig()
 
-	log.Println(core.GetSystemConfig())
+	}
 
 }

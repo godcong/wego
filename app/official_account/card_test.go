@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/godcong/wego/official_account"
+	"github.com/godcong/wego/app/official_account"
 	"github.com/godcong/wego/util"
 )
 
