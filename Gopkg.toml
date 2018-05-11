@@ -28,8 +28,3 @@
 [prune]
   go-tests = true
   unused-packages = true
-
- [[constraint]]
-   name = "github.com/satori/go.uuid"
-   version = "v1.2.0"
-   source = "github.com/satori/go.uuid"
