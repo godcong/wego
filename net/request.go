@@ -95,7 +95,7 @@ func (r *Request) Error() error {
 func (r *Request) RequestDataCopy() *RequestData {
 	data := *r.requestData
 	data.Header = cloneHeader(r.requestData.Header)
-	r.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
+
 	return &data
 }
 func ReqType(reqType string) RequestType {
@@ -114,6 +114,7 @@ func ReqType(reqType string) RequestType {
 	case CONTENT_TYPE_MSGPACK:
 	case CONTENT_TYPE_MSGPACK2:
 	}
+	return REQUEST_TYPE_JSON
 }
 
 func (r *Request) HttpRequest() *http.Request {
@@ -142,6 +143,7 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 	log.Debug(req.Header)
 	log.Debug("PerformRequest|req", req)
 	r.request = req
+	r.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
 	return r
 }
 
