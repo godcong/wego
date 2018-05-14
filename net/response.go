@@ -31,6 +31,7 @@ const (
 )
 
 func filterContent(content string) string {
+	log.Debug("content", content)
 	for i, char := range content {
 		if char == ' ' || char == ';' {
 			return content[:i]
@@ -39,28 +40,42 @@ func filterContent(content string) string {
 	return content
 }
 
-func RespType(respType string) ResponseType {
-	switch respType {
-	case CONTENT_TYPE_JSON:
+func RespType(reqType RequestType) ResponseType {
+	log.Debug("respType", respType)
+	switch reqType {
+	//case CONTENT_TYPE_JSON:
+	//	return RESPONSE_TYPE_JSON
+	//case CONTENT_TYPE_HTML:
+	//	return RESPONSE_TYPE_HTML
+	//case CONTENT_TYPE_XML, CONTENT_TYPE_XML2:
+	//	return RESPONSE_TYPE_XML
+	//case CONTENT_TYPE_Plain:
+	//case CONTENT_TYPE_POSTForm:
+	//case CONTENT_TYPE_MultipartPOSTForm:
+	//case CONTENT_TYPE_PROTOBUF:
+	//case CONTENT_TYPE_MSGPACK:
+	//case CONTENT_TYPE_MSGPACK2:
+	case REQUEST_TYPE_JSON:
 		return RESPONSE_TYPE_JSON
-	case CONTENT_TYPE_HTML:
-		return RESPONSE_TYPE_HTML
-	case CONTENT_TYPE_XML, CONTENT_TYPE_XML2:
+	case REQUEST_TYPE_QUERY:
+	case REQUEST_TYPE_XML:
 		return RESPONSE_TYPE_XML
-	case CONTENT_TYPE_Plain:
-	case CONTENT_TYPE_POSTForm:
-	case CONTENT_TYPE_MultipartPOSTForm:
-	case CONTENT_TYPE_PROTOBUF:
-	case CONTENT_TYPE_MSGPACK:
-	case CONTENT_TYPE_MSGPACK2:
+	case REQUEST_TYPE_FORM_PARAMS:
+	case REQUEST_TYPE_FILE:
+	case REQUEST_TYPE_MULTIPART:
+	case REQUEST_TYPE_STRING:
+	case REQUEST_TYPE_HEADERS:
+	case REQUEST_TYPE_CUSTOM:
 	}
 	return RESPONSE_TYPE_JSON
 }
 
-func ParseResponse(r *http.Response) *Response {
+func ParseResponse(typ RequestType, r *http.Response) *Response {
 	var resp Response
 	resp.responseData, resp.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
-	resp.responseType = RespType(filterContent(r.Header.Get("Content-Type")))
+	//resp.responseType = RespType(filterContent(r.Header.Get("Content-Type")))
+	resp.responseType = RespType(typ)
+
 	log.Debug("ClientDo|response", resp.responseType, resp.error, resp.responseMap)
 	log.Debug("ClientDo|response|data", len(resp.responseData))
 	return &resp

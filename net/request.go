@@ -84,10 +84,9 @@ func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
 	return r
 }
 
-//
-//func (r *Request) GetRequestType() RequestType {
-//	return r.requestData.requestType
-//}
+func (r *Request) GetRequestType() RequestType {
+	return r.requestType
+}
 
 func (r *Request) Error() error {
 	return r.error
