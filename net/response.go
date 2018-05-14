@@ -41,7 +41,7 @@ func filterContent(content string) string {
 }
 
 func RespType(reqType RequestType) ResponseType {
-	log.Debug("respType", respType)
+	log.Debug("reqType", reqType)
 	switch reqType {
 	//case CONTENT_TYPE_JSON:
 	//	return RESPONSE_TYPE_JSON
