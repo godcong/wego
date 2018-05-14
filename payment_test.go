@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
+	"github.com/godcong/wego/app/payment"
 	_ "github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/util"
 )
@@ -57,6 +58,9 @@ func TestOrder_Unify(t *testing.T) {
 
 	log.Println(string(r.ToString()))
 	log.Println(r.ToMap())
+	order := payment.NewOrder()
+	resp := order.Unify(m)
+	log.Println(resp.ToString())
 	//{"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=D3sNT8y","mch_id":"1900009851","nonce_str":"FRFByNNdrzRuEGkp","prepay_id":"wx20180220113507842dff20340601189342","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"D398DA0644A14D0BC00A8B82D8D4ECDC","trade_type":"NATIVE"}
 
 }

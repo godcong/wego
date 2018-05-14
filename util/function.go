@@ -210,7 +210,7 @@ func MapToString(data Map, skip []string) string {
 			sign = append(sign, strings.Join([]string{k, v}, "="))
 		}
 	}
-	log.Println(strings.Join(sign, "&"))
+	log.Debug(strings.Join(sign, "&"))
 	return strings.Join(sign, "&")
 }
 

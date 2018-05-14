@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
 
@@ -89,12 +90,22 @@ func MakeSignMD5(data, key string) string {
 
 // GenerateSignature make sign from map data
 func GenerateSignature(m util.Map, key string, fn SignFunc) string {
-	m0 := m.Clone()
-	m0.Set("key", key)
+	keys := m.SortKeys()
+	var sign []string
 
-	if fn == nil {
-		fn = MakeSignMD5
+	for _, k := range keys {
+		if k == FIELD_SIGN {
+			continue
+		}
+		v := strings.TrimSpace(m.GetString(k))
+
+		if len(v) > 0 {
+			log.Debug(k, v)
+			sign = append(sign, strings.Join([]string{k, v}, "="))
+		}
 	}
-	return fn(util.MapToString(m0, []string{FIELD_SIGN}), key)
 
+	sign = append(sign, strings.Join([]string{"key", key}, "="))
+	sb := strings.Join(sign, "&")
+	return fn(sb, key)
 }
