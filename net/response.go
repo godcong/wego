@@ -73,7 +73,7 @@ func RespType(reqType RequestType) ResponseType {
 func ParseResponse(typ RequestType, r *http.Response) *Response {
 	var resp Response
 	resp.responseData, resp.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
-	//resp.responseType = RespType(filterContent(r.Header.Get("Content-Type")))
+
 	resp.responseType = RespType(typ)
 
 	log.Debug("ClientDo|response", resp.responseType, resp.error, resp.responseMap)

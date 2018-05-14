@@ -95,7 +95,25 @@ func (r *Request) Error() error {
 func (r *Request) RequestDataCopy() *RequestData {
 	data := *r.requestData
 	data.Header = cloneHeader(r.requestData.Header)
+	r.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
 	return &data
+}
+func ReqType(reqType string) RequestType {
+	log.Debug("reqType", reqType)
+	switch reqType {
+	case CONTENT_TYPE_JSON:
+		return REQUEST_TYPE_JSON
+	case CONTENT_TYPE_HTML:
+		//return REQUEST_TYPE_HTML
+	case CONTENT_TYPE_XML, CONTENT_TYPE_XML2:
+		return REQUEST_TYPE_XML
+	case CONTENT_TYPE_Plain:
+	case CONTENT_TYPE_POSTForm:
+	case CONTENT_TYPE_MultipartPOSTForm:
+	case CONTENT_TYPE_PROTOBUF:
+	case CONTENT_TYPE_MSGPACK:
+	case CONTENT_TYPE_MSGPACK2:
+	}
 }
 
 func (r *Request) HttpRequest() *http.Request {

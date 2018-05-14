@@ -284,7 +284,7 @@ func Do(ctx context.Context, client *Client, request *net.Request) *net.Response
 	if r.StatusCode != http.StatusOK {
 		log.Debug("Do|StatusCode", r.StatusCode)
 	}
-	response = net.ParseResponse(r)
+	response = net.ParseResponse(client.request.GetRequestType(), r)
 
 	return response
 }
