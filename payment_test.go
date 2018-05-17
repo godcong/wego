@@ -26,18 +26,18 @@ func TestOrder_Query(t *testing.T) {
 
 func TestOrder_Close(t *testing.T) {
 	r := wego.GetPayment().Order().Close(out_trade_no)
-	log.Println(string(r.ToJson()))
+	log.Println(string(r.ToString()))
 
 }
 
 func TestOrder_QueryByOutTradeNumber(t *testing.T) {
 	r := wego.GetPayment().Order().QueryByOutTradeNumber(out_trade_no)
-	log.Println(r)
+	log.Println(r.ToString())
 }
 
 func TestOrder_QueryByTransactionId(t *testing.T) {
 	r := wego.GetPayment().Order().QueryByTransactionId("123")
-	log.Println(r)
+	log.Println(r.ToString())
 }
 
 func TestOrder_Unify(t *testing.T) {

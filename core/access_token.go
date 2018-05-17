@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"reflect"
 	"time"
 
 	"github.com/godcong/wego/cache"
@@ -75,7 +74,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	cache := cache.GetCache()
 
 	if !refresh && cache.Has(key) {
-		log.Debug("cached token", reflect.TypeOf(cache.Get(key)))
+		log.Debug("cached token", key)
 		if v, b := cache.Get(key).(*Token); b {
 			return v
 		}

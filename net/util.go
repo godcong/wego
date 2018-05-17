@@ -5,6 +5,9 @@ import (
 	"net/http"
 )
 
+/*
+WriteJson 将参数obj作为json返回
+*/
 func WriteJson(w http.ResponseWriter, status int, obj interface{}) error {
 	w.WriteHeader(status)
 	header := w.Header()
