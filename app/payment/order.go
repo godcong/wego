@@ -1,6 +1,8 @@
 package payment
 
 import (
+	"net/http"
+
 	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/net"
@@ -10,6 +12,7 @@ import (
 type Order struct {
 	config.Config
 	*Payment
+	request *http.Request
 }
 
 func newOrder(p *Payment) *Order {
@@ -21,6 +24,12 @@ func newOrder(p *Payment) *Order {
 
 func NewOrder() *Order {
 	return newOrder(payment)
+}
+
+//SetRequest to set a http request for Unify to get the client ip
+func (o *Order) SetRequest(r *http.Request) *Order {
+	o.request = r
+	return o
 }
 
 /*
@@ -38,6 +47,9 @@ func (o *Order) Unify(m util.Map) *net.Response {
 			m.Set("spbill_create_ip", core.GetServerIp())
 		}
 		//TODO: getclientip with request
+		if o.request != nil {
+			m.Set("spbill_create_ip", core.GetClientIp(o.request))
+		}
 	}
 
 	m.Set("appid", o.Config.Get("app_id"))
