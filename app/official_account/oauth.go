@@ -242,9 +242,7 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 	}
 	response := o.client.HttpGet(
 		o.client.Link(OAUTH2_USERINFO_URL_SUFFIX),
-		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
-		},
+		p,
 	)
 	var info core.UserInfo
 	err := json.Unmarshal(response.ToBytes(), &info)
