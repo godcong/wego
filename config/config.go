@@ -76,7 +76,7 @@ func (t *Tree) GetConfig(s string) Config {
 	if v, b := t.GetTree(s).(*toml.Tree); b {
 		return (*Tree)(v)
 	}
-	return nil
+	return (*Tree)(nil)
 }
 
 func (t *Tree) GetTree(s string) interface{} {

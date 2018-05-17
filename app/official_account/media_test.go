@@ -11,7 +11,7 @@ func TestMedia_Upload(t *testing.T) {
 	media := official_account.NewMedia()
 	var resp *net.Response
 	// resp = media.UploadImage(`test.jpg`)
-	resp = media.UploadImage(`qrcode_for_gh_21a63d8d20b5_344.jpg`)
+	resp = media.UploadImage(`D:\temp\微信图片_20180516164809.jpg`)
 	t.Log(resp.ToString())
 
 	// resp = media.UploadVoice(`D:\temp\3.mp3`)
