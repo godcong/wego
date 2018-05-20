@@ -76,7 +76,9 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	if !refresh && cache.Has(key) {
 		log.Debug("cached token", key)
 		if v, b := cache.Get(key).(*Token); b {
-			return v
+			if v.ExpiresIn > time.Now().Unix() {
+				return v
+			}
 		}
 	}
 
@@ -112,8 +114,8 @@ func (a *AccessToken) SetToken(token string) *AccessToken {
 func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
 	cache.GetCache().SetWithTTL(a.getCacheKey(), &Token{
 		AccessToken: token,
-		ExpiresIn:   lifeTime.Unix(),
-	}, lifeTime.Add(time.Duration(-ACCESS_TOKEN_SAFE_SECONDS)))
+		ExpiresIn:   time.Now().Unix() + lifeTime.Unix(),
+	}, time.Now())
 	return a
 }
 
