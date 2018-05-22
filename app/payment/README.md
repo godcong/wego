@@ -1,11 +1,22 @@
-微信授权：
-取得OpenId:
-official_account.NewOauth()
-token := oauth.AccessToken(#code#)
-oauth.UserInfo(token)
+#微信授权
+##第一步,取得OpenId:
+>  
+    //创建微信授权
+    oauth:=official_account.NewOauth()
+    //生成一个跳转链接,state自定义
+    oauth.AuthCodeURL(#state#)
+    
+    //监听回调地址取得code和state
+    
+    //输入code获取token
+    token := oauth.AccessToken(#code#)
+    
+    //输入token获取用户信息
+    oauth.UserInfo(token)
 
 也可绑定ServeHTTP到任何http Server:
-注册回调监听
+### 注册回调监听 ###
+>
 	oauth.RegisterAllCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
 		if val.Type == "info" {
 			info := val.Value.(*core.UserInfo)
@@ -13,31 +24,34 @@ oauth.UserInfo(token)
 		}
 		return nil
 	})
-注册回调地址
+### 注册回调地址 ###
+>
 	http.HandleFunc("/oauth_callback", oauth.ServeHTTP)
 
 
-支付请求：
+##第二部,支付请求：
 
 数据初始化：
+>
+    data := make(util.Map)
+    data.Set("body", "腾讯充值中心-QQ会员充值")
+    data.Set("out_trade_no", out_trade_no)
+    data.Set("device_info", "")
+    data.Set("fee_type", "CNY")
+    data.Set("total_fee", "1")
+    data.Set("spbill_create_ip", "123.12.12.123")
+    data.Set("notify_url", "http://test.letiantian.me/wxpay/notify")
+    data.Set("trade_type", "NATIVE")
+    data.Set("product_id", "12")
+//可以直接初始化
+>
+    data := util.Map{
+    "body":"腾讯充值中心-QQ会员充值",
+    ...,
+    }
 
-data := make(util.Map)
-data.Set("body", "腾讯充值中心-QQ会员充值")
-data.Set("out_trade_no", out_trade_no)
-data.Set("device_info", "")
-data.Set("fee_type", "CNY")
-data.Set("total_fee", "1")
-data.Set("spbill_create_ip", "123.12.12.123")
-data.Set("notify_url", "http://test.letiantian.me/wxpay/notify")
-data.Set("trade_type", "NATIVE")
-data.Set("product_id", "12")
-//或者直接初始化
-
-data := util.Map{
-"body":"腾讯充值中心-QQ会员充值",
-...,
-}
-
+##第三部,调用接口:
+###所需参数可参考微信接口定义:
 a. 统一下单： https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
 
 调用接口： GetOrder().Unify(data)
