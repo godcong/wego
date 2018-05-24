@@ -49,6 +49,11 @@ type Message struct {
 	Result      message.CDATA
 	Msg         message.CDATA `xml:"msg"`
 	SessionFrom message.CDATA
+
+	OrderId     message.CDATA
+	OrderStatus int64
+	ProductId   message.CDATA
+	SkuInfo     message.CDATA
 }
 
 // type Article struct {
