@@ -29,16 +29,19 @@ func (a *AccessToken) getQuery() util.Map {
 }
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	m0 := util.Map{
+	m := util.Map{
 		"grant_type": "client_credential",
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
 	}
 
-	m := a.client.HttpGet(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), m0)
+	resp := a.client.HttpGet(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), m)
+	log.Debug("AccessToken|sendRequest", resp.ToString())
+	if resp.Check() != nil {
+		return nil
+	}
+	return resp.ToBytes()
 
-	log.Debug("AccessToken|sendRequest", m.ToString())
-	return m.ToBytes()
 }
 
 func NewAccessToken(config config.Config, client *Client) *AccessToken {
@@ -83,6 +86,9 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	}
 
 	token := a.RequestToken(a.getCredentials())
+	if token == nil {
+		return nil
+	}
 	log.Debug("AccessToken|getToken", token)
 	if v := token.ExpiresIn; v != 0 {
 		a.SetTokenWithLife(token.AccessToken, time.Unix(v, 0))
@@ -90,17 +96,22 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 		a.SetToken(token.AccessToken)
 	}
 
-	return &token
+	return token
 
 }
-func (a *AccessToken) RequestToken(credentials string) Token {
-	response := a.sendRequest(credentials)
-	m := Token{}
-	err := json.Unmarshal(response, &m)
+func (a *AccessToken) RequestToken(credentials string) *Token {
+	var token Token
+	tokenByte := a.sendRequest(credentials)
+	if tokenByte == nil {
+		return nil
+	}
+
+	err := json.Unmarshal(tokenByte, &token)
 	if err != nil {
 		log.Error(err)
+		return nil
 	}
-	return m
+	return &token
 }
 
 func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {

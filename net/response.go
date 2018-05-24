@@ -1,6 +1,7 @@
 package net
 
 import (
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -125,6 +126,14 @@ func (r *Response) ToFile(path string) {
 		return
 	}
 	file.Write(r.ToBytes())
+}
+
+func (r *Response) Check() error {
+	m := r.ToMap()
+	if m.GetNumber("errcode") != 0 {
+		r.error = errors.New(m.GetString("errmsg"))
+	}
+	return r.error
 }
 
 func ErrorResponse(err error) *Response {
