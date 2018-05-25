@@ -84,10 +84,10 @@ func (o *OAuth) registerCallback(name string, callbackFunc CallbackFunc) *OAuth 
 // {"access_token":"7_0MSpG_WEPVwQki6eFQSFQbRwkEkTEhkvBjkuKTODS7_xe6vBOEsc88kcCu_781YvXXP2FwWC4M5m-B9WXs51rA","expires_in":7200,"refresh_token":"7_51Axvh89ev5cGH-WR4qPKb-rcPf2VQrMg25MNDs1899cHYb5UomPi4fnc1NAks07Vw5Bb0pTFvvritU-aQtxFg","openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","scope":"snsapi_base"}]
 func (o *OAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	token := o.hookAccessToken(w, r)
-	log.Debug("ServeHTTP|token", *token)
+	log.Debug("ServeHTTP|token", token)
 	if token != nil {
 		info := o.hookUserInfo(w, r, token)
-		log.Debug("ServeHTTP|info", *info)
+		log.Debug("ServeHTTP|info", info)
 		return
 	}
 
