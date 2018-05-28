@@ -12,7 +12,7 @@
 获取包:
 > go get github.com/godcong/wego
 
-建议使用golang/dep添加包:  
+建议使用golang/dep添加包：
 > dep ensure --add github.com/godcong/wego
 
 配置config.toml
