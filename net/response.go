@@ -128,7 +128,10 @@ func (r *Response) ToFile(path string) {
 	file.Write(r.ToBytes())
 }
 
-func (r *Response) Check() error {
+func (r *Response) CheckError() error {
+	if r.error != nil {
+		return r.error
+	}
 	m := r.ToMap()
 	if m.GetNumber("errcode") != 0 {
 		r.error = errors.New(m.GetString("errmsg"))

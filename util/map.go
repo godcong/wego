@@ -84,12 +84,23 @@ func (m *Map) GetMapD(s string, d Map) Map {
 	return d
 }
 
+func (m *Map) GetBool(s string) bool {
+	return m.GetBoolD(s, false)
+}
+
+func (m *Map) GetBoolD(s string, b bool) bool {
+	if v, b := m.Get(s).(bool); b {
+		return v
+	}
+	return b
+}
+
 func (m *Map) GetNumber(s string) float64 {
-	return ParseNumber(m.Get(s))
+	return m.GetNumberD(s, 0)
 }
 
 func (m *Map) GetNumberD(s string, i float64) float64 {
-	n := m.GetNumber(s)
+	n := ParseNumber(m.Get(s))
 	if n != 0 {
 		return n
 	}

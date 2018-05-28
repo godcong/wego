@@ -33,13 +33,18 @@ func (o *Order) SetRequest(r *http.Request) *Order {
 }
 
 /*
-接口链接
-URL地址：https://api.mch.weixin.qq.com/pay/unifiedorder
+Unify 统一下单
+	接口链接
+	URL地址：https://api.mch.weixin.qq.com/pay/unifiedorder
 
-是否需要证书
-否
+	是否需要证书
+	否
 
-
+	接口请求参数参考：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
+ 	参数：
+		util.Map 向wxpay post的请求数据
+	返回值：
+		*net.Response wxpay应答数据
 */
 func (o *Order) Unify(m util.Map) *net.Response {
 	if !m.Has("spbill_create_ip") {
@@ -58,7 +63,9 @@ func (o *Order) Unify(m util.Map) *net.Response {
 	if !m.Has("notify_url") {
 		m.Set("notify_url", o.Config.Get("notify_url"))
 	}
-	return o.Request(UNIFIEDORDER_URL_SUFFIX, m)
+	resp := o.Request(UNIFIEDORDER_URL_SUFFIX, m)
+	resp.CheckError()
+	return resp
 }
 
 /**
@@ -71,7 +78,9 @@ func (o *Order) Close(no string) *net.Response {
 	m := make(util.Map)
 	m.Set("appid", o.Config.Get("app_id"))
 	m.Set("out_trade_no", no)
-	return o.Request(CLOSEORDER_URL_SUFFIX, m)
+	resp := o.Request(CLOSEORDER_URL_SUFFIX, m)
+	resp.CheckError()
+	return resp
 }
 
 /** QueryOrder
