@@ -74,57 +74,51 @@ func (m *Menu) SetMenuId(id int) *Menu {
 //成功:
 // {"menuid":429680901}]
 func (m *Menu) Create() *net.Response {
-	token := m.token.GetToken()
+	token := m.token.GetToken().KeyMap()
 	if _, b := m.buttons["matchrule"]; !b {
 		resp := m.client.HttpPostJson(
 			m.client.Link(MENU_CREATE_URL_SUFFIX),
-			m.buttons,
-			util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+			token,
+			m.buttons)
 		return resp
 	}
 	resp := m.client.HttpPostJson(
 		m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX),
-		m.buttons,
-		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		token,
+		m.buttons)
 	return resp
 }
 
 func (m *Menu) List() *net.Response {
-	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX), util.Map{
-		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-	})
+	resp := m.client.HttpGet(m.client.Link(MENU_GET_URL_SUFFIX),
+		m.token.GetToken().KeyMap(),
+	)
 	return resp
-
 }
 
 func (m *Menu) Current() *net.Response {
-	token := m.token.GetToken()
-	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX), util.Map{
-		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-	})
+	resp := m.client.HttpGet(m.client.Link(GET_CURRENT_SELFMENU_INFO_URL_SUFFIX),
+		m.token.GetToken().KeyMap())
 	return resp
 }
 
 func (m *Menu) TryMatch(userId string) *net.Response {
-	token := m.token.GetToken()
 	resp := m.client.HttpPostJson(m.client.Link(MENU_TRYMATCH_URL_SUFFIX),
-		util.Map{"user_id": userId},
-		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		m.token.GetToken().KeyMap(),
+		util.Map{"user_id": userId})
 	return resp
 }
 
 func (m *Menu) Delete() *net.Response {
-	token := m.token.GetToken()
+	token := m.token.GetToken().KeyMap()
 	if m.menuid == 0 {
-		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX), util.Map{
-			net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
-		})
+		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX),
+			token)
 		return resp
 	}
 
 	resp := m.client.HttpPostJson(m.client.Link(MENU_DELETECONDITIONAL_URL_SUFFIX),
 		util.Map{"menuid": m.menuid},
-		util.Map{net.REQUEST_TYPE_QUERY.String(): token.KeyMap()})
+		token)
 	return resp
 }

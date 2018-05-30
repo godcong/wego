@@ -28,7 +28,7 @@
     //输入token获取用户信息
     oauth.UserInfo(token)
 
-也可绑定ServeHTTP到任何http Server:
+## 或绑定ServeHTTP到任何http Server
 
 ### 注册回调监听
 
