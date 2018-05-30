@@ -47,13 +47,16 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// Restore the io.ReadCloser to its original state
 	req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 
+	//无数据直接返回
+	w.WriteHeader(http.StatusOK)
 	if len(bodyBytes) == 0 {
-		w.WriteHeader(http.StatusOK)
+		return
 	}
 	query, err := url.ParseQuery(req.URL.RawQuery)
+	//错误返回,并记录log
 	if err != nil {
 		log.Error(err)
-		w.WriteHeader(http.StatusOK)
+		return
 	}
 	encryptType := query.Get("encrypt_type")
 	ts := query.Get("timestamp")
@@ -63,23 +66,25 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if encryptType == "aes" {
 		log.Debug(ts, nonce, msgSignature, string(bodyBytes))
 		bodyBytes, err = s.bizMsg.Decrypt(string(bodyBytes), msgSignature, ts, nonce)
+		//错误返回,并记录log
 		if err != nil {
 			log.Error(err)
-			w.WriteHeader(http.StatusOK)
+			return
 		}
 	}
 
 	message := new(core.Message)
 	log.Debug(string(bodyBytes))
 	err = xml.Unmarshal(bodyBytes, message)
+	//错误返回,并记录log
 	if err != nil {
 		log.Error(err)
 		return
 	}
 	result := s.CallbackFunc(message)
-	w.WriteHeader(http.StatusOK)
 
 	rltXml, err = result.ToXml()
+	//错误返回,并记录log
 	if err != nil {
 		log.Error(err)
 		return

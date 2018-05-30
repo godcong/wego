@@ -3,7 +3,7 @@ package payment_test
 import (
 	"testing"
 
-	"github.com/godcong/wego/payment"
+	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/util"
 )
 

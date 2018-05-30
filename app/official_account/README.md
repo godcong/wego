@@ -1,10 +1,12 @@
 # official account 功能模块介绍 #
 
 基本功能模块  
-NewBase()  
+base:= official_account.NewBase()  
+
+https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433744592
 
 自定义菜单  
-NewMenu()  
+official_account.NewMenu()  
 
 消息管理  
 NewMessage()  
