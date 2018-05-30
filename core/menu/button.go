@@ -1,6 +1,8 @@
 package menu
 
 import (
+	"strings"
+
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/util"
 )
@@ -18,33 +20,37 @@ type Button util.Map
 //	Pagepath string //string miniprogram类型必须	小程序的页面路径
 //}
 
+func typeToString(eventType message.EventType) string {
+	return strings.ToLower(eventType.String())
+}
+
 func NewClickButton(name, key string) *Button {
-	return newButton(message.EventTypeClick.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypeClick), util.Map{"name": name, "key": key})
 
 }
 
 func NewViewButton(name, url string) *Button {
-	return newButton(message.EventTypeView.String(), util.Map{"name": name, "url": url})
+	return newButton(typeToString(message.EventTypeView), util.Map{"name": name, "url": url})
 }
 
 func NewScanCodeWaitMsgButton(name, key string) *Button {
-	return newButton(message.EventTypeScancodeWaitmsg.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypeScancodeWaitmsg), util.Map{"name": name, "key": key})
 }
 
 func NewScanCodePushButton(name, key string) *Button {
-	return newButton(message.EventTypeScancodePush.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypeScancodePush), util.Map{"name": name, "key": key})
 }
 
 func NewPicSysPhotoButton(name, key string) *Button {
-	return newButton(message.EventTypePicSysphoto.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypePicSysphoto), util.Map{"name": name, "key": key})
 }
 
 func NewPicPhotoOrAlbumButton(name, key string) *Button {
-	return newButton(message.EventTypePicPhotoOrAlbum.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypePicPhotoOrAlbum), util.Map{"name": name, "key": key})
 }
 
 func NewPicWeixinButton(name, key string) *Button {
-	return newButton(message.EventTypePicWeixin.String(), util.Map{"name": name, "key": key})
+	return newButton(typeToString(message.EventTypePicWeixin), util.Map{"name": name, "key": key})
 }
 
 func NewMediaIDButton(name, mediaId string) *Button {
