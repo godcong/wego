@@ -136,8 +136,8 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 		r.error = err
 	}
 
-	for k := range data.Header {
-		req.Header.Set(k, data.Header.Get(k))
+	for k, v := range data.Header {
+		req.Header[k] = v
 	}
 
 	log.Debug(req.Header)
