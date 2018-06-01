@@ -1,5 +1,11 @@
 package message
 
+import (
+	"encoding/xml"
+
+	"github.com/godcong/wego/util"
+)
+
 type Image struct {
 	*Message
 	PicUrl  string //图片链接（由系统生成）
@@ -13,4 +19,27 @@ func NewImage(msg *Message, picUrl, mediaId string) *Image {
 		PicUrl:  picUrl,
 		MediaId: mediaId,
 	}
+}
+
+func (t *Image) ToXml() ([]byte, error) {
+	return xml.Marshal(*t)
+}
+func (t *Image) ToJson() ([]byte, error) {
+	m := t.ToMap()
+	return m.ToJson(), nil
+}
+
+func (t *Image) ToMap() util.Map {
+	m := util.Map{
+		"msgtype": t.MsgType.String(),
+		"touser":  t.ToUserName.Value,
+		t.MsgType.String(): util.Map{
+			"media_id": t.MediaId,
+		},
+	}
+	if t.PicUrl != "" {
+		m.Set("picurl", t.PicUrl)
+	}
+
+	return m
 }
