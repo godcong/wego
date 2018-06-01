@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"errors"
+
 	"github.com/godcong/wego/util"
 )
 
@@ -42,6 +44,27 @@ type Token struct {
 	// Raw optionally contains extra metadata from the server
 	// when updating a token.
 	Raw interface{}
+}
+
+const AccessTokenNil = "nil point access token"
+const TokenNil = "nil point token"
+
+func MustKeyMap(at *AccessToken) util.Map {
+	m := util.Map{}
+	if m, e := KeyMap(at); e != nil {
+		return m
+	}
+	return m
+}
+
+func KeyMap(at *AccessToken) (util.Map, error) {
+	if at == nil {
+		return nil, errors.New(AccessTokenNil)
+	}
+	if token := at.GetToken(); token != nil {
+		return token.KeyMap(), nil
+	}
+	return nil, errors.New(TokenNil)
 }
 
 func (t *Token) KeyMap() util.Map {
