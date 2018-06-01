@@ -13,8 +13,8 @@ type Menu struct {
 	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
-	buttons util.Map
-	menuid  int
+	//buttons util.Map
+	menuid int
 }
 
 func newMenu(account *OfficialAccount) *Menu {
@@ -23,35 +23,12 @@ func newMenu(account *OfficialAccount) *Menu {
 		account: account,
 		client:  account.client,
 		token:   account.token,
-		buttons: make(util.Map),
+		//buttons: make(util.Map),
 	}
 }
 
 func NewMenu() *Menu {
 	return newMenu(account)
-}
-
-func (m *Menu) SetButtons(b []*menu.Button) *Menu {
-	m.buttons["button"] = b
-	return m
-}
-
-func (m *Menu) GetButtons() []*menu.Button {
-	if v, b := m.buttons["button"]; b {
-		if v0, b := v.([]*menu.Button); b {
-			return v0
-		}
-	}
-	return nil
-}
-
-func (m *Menu) AddButton(b *menu.Button) *Menu {
-	if v := m.GetButtons(); v != nil {
-		m.buttons["button"] = append(v, b)
-	} else {
-		m.buttons["button"] = []*menu.Button{b}
-	}
-	return m
 }
 
 func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {

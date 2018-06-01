@@ -10,7 +10,6 @@ import (
 type Button util.Map
 
 //{
-
 //	Type     string //是	菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
 //	Name     string //是	菜单标题，不超过16个字节，子菜单不超过60个字节
 //	Key      string //click等点击类型必须	菜单KEY值，用于消息接口推送，不超过128字节
@@ -82,5 +81,32 @@ func (b *Button) SetSub(name string, sub []*Button) *Button {
 	*b = make(Button)
 	(*util.Map)(b).Set("name", name)
 	(*util.Map)(b).Set("sub_button", sub)
+	return b
+}
+
+func NewButton() *Button {
+	button := make(Button)
+	return &button
+}
+
+func (b *Button) SetButtons(buttons []*Button) *Button {
+	(*util.Map)(b).Set("button", buttons)
+	return b
+}
+
+func (b *Button) GetButtons() []*Button {
+	buttons := (*util.Map)(b).Get("button")
+	if v0, b := buttons.([]*Button); b {
+		return v0
+	}
+	return nil
+}
+
+func (b *Button) AddButton(buttons *Button) *Button {
+	if v := b.GetButtons(); v != nil {
+		b.SetButtons(append(v, buttons))
+	} else {
+		b.SetButtons([]*Button{b})
+	}
 	return b
 }

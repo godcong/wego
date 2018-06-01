@@ -27,6 +27,7 @@ func NewLink(msg *Message, title, url, thumbUrl, desc string) *Link {
 func (l *Link) ToXml() ([]byte, error) {
 	return xml.Marshal(*l)
 }
+
 func (l *Link) ToJson() ([]byte, error) {
 	m := l.ToMap()
 	return m.ToJson(), nil
