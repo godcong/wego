@@ -21,12 +21,14 @@ func testMenu_List(t *testing.T, m *official_account.Menu) {
 	t.Log(rlt.ToString())
 }
 
-func testMenu_AddButton(t *testing.T, m *official_account.Menu) {
-	m.AddButton(menu.NewClickButton("click1", "fistkey"))
-}
+// func testMenu_AddButton(t *testing.T, m *official_account.Menu) {
+// 	m.AddButton(menu.NewClickButton("click1", "fistkey"))
+// }
 
 func testMenu_Create(t *testing.T, m *official_account.Menu) {
-	m.SetMatchRule(&menu.MatchRule{
+	button := menu.NewBaseButton()
+	// button.SetMatchRule&menu.MatchRule
+	button.SetMatchRule(&menu.MatchRule{
 		TagId:   "2",
 		Sex:     "1",
 		Country: "中国",
@@ -35,7 +37,7 @@ func testMenu_Create(t *testing.T, m *official_account.Menu) {
 		//ClientPlatformType: "2",
 		//Language:           "zh_CN",
 	})
-	rlt := m.Create()
+	rlt := m.Create(button)
 	t.Log(rlt.ToString())
 }
 

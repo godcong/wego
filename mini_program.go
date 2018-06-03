@@ -5,10 +5,12 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Auth 授权登录*/
 type Auth interface {
 	Session(code string) util.Map
 }
 
+/*DataCube DataCube*/
 type DataCube interface {
 	UserPortrait(from, to string) util.Map
 	SummaryTrend(from, to string) util.Map
@@ -22,12 +24,14 @@ type DataCube interface {
 	VisitPage(from, to string) util.Map
 }
 
+/*AppCode AppCode*/
 type AppCode interface {
 	Get(path string, optionals util.Map) util.Map
 	GetQrCode(path string, width int) util.Map
 	GetUnlimit(scene string, optionals util.Map) util.Map
 }
 
+/*MiniProgram 小程序*/
 type MiniProgram interface {
 	Auth() Auth
 	AppCode() AppCode
@@ -36,27 +40,21 @@ type MiniProgram interface {
 	AccessToken() AccessToken
 }
 
-//func NewAppCode(application core.Application, config config.Config) AppCode {
-//	return &mini_program.AppCode{
-//		Config: config,
-//		//mini_program:   application.MiniProgram(),
-//	}
-//}
-
+/*GetMiniProgram 获取小程序*/
 func GetMiniProgram() MiniProgram {
 	obj := GetApp().Get("mini_program").(MiniProgram)
 	log.Debug("GetMiniProgram|obj:", obj)
 	return obj
 }
 
-func GetAuth() Auth {
-	return GetMiniProgram().Auth()
-}
+// func GetAuth() Auth {
+// 	return GetMiniProgram().Auth()
+// }
 
-func GetAppCode() AppCode {
-	return GetMiniProgram().AppCode()
-}
+// func GetAppCode() AppCode {
+// 	return GetMiniProgram().AppCode()
+// }
 
-func GetDataCube() DataCube {
-	return GetMiniProgram().DataCube()
-}
+// func GetDataCube() DataCube {
+// 	return GetMiniProgram().DataCube()
+// }

@@ -13,8 +13,6 @@ type Menu struct {
 	account *OfficialAccount
 	client  *core.Client
 	token   *core.AccessToken
-	//buttons util.Map
-	menuid int
 }
 
 func newMenu(account *OfficialAccount) *Menu {
@@ -31,15 +29,15 @@ func NewMenu() *Menu {
 	return newMenu(account)
 }
 
-func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
-	m.buttons["matchrule"] = rule
-	return m
-}
-
-func (m *Menu) SetMenuId(id int) *Menu {
-	m.menuid = id
-	return m
-}
+//func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
+//	m.buttons["matchrule"] = rule
+//	return m
+//}
+//
+//func (m *Menu) SetMenuId(id int) *Menu {
+//	m.menuid = id
+//	return m
+//}
 
 //个性化创建
 //https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
@@ -50,19 +48,19 @@ func (m *Menu) SetMenuId(id int) *Menu {
 //https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
 //成功:
 // {"menuid":429680901}]
-func (m *Menu) Create() *net.Response {
+func (m *Menu) Create(buttons *menu.Button) *net.Response {
 	token := m.token.GetToken().KeyMap()
-	if _, b := m.buttons["matchrule"]; !b {
+	if buttons.GetMatchRule() == nil {
 		resp := m.client.HttpPostJson(
 			m.client.Link(MENU_CREATE_URL_SUFFIX),
 			token,
-			m.buttons)
+			buttons)
 		return resp
 	}
 	resp := m.client.HttpPostJson(
 		m.client.Link(MENU_ADDCONDITIONAL_URL_SUFFIX),
 		token,
-		m.buttons)
+		buttons)
 	return resp
 }
 
@@ -86,16 +84,16 @@ func (m *Menu) TryMatch(userId string) *net.Response {
 	return resp
 }
 
-func (m *Menu) Delete() *net.Response {
+func (m *Menu) Delete(menuid int) *net.Response {
 	token := m.token.GetToken().KeyMap()
-	if m.menuid == 0 {
+	if menuid == 0 {
 		resp := m.client.HttpGet(m.client.Link(MENU_DELETE_URL_SUFFIX),
 			token)
 		return resp
 	}
 
 	resp := m.client.HttpPostJson(m.client.Link(MENU_DELETECONDITIONAL_URL_SUFFIX),
-		util.Map{"menuid": m.menuid},
+		util.Map{"menuid": menuid},
 		token)
 	return resp
 }

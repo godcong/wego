@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Base 基本功能组件 */
 type Base struct {
 	config  config.Config
 	account *OfficialAccount
@@ -54,7 +55,7 @@ GetCallbackIp 请求微信的服务器IP列表
   失败:
   {"errcode":40013,"errmsg":"invalid appid"}
 */
-func (b *Base) GetCallbackIp() util.Map {
+func (b *Base) GetCallbackIP() util.Map {
 	token := b.token.GetToken()
 	resp := b.client.HttpGet(b.client.Link(GETCALLBACKIP_URL_SUFFIX), util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),

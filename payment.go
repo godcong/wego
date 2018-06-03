@@ -6,9 +6,12 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Security 安全*/
 type Security interface {
 	GetPublicKey() *net.Response
 }
+
+/*Order 订单*/
 type Order interface {
 	Unify(m util.Map) *net.Response
 	Close(no string) *net.Response
@@ -17,6 +20,7 @@ type Order interface {
 	QueryByOutTradeNumber(no string) *net.Response
 }
 
+/*JSSDK jssdk*/
 type JSSDK interface {
 	BridgeConfig(pid string) util.Map
 	SdkConfig(pid string) util.Map
@@ -24,16 +28,19 @@ type JSSDK interface {
 	ShareAddressConfig(accessToken interface{}) util.Map
 }
 
+/*Bill bill*/
 type Bill interface {
 	Get(string, string, util.Map) *net.Response
 }
 
+/*RedPack 红包*/
 type RedPack interface {
 	Info(util.Map) *net.Response
 	SendNormal(util.Map) *net.Response
 	SendGroup(util.Map) *net.Response
 }
 
+/*Refund 退款*/
 type Refund interface {
 	ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *net.Response
 	ByTransactionId(tid, num string, total, refund int, options util.Map) *net.Response
@@ -46,21 +53,27 @@ type Refund interface {
 	//Query(Map) Map
 }
 
+/*Reverse reverse*/
 type Reverse interface {
 	ByOutTradeNumber(string) *net.Response
 	ByTransactionId(string) *net.Response
 }
 
+/*Sandbox 沙箱*/
 type Sandbox interface {
 	GetKey() string
 	GetCacheKey() string
 }
+
+/*Transfer 转账*/
 type Transfer interface {
 	QueryBalanceOrder(string) *net.Response
 	ToBalance(util.Map) *net.Response
 	QueryBankCardOrder(string) *net.Response
 	ToBankCard(util.Map) *net.Response
 }
+
+/*Payment 支付*/
 type Payment interface {
 	//Sandbox() Sandbox
 
@@ -133,6 +146,7 @@ type Payment interface {
 //	}
 //}
 
+/*GetPayment 获取支付*/
 func GetPayment() Payment {
 	obj := GetApp().Get("payment").(Payment)
 	log.Debug("GetPayment|obj:", obj)
@@ -143,18 +157,21 @@ func GetPayment() Payment {
 	//return obj
 }
 
+/*GetSecurity 获取安全*/
 func GetSecurity() Security {
 	obj := GetPayment().Security()
 	log.Debug("GetSecurity|obj:", obj)
 	return obj
 }
 
+/*GetOrder 获取订单*/
 func GetOrder() Order {
 	obj := GetPayment().Order()
 	log.Debug("GetOrder|obj:", obj)
 	return obj
 }
 
+/*GetRefund 获取退款*/
 func GetRefund() Refund {
 	obj := GetPayment().Refund()
 	log.Debug("GetRefund|obj:", obj)

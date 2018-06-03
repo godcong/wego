@@ -169,12 +169,12 @@ func (m *Map) ToJson() []byte {
 	return v
 }
 
-func (m *Map) ParseJson(b []byte) Map {
+func (m *Map) ParseJson(b []byte) *Map {
 	tmp := Map{}
 	if e := json.Unmarshal(b, &tmp); e == nil {
 		m.Join(tmp)
 	}
-	return *m
+	return m
 }
 
 func (m *Map) UrlEncode() string {
@@ -211,7 +211,7 @@ func (m *Map) SaveAs(p string, f string) {
 func (m *Map) Only(columns []string) Map {
 	p := Map{}
 	for _, v := range columns {
-		p.Set(v, m.Get(v))
+		p[v] = (*m)[v]
 	}
 	return p
 }

@@ -23,47 +23,50 @@ func typeToString(eventType message.EventType) string {
 	return strings.ToLower(eventType.String())
 }
 
+/*NewClickButton NewClickButton*/
 func NewClickButton(name, key string) *Button {
 	return newButton(typeToString(message.EventTypeClick), util.Map{"name": name, "key": key})
 
 }
 
+/*NewViewButton NewViewButton*/
 func NewViewButton(name, url string) *Button {
 	return newButton(typeToString(message.EventTypeView), util.Map{"name": name, "url": url})
 }
 
-func NewScanCodeWaitMsgButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypeScancodeWaitmsg), util.Map{"name": name, "key": key})
-}
+//func NewScanCodeWaitMsgButton(name, key string) *Button {
+//	return newButton(typeToString(message.EventTypeScancodeWaitmsg), util.Map{"name": name, "key": key})
+//}
+//
+//func NewScanCodePushButton(name, key string) *Button {
+//	return newButton(typeToString(message.EventTypeScancodePush), util.Map{"name": name, "key": key})
+//}
+//
+//func NewPicSysPhotoButton(name, key string) *Button {
+//	return newButton(typeToString(message.EventTypePicSysphoto), util.Map{"name": name, "key": key})
+//}
+//
+//func NewPicPhotoOrAlbumButton(name, key string) *Button {
+//	return newButton(typeToString(message.EventTypePicPhotoOrAlbum), util.Map{"name": name, "key": key})
+//}
+//
+//func NewPicWeixinButton(name, key string) *Button {
+//	return newButton(typeToString(message.EventTypePicWeixin), util.Map{"name": name, "key": key})
+//}
+//
+//func NewMediaIDButton(name, mediaId string) *Button {
+//	return newButton("media_id", util.Map{"name": name, "media_id": mediaId})
+//}
+//
+//func NewViewLimitedButton(name, mediaId string) *Button {
+//	return newButton("view_limited", util.Map{"name": name, "media_id": mediaId})
+//}
+//
+//func NewMiniProgramButton(name, url, pagepath string) *Button {
+//	return newButton("miniprogram", util.Map{"name": name, "url": url, "pagepath": pagepath})
+//}
 
-func NewScanCodePushButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypeScancodePush), util.Map{"name": name, "key": key})
-}
-
-func NewPicSysPhotoButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypePicSysphoto), util.Map{"name": name, "key": key})
-}
-
-func NewPicPhotoOrAlbumButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypePicPhotoOrAlbum), util.Map{"name": name, "key": key})
-}
-
-func NewPicWeixinButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypePicWeixin), util.Map{"name": name, "key": key})
-}
-
-func NewMediaIDButton(name, mediaId string) *Button {
-	return newButton("media_id", util.Map{"name": name, "media_id": mediaId})
-}
-
-func NewViewLimitedButton(name, mediaId string) *Button {
-	return newButton("view_limited", util.Map{"name": name, "media_id": mediaId})
-}
-
-func NewMiniProgramButton(name, url, pagepath string) *Button {
-	return newButton("miniprogram", util.Map{"name": name, "url": url, "pagepath": pagepath})
-}
-
+/*NewSubButton NewSubButton*/
 func NewSubButton(name string, sub []*Button) *Button {
 	return newButton("", util.Map{"name": name, "key": "testkey", "sub_button": sub})
 }
@@ -77,6 +80,7 @@ func newButton(typ string, val util.Map) *Button {
 	return &v
 }
 
+/*SetSub SetSub*/
 func (b *Button) SetSub(name string, sub []*Button) *Button {
 	*b = make(Button)
 	(*util.Map)(b).Set("name", name)
@@ -84,29 +88,60 @@ func (b *Button) SetSub(name string, sub []*Button) *Button {
 	return b
 }
 
-func NewButton() *Button {
+/*NewButton NewButton*/
+func NewBaseButton() *Button {
 	button := make(Button)
 	return &button
 }
 
+/*SetButtons SetButtons*/
 func (b *Button) SetButtons(buttons []*Button) *Button {
-	(*util.Map)(b).Set("button", buttons)
+	b.ToMap().Set("button", buttons)
 	return b
 }
 
+/*GetButtons GetButtons*/
 func (b *Button) GetButtons() []*Button {
-	buttons := (*util.Map)(b).Get("button")
+	buttons := b.ToMap().Get("button")
 	if v0, b := buttons.([]*Button); b {
 		return v0
 	}
 	return nil
 }
 
+/*GetMatchRule GetMatchRule*/
+func (b *Button) GetMatchRule() *MatchRule {
+	if mr := b.ToMap().Get("matchrule"); mr != nil {
+		return mr.(*MatchRule)
+	}
+	return nil
+}
+
+/*SetMatchRule SetMatchRule*/
+func (b *Button) SetMatchRule(rule *MatchRule) *Button {
+	b.ToMap().Set("matchrule", rule)
+	return b
+}
+
+/*ToMap ToMap*/
+func (b *Button) ToMap() *util.Map {
+	return (*util.Map)(b)
+}
+
+func (b *Button) mapGet(name string) interface{} {
+	return (*util.Map)(b).Get(name)
+}
+
+func (b *Button) mapSet(name string, v interface{}) *util.Map {
+	return (*util.Map)(b).Set(name, v)
+}
+
+/*AddButton AddButton*/
 func (b *Button) AddButton(buttons *Button) *Button {
 	if v := b.GetButtons(); v != nil {
 		b.SetButtons(append(v, buttons))
 	} else {
-		b.SetButtons([]*Button{b})
+		b.SetButtons([]*Button{buttons})
 	}
 	return b
 }
