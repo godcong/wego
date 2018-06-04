@@ -185,7 +185,7 @@ CreateLandingPage 创建货架接口
 */
 func (c *Card) CreateLandingPage(page *CardLandingPage) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_LANDINGPAGE_CREATE_URL_SUFFIX),
+		c.client.Link(CardLandingpageCreateUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		page,
 	)
@@ -203,7 +203,7 @@ Deposit 导入code接口
 */
 func (c *Card) Deposit(cardId string, code []string) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_CODE_DEPOSIT_URL_SUFFIX),
+		c.client.Link(CardCodeDepositUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardId,
@@ -224,7 +224,7 @@ GetDepositCount 查询导入code数目
 */
 func (c *Card) GetDepositCount(cardId string) *net.Response {
 	resp := c.client.HttpPost(
-		c.client.Link(CARD_CODE_GETDEPOSITCOUNT_URL_SUFFIX),
+		c.client.Link(CardCodeGetdepositcountUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardId,
@@ -244,7 +244,7 @@ CheckCode 核查code接口
 */
 func (c *Card) CheckCode(cardId string, code []string) *net.Response {
 	resp := c.client.HttpPost(
-		c.client.Link(CARD_CODE_CHECKCODE_URL_SUFFIX),
+		c.client.Link(CardCodeCheckcodeUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardId,
@@ -268,7 +268,7 @@ GetCode 查询 Code 接口
 */
 func (c *Card) GetCode(p util.Map) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_CODE_GET_URL_SUFFIX),
+		c.client.Link(CardCodeGetUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		p,
 	)
@@ -283,7 +283,7 @@ GetHtml 图文消息群发卡券
 */
 func (c *Card) GetHtml(cid string) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_MPNEWS_GETHTML_URL_SUFFIX),
+		c.client.Link(CardMpNewsGetHtmlUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cid,
@@ -317,7 +317,7 @@ SetTestWhiteList 设置测试白名单
 */
 func (c *Card) SetTestWhiteList(typ string, list []string) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_TESTWHITELIST_SET_URL_SUFFIX),
+		c.client.Link(CardTestWhiteListSetURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
 			typ: list,
@@ -337,7 +337,7 @@ CreateQrCode 创建二维码
 */
 func (c *Card) CreateQrCode(action *QrCodeAction) *net.Response {
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_QRCODE_CREATE_URL_SUFFIX),
+		c.client.Link(CardQrcodeCreateUrlSuffix),
 		c.token.GetToken().KeyMap(),
 		action,
 	)
@@ -360,7 +360,7 @@ func (c *Card) Create(card *OneCard) *net.Response {
 	key := c.token.GetToken().KeyMap()
 	_, d := card.Get()
 	resp := c.client.HttpPostJson(
-		c.client.Link(CARD_CREATE_URL_SUFFIX),
+		c.client.Link(CardCreateURLSuffix),
 		util.Map{"card": d},
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): key,

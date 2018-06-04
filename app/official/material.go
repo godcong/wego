@@ -28,7 +28,7 @@ func (m *Material) AddNews(articles []*media.Article) *net.Response {
 	log.Debug("Material|AddNews", articles)
 	key := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
-		m.client.Link(MATERIAL_ADD_NEWS_URL_SUFFIX),
+		m.client.Link(MaterialAddNewsUrlSuffix),
 		util.Map{"articles": articles},
 		util.Map{net.REQUEST_TYPE_QUERY.String(): key})
 	return resp
@@ -48,7 +48,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *net.R
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.HttpUpload(
-		m.client.Link(MATERIAL_ADD_MATERIAL_URL_SUFFIX),
+		m.client.Link(MaterialAddMaterialUrlSuffix),
 		util.Map{
 			"media": filePath,
 		},
@@ -65,7 +65,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) *net
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
 	resp := m.client.HttpUpload(
-		m.client.Link(MATERIAL_ADD_MATERIAL_URL_SUFFIX),
+		m.client.Link(MaterialAddMaterialUrlSuffix),
 		util.Map{
 			"media": filePath,
 			"description": util.Map{
@@ -89,7 +89,7 @@ func (m *Material) Get(mediaId string) *net.Response {
 	log.Debug("Material|Get", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
-		m.client.Link(MATERIAL_GET_MATERIAL_URL_SUFFIX),
+		m.client.Link(MaterialGetMaterialUrlSuffix),
 		util.Map{
 			"media_id": mediaId,
 		},
@@ -109,7 +109,7 @@ func (m *Material) Del(mediaId string) *net.Response {
 	log.Debug("Material|Del", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
-		m.client.Link(MATERIAL_DEL_MATERIAL_URL_SUFFIX),
+		m.client.Link(MaterialDelMaterialUrlSuffix),
 		util.Map{
 			"media_id": mediaId,
 		},
@@ -126,7 +126,7 @@ func (m *Material) UpdateNews(mediaId string, index int, articles []*media.Artic
 	log.Debug("Material|UpdateNews", mediaId)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
-		m.client.Link(MATERIAL_UPDATE_NEWS_URL_SUFFIX),
+		m.client.Link(MaterialUpdateNewsUrlSuffix),
 		util.Map{
 			"media_id": mediaId,
 			"index":    index,
@@ -149,7 +149,7 @@ func (m *Material) GetMaterialCount() *net.Response {
 	log.Debug("Material|GetMaterialCount")
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpGet(
-		m.client.Link(MATERIAL_GET_MATERIALCOUNT_URL_SUFFIX),
+		m.client.Link(MaterialGetMaterialcountUrlSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		})
@@ -166,7 +166,7 @@ func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) *net.Re
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpPostJson(
-		m.client.Link(MATERIAL_BATCHGET_MATERIAL_URL_SUFFIX),
+		m.client.Link(MaterialBatchgetMaterialUrlSuffix),
 		util.Map{
 			"type":   mediaType.String(),
 			"offset": offset,

@@ -43,75 +43,110 @@ const UserInfoUrlSuffix = "/cgi-bin/user/info"
 const UserInfoBatchGetUrlSuffix = "/cgi-bin/user/info/batchget"
 const UserGetUrlSuffix = "/cgi-bin/user/get"
 
-const QRCODE_CREATE_URL_SUFFIX = "/cgi-bin/qrcode/create"
-const SHOWQRCODE_URL_SUFFIX = "/cgi-bin/showqrcode"
+const QrcodeCreateUrlSuffix = "/cgi-bin/qrcode/create"
+const ShowqrcodeUrlSuffix = "/cgi-bin/showqrcode"
 
-const DATACUBE_TIME_LAYOUT = "2006-01-02"
+const DatacubeTimeLayout = "2006-01-02"
 
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
 // const tags_members_batchtagging_URL_SUFFIX = "/cgi-bin/tags/members/batchtagging"
 // const tags_members_batchuntagging_URL_SUFFIX = "/cgi-bin/tags/members/batchuntagging"
-const DATACUBE_GETUSERSUMMARY_URL_SUFFIX = "/datacube/getusersummary"
-const DATACUBE_GETUSERCUMULATE_URL_SUFFIX = "/datacube/getusercumulate"
-const DATACUBE_GETARTICLESUMMARY_URL_SUFFIX = "/datacube/getarticlesummary"
-const DATACUBE_GETARTICLETOTAL_URL_SUFFIX = "/datacube/getarticletotal"
-const DATACUBE_GETUSERREAD_URL_SUFFIX = "/datacube/getuserread"
-const DATACUBE_GETUSERREADHOUR_URL_SUFFIX = "/datacube/getuserreadhour"
-const DATACUBE_GETUSERSHARE_URL_SUFFIX = "/datacube/getusershare"
-const DATACUBE_GETUSERSHAREHOUR_URL_SUFFIX = "/datacube/getusersharehour"
+const DatacubeGetusersummaryUrlSuffix = "/datacube/getusersummary"
+const DatacubeGetusercumulateUrlSuffix = "/datacube/getusercumulate"
+const DatacubeGetarticlesummaryUrlSuffix = "/datacube/getarticlesummary"
+const DatacubeGetarticletotalUrlSuffix = "/datacube/getarticletotal"
+const DatacubeGetuserreadUrlSuffix = "/datacube/getuserread"
+const DatacubeGetuserreadhourUrlSuffix = "/datacube/getuserreadhour"
+const DatacubeGetusershareUrlSuffix = "/datacube/getusershare"
+const DatacubeGetusersharehourUrlSuffix = "/datacube/getusersharehour"
 
-const DATACUBE_GETUPSTREAMMSG_URL_SUFFIX = "/datacube/getupstreammsg"
-const DATACUBE_GETUPSTREAMMSGHOUR_URL_SUFFIX = "/datacube/getupstreammsghour"
-const DATACUBE_GETUPSTREAMMSGWEEK_URL_SUFFIX = "/datacube/getupstreammsgweek"
-const DATACUBE_GETUPSTREAMMSGDIST_URL_SUFFIX = "/datacube/getupstreammsgdist"
-const DATACUBE_GETUPSTREAMMSGMONTH_URL_SUFFIX = "/datacube/getupstreammsgmonth"
-const DATACUBE_GETUPSTREAMMSGDISTWEEK_URL_SUFFIX = "/datacube/getupstreammsgdistweek"
-const DATACUBE_GETUPSTREAMMSGDISTMONTH_URL_SUFFIX = "/datacube/getupstreammsgdistmonth"
-const DATACUBE_GETINTERFACESUMMARY_URL_SUFFIX = "/datacube/getinterfacesummary"
-const DATACUBE_GETINTERFACESUMMARYHOUR_URL_SUFFIX = "/datacube/getinterfacesummaryhour"
+const DatacubeGetupstreammsgUrlSuffix = "/datacube/getupstreammsg"
+const DatacubeGetupstreammsghourUrlSuffix = "/datacube/getupstreammsghour"
+const DatacubeGetupstreammsgweekUrlSuffix = "/datacube/getupstreammsgweek"
+const DatacubeGetupstreammsgdistUrlSuffix = "/datacube/getupstreammsgdist"
+const DatacubeGetupstreammsgmonthUrlSuffix = "/datacube/getupstreammsgmonth"
+const DatacubeGetupstreammsgdistweekUrlSuffix = "/datacube/getupstreammsgdistweek"
+const DatacubeGetupstreammsgdistmonthUrlSuffix = "/datacube/getupstreammsgdistmonth"
+const DatacubeGetinterfacesummaryUrlSuffix = "/datacube/getinterfacesummary"
+const DatacubeGetinterfacesummaryhourUrlSuffix = "/datacube/getinterfacesummaryhour"
 
-const MATERIAL_ADD_NEWS_URL_SUFFIX = "/cgi-bin/material/add_news"
-const MATERIAL_ADD_MATERIAL_URL_SUFFIX = "/cgi-bin/material/add_material"
-const MATERIAL_GET_MATERIAL_URL_SUFFIX = "/cgi-bin/material/get_material"
-const MATERIAL_DEL_MATERIAL_URL_SUFFIX = "/cgi-bin/material/del_material"
-const MATERIAL_UPDATE_NEWS_URL_SUFFIX = "/cgi-bin/material/update_news"
-const MATERIAL_GET_MATERIALCOUNT_URL_SUFFIX = "/cgi-bin/material/get_materialcount"
-const MATERIAL_BATCHGET_MATERIAL_URL_SUFFIX = "/cgi-bin/material/batchget_material"
-const COMMENT_OPEN_URL_SUFFIX = "/cgi-bin/comment/open"
-const COMMENT_CLOSE_URL_SUFFIX = "/cgi-bin/comment/close"
-const COMMENT_LIST_URL_SUFFIX = "/cgi-bin/comment/list"
-const COMMENT_MARKELECT_URL_SUFFIX = "/cgi-bin/comment/markelect"
-const COMMENT_UNMARKELECT_URL_SUFFIX = "/cgi-bin/comment/unmarkelect"
-const COMMENT_DELETE_URL_SUFFIX = "/cgi-bin/comment/delete"
-const COMMENT_REPLY_ADD_URL_SUFFIX = "/cgi-bin/comment/reply/add"
-const COMMENT_REPLY_DELETE_URL_SUFFIX = "/cgi-bin/comment/reply/delete"
+const MaterialAddNewsUrlSuffix = "/cgi-bin/material/add_news"
+const MaterialAddMaterialUrlSuffix = "/cgi-bin/material/add_material"
+const MaterialGetMaterialUrlSuffix = "/cgi-bin/material/get_material"
+const MaterialDelMaterialUrlSuffix = "/cgi-bin/material/del_material"
+const MaterialUpdateNewsUrlSuffix = "/cgi-bin/material/update_news"
+const MaterialGetMaterialcountUrlSuffix = "/cgi-bin/material/get_materialcount"
+const MaterialBatchgetMaterialUrlSuffix = "/cgi-bin/material/batchget_material"
+const CommentOpenUrlSuffix = "/cgi-bin/comment/open"
+const CommentCloseUrlSuffix = "/cgi-bin/comment/close"
+const CommentListUrlSuffix = "/cgi-bin/comment/list"
+const CommentMarkelectUrlSuffix = "/cgi-bin/comment/markelect"
+const CommentUnmarkelectUrlSuffix = "/cgi-bin/comment/unmarkelect"
+const CommentDeleteUrlSuffix = "/cgi-bin/comment/delete"
+const CommentReplyAddUrlSuffix = "/cgi-bin/comment/reply/add"
+const CommentReplyDeleteUrlSuffix = "/cgi-bin/comment/reply/delete"
 
-const OAUTH2_ACCESS_TOKEN_URL_SUFFIX = "/sns/oauth2/access_token"
-const OAUTH2_REFRESH_TOKEN_URL_SUFFIX = "/sns/oauth2/refresh_token"
-const OAUTH2_USERINFO_URL_SUFFIX = "/sns/userinfo"
-const OAUTH2_AUTH_URL_SUFFIX = "/sns/auth"
+const Oauth2AccessTokenUrlSuffix = "/sns/oauth2/access_token"
+const Oauth2RefreshTokenUrlSuffix = "/sns/oauth2/refresh_token"
+const Oauth2UserinfoUrlSuffix = "/sns/userinfo"
+const Oauth2AuthUrlSuffix = "/sns/auth"
 
-const OAUTH2_AUTHORIZE_URL_SUFFIX = "https://open.weixin.qq.com/connect/oauth2/authorize"
-const DEFAULT_OAUTH_REDIRECT_URL_SUFFIX = "/oauth_redirect"
+//oauth2AuthorizeUrlSuffix api address suffix
+const Oauth2AuthorizeUrlSuffix = "https://open.weixin.qq.com/connect/oauth2/authorize"
 
-const SNSAPI_BASE = "snsapi_base"
-const SNSAPI_USERINFO = "snsapi_userinfo"
+//defaultOauthRedirectUrlSuffix api address suffix
+const defaultOauthRedirectUrlSuffix = "/oauth_redirect"
 
-const GETTICKET_URL_SUFFIX = "/cgi-bin/ticket/getticket"
+//snsapiBase api address suffix
+const snsapiBase = "snsapi_base"
 
-const CARD_LANDINGPAGE_CREATE_URL_SUFFIX = "/card/landingpage/create"
-const CARD_CODE_DEPOSIT_URL_SUFFIX = "/card/code/deposit"
-const CARD_CODE_GETDEPOSITCOUNT_URL_SUFFIX = "/card/code/getdepositcount"
-const CARD_QRCODE_CREATE_URL_SUFFIX = "/card/qrcode/create"
-const CARD_CODE_CHECKCODE_URL_SUFFIX = "/card/code/checkcode"
-const CARD_CODE_GET_URL_SUFFIX = "/card/code/get"
-const CARD_MPNEWS_GETHTML_URL_SUFFIX = "/card/mpnews/gethtml"
-const CARD_TESTWHITELIST_SET_URL_SUFFIX = "/card/testwhitelist/set"
-const CARD_CREATE_URL_SUFFIX = "/card/create"
+//snsapiUserinfo api address suffix
+const snsapiUserinfo = "snsapi_userinfo"
 
-const POI_ADDPOI_URL_SUFFIX = "/cgi-bin/poi/addpoi"
-const POI_GETPOI_URL_SUFFIX = "/cgi-bin/poi/getpoi"
-const POI_UPDATEPOI_URL_SUFFIX = "/cgi-bin/poi/updatepoi"
-const POI_GETLISTPOI_URL_SUFFIX = "/cgi-bin/poi/getpoilist"
-const POI_DELPOI_URL_SUFFIX = "/cgi-bin/poi/delpoi"
-const POI_GETWXCATEGORY_URL_SUFFIX = "/cgi-bin/poi/getwxcategory"
+//GetticketUrlSuffix api address suffix
+const GetticketUrlSuffix = "/cgi-bin/ticket/getticket"
+
+//CardLandingpageCreateUrlSuffix api address suffix
+const CardLandingpageCreateUrlSuffix = "/card/landingpage/create"
+
+//CardCodeDepositUrlSuffix api address suffix
+const CardCodeDepositUrlSuffix = "/card/code/deposit"
+
+//CardCodeGetdepositcountUrlSuffix api address suffix
+const CardCodeGetdepositcountUrlSuffix = "/card/code/getdepositcount"
+
+//CardQrcodeCreateUrlSuffix api address suffix
+const CardQrcodeCreateUrlSuffix = "/card/qrcode/create"
+
+//CardCodeCheckcodeUrlSuffix api address suffix
+const CardCodeCheckcodeUrlSuffix = "/card/code/checkcode"
+
+//CardCodeGetUrlSuffix api address suffix
+const CardCodeGetUrlSuffix = "/card/code/get"
+
+//CardMpNewsGetHtmlUrlSuffix api address suffix
+const CardMpNewsGetHtmlUrlSuffix = "/card/mpnews/gethtml"
+
+//CardTestWhiteListSetURLSuffix api address suffix
+const CardTestWhiteListSetURLSuffix = "/card/testwhitelist/set"
+
+//CardCreateURLSuffix api address suffix
+const CardCreateURLSuffix = "/card/create"
+
+//PoiAddPoiURLSuffix api address suffix
+const PoiAddPoiURLSuffix = "/cgi-bin/poi/addpoi"
+
+//PoiGetPoiURLSuffix api address suffix
+const PoiGetPoiURLSuffix = "/cgi-bin/poi/getpoi"
+
+//PoiUpdatePoiURLSuffix api address suffix
+const PoiUpdatePoiURLSuffix = "/cgi-bin/poi/updatepoi"
+
+//PoiGetListPoiURLSuffix api address suffix
+const PoiGetListPoiURLSuffix = "/cgi-bin/poi/getpoilist"
+
+//PoiDelPoiURLSuffix api address suffix
+const PoiDelPoiURLSuffix = "/cgi-bin/poi/delpoi"
+
+//PoiGetWxCategoryURLSuffix api address suffix
+const PoiGetWxCategoryURLSuffix = "/cgi-bin/poi/getwxcategory"

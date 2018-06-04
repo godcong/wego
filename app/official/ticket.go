@@ -34,7 +34,7 @@ func (t *Ticket) Get(typ string) *net.Response {
 	p := t.token.GetToken().KeyMap()
 	p.Set("type", typ)
 	resp := t.client.HttpGet(
-		t.client.Link(GETTICKET_URL_SUFFIX),
+		t.client.Link(GetticketUrlSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		},

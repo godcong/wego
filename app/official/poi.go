@@ -71,7 +71,7 @@ func (p *Poi) Add(biz *PoiBaseInfo) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(POI_ADDPOI_URL_SUFFIX),
+		p.client.Link(PoiAddPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -90,7 +90,7 @@ func (p *Poi) Get(poiId string) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(POI_GETPOI_URL_SUFFIX),
+		p.client.Link(PoiGetPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiId,
@@ -119,7 +119,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(POI_UPDATEPOI_URL_SUFFIX),
+		p.client.Link(PoiUpdatePoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -219,7 +219,7 @@ func (p *Poi) GetList(begin int, limit int) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(POI_GETLISTPOI_URL_SUFFIX),
+		p.client.Link(PoiGetListPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"begin": begin,
@@ -241,7 +241,7 @@ func (p *Poi) Del(poiId string) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(POI_DELPOI_URL_SUFFIX),
+		p.client.Link(PoiDelPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiId,
@@ -264,7 +264,7 @@ func (p *Poi) GetCategory() *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpGet(
-		p.client.Link(POI_GETWXCATEGORY_URL_SUFFIX),
+		p.client.Link(PoiGetWxCategoryURLSuffix),
 		p.token.GetToken().KeyMap())
 	return resp
 }

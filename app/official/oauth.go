@@ -29,7 +29,7 @@ type OAuth struct {
 	callback    map[string]CallbackFunc
 	authorize   string
 	scopes      string
-	redirectUri string
+	redirectURI string
 }
 
 func newOAuth(officialAccount *OfficialAccount) *OAuth {
@@ -41,9 +41,9 @@ func newOAuth(officialAccount *OfficialAccount) *OAuth {
 
 	oauth.Config = config.GetConfig("official_account.oauth")
 	oauth.domain = core.DomainHost()
-	oauth.scopes = oauth.GetD("scopes", SNSAPI_BASE)
-	oauth.redirectUri = oauth.GetD("redirect_uri", DEFAULT_OAUTH_REDIRECT_URL_SUFFIX)
-	oauth.authorize = oauth.GetD("authorize", OAUTH2_AUTHORIZE_URL_SUFFIX)
+	oauth.scopes = oauth.GetD("scopes", snsapiBase)
+	oauth.redirectURI = oauth.GetD("redirect_uri", defaultOauthRedirectUrlSuffix)
+	oauth.authorize = oauth.GetD("authorize", Oauth2AuthorizeUrlSuffix)
 	return oauth
 }
 
@@ -152,8 +152,8 @@ func (o *OAuth) AuthCodeURL(state string) string {
 		"response_type": {"code"},
 		"appid":         {o.OfficialAccount.Get("app_id")},
 	}
-	if o.redirectUri != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectUri))
+	if o.redirectURI != "" {
+		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
 	if o.scopes != "" {
 		v.Set("scope", o.scopes)
@@ -184,11 +184,11 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 		"grant_type":    "refresh_token",
 		"refresh_token": refresh,
 	}
-	if o.redirectUri != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectUri))
+	if o.redirectURI != "" {
+		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
 	response := o.client.HttpPost(
-		o.client.Link(OAUTH2_REFRESH_TOKEN_URL_SUFFIX),
+		o.client.Link(Oauth2RefreshTokenUrlSuffix),
 		v,
 		nil,
 	)
@@ -210,11 +210,11 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 		"code":       code,
 		"grant_type": "authorization_code",
 	}
-	if o.redirectUri != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectUri))
+	if o.redirectURI != "" {
+		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
 	response := o.client.HttpPost(
-		o.client.Link(OAUTH2_ACCESS_TOKEN_URL_SUFFIX),
+		o.client.Link(Oauth2AccessTokenUrlSuffix),
 		v,
 		nil,
 	)
@@ -241,7 +241,7 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		"lang":         "zh_CN",
 	}
 	response := o.client.HttpGet(
-		o.client.Link(OAUTH2_USERINFO_URL_SUFFIX),
+		o.client.Link(Oauth2UserinfoUrlSuffix),
 		p,
 	)
 	var info core.UserInfo
@@ -263,7 +263,7 @@ func (o *OAuth) Validate(token *core.Token) bool {
 		"openid":       token.OpenId,
 	}
 	response := o.client.HttpGet(
-		o.client.Link(OAUTH2_AUTH_URL_SUFFIX),
+		o.client.Link(Oauth2AuthUrlSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		},

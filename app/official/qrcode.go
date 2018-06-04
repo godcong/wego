@@ -89,7 +89,7 @@ func NewQrCode() *QrCode {
 func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.HttpPostJson(
-		q.client.Link(QRCODE_CREATE_URL_SUFFIX),
+		q.client.Link(QrcodeCreateUrlSuffix),
 
 		q.token.GetToken().KeyMap(),
 		action,
@@ -104,7 +104,7 @@ func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	q.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := q.client.HttpGet(
-		q.client.Link(SHOWQRCODE_URL_SUFFIX),
+		q.client.Link(ShowqrcodeUrlSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): util.Map{
 				"ticket": url.QueryEscape(ticket),

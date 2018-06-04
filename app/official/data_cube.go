@@ -35,9 +35,9 @@ func NewDataCube() *DataCube {
 func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserSummary", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERSUMMARY_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetusersummaryUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -49,9 +49,9 @@ func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserCumulate", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERCUMULATE_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetusercumulateUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -63,9 +63,9 @@ func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetArticleSummary", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETARTICLESUMMARY_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetarticlesummaryUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -77,9 +77,9 @@ func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) *net.Response
 func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetArticleTotal", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETARTICLETOTAL_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetarticletotalUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -91,9 +91,9 @@ func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUserRead(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserRead", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERREAD_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetuserreadUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -105,9 +105,9 @@ func (d *DataCube) GetUserRead(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERREADHOUR_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetuserreadhourUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -119,9 +119,9 @@ func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUserShare(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERSHARE_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetusershareUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -131,9 +131,9 @@ func (d *DataCube) GetUserShare(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUSERSHAREHOUR_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetusersharehourUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -143,9 +143,9 @@ func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *net.Response 
 func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSG_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -155,9 +155,9 @@ func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *net.Response {
 func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGHOUR_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsghourUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -167,9 +167,9 @@ func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *net.Respons
 func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGWEEK_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgweekUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -179,9 +179,9 @@ func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *net.Respons
 func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgMonth", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGMONTH_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgmonthUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -191,9 +191,9 @@ func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *net.Respon
 func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGDIST_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgdistUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -203,9 +203,9 @@ func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *net.Respons
 func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGDISTWEEK_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgdistweekUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -215,9 +215,9 @@ func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *net.Res
 func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETUPSTREAMMSGDISTMONTH_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetupstreammsgdistmonthUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -227,9 +227,9 @@ func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *net.Re
 func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetInterfaceSummary", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETINTERFACESUMMARY_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetinterfacesummaryUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 
@@ -239,9 +239,9 @@ func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) *net.Respon
 func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) *net.Response {
 	log.Debug("DataCube|GetInterfaceSummaryHour", beginDate, endDate)
 	return d.get(
-		DATACUBE_GETINTERFACESUMMARYHOUR_URL_SUFFIX,
-		beginDate.Format(DATACUBE_TIME_LAYOUT),
-		endDate.Format(DATACUBE_TIME_LAYOUT),
+		DatacubeGetinterfacesummaryhourUrlSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
 	)
 }
 

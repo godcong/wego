@@ -8,6 +8,7 @@ type CustomerService struct {
 	message *core.Message
 }
 
+/*List List */
 func (c *CustomerService) List() {
 	c.HttpGet(c.Link(GetKFListUrlSuffix), nil)
 }
