@@ -10,14 +10,14 @@ import (
 
 type Template struct {
 	config.Config
-	*MiniProgram
+	*Program
 	//client *core.Client
 }
 
-func newTemplate(program *MiniProgram) *Template {
+func newTemplate(program *Program) *Template {
 	template := Template{
-		Config:      defaultConfig,
-		MiniProgram: program,
+		Config:  defaultConfig,
+		Program: program,
 		//client:      program.GetClient(),
 	}
 	//template.client.SetDomain(core.NewDomain(""))

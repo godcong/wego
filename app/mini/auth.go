@@ -10,15 +10,15 @@ import (
 
 type Auth struct {
 	config.Config
-	*MiniProgram
+	*Program
 	dc *crypt.DataCrypt
 }
 
-func newAuth(program *MiniProgram) *Auth {
+func newAuth(program *Program) *Auth {
 	return &Auth{
-		Config:      defaultConfig,
-		MiniProgram: program,
-		dc:          crypt.NewDataCrypt(defaultConfig.Get("app_id")),
+		Config:  defaultConfig,
+		Program: program,
+		dc:      crypt.NewDataCrypt(defaultConfig.Get("app_id")),
 	}
 }
 

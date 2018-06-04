@@ -7,22 +7,25 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Tag Tag */
 type Tag struct {
 	config.Config
-	*OfficialAccount
+	*Account
 }
 
-func newTag(account *OfficialAccount) *Tag {
+func newTag(account *Account) *Tag {
 	return &Tag{
-		Config:          defaultConfig,
-		OfficialAccount: account,
+		Config:  defaultConfig,
+		Account: account,
 	}
 }
 
+/*NewTag NewTag*/
 func NewTag() *Tag {
 	return newTag(account)
 }
 
+//Create 创建标签
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN
 // 成功:
@@ -31,7 +34,7 @@ func (t *Tag) Create(name string) *net.Response {
 	log.Debug("Tag|Create", name)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsCreateUrlSuffix),
+		t.client.Link(tagsCreateURLSuffix),
 		util.Map{
 			"tag": util.Map{"name": name},
 		},
@@ -41,6 +44,7 @@ func (t *Tag) Create(name string) *net.Response {
 	return resp
 }
 
+//Get 获取公众号已创建的标签
 // http请求方式：GET（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN
 // 成功:
@@ -49,13 +53,14 @@ func (t *Tag) Get() *net.Response {
 	log.Debug("Tag|Get")
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpGet(
-		t.client.Link(TagsGetUrlSuffix),
+		t.client.Link(tagsGetURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
 
+//Update 编辑标签
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN
 // 成功:
@@ -64,7 +69,7 @@ func (t *Tag) Update(id int, name string) *net.Response {
 	log.Debug("Tag|Update", id, name)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsUpdateUrlSuffix),
+		t.client.Link(tagsUpdateURLSuffix),
 		util.Map{
 			"tag": util.Map{"id": id, "name": name},
 		},
@@ -74,6 +79,7 @@ func (t *Tag) Update(id int, name string) *net.Response {
 	return resp
 }
 
+//Delete 删除标签
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN
 // 成功:
@@ -84,7 +90,7 @@ func (t *Tag) Delete(id int) *net.Response {
 	log.Debug("Tag|Update", id)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsDeleteUrlSuffix),
+		t.client.Link(tagsDeleteURLSuffix),
 		util.Map{
 			"tag": util.Map{"id": id},
 		},
@@ -94,6 +100,7 @@ func (t *Tag) Delete(id int) *net.Response {
 	return resp
 }
 
+//UserTagGet 获取标签下粉丝列表
 // http请求方式：GET（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=ACCESS_TOKEN
 // 成功:
@@ -108,7 +115,7 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) *net.Response {
 	}
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(UserTagGetUrlSuffix),
+		t.client.Link(userTagGetURLSuffix),
 		params,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -116,6 +123,7 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) *net.Response {
 	return resp
 }
 
+//MembersBatchTagging  批量为用户打标签
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN
 // 成功:
@@ -130,7 +138,7 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) *net.Response {
 	}
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsMembersBatchTaggingUrlSuffix),
+		t.client.Link(tagsMembersBatchTaggingURLSuffix),
 		params,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -138,6 +146,7 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) *net.Response {
 	return resp
 }
 
+//MembersBatchUntagging 批量为用户取消标签
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN
 // 成功:
@@ -152,7 +161,7 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) *net.Response {
 	}
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsMembersBatchUntaggingUrlSuffix),
+		t.client.Link(tagsMembersBatchUntaggingURLSuffix),
 		params,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -160,19 +169,20 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) *net.Response {
 	return resp
 }
 
+//GetIDList 获取用户身上的标签列表
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=ACCESS_TOKEN
 // 成功:
 // {"tagid_list":[101]}
-func (t *Tag) GetIdList(openid string) *net.Response {
-	log.Debug("Tag|GetIdList", openid)
+func (t *Tag) GetIDList(openid string) *net.Response {
+	log.Debug("Tag|GetIDList", openid)
 	params := util.Map{
 		"openid": openid,
 	}
 
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsGetIdListUrlSuffix),
+		t.client.Link(tagsGetIDListURLSuffix),
 		params,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -180,7 +190,8 @@ func (t *Tag) GetIdList(openid string) *net.Response {
 	return resp
 }
 
-//http请求方式：POST（请使用https协议）
+//GetBlackList 获取公众号的黑名单列表
+// http请求方式：POST（请使用https协议）
 //https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN
 func (t *Tag) GetBlackList(beginOpenid string) *net.Response {
 	log.Debug("Tag|GetBlackList", beginOpenid)
@@ -191,7 +202,7 @@ func (t *Tag) GetBlackList(beginOpenid string) *net.Response {
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsMembersGetBlackListUrlSuffix),
+		t.client.Link(tagsMembersGetBlackListURLSuffix),
 		param,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): query,
@@ -199,6 +210,7 @@ func (t *Tag) GetBlackList(beginOpenid string) *net.Response {
 	return resp
 }
 
+//BatchBlackList 拉黑用户
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=ACCESS_TOKEN
 // 成功:
@@ -212,7 +224,7 @@ func (t *Tag) BatchBlackList(openidList []string) *net.Response {
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsMembersBatchBlackListUrlSuffix),
+		t.client.Link(tagsMembersBatchBlackListURLSuffix),
 		param,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): query,
@@ -220,6 +232,7 @@ func (t *Tag) BatchBlackList(openidList []string) *net.Response {
 	return resp
 }
 
+//BatchUnblackList 取消拉黑用户
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN
 // 成功:
@@ -233,7 +246,7 @@ func (t *Tag) BatchUnblackList(openidList []string) *net.Response {
 
 	query := t.token.GetToken().KeyMap()
 	resp := t.client.HttpPostJson(
-		t.client.Link(TagsMembersBatchUnblackListUrlSuffix),
+		t.client.Link(tagsMembersBatchUnblackListURLSuffix),
 		param,
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): query,

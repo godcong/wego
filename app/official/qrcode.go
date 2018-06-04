@@ -10,66 +10,80 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*QrCodeScene QrCodeScene*/
 type QrCodeScene struct {
-	SceneId  int    `json:"scene_id,omitempty"`
+	SceneID  int    `json:"scene_id,omitempty"`
 	SceneStr string `json:"scene_str,omitempty"`
 }
 
+/*QrCodeCard QrCodeCard*/
 type QrCodeCard struct {
-	CardId       string `json:"card_id,omitempty"`   // "card_id": "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
+	CardID       string `json:"card_id,omitempty"`   // "card_id": "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
 	Code         string `json:"code"`                // "code": "198374613512",
-	OpenId       string `json:"openid,omitempty"`    // "openid": "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
+	OpenID       string `json:"openid,omitempty"`    // "openid": "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
 	IsUniqueCode bool   `json:"openid,omitempty"`    // "is_unique_code": false,
 	OuterStr     string `json:"outer_str,omitempty"` // "outer_str":"12b"
 }
 
+/*QrCodeCardList QrCodeCardList*/
 type QrCodeCardList struct {
-	CardId   string `json:"card_id,omitempty"`   // "card_id": "p1Pj9jgj3BcomSgtuW8B1wl-wo88",
+	CardID   string `json:"card_id,omitempty"`   // "card_id": "p1Pj9jgj3BcomSgtuW8B1wl-wo88",
 	Code     string `json:"code"`                // "code": "198374613512",
 	OuterStr string `json:"outer_str,omitempty"` // "outer_str":"12b"
 }
 
+/*QrCodeMultipleCard QrCodeMultipleCard*/
 type QrCodeMultipleCard struct {
 	CardList []QrCodeCardList `json:"card_list,omitempty"`
 }
 
+/*QrCodeActionInfo QrCodeActionInfo*/
 type QrCodeActionInfo struct {
 	Scene        *QrCodeScene        `json:"scene,omitempty"`
 	Card         *QrCodeCard         `json:"card,omitempty"`
 	MultipleCard *QrCodeMultipleCard `json:"multiple_card,omitempty"`
 }
 
+/*QrCodeAction QrCodeAction*/
 type QrCodeAction struct {
 	ExpireSeconds int              `json:"expire_seconds,omitempty"`
 	ActionName    QrCodeActionName `json:"action_name"`
 	ActionInfo    QrCodeActionInfo `json:"action_info"`
 }
 
+/*QrCodeActionName QrCodeActionName*/
 type QrCodeActionName string
 
 const (
-	QR_MULTIPLE_CARD   QrCodeActionName = "QR_MULTIPLE_CARD"
-	QR_CARD            QrCodeActionName = "QR_CARD"
-	QR_SCENE           QrCodeActionName = "QR_SCENE"
-	QR_LIMIT_STR_SCENE QrCodeActionName = "QR_LIMIT_STR_SCENE"
+	//QrMultipleCard QrMultipleCard
+	QrMultipleCard QrCodeActionName = "QR_MULTIPLE_CARD"
+	//QrCard QrCard
+	QrCard QrCodeActionName = "QR_CARD"
+	//QrScene QrScene
+	QrScene QrCodeActionName = "QR_SCENE"
+	//QrLimitStrScene QrLimitStrScene
+	QrLimitStrScene QrCodeActionName = "QR_LIMIT_STR_SCENE"
 )
 
+/*QrCode QrCode*/
 type QrCode struct {
 	config.Config
-	*OfficialAccount
+	*Account
 }
 
-func newQrCode(officialAccount *OfficialAccount) *QrCode {
+func newQrCode(officialAccount *Account) *QrCode {
 	return &QrCode{
-		Config:          defaultConfig,
-		OfficialAccount: officialAccount,
+		Config:  defaultConfig,
+		Account: officialAccount,
 	}
 }
 
+/*NewQrCode NewQrCode*/
 func NewQrCode() *QrCode {
 	return newQrCode(account)
 }
 
+//Create 创建二维码ticket
 // http请求方式: POST
 // URL: https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
 // POST数据格式：json
@@ -89,7 +103,7 @@ func NewQrCode() *QrCode {
 func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.HttpPostJson(
-		q.client.Link(QrcodeCreateUrlSuffix),
+		q.client.Link(qrcodeCreateURLSuffix),
 
 		q.token.GetToken().KeyMap(),
 		action,
@@ -97,6 +111,7 @@ func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 	return resp
 }
 
+//ShowQrCode 显示二维码
 // HTTP GET请求（请使用https协议）https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
 // 提醒：TICKET记得进行UrlEncode
 func (q *QrCode) ShowQrCode(ticket string) *net.Response {
@@ -104,7 +119,7 @@ func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	q.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := q.client.HttpGet(
-		q.client.Link(ShowqrcodeUrlSuffix),
+		q.client.Link(showQrcodeURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): util.Map{
 				"ticket": url.QueryEscape(ticket),
@@ -113,6 +128,7 @@ func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	return resp
 }
 
+/*String String*/
 func (n QrCodeActionName) String() string {
 	return string(n)
 }

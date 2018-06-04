@@ -19,7 +19,7 @@ func TestQrCode_Create(t *testing.T) {
 			ActionName:    "QR_STR_SCENE",
 			ActionInfo: official.QrCodeActionInfo{
 				Scene: &official.QrCodeScene{
-					// SceneId:  0,
+					// SceneID:  0,
 					SceneStr: "igettheteickkka:///fdsaowkkkdfsaoowjkwodf",
 				},
 			},

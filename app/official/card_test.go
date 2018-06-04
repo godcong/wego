@@ -29,8 +29,8 @@ func TestCard_CreateLandingPage(t *testing.T) {
 			Scene:    "SCENE_NEAR_BY",
 			CardList: []official.CardList{
 				{
-					CardId:   "p5jo6s63aXgMQCt90t87UXA1dMJk",
-					ThumbUrl: "www.qq.com/a.jpg",
+					CardID:   "p5jo6s63aXgMQCt90t87UXA1dMJk",
+					ThumbURL: "www.qq.com/a.jpg",
 				},
 			},
 		},
@@ -39,7 +39,7 @@ func TestCard_CreateLandingPage(t *testing.T) {
 }
 
 func TestCard_Create(t *testing.T) {
-	oc := official.NewOneCard(official.CARD_TYPE_GROUPON, nil)
+	oc := official.NewOneCard(official.CardTypeGroupon, nil)
 	//oc.AddAdvancedInfo(&official_account.CardAdvancedInfo{
 	//	UseCondition:    &official_account.CardUseCondition{},
 	//	Abstract:        &official_account.CardAbstract{},
@@ -48,7 +48,7 @@ func TestCard_Create(t *testing.T) {
 	//	BusinessService: nil,
 	//})
 	oc.AddBaseInfo(&official.CardBaseInfo{
-		LogoUrl:      "http://mmbiz.qpic.cn/mmbiz_jpg/gJHMd2C74Xq9iaaWAksvY6hd4LibvPfxoj3UYyKLt3DRqicMhEHhftPJ0PbJ0CqzzjicLBibN4nibqaa3H6CkibiaAvyYg/0",
+		LogoURL:      "http://mmbiz.qpic.cn/mmbiz_jpg/gJHMd2C74Xq9iaaWAksvY6hd4LibvPfxoj3UYyKLt3DRqicMhEHhftPJ0PbJ0CqzzjicLBibN4nibqaa3H6CkibiaAvyYg/0",
 		BrandName:    "微信餐厅",
 		CodeType:     "CODE_TYPE_TEXT",
 		Title:        "132元双人火锅套餐",
@@ -71,21 +71,21 @@ func TestCard_Create(t *testing.T) {
 		BindOpenid:                false,
 		CanShare:                  false,
 		CanGiveFriend:             false,
-		LocationIdList:            nil,
+		LocationIDList:            nil,
 		UseAllLocations:           false,
 		CenterTitle:               "",
 		CenterSubTitle:            "",
-		CenterUrl:                 "",
+		CenterURL:                 "",
 		CenterAppBrandUserName:    "",
 		CenterAppBrandPass:        "",
-		CustomUrlName:             "",
-		CustomUrl:                 "",
-		CustomUrlSubTitle:         "",
+		CustomURLName:             "",
+		CustomURL:                 "",
+		CustomURLSubTitle:         "",
 		CustomAppBrandUserName:    "",
 		CustomAppBrandPass:        "",
-		PromotionUrlName:          "",
-		PromotionUrl:              "",
-		PromotionUrlSubTitle:      "",
+		PromotionURLName:          "",
+		PromotionURL:              "",
+		PromotionURLSubTitle:      "",
 		PromotionAppBrandUserName: "",
 		PromotionAppBrandPass:     "",
 		Source:                    "",
@@ -123,7 +123,7 @@ func TestCard_CheckCode(t *testing.T) {
 }
 
 func TestCard_GetHtml(t *testing.T) {
-	resp := card.GetHtml("oLyBi0hSYhggnD-kOIms0IzZFqrc")
+	resp := card.GetHTML("oLyBi0hSYhggnD-kOIms0IzZFqrc")
 	t.Log(resp.ToString())
 }
 
@@ -138,16 +138,16 @@ func TestCard_CreateQrCode(t *testing.T) {
 		ActionName:    "QR_CARD",
 		ActionInfo: official.QrCodeActionInfo{
 			Card: &official.QrCodeCard{
-				CardId: "p5jo6s57F-21KqvrBXRssSEjXtWg",
+				CardID: "p5jo6s57F-21KqvrBXRssSEjXtWg",
 				//Code:         "198374613512",
-				//OpenId:       "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
+				//OpenID:       "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
 				//IsUniqueCode: false,
 				//OuterStr:     "12b",
 			},
 			//MultipleCard: &official_account.QrCodeMultipleCard{
 			//	CardList: []official_account.QrCodeCardList{
 			//		{
-			//			CardId:   "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
+			//			CardID:   "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
 			//			Code:     "198374613512",
 			//			OuterStr: "12b",
 			//		},

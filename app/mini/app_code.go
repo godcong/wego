@@ -11,7 +11,7 @@ import (
 
 type AppCode struct {
 	config.Config
-	*MiniProgram
+	*Program
 }
 
 func (a *AppCode) Get(path string, optionals util.Map) util.Map {

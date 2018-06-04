@@ -36,7 +36,7 @@ func TestNewButton(t *testing.T) {
 	//matchrule共六个字段，均可为空，但不能全部为空，至少要有一个匹配信息是不为空的。 country、province、city组成地区信息，将按照country、province、city的顺序进行验证，要符合地区信息表的内容。地区信息从大到小验证，小的可以不填，即若填写了省份信息，则国家信息也必填并且匹配，城市信息可以不填。 例如 “中国 广东省 广州市”、“中国 广东省”都是合法的地域信息，而“中国 广州市”则不合法，因为填写了城市信息但没有填写省份信息。 地区信息表请点击下载。
 	//http://wximg.gtimg.com/shake_tv/mpwiki/areainfo.zip
 	mr := menu.MatchRule{
-		TagId:              "",
+		TagID:              "",
 		Sex:                "",
 		Country:            "",
 		Province:           "",

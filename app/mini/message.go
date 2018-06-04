@@ -13,14 +13,14 @@ func MessageSend() {
 
 type Message struct {
 	config.Config
-	*MiniProgram
+	*Program
 	//client *core.Client
 }
 
-func newMessage(program *MiniProgram) *Message {
+func newMessage(program *Program) *Message {
 	Message := Message{
-		Config:      defaultConfig,
-		MiniProgram: program,
+		Config:  defaultConfig,
+		Program: program,
 		//client:      program.GetClient(),
 	}
 	//Message.client.SetDomain(core.NewDomain(""))

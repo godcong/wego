@@ -10,22 +10,25 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*User User*/
 type User struct {
 	config.Config
-	*OfficialAccount
+	*Account
 }
 
-func newUser(account *OfficialAccount) *User {
+func newUser(account *Account) *User {
 	return &User{
-		Config:          defaultConfig,
-		OfficialAccount: account,
+		Config:  defaultConfig,
+		Account: account,
 	}
 }
 
+/*NewUser NewUser */
 func NewUser() *User {
 	return newUser(account)
 }
 
+//UpdateRemark 设置用户备注名
 // http请求方式: POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN
 // POST数据格式：JSON
@@ -42,7 +45,7 @@ func (u *User) UpdateRemark(openid, remark string) *net.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
 	resp := u.client.HttpPostJson(
-		u.client.Link(UserInfoUpdateRemarkUrlSuffix),
+		u.client.Link(userInfoUpdateRemarkURLSuffix),
 		util.Map{
 			"openid": openid,
 			"remark": remark,
@@ -53,6 +56,7 @@ func (u *User) UpdateRemark(openid, remark string) *net.Response {
 	return resp
 }
 
+//UserInfo 获取用户信息
 // 接口调用请求说明
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
@@ -67,7 +71,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 	}
 
 	resp := u.client.HttpGet(
-		u.client.Link(UserInfoUrlSuffix),
+		u.client.Link(userInfoURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		})
@@ -77,6 +81,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 	return &info
 }
 
+//BatchGet 批量获取用户基本信息
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN
 // 成功:
@@ -102,7 +107,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 
 	}
 	resp := u.client.HttpPostJson(
-		u.client.Link(UserInfoBatchGetUrlSuffix),
+		u.client.Link(userInfoBatchGetURLSuffix),
 		util.Map{
 			"user_list": list,
 		},
@@ -120,8 +125,9 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	return nil
 }
 
-//http请求方式: GET（请使用https协议）
-//https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
+//Get 获取用户列表
+// http请求方式: GET（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
 func (u *User) Get(nextOpenid string) *net.Response {
 	log.Debug("User|Get", nextOpenid)
 	query := u.token.GetToken().KeyMap()
@@ -130,7 +136,7 @@ func (u *User) Get(nextOpenid string) *net.Response {
 	}
 
 	resp := u.client.HttpGet(
-		u.client.Link(UserGetUrlSuffix),
+		u.client.Link(userGetURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): query,
 		})

@@ -29,7 +29,7 @@ func testMenu_Create(t *testing.T, m *official.Menu) {
 	button := menu.NewBaseButton()
 	// button.SetMatchRule&menu.MatchRule
 	button.SetMatchRule(&menu.MatchRule{
-		TagId:   "2",
+		TagID:   "2",
 		Sex:     "1",
 		Country: "中国",
 		//Province:           "广东",

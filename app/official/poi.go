@@ -7,10 +7,12 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-type PoiPhotoUrl struct {
-	PhotoUrl string `json:"photo_url"`
+/*PoiPhotoURL PoiPhotoURL*/
+type PoiPhotoURL struct {
+	PhotoURL string `json:"photo_url"`
 }
 
+/*PoiBaseInfo PoiBaseInfo*/
 type PoiBaseInfo struct {
 	Poi          string        `json:"poi,omitempty"`          // "poi_id ":"271864249"
 	Sid          string        `json:"sid,omitempty"`          // "sid":"33788392",
@@ -25,7 +27,7 @@ type PoiBaseInfo struct {
 	OffsetType   int           `json:"offset_type"`            //"offset_type":1,
 	Longitude    float64       `json:"longitude"`              //"longitude":115.32375,
 	Latitude     float64       `json:"latitude"`               //"latitude":25.097486,
-	PhotoList    []PoiPhotoUrl `json:"photo_list,omitempty"`   //"photo_list":[{"photo_url":"https:// 不超过20张.com"}，{"photo_url":"https://XXX.com"}],
+	PhotoList    []PoiPhotoURL `json:"photo_list,omitempty"`   //"photo_list":[{"photo_url":"https:// 不超过20张.com"}，{"photo_url":"https://XXX.com"}],
 	Recommend    string        `json:"recommend,omitempty"`    //"recommend":"不超过200字。麦辣鸡腿堡套餐，麦乐鸡，全家桶",
 	Special      string        `json:"special,omitempty"`      //"special":"不超过200字。免费wifi，外卖服务",
 	Introduction string        `json:"introduction,omitempty"` //"introduction":"不超过300字。麦当劳是全球大型跨国连锁餐厅，1940 年创立于美国，在世界上大约拥有3 万间分店。	主要售卖汉堡包，以及薯条、炸鸡、汽水、冰品、沙拉、 水果等快餐食品",
@@ -33,18 +35,20 @@ type PoiBaseInfo struct {
 	AvgPrice     int           `json:"avg_price,omitempty"`    //"avg_price":35
 }
 
+/*Poi Poi */
 type Poi struct {
 	config config.Config
-	*OfficialAccount
+	*Account
 }
 
-func newPoi(account *OfficialAccount) *Poi {
+func newPoi(account *Account) *Poi {
 	return &Poi{
-		config:          defaultConfig,
-		OfficialAccount: account,
+		config:  defaultConfig,
+		Account: account,
 	}
 }
 
+/*NewPoi NewPoi */
 func NewPoi() *Poi {
 	return newPoi(account)
 }
@@ -71,7 +75,7 @@ func (p *Poi) Add(biz *PoiBaseInfo) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(PoiAddPoiURLSuffix),
+		p.client.Link(poiAddPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -85,15 +89,15 @@ http请求方式	POST
 请求Url	http://api.weixin.qq.com/cgi-bin/poi/getpoi?access_token=TOKEN
 POST数据格式	json
 */
-func (p *Poi) Get(poiId string) *net.Response {
-	log.Debug("Poi|Get", poiId)
+func (p *Poi) Get(poiID string) *net.Response {
+	log.Debug("Poi|Get", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(PoiGetPoiURLSuffix),
+		p.client.Link(poiGetPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
-			"poi_id": poiId,
+			"poi_id": poiID,
 		})
 	return resp
 
@@ -119,7 +123,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(PoiUpdatePoiURLSuffix),
+		p.client.Link(poiUpdatePoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -219,7 +223,7 @@ func (p *Poi) GetList(begin int, limit int) *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(PoiGetListPoiURLSuffix),
+		p.client.Link(poiGetListPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"begin": begin,
@@ -236,15 +240,15 @@ http请求方式	POST/FROM
 POST数据格式	buffer
 
 */
-func (p *Poi) Del(poiId string) *net.Response {
-	log.Debug("Poi|Del", poiId)
+func (p *Poi) Del(poiID string) *net.Response {
+	log.Debug("Poi|Del", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpPostJson(
-		p.client.Link(PoiDelPoiURLSuffix),
+		p.client.Link(poiDelPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
-			"poi_id": poiId,
+			"poi_id": poiID,
 		})
 	return resp
 }
@@ -264,7 +268,7 @@ func (p *Poi) GetCategory() *net.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.HttpGet(
-		p.client.Link(PoiGetWxCategoryURLSuffix),
+		p.client.Link(poiGetWXCategoryURLSuffix),
 		p.token.GetToken().KeyMap())
 	return resp
 }

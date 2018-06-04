@@ -23,9 +23,9 @@ func TestPoi_Add(t *testing.T) {
 		OffsetType:   0,
 		Longitude:    0,
 		Latitude:     0,
-		PhotoList: []official.PoiPhotoUrl{
+		PhotoList: []official.PoiPhotoURL{
 			{
-				PhotoUrl: "url://",
+				PhotoURL: "url://",
 			},
 		},
 		Recommend:    "",

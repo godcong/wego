@@ -14,59 +14,68 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*CallbackValue CallbackValue */
 type CallbackValue struct {
 	Type  string
 	Value interface{}
 }
 
+/*CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValue) []byte*/
 type CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValue) []byte
 
+/*OAuth OAuth */
 type OAuth struct {
-	*OfficialAccount
+	*Account
 	config.Config
-	domain      *core.Domain
-	response    *net.Response
+	domain *core.Domain
+	//response    *net.Response
 	callback    map[string]CallbackFunc
 	authorize   string
 	scopes      string
 	redirectURI string
 }
 
-func newOAuth(officialAccount *OfficialAccount) *OAuth {
+func newOAuth(officialAccount *Account) *OAuth {
 	log.Debug("newOAuth", officialAccount)
 	oauth := &OAuth{
-		OfficialAccount: officialAccount,
-		callback:        map[string]CallbackFunc{},
+		Account:  officialAccount,
+		callback: map[string]CallbackFunc{},
 	}
 
 	oauth.Config = config.GetConfig("official_account.oauth")
 	oauth.domain = core.DomainHost()
 	oauth.scopes = oauth.GetD("scopes", snsapiBase)
-	oauth.redirectURI = oauth.GetD("redirect_uri", defaultOauthRedirectUrlSuffix)
-	oauth.authorize = oauth.GetD("authorize", Oauth2AuthorizeUrlSuffix)
+	oauth.redirectURI = oauth.GetD("redirect_uri", defaultOauthRedirectURLSuffix)
+	oauth.authorize = oauth.GetD("authorize", oauth2AuthorizeURLSuffix)
 	return oauth
 }
 
+/*NewOAuth NewOAuth*/
 func NewOAuth() *OAuth {
 	return newOAuth(account)
 }
 
+/*RegisterCodeCallback RegisterCodeCallback*/
 func (o *OAuth) RegisterCodeCallback(callbackFunc CallbackFunc) *OAuth {
 	return o.registerCallback("code", callbackFunc)
 }
 
+/*RegisterStateCallback RegisterStateCallback*/
 func (o *OAuth) RegisterStateCallback(callbackFunc CallbackFunc) *OAuth {
 	return o.registerCallback("state", callbackFunc)
 }
 
+/*RegisterAllCallback RegisterAllCallback*/
 func (o *OAuth) RegisterAllCallback(callbackFunc CallbackFunc) *OAuth {
 	return o.registerCallback("all", callbackFunc)
 }
 
+/*RegisterCallback RegisterCallback*/
 func (o *OAuth) RegisterCallback(callbackFunc CallbackFunc) *OAuth {
 	return o.registerCallback("all", callbackFunc)
 }
 
+/*RegisterInfoCallback RegisterInfoCallback*/
 func (o *OAuth) RegisterInfoCallback(callbackFunc CallbackFunc) *OAuth {
 	return o.registerCallback("info", callbackFunc)
 }
@@ -76,7 +85,7 @@ func (o *OAuth) registerCallback(name string, callbackFunc CallbackFunc) *OAuth 
 	return o
 }
 
-// ServeHTTP
+// ServeHTTP 监听授权服务
 // 失败：
 // {"errcode":40163,"errmsg":"code been used, hints: [ req_id: OsIKda0848th19 ]"}
 // {"errcode":40029,"errmsg":"invalid code, hints: [ req_id: 5u8NWa0990th40 ]"}
@@ -144,13 +153,14 @@ func (o *OAuth) hookAccessToken(w http.ResponseWriter, r *http.Request) *core.To
 	return nil
 }
 
+/*AuthCodeURL 生成授权地址URL*/
 func (o *OAuth) AuthCodeURL(state string) string {
-	log.Debug("AuthCodeURL|OfficialAccount", o.OfficialAccount)
+	log.Debug("AuthCodeURL|Account", o.Account)
 	var buf bytes.Buffer
 	buf.WriteString(o.authorize)
 	v := url.Values{
 		"response_type": {"code"},
-		"appid":         {o.OfficialAccount.Get("app_id")},
+		"appid":         {o.Account.Get("app_id")},
 	}
 	if o.redirectURI != "" {
 		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
@@ -170,15 +180,17 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	return buf.String()
 }
 
-func (o *OAuth) GetResponse() *net.Response {
-	return o.response
-}
+/* */
+//func (o *OAuth) GetResponse() *net.Response {
+//	return o.response
+//}
 
+//RefreshToken 刷新Token
 // https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
 // 成功:
 // {"openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","access_token":"7_EVGE1V1XzagA0PXMPFUbLApiA4BCGO5oVSxkDRbZ-aiTfwpP32DSNxsdFBN0AuERGrEtCBuBfNzTpTv_mYi-NQ","expires_in":7200,"refresh_token":"7_XxwLIQsmfEHnuVsw91q8fK1WWRcq37z2-rTTlMjrouJussoQff77jE9043qtiIQMr8CJuBWc3hmMGONJbB_EQQ","scope":"snsapi_base,snsapi_userinfo,"}
 func (o *OAuth) RefreshToken(refresh string) *core.Token {
-	config := o.OfficialAccount.Config
+	config := o.Account.Config
 	v := util.Map{
 		"appid":         config.Get("app_id"),
 		"grant_type":    "refresh_token",
@@ -188,7 +200,7 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
 	response := o.client.HttpPost(
-		o.client.Link(Oauth2RefreshTokenUrlSuffix),
+		o.client.Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
 	)
@@ -202,8 +214,9 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	return &token
 }
 
+/*AccessToken AccessToken*/
 func (o *OAuth) AccessToken(code string) *core.Token {
-	config := o.OfficialAccount.Config
+	config := o.Account.Config
 	v := util.Map{
 		"appid":      config.Get("app_id"),
 		"secret":     config.Get("secret"),
@@ -214,7 +227,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
 	response := o.client.HttpPost(
-		o.client.Link(Oauth2AccessTokenUrlSuffix),
+		o.client.Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,
 	)
@@ -228,6 +241,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 	return &token
 }
 
+//UserInfo 用户信息
 // http：GET（请使用https协议） https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 // lang: zh_CN 简体，zh_TW 繁体，en
 // 成功:
@@ -241,7 +255,7 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		"lang":         "zh_CN",
 	}
 	response := o.client.HttpGet(
-		o.client.Link(Oauth2UserinfoUrlSuffix),
+		o.client.Link(oauth2UserinfoURLSuffix),
 		p,
 	)
 	var info core.UserInfo
@@ -253,17 +267,18 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 	return &info
 }
 
+//Validate 验证
 // 成功:
-// {"errcode":0,"errmsg":"ok"}
+// true
 // 失败:
-// {"errcode":40003,"errmsg":"invalid openid"}
+// false
 func (o *OAuth) Validate(token *core.Token) bool {
 	p := util.Map{
 		"access_token": token.AccessToken,
 		"openid":       token.OpenId,
 	}
 	response := o.client.HttpGet(
-		o.client.Link(Oauth2AuthUrlSuffix),
+		o.client.Link(oauth2AuthURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		},

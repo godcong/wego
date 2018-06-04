@@ -31,7 +31,7 @@ type AppCode interface {
 	GetUnlimit(scene string, optionals util.Map) util.Map
 }
 
-/*MiniProgram 小程序*/
+/*Program 小程序*/
 type MiniProgram interface {
 	Auth() Auth
 	AppCode() AppCode

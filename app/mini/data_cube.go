@@ -8,7 +8,7 @@ import (
 
 type DataCube struct {
 	config.Config
-	*MiniProgram
+	*Program
 }
 
 func (d *DataCube) query(api, from, to string) []byte {

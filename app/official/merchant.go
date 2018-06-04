@@ -1,34 +1,32 @@
 package official
 
+/*Merchant Merchant*/
 type Merchant struct {
 }
 
-/*
-Create 增加库存
-	协议	https
-	http请求方式	POST
-	请求Url	https://api.weixin.qq.com/merchant/create?access_token=ACCESS_TOKEN
-	POST数据格式	json
-	参数	是否必须	说明
-	access_token	是	公众号的调用接口凭证，由access_token生成接口获得
-	POST数据	是	商品详细信息
-	字段	说明
-	product_id	商品ID
-	sku_info	sku信息,格式"id1:vid1;id2:vid2",如商品为统一规格，则此处赋值为空字符串即可
-	quantity	增加的库存数量
-	返回数据
-	字段	说明
-	errcode	错误码
-	errmsg	错误信息
-
+/*Create 增加库存
+协议	https
+http请求方式	POST
+请求Url	https://api.weixin.qq.com/merchant/create?access_token=ACCESS_TOKEN
+POST数据格式	json
+参数	是否必须	说明
+access_token	是	公众号的调用接口凭证，由access_token生成接口获得
+POST数据	是	商品详细信息
+字段	说明
+product_id	商品ID
+sku_info	sku信息,格式"id1:vid1;id2:vid2",如商品为统一规格，则此处赋值为空字符串即可
+quantity	增加的库存数量
+返回数据
+字段	说明
+errcode	错误码
+errmsg	错误信息
 */
 func (m *Merchant) Create() {
 
 }
 
-/*
-减少库存 StockReduce
-	协议	https
+/*StockReduce 减少库存
+ 	协议	https
 	http请求方式	POST
 	请求Url	https://api.weixin.qq.com/merchant/stock/reduce?access_token=ACCESS_TOKEN
 	POST数据格式	json

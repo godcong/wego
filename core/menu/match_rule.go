@@ -16,8 +16,9 @@ package menu
 //	return string(m)
 //}
 
+/* MatchRule */
 type MatchRule struct {
-	TagId              string `json:"tag_id,omitempty"`
+	TagID              string `json:"tag_id,omitempty"`
 	Sex                string `json:"sex,omitempty"`
 	Country            string `json:"country,omitempty"`
 	Province           string `json:"province,omitempty"`

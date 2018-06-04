@@ -13,6 +13,7 @@ import (
 	"github.com/godcong/wego/log"
 )
 
+/*Server Server */
 type Server struct {
 	CryptResponse   bool
 	message         *core.Message
@@ -22,6 +23,7 @@ type Server struct {
 	callback        map[message.MsgType][]core.MessageCallback
 }
 
+/*RegisterCallback RegisterCallback */
 func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgType) {
 	size := len(types)
 	if size == 0 {
@@ -39,7 +41,7 @@ func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgT
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var bodyBytes []byte
-	var rltXml []byte
+	var rltXML []byte
 	var err error
 	if req.Body != nil {
 		bodyBytes, _ = ioutil.ReadAll(req.Body)
@@ -83,7 +85,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	result := s.CallbackFunc(message)
 
-	rltXml, err = result.ToXml()
+	rltXML, err = result.ToXml()
 	//错误返回,并记录log
 	if err != nil {
 		log.Error(err)
@@ -91,12 +93,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//if encryptType == "aes" {
-	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
+	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXML), ts, nonce)
 	//	if err != nil {
 	//		log.Error(err)
 	//		return
 	//	}
-	//	rltXml = []byte(tmpStr)
+	//	rltXML = []byte(tmpStr)
 	//}
 	if s.mType == "xml" {
 		header := w.Header()
@@ -109,11 +111,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			header["Content-Type"] = []string{"application/json; charset=utf-8"}
 		}
 	}
-	log.Debug(string(rltXml))
-	w.Write(rltXml)
+	log.Debug(string(rltXML))
+	w.Write(rltXML)
 	return
 }
 
+/*CallbackFunc message回调函数*/
 func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
 	var result message.Messager
 	for _, v := range s.defaultCallback {
@@ -132,14 +135,6 @@ func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
 	return result
 }
 
-func MessageProcess(msg *core.Message) string {
-	switch msg.GetType() {
-	case message.MsgTypeImage:
-
-	}
-	return ""
-}
-
 func newServer(token, key, id string) *Server {
 	return &Server{
 		mType:           "xml",
@@ -150,6 +145,7 @@ func newServer(token, key, id string) *Server {
 	}
 }
 
+/*NewServer NewServer*/
 func NewServer() *Server {
 	log.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
 	return newServer(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))

@@ -44,7 +44,7 @@ func TestTag_MembersBatchUntagging(t *testing.T) {
 }
 
 func TestTag_GetIdList(t *testing.T) {
-	resp := t0.GetIdList("oLyBi0tDnybg0WFkhKsn5HRetX1I")
+	resp := t0.GetIDList("oLyBi0tDnybg0WFkhKsn5HRetX1I")
 	t.Log(resp.ToString())
 }
 

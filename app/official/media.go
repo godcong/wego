@@ -8,15 +8,16 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Media Media */
 type Media struct {
 	config config.Config
-	*OfficialAccount
+	*Account
 }
 
-func newMedia(account *OfficialAccount) *Media {
+func newMedia(account *Account) *Media {
 	return &Media{
-		config:          defaultConfig,
-		OfficialAccount: account,
+		config:  defaultConfig,
+		Account: account,
 	}
 }
 
@@ -25,7 +26,7 @@ func NewMedia() *Media {
 	return newMedia(account)
 }
 
-/* Upload
+/*Upload 媒体文件上传接口
 https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE
 参数	是否必须	说明
 access_token	是	调用接口凭证
@@ -42,7 +43,7 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response 
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.HttpUpload(
-		m.client.Link(MediaUploadUrlSuffix),
+		m.client.Link(mediaUploadURLSuffix),
 		p,
 		util.Map{
 			"media": filePath,
@@ -50,35 +51,35 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response 
 	return resp
 }
 
-/*UploadThumb
+/*UploadThumb UploadVoice
 see Upload
 */
 func (m *Media) UploadThumb(filePath string) *net.Response {
 	return m.Upload(filePath, core.MediaTypeThumb)
 }
 
-/*UploadVoice
+/*UploadVoice UploadVoice
 see Upload
 */
 func (m *Media) UploadVoice(filePath string) *net.Response {
 	return m.Upload(filePath, core.MediaTypeVoice)
 }
 
-/*UploadVideo
+/*UploadVideo UploadVideo
 see Upload
 */
 func (m *Media) UploadVideo(filePath string) *net.Response {
 	return m.Upload(filePath, core.MediaTypeVideo)
 }
 
-/*UploadImage
+/*UploadImage UploadImage
 see Upload
 */
 func (m *Media) UploadImage(filePath string) *net.Response {
 	return m.Upload(filePath, core.MediaTypeImage)
 }
 
-/* Get
+/*Get 获取临时素材
 http请求方式: GET,https调用
 https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 请求示例（示例为通过curl命令获取多媒体文件）
@@ -88,37 +89,35 @@ curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKE
 失败:
 {"errcode":40007,"errmsg":"invalid media_id"}
 */
-func (m *Media) Get(mediaId string) *net.Response {
-	log.Debug("Media|Get", mediaId)
+func (m *Media) Get(mediaID string) *net.Response {
+	log.Debug("Media|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
-	p.Set("media_id", mediaId)
+	p.Set("media_id", mediaID)
 	resp := m.client.HttpGet(
-		m.client.Link(MediaGetUrlSuffix),
-		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
-		})
+		m.client.Link(mediaGetURLSuffix),
+		p)
 	return resp
 }
 
-// GetJssdk
+// GetJssdk 高清语音素材获取接口
 // http请求方式: GET,https调用
 // https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 // 请求示例（示例为通过curl命令获取多媒体文件）
 // curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
-func (m *Media) GetJssdk(mediaId string) *net.Response {
+func (m *Media) GetJssdk(mediaID string) *net.Response {
 	p := m.token.GetToken().KeyMap()
-	p.Set("media_id", mediaId)
+	p.Set("media_id", mediaID)
 	resp := m.client.HttpGet(
-		m.client.Link(MediaGetJssdkUrlSuffix),
+		m.client.Link(mediaGetJssdkURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
 		})
 	return resp
 }
 
-// UploadMediaImg
+// UploadMediaImg 上传图文消息内的图片获取URL
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）:
@@ -129,9 +128,12 @@ func (m *Media) UploadMediaImg(filePath string) *net.Response {
 	return m.uploadImg("media", filePath)
 }
 
-// UploadBufferImg
-// HTTP请求方式: POST/FROMURL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
+// UploadBufferImg 上传图片接口
+// HTTP请求方式: POST/FROM
+// URL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）：curl –Fbuffer=@test.jpg
+// 返回正确的示例：{"url":"http://mmbiz.qpic.cn/mmbiz/iaL1LJM1mF9aRKPZJkmG8xXhiaHqkKSVMMWeN3hLut7X7hicFNjakmxibMLGWpXrEXB33367o7zHN0CwngnQY7zb7g/0"}
+// 返回错误的示例{"errcode":40009,"errmsg":"invalid image size"}
 func (m *Media) UploadBufferImg(filePath string) *net.Response {
 	return m.uploadImg("buffer", filePath)
 }
@@ -139,7 +141,7 @@ func (m *Media) UploadBufferImg(filePath string) *net.Response {
 func (m *Media) uploadImg(name string, filePath string) *net.Response {
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HttpUpload(
-		m.client.Link(MediaUploadImgUrlSuffix),
+		m.client.Link(mediaUploadImgURLSuffix),
 		p,
 		util.Map{
 			name: filePath,

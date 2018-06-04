@@ -7,7 +7,8 @@ import (
 	"github.com/godcong/wego/log"
 )
 
-type OfficialAccount struct {
+/*Account Account*/
+type Account struct {
 	config.Config
 	app             *core.Application
 	client          *core.Client
@@ -19,10 +20,10 @@ type OfficialAccount struct {
 }
 
 var defaultConfig config.Config
-var account *OfficialAccount
+var account *Account
 
 func init() {
-	log.Debug("OfficialAccount|init")
+	log.Debug("Account|init")
 	defaultConfig = config.GetConfig("official_account.default")
 
 	app := core.App()
@@ -30,12 +31,12 @@ func init() {
 	app.Register("official_account", account)
 }
 
-func newOfficialAccount(config config.Config, application *core.Application) *OfficialAccount {
+func newOfficialAccount(config config.Config, application *core.Application) *Account {
 	client := core.NewClient(config)
 	token := core.NewAccessToken(config, client)
 	domain := core.NewDomain("official_account")
 
-	account := &OfficialAccount{
+	account := &Account{
 		app:    application,
 		Config: config,
 		client: client,
@@ -47,61 +48,65 @@ func newOfficialAccount(config config.Config, application *core.Application) *Of
 	return account
 }
 
-func (m *OfficialAccount) Server() wego.Server {
+/*Server Server*/
+func (m *Account) Server() wego.Server {
 	if m.server == nil {
 		m.server = NewServer()
 	}
 	return m.server
 }
 
-func (m *OfficialAccount) Base() wego.Base {
+/*Base Base*/
+func (m *Account) Base() wego.Base {
 	if m.base == nil {
 		m.base = newBase(m)
 	}
 	return m.base
 }
 
-func (m *OfficialAccount) Menu() wego.Menu {
+/*Menu Menu*/
+func (m *Account) Menu() wego.Menu {
 	if m.menu == nil {
 		m.menu = newMenu(m)
 	}
 	return m.menu
 }
 
-func (m *OfficialAccount) AccessToken() *core.AccessToken {
+/*AccessToken AccessToken*/
+func (m *Account) AccessToken() *core.AccessToken {
 	return m.token
 }
 
 //
 //
-//func (m *OfficialAccount) Online() {
+//func (m *Account) Online() {
 //
 //}
 //
-//func (m *OfficialAccount) Create(account, nickname string) {
+//func (m *Account) Create(account, nickname string) {
 //
 //}
 //
-//func (m *OfficialAccount) Update(account, nickname string) {
+//func (m *Account) Update(account, nickname string) {
 //
 //}
 //
-//func (m *OfficialAccount) Delete(account string) {
+//func (m *Account) Delete(account string) {
 //
 //}
 //
-//func (m *OfficialAccount) Invite(account, wechatId string) {
+//func (m *Account) Invite(account, wechatId string) {
 //
 //}
 //
-//func (m *OfficialAccount) SetAvatar(account, path string) {
+//func (m *Account) SetAvatar(account, path string) {
 //
 //}
 //
-//func (m *OfficialAccount) Send(message util.Map) {
+//func (m *Account) Send(message util.Map) {
 //
 //}
 //
-//func (m *OfficialAccount) Message(message util.Map) {
+//func (m *Account) Message(message util.Map) {
 //
 //}

@@ -7,7 +7,7 @@ import (
 	"github.com/godcong/wego/log"
 )
 
-type MiniProgram struct {
+type Program struct {
 	config.Config
 	client   *core.Client
 	app      *core.Application
@@ -19,7 +19,7 @@ type MiniProgram struct {
 }
 
 var defaultConfig config.Config
-var program *MiniProgram
+var program *Program
 
 func init() {
 	defaultConfig = config.GetConfig("mini.default")
@@ -29,8 +29,8 @@ func init() {
 	//app.Register(newMiniProgram())
 }
 
-func newMiniProgram(config config.Config, application *core.Application) *MiniProgram {
-	mini0 := &MiniProgram{
+func newMiniProgram(config config.Config, application *core.Application) *Program {
+	mini0 := &Program{
 		Config: config,
 		app:    application,
 		client: core.NewClient(config),
@@ -41,15 +41,15 @@ func newMiniProgram(config config.Config, application *core.Application) *MiniPr
 	return mini0
 }
 
-func (m *MiniProgram) SetClient(c *core.Client) *MiniProgram {
+func (m *Program) SetClient(c *core.Client) *Program {
 	m.client = c
 	return m
 }
 
-func (m *MiniProgram) GetClient() *core.Client {
+func (m *Program) GetClient() *core.Client {
 	return m.client
 }
-func (m *MiniProgram) Auth() wego.Auth {
+func (m *Program) Auth() wego.Auth {
 	if m.auth == nil {
 		m.auth = &Auth{
 			Config:      m.Config,
@@ -59,7 +59,7 @@ func (m *MiniProgram) Auth() wego.Auth {
 	return m.auth
 }
 
-func (m *MiniProgram) AppCode() wego.AppCode {
+func (m *Program) AppCode() wego.AppCode {
 	if m.appCode == nil {
 		m.appCode = &AppCode{
 			Config:      m.Config,
@@ -69,7 +69,7 @@ func (m *MiniProgram) AppCode() wego.AppCode {
 	return m.appCode
 }
 
-func (m *MiniProgram) DataCube() wego.DataCube {
+func (m *Program) DataCube() wego.DataCube {
 	if m.dataCube == nil {
 		m.dataCube = &DataCube{
 			Config:      m.Config,
@@ -79,7 +79,7 @@ func (m *MiniProgram) DataCube() wego.DataCube {
 	return m.dataCube
 }
 
-func (m *MiniProgram) Template() *Template {
+func (m *Program) Template() *Template {
 	if m.template == nil {
 		m.template = &Template{
 			Config:      m.Config,
@@ -89,31 +89,31 @@ func (m *MiniProgram) Template() *Template {
 	return m.template
 }
 
-func (m *MiniProgram) AccessToken() *core.AccessToken {
-	log.Debug("MiniProgram|AccessToken")
+func (m *Program) AccessToken() *core.AccessToken {
+	log.Debug("Program|AccessToken")
 	if m.token == nil {
 		m.token = core.NewAccessToken(m.Config, m.client)
 	}
 	return m.token
 }
 
-//func (m *MiniProgram) accessToken() token.AccessTokenInterface {
+//func (m *Program) accessToken() token.AccessTokenInterface {
 //	if m.acc == nil {
 //		m.acc = NewMiniProgramAccessToken(m.app, m.Config)
 //	}
 //	return m.acc
 //}
 //
-//func (m *MiniProgram) Client() Client {
+//func (m *Program) Client() Client {
 //	if m.client == nil {
 //		m.client = app.Client(m.Config)
 //	}
 //	return m.client
 //}
 //
-//func NewMiniProgram(application Application) MiniProgram {
+//func NewMiniProgram(application Application) Program {
 //	config := application.GetConfig("mini.default")
-//	return &MiniProgram{
+//	return &Program{
 //		Config: config,
 //		app:    application,
 //		client: app.Client(config),
