@@ -42,7 +42,7 @@ type MiniProgram interface {
 
 /*GetMiniProgram 获取小程序*/
 func GetMiniProgram() MiniProgram {
-	obj := GetApp().Get("mini_program").(MiniProgram)
+	obj := GetApp().Get("mini").(MiniProgram)
 	log.Debug("GetMiniProgram|obj:", obj)
 	return obj
 }

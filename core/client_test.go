@@ -8,7 +8,7 @@ import (
 )
 
 func TestURL_ShortUrl(t *testing.T) {
-	c := core.NewClient(core.GetConfig("official_account.default"))
-	url := core.NewURL(core.GetConfig("official_account.default"), c)
+	c := core.NewClient(core.GetConfig("official.default"))
+	url := core.NewURL(core.GetConfig("official.default"), c)
 	log.Println(url.ShortUrl("https://y11e.com"))
 }

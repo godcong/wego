@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	OFF   = iota
+	OFF = iota
 	FATAL
 	ERROR
 	WARN
@@ -54,7 +54,7 @@ func initLog(l Log, d bool) {
 		os.MkdirAll(string(r[:i]), os.ModePerm)
 		f, e := os.OpenFile(logs.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if e != nil {
-			log.Println("cannot open_platform file: " + logs.File)
+			log.Println("cannot open file: " + logs.File)
 		}
 		log.SetFlags(log.LstdFlags)
 		log.SetOutput(io.MultiWriter(os.Stdout, f))

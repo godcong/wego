@@ -23,7 +23,7 @@
 #            url = 'https://api.weixin.qq.com'
 
 [official_account]
-#        [official_account.config]
+#        [official.config]
 #            data_type = "json"
         [official_account.sandbox]
             app_id ='wx1ad61aeef1903b93'

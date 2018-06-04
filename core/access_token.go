@@ -67,6 +67,7 @@ func (a *AccessToken) GetToken() *Token {
 	return a.getToken(false)
 }
 
+/* */
 func (a *AccessToken) GetTokenWithRefresh() *Token {
 	log.Debug("AccessToken|GetTokenWithRefresh")
 	return a.getToken(true)
@@ -74,11 +75,11 @@ func (a *AccessToken) GetTokenWithRefresh() *Token {
 
 func (a *AccessToken) getToken(refresh bool) *Token {
 	key := a.getCacheKey()
-	cache := cache.GetCache()
+	c := cache.GetCache()
 
-	if !refresh && cache.Has(key) {
+	if !refresh && c.Has(key) {
 		log.Debug("cached token", key)
-		if v, b := cache.Get(key).(*Token); b {
+		if v, b := c.Get(key).(*Token); b {
 			if v.ExpiresIn > time.Now().Unix() {
 				return v
 			}

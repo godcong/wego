@@ -34,6 +34,7 @@ func TestSignatureSHA1(t *testing.T) {
 	if s0 != "00320cf3b221cb00f8018bc83070947b1287ba27" {
 		t.Error(s0)
 	}
+
 	s := core.SignatureSHA1(util.Map{
 		"noncestr":     "Wm3WZYTPz0wzccnW",
 		"jsapi_ticket": "9KwiourQPRN3vx3Nn1c_iX9qGaI3Cf8dwVy7qqYeYKcd3BK4Zd_jSlol7E7baUfgOY0E2ybaw2OrlhkChKaS7w",

@@ -8,7 +8,7 @@ import (
 )
 
 func TestSandbox_GetKey(t *testing.T) {
-	box := core.NewSandbox(core.GetConfig("official_account.default"))
+	box := core.NewSandbox(core.GetConfig("official.default"))
 
 	log.Println(box.GetKey())
 }

@@ -34,7 +34,7 @@ type OfficialAccount interface {
 
 /*GetOfficialAccount 获取公众号*/
 func GetOfficialAccount() OfficialAccount {
-	obj := GetApp().Get("official_account").(OfficialAccount)
+	obj := GetApp().Get("official").(OfficialAccount)
 	log.Debug("GetOfficialAccount|obj:", obj)
 	return obj
 }

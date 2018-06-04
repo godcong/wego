@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/godcong/wego/app/official_account"
+	"github.com/godcong/wego/app/official"
 	"github.com/godcong/wego/core/menu"
 )
 
@@ -19,7 +19,7 @@ func TestCoreButton(t *testing.T) {
 }
 
 func TestCoreMenu(t *testing.T) {
-	menus := official_account.NewMenu()
+	menus := official.NewMenu()
 
 	b1 := menu.NewClickButton("hello1", "run1")
 	b2 := menu.NewClickButton("hello2", "run2")
