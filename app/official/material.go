@@ -51,7 +51,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *net.R
 
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.HttpUpload(
+	resp := m.client.HTTPUpload(
 		m.client.Link(materialAddMaterialURLSuffix),
 		util.Map{
 			"media": filePath,
@@ -71,7 +71,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) *net
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
-	resp := m.client.HttpUpload(
+	resp := m.client.HTTPUpload(
 		m.client.Link(materialAddMaterialURLSuffix),
 		util.Map{
 			"media": filePath,
@@ -159,7 +159,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 func (m *Material) GetMaterialCount() *net.Response {
 	log.Debug("Material|GetMaterialCount")
 	p := m.token.GetToken().KeyMap()
-	resp := m.client.HttpGet(
+	resp := m.client.HTTPGet(
 		m.client.Link(materialGetMaterialcountURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,

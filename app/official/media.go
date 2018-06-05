@@ -42,7 +42,7 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response 
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.HttpUpload(
+	resp := m.client.HTTPUpload(
 		m.client.Link(mediaUploadURLSuffix),
 		p,
 		util.Map{
@@ -93,7 +93,7 @@ func (m *Media) Get(mediaID string) *net.Response {
 	log.Debug("Media|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.HttpGet(
+	resp := m.client.HTTPGet(
 		m.client.Link(mediaGetURLSuffix),
 		p)
 	return resp
@@ -109,7 +109,7 @@ func (m *Media) Get(mediaID string) *net.Response {
 func (m *Media) GetJssdk(mediaID string) *net.Response {
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.HttpGet(
+	resp := m.client.HTTPGet(
 		m.client.Link(mediaGetJssdkURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -140,7 +140,7 @@ func (m *Media) UploadBufferImg(filePath string) *net.Response {
 
 func (m *Media) uploadImg(name string, filePath string) *net.Response {
 	p := m.token.GetToken().KeyMap()
-	resp := m.client.HttpUpload(
+	resp := m.client.HTTPUpload(
 		m.client.Link(mediaUploadImgURLSuffix),
 		p,
 		util.Map{

@@ -70,7 +70,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 		p.Set("lang", lang)
 	}
 
-	resp := u.client.HttpGet(
+	resp := u.client.HTTPGet(
 		u.client.Link(userInfoURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,
@@ -135,7 +135,7 @@ func (u *User) Get(nextOpenid string) *net.Response {
 		query.Set("next_openid", nextOpenid)
 	}
 
-	resp := u.client.HttpGet(
+	resp := u.client.HTTPGet(
 		u.client.Link(userGetURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): query,

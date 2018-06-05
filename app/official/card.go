@@ -258,7 +258,7 @@ GetDepositCount 查询导入code数目
  {"errcode":48001,"errmsg":"api unauthorized hint: [TQ2Iga07222944]"}
 */
 func (c *Card) GetDepositCount(cardID string) *net.Response {
-	resp := c.client.HttpPost(
+	resp := c.client.HTTPPost(
 		c.client.Link(cardCodeGetDepositCountURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
@@ -278,7 +278,7 @@ CheckCode 核查code接口
  {"errcode":48001,"errmsg":"api unauthorized hint: [xxvWsa08782921]"}
 */
 func (c *Card) CheckCode(cardID string, code []string) *net.Response {
-	resp := c.client.HttpPost(
+	resp := c.client.HTTPPost(
 		c.client.Link(cardCodeCheckCodeURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{

@@ -104,7 +104,7 @@ func (c *Client) HttpPostJson(url string, query util.Map, json interface{}) *net
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpPostXml(url string, query util.Map, xml interface{}) *net.Response {
+func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
 	c.dataType = DATA_TYPE_XML
 	p := util.Map{
 		net.REQUEST_TYPE_XML.String(): xml,
@@ -115,7 +115,7 @@ func (c *Client) HttpPostXml(url string, query util.Map, xml interface{}) *net.R
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpUpload(url string, query, multi util.Map) *net.Response {
+func (c *Client) HTTPUpload(url string, query, multi util.Map) *net.Response {
 	c.dataType = DATA_TYPE_MULTIPART
 	p := util.Map{
 		net.REQUEST_TYPE_MULTIPART.String(): multi,
@@ -127,7 +127,7 @@ func (c *Client) HttpUpload(url string, query, multi util.Map) *net.Response {
 	return c.Request(url, p, "post")
 }
 
-func (c *Client) HttpGet(url string, query util.Map) *net.Response {
+func (c *Client) HTTPGet(url string, query util.Map) *net.Response {
 	p := util.Map{}
 	if query != nil {
 		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
@@ -135,7 +135,7 @@ func (c *Client) HttpGet(url string, query util.Map) *net.Response {
 	return c.Request(url, p, "get")
 }
 
-func (c *Client) HttpPost(url string, query util.Map, ops util.Map) *net.Response {
+func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Response {
 	p := util.Map{}
 	if query != nil {
 		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
@@ -166,7 +166,7 @@ func (c *Client) SafeRequest(url string, ops util.Map, method string) *net.Respo
 
 func (c *Client) Link(uri string) string {
 	if c.GetBool("sandbox") {
-		return c.URL() + SANDBOX_URL_SUFFIX + uri
+		return c.URL() + sandboxUrlSuffix + uri
 	}
 	return c.domain.Link(uri)
 }
@@ -256,14 +256,14 @@ func buildSafeTransport(config config.Config) *http.Client {
 func request(c *Client, url string, ops util.Map, method string) *net.Response {
 	log.Debug("client|request", c, url, ops, method)
 	data := toRequestData(c, ops)
-
-	if r := c.request.PerformRequest(url, method, data); r.Error() == nil {
+	r := c.request.PerformRequest(url, method, data)
+	if r.Error() == nil {
 		return Do(context.Background(), c, r)
-	} else {
-		return net.ErrorResponse(r.Error())
 	}
+	return net.ErrorResponse(r.Error())
 }
 
+/*Do do request */
 func Do(ctx context.Context, client *Client, request *net.Request) *net.Response {
 	var response *net.Response
 
@@ -295,11 +295,11 @@ func toRequestData(client *Client, ops util.Map) *net.RequestData {
 	data.Body = nil
 	if client.DataType() == DATA_TYPE_JSON {
 		data.SetHeaderJson()
-		data.Body = processJson(ops.Get(net.REQUEST_TYPE_JSON.String()))
+		data.Body = processJSON(ops.Get(net.REQUEST_TYPE_JSON.String()))
 	}
 	if client.DataType() == DATA_TYPE_XML {
 		data.SetHeaderXml()
-		data.Body = processXml(ops.Get(net.REQUEST_TYPE_XML.String()))
+		data.Body = processXML(ops.Get(net.REQUEST_TYPE_XML.String()))
 	}
 
 	if client.DataType() == DATA_TYPE_MULTIPART {
@@ -356,21 +356,21 @@ func processFormParams(i interface{}) string {
 	}
 	return ""
 }
-func processXml(i interface{}) io.Reader {
+func processXML(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		log.Debug("processXml|string", v)
+		log.Debug("processXML|string", v)
 		return strings.NewReader(v)
 	case []byte:
-		log.Debug("processXml|[]byte", v)
+		log.Debug("processXML|[]byte", v)
 		return bytes.NewReader(v)
 	case util.Map:
-		log.Debug("processXml|util.Map", v.ToXml())
+		log.Debug("processXML|util.Map", v.ToXml())
 		return strings.NewReader(v.ToXml())
 	default:
-		log.Debug("processXml|default", v)
+		log.Debug("processXML|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
-			log.Debug("processXml|v0", v0, e)
+			log.Debug("processXML|v0", v0, e)
 			return bytes.NewReader(v0)
 		}
 		return nil
@@ -378,21 +378,21 @@ func processXml(i interface{}) io.Reader {
 
 }
 
-func processJson(i interface{}) io.Reader {
+func processJSON(i interface{}) io.Reader {
 	switch v := i.(type) {
 	case string:
-		log.Debug("processJson|string", v)
+		log.Debug("processJSON|string", v)
 		return strings.NewReader(v)
 	case []byte:
-		log.Debug("processJson|[]byte", string(v))
+		log.Debug("processJSON|[]byte", string(v))
 		return bytes.NewReader(v)
 	case util.Map:
-		log.Debug("processJson|util.Map", v.String())
+		log.Debug("processJSON|util.Map", v.String())
 		return bytes.NewReader(v.ToJson())
 	default:
-		log.Debug("processJson|default", v)
+		log.Debug("processJSON|default", v)
 		if v0, e := json.Marshal(v); e == nil {
-			log.Debug("processJson|v0", string(v0), e)
+			log.Debug("processJSON|v0", string(v0), e)
 			return bytes.NewReader(v0)
 		}
 		return nil
@@ -409,7 +409,51 @@ func processQuery(i interface{}) string {
 	return ""
 }
 
-func (u *URL) ShortUrl(url string) util.Map {
+/*ShortURL 转换短链接
+https://apihk.mch.weixin.qq.com/tools/shorturl    （建议接入点：东南亚）
+https://apius.mch.weixin.qq.com/tools/shorturl    （建议接入点：其它）
+https://api.mch.weixin.qq.com/tools/shorturl        （建议接入点：中国国内）
+是否需要证书
+否
+请求参数
+字段名	变量名	必填	类型	示例值	描述
+公众账号ID	appid	是	String(32)	wx8888888888888888	微信分配的公众账号ID（企业号corpid即为此appId）
+商户号	mch_id	是	String(32)	1900000109	微信支付分配的商户号
+URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid=XXXXX&mch_id=XXXXX&product_id=XXXXXX&time_stamp=XXXXXX&nonce_str=XXXXX	需要转换的URL，签名用原串，传输需URLencode
+随机字符串	nonce_str	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，不长于32位。推荐随机数生成算法
+签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
+签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
+返回结果
+字段名	变量名	必填	类型	示例值	描述
+返回状态码	return_code	是	String(16)	SUCCESS
+SUCCESS/FAIL
+此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
+返回信息	return_msg	否	String(128)	签名失败
+返回信息，如非空，为错误原因签名失败
+参数格式校验错误
+以下字段在return_code为SUCCESS的时候有返回
+字段名	变量名	必填	类型	示例值	描述
+公众账号ID	appid	是	String(32)	wx8888888888888888	微信分配的公众账号ID
+商户号	mch_id	是	String(32)	1900000109	微信支付分配的商户号
+随机字符串	nonce_str	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，不长于32位。推荐随机数生成算法
+签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
+业务结果	result_code	是	String(16)	SUCCESS	SUCCESS/FAIL
+错误代码	err_code	否	String(32)	SYSTEMERROR
+SYSTEMERROR—系统错误
+URLFORMATERROR—URL格式错误
+URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
+错误码
+名称	描述	原因	解决方案
+SIGNERROR	签名错误	参数签名结果不正确	请检查签名参数和方法是否都符合签名算法要求
+REQUIRE_POST_METHOD	请使用post方法	未使用post传递参数	请检查请求参数是否通过post方法提交
+APPID_NOT_EXIST	APPID不存在	参数中缺少APPID	请检查APPID是否正确
+MCHID_NOT_EXIST	MCHID不存在	参数中缺少MCHID	请检查MCHID是否正确
+APPID_MCHID_NOT_MATCH	appid和mch_id不匹配	appid和mch_id不匹配	请确认appid和mch_id是否匹配
+LACK_PARAMS	缺少参数	缺少必要的请求参数	请检查参数是否齐全
+XML_FORMAT_ERROR	XML格式错误	XML格式错误	请检查XML参数格式是否正确
+POST_DATA_EMPTY	post数据为空	post数据不能为空	请检查post数据是否为空
+*/
+func (u *URL) ShortURL(url string) util.Map {
 	m := util.Map{
 		"action":   "long2short",
 		"long_url": url,
@@ -418,11 +462,12 @@ func (u *URL) ShortUrl(url string) util.Map {
 	ops := util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	}
-	resp := u.client.HttpPostJson(u.client.Link(SHORTURL_URL_SUFFIX), m, ops)
-	log.Debug("URL|ShortUrl", *resp)
+	resp := u.client.HttpPostJson(u.client.Link(shorturlUrlSuffix), m, ops)
+	log.Debug("URL|ShortURL", *resp)
 	return resp.ToMap()
 }
 
+/*NewURL NewURL*/
 func NewURL(config config.Config, client *Client) *URL {
 	return &URL{
 		token:  NewAccessToken(config, client),

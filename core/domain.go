@@ -14,7 +14,7 @@ type Domain struct {
 
 func (d *Domain) URL() string {
 	if d.url == "" {
-		return BASE_DOMAIN
+		return BaseDomain
 	}
 	return d.url
 }
@@ -54,15 +54,15 @@ func newDomain(s string) *Domain {
 		case "payment":
 			fallthrough
 		case "default":
-			url = BASE_DOMAIN
+			url = BaseDomain
 		case "official", "mini":
-			url = API_WEIXIN
+			url = ApiWeixin
 		case "file":
-			url = FILE_API_WEIXIN
+			url = FileApiWeixin
 		case "mp":
-			url = MP_DOMAIN
+			url = MpDomain
 		default:
-			url = BACK_DOMAIN
+			url = BackDomain
 		}
 	}
 	return &Domain{

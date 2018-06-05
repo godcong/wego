@@ -33,7 +33,7 @@ func (t *Ticket) Get(typ string) *net.Response {
 	log.Debug("Ticket|Get", typ)
 	p := t.token.GetToken().KeyMap()
 	p.Set("type", typ)
-	resp := t.client.HttpGet(
+	resp := t.client.HTTPGet(
 		t.client.Link(getTicketURLSuffix),
 		p)
 	return resp

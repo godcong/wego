@@ -37,7 +37,7 @@ func (b *Base) ClearQuota() util.Map {
 	params := util.Map{
 		"appid": b.Config.Get("app_id"),
 	}
-	resp := b.client.HttpPostJson(b.client.Link(CLEAR_QUOTA_URL_SUFFIX), params, util.Map{
+	resp := b.client.HttpPostJson(b.client.Link(clearQuotaURLSuffix), params, util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
@@ -54,7 +54,7 @@ GetCallbackIp 请求微信的服务器IP列表
 */
 func (b *Base) GetCallbackIp() util.Map {
 	token := b.token.GetToken()
-	resp := b.client.HttpGet(b.client.Link(GETCALLBACKIP_URL_SUFFIX), util.Map{
+	resp := b.client.HTTPGet(b.client.Link(getcallbackipURLSuffix), util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp.ToMap()

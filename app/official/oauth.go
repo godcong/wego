@@ -199,7 +199,7 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	if o.redirectURI != "" {
 		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
-	response := o.client.HttpPost(
+	response := o.client.HTTPPost(
 		o.client.Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
@@ -226,7 +226,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 	if o.redirectURI != "" {
 		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
 	}
-	response := o.client.HttpPost(
+	response := o.client.HTTPPost(
 		o.client.Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,
@@ -254,7 +254,7 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		"openid":       token.OpenId,
 		"lang":         "zh_CN",
 	}
-	response := o.client.HttpGet(
+	response := o.client.HTTPGet(
 		o.client.Link(oauth2UserinfoURLSuffix),
 		p,
 	)
@@ -277,7 +277,7 @@ func (o *OAuth) Validate(token *core.Token) bool {
 		"access_token": token.AccessToken,
 		"openid":       token.OpenId,
 	}
-	response := o.client.HttpGet(
+	response := o.client.HTTPGet(
 		o.client.Link(oauth2AuthURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,

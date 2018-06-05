@@ -52,7 +52,7 @@ func (t *Tag) Create(name string) *net.Response {
 func (t *Tag) Get() *net.Response {
 	log.Debug("Tag|Get")
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HttpGet(
+	resp := t.client.HTTPGet(
 		t.client.Link(tagsGetURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): p,

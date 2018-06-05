@@ -74,7 +74,7 @@ https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014
 */
 func (m *Menu) List() *net.Response {
-	resp := m.client.HttpGet(m.client.Link(menuGetURLSuffix),
+	resp := m.client.HTTPGet(m.client.Link(menuGetURLSuffix),
 		m.token.GetToken().KeyMap(),
 	)
 	return resp
@@ -87,7 +87,7 @@ http请求方式: GET（请使用https协议）https://api.weixin.qq.com/cgi-bin
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695
 */
 func (m *Menu) Current() *net.Response {
-	resp := m.client.HttpGet(m.client.Link(getCurrentSelfMenuInfoURLSuffix),
+	resp := m.client.HTTPGet(m.client.Link(getCurrentSelfMenuInfoURLSuffix),
 		m.token.GetToken().KeyMap())
 	return resp
 }
@@ -140,7 +140,7 @@ https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN
 func (m *Menu) Delete(menuid int) *net.Response {
 	token := m.token.GetToken().KeyMap()
 	if menuid == 0 {
-		resp := m.client.HttpGet(m.client.Link(menuDeleteURLSuffix),
+		resp := m.client.HTTPGet(m.client.Link(menuDeleteURLSuffix),
 			token)
 		return resp
 	}

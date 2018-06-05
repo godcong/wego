@@ -118,7 +118,7 @@ func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
 	q.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := q.client.HttpGet(
+	resp := q.client.HTTPGet(
 		q.client.Link(showQrcodeURLSuffix),
 		util.Map{
 			net.REQUEST_TYPE_QUERY.String(): util.Map{

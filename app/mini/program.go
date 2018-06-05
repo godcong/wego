@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/log"
 )
 
+/*Program Program */
 type Program struct {
 	config.Config
 	client   *core.Client
@@ -41,54 +42,62 @@ func newMiniProgram(config config.Config, application *core.Application) *Progra
 	return mini0
 }
 
+/*SetClient SetClient */
 func (m *Program) SetClient(c *core.Client) *Program {
 	m.client = c
 	return m
 }
 
+/*GetClient GetClient */
 func (m *Program) GetClient() *core.Client {
 	return m.client
 }
+
+/*Auth Auth */
 func (m *Program) Auth() wego.Auth {
 	if m.auth == nil {
 		m.auth = &Auth{
-			Config:      m.Config,
-			MiniProgram: m,
+			Config:  m.Config,
+			Program: m,
 		}
 	}
 	return m.auth
 }
 
+/*AppCode AppCode */
 func (m *Program) AppCode() wego.AppCode {
 	if m.appCode == nil {
 		m.appCode = &AppCode{
-			Config:      m.Config,
-			MiniProgram: m,
+			Config:  m.Config,
+			Program: m,
 		}
 	}
 	return m.appCode
 }
 
+/*DataCube DataCube */
 func (m *Program) DataCube() wego.DataCube {
 	if m.dataCube == nil {
 		m.dataCube = &DataCube{
-			Config:      m.Config,
-			MiniProgram: m,
+			Config:  m.Config,
+			Program: m,
 		}
 	}
 	return m.dataCube
 }
 
+/*Template Template */
 func (m *Program) Template() *Template {
 	if m.template == nil {
 		m.template = &Template{
-			Config:      m.Config,
-			MiniProgram: m,
+			Config:  m.Config,
+			Program: m,
 		}
 	}
 	return m.template
 }
 
+/*AccessToken AccessToken */
 func (m *Program) AccessToken() *core.AccessToken {
 	log.Debug("Program|AccessToken")
 	if m.token == nil {

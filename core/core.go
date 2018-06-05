@@ -94,7 +94,7 @@ func GenerateSignature(m util.Map, key string, fn SignFunc) string {
 	var sign []string
 
 	for _, k := range keys {
-		if k == FIELD_SIGN {
+		if k == FieldSign {
 			continue
 		}
 		v := strings.TrimSpace(m.GetString(k))

@@ -136,7 +136,7 @@ func TestGetApp(t *testing.T) {
 func TestCoreUrl(t *testing.T) {
 	conf := config.GetConfig("payment.default")
 	url := core.NewURL(conf, core.NewClient(conf))
-	l := url.ShortUrl("https://y11e.com")
+	l := url.ShortURL("https://y11e.com")
 	log.Println(l)
 }
 

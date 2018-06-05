@@ -152,7 +152,7 @@ func (p *Payment) preRequest(params util.Map) util.Map {
 
 func (p *Payment) Link(url string) string {
 	if p.config.GetBool("Sandbox") {
-		return p.client.URL() + core.SANDBOX_URL_SUFFIX + url
+		return p.client.URL() + core.sandboxUrlSuffix + url
 	}
 	return p.client.URL() + url
 }

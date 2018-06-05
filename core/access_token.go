@@ -35,7 +35,7 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"secret":     a.Get("secret"),
 	}
 
-	resp := a.client.HttpGet(a.client.Link(CGI_BIN_TOKEN_URL_SUFFIX), m)
+	resp := a.client.HTTPGet(a.client.Link(cgiBinTokenUrlSuffix), m)
 	log.Debug("AccessToken|sendRequest", resp.ToString())
 	if resp.CheckError() != nil {
 		return nil

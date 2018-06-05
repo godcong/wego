@@ -8,6 +8,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Auth Auth */
 type Auth struct {
 	config.Config
 	*Program
@@ -22,14 +23,40 @@ func newAuth(program *Program) *Auth {
 	}
 }
 
+/*NewAuth NewAuth */
 func NewAuth() *Auth {
 	return newAuth(program)
 }
 
-// 成功:
-// {"openid":"oE_gl0Yr54fUjBhU5nBlP4hS2efo","session_key":"UaPsfKqS9eJYxi1PCYYxuA=="}
-// 失败:
-// {"errcode":40163,"errmsg":"code been used, hints: [ req_id: gjUEFA0981th20 ]"}
+/*Session 登录凭证校验
+临时登录凭证校验接口是一个 HTTPS 接口，开发者服务器使用 临时登录凭证code 获取 session_key 和 openid 等。
+注意：
+会话密钥session_key 是对用户数据进行加密签名的密钥。为了应用自身的数据安全，开发者服务器不应该把会话密钥下发到小程序，也不应该对外提供这个密钥。
+UnionID 只在满足一定条件的情况下返回。具体参看UnionID机制说明
+临时登录凭证code只能使用一次
+接口地址：
+https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
+请求参数
+参数	必填	说明
+appid	是	小程序唯一标识
+secret	是	小程序的 app secret
+js_code	是	登录时获取的 code
+grant_type	是	填写为 authorization_code
+在不满足UnionID下发条件的情况下，返回参数
+参数	说明
+openid	用户唯一标识
+session_key	会话密钥
+在满足UnionID下发条件的情况下，返回参数
+参数	说明
+openid	用户唯一标识
+session_key	会话密钥
+unionid	用户在开放平台的唯一标识符
+
+成功:
+{"openid":"oE_gl0Yr54fUjBhU5nBlP4hS2efo","session_key":"UaPsfKqS9eJYxi1PCYYxuA=="}
+失败:
+{"errcode":40163,"errmsg":"code been used, hints: [ req_id: gjUEFA0981th20 ]"}
+*/
 func (a *Auth) Session(code string) util.Map {
 	params := util.Map{
 		"appid":      a.Get("app_id"),
@@ -38,13 +65,14 @@ func (a *Auth) Session(code string) util.Map {
 		"grant_type": "authorization_code",
 	}
 	a.client.SetDomain(core.NewDomain("mini"))
-	resp := a.client.HttpGet(
-		a.client.Link(core.SNS_JSCODE2SESSION_URL_SUFFIX),
+	resp := a.client.HTTPGet(
+		a.client.Link(snsJscode2sessionURLSuffix),
 		params,
 	)
 	return resp.ToMap()
 }
 
+/*UserInfoByCode 从Code获取用户信息 */
 func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
 	p := a.Session(code)
 	if !p.Has("errcode") {
@@ -53,6 +81,7 @@ func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
 	return nil
 }
 
+/*UserInfo 用户信息 */
 func (a *Auth) UserInfo(key, encrypted, iv string) []byte {
 	r, e := a.dc.Decrypt(encrypted, iv, key)
 	if e != nil {

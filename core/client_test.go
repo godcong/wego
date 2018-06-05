@@ -10,5 +10,5 @@ import (
 func TestURL_ShortUrl(t *testing.T) {
 	c := core.NewClient(core.GetConfig("official.default"))
 	url := core.NewURL(core.GetConfig("official.default"), c)
-	log.Println(url.ShortUrl("https://y11e.com"))
+	log.Println(url.ShortURL("https://y11e.com"))
 }

@@ -267,7 +267,7 @@ func (p *Poi) GetCategory() *net.Response {
 	log.Debug("Poi|GetCategory")
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpGet(
+	resp := p.client.HTTPGet(
 		p.client.Link(poiGetWXCategoryURLSuffix),
 		p.token.GetToken().KeyMap())
 	return resp
