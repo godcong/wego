@@ -93,7 +93,7 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 	return c
 }
 
-func (c *Client) HttpPostJson(url string, query util.Map, json interface{}) *net.Response {
+func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
 	c.dataType = DATA_TYPE_JSON
 	p := util.Map{
 		net.REQUEST_TYPE_JSON.String(): json,
@@ -462,7 +462,7 @@ func (u *URL) ShortURL(url string) util.Map {
 	ops := util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	}
-	resp := u.client.HttpPostJson(u.client.Link(shorturlUrlSuffix), m, ops)
+	resp := u.client.HTTPPostJSON(u.client.Link(shorturlUrlSuffix), m, ops)
 	log.Debug("URL|ShortURL", *resp)
 	return resp.ToMap()
 }

@@ -219,7 +219,7 @@ CreateLandingPage 创建货架接口
  {"errcode":0,"errmsg":"ok","url":"https:\/\/open.weixin.qq.com\/connect\/oauth2\/authorize?appid=wx3be6367203f983ac&redirect_uri=https%3A%2F%2Fmp.weixin.qq.com%2Fbizmall%2Fcardlandingpage%3Fbiz%3DMzAwNjkzNzgzMA%3D%3D%26page_id%3D1%26scene%3D1&response_type=code&scope=snsapi_base#wechat_redirect","page_id":1}
 */
 func (c *Card) CreateLandingPage(page *CardLandingPage) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardLandingPageCreateURLSuffix),
 		c.token.GetToken().KeyMap(),
 		page,
@@ -237,7 +237,7 @@ Deposit 导入code接口
  {"errcode":48001,"errmsg":"api unauthorized hint: [gM8quA01752947]"}
 */
 func (c *Card) Deposit(cardID string, code []string) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardCodeDepositURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
@@ -302,7 +302,7 @@ GetCode 查询 Code 接口
  check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
 */
 func (c *Card) GetCode(p util.Map) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardCodeGetURLSuffix),
 		c.token.GetToken().KeyMap(),
 		p,
@@ -316,7 +316,7 @@ HTTP请求方式: POST
 URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
 */
 func (c *Card) GetHTML(cid string) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardMPNewsGetHTMLURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
@@ -345,7 +345,7 @@ URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
 {"errcode":0,"errmsg":"ok","white_list_size":1,"success_openid":["o5jo6s3RZ6rxuVAW33IpTjYWQOg4"],"success_username":[]}
 */
 func (c *Card) SetTestWhiteList(typ string, list []string) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardTestWhiteListSetURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
@@ -365,7 +365,7 @@ CreateQrCode 创建二维码
  {"errcode":0,"errmsg":"ok","ticket":"gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA","expire_seconds":1800,"url":"http:\/\/weixin.qq.com\/q\/02ucSHcjCW8WP1_2v0Nq4g","show_qrcode_url":"https:\/\/mp.weixin.qq.com\/cgi-bin\/showqrcode?ticket=gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA"}
 */
 func (c *Card) CreateQrCode(action *QrCodeAction) *net.Response {
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardQrcodeCreateURLSuffix),
 		c.token.GetToken().KeyMap(),
 		action,
@@ -388,7 +388,7 @@ Create 创建卡券
 func (c *Card) Create(card *OneCard) *net.Response {
 	key := c.token.GetToken().KeyMap()
 	_, d := card.Get()
-	resp := c.client.HttpPostJson(
+	resp := c.client.HTTPPostJSON(
 		c.client.Link(cardCreateURLSuffix),
 		util.Map{"card": d},
 		util.Map{

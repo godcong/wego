@@ -44,7 +44,7 @@ func NewUser() *User {
 func (u *User) UpdateRemark(openid, remark string) *net.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
-	resp := u.client.HttpPostJson(
+	resp := u.client.HTTPPostJSON(
 		u.client.Link(userInfoUpdateRemarkURLSuffix),
 		util.Map{
 			"openid": openid,
@@ -106,7 +106,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 		}
 
 	}
-	resp := u.client.HttpPostJson(
+	resp := u.client.HTTPPostJSON(
 		u.client.Link(userInfoBatchGetURLSuffix),
 		util.Map{
 			"user_list": list,

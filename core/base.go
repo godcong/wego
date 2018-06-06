@@ -37,7 +37,7 @@ func (b *Base) ClearQuota() util.Map {
 	params := util.Map{
 		"appid": b.Config.Get("app_id"),
 	}
-	resp := b.client.HttpPostJson(b.client.Link(clearQuotaURLSuffix), params, util.Map{
+	resp := b.client.HTTPPostJSON(b.client.Link(clearQuotaURLSuffix), params, util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	})
 	return resp.ToMap()

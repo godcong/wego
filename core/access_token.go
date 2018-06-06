@@ -19,10 +19,10 @@ type AccessToken struct {
 	token       string
 }
 
-const ACCESS_TOKEN_KEY = "access_token"
-const ACCESS_TOKEN_EXPIRES_IN = "expires_in"
+const AccessTokenKey = "access_token"
+const AccessTokenExpiresIn = "expires_in"
 
-const ACCESS_TOKEN_SAFE_SECONDS = 500
+const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) getQuery() util.Map {
 	panic("implement me")

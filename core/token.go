@@ -70,7 +70,7 @@ func KeyMap(at *AccessToken) (util.Map, error) {
 func (t *Token) KeyMap() util.Map {
 	m := make(util.Map)
 	if t.AccessToken != "" {
-		m.Set(ACCESS_TOKEN_KEY, t.AccessToken)
+		m.Set(AccessTokenKey, t.AccessToken)
 	}
 	return m
 }

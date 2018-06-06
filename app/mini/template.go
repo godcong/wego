@@ -48,7 +48,7 @@ title	模板标题内容
 total_count	模板库标题总数
 */
 func (t *Template) List(offset, count int) util.Map {
-	return t.GetClient().HttpPostJson(
+	return t.GetClient().HTTPPostJSON(
 		t.client.Link(templateLibraryListURLSuffix), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
@@ -71,7 +71,7 @@ name	关键词内容
 example	关键词内容对应的示例
 */
 func (t *Template) Get(id string) util.Map {
-	return t.GetClient().HttpPostJson(
+	return t.GetClient().HTTPPostJSON(
 		t.client.Link(templateLibraryGetURLSuffix), util.Map{"id": id}, nil).ToMap()
 }
 
@@ -89,7 +89,7 @@ template_id	是	要删除的模板id
 正常时的返回JSON数据包示例：
 */
 func (t *Template) Delete(templateID string) util.Map {
-	return t.GetClient().HttpPostJson(
+	return t.GetClient().HTTPPostJSON(
 		t.client.Link(templateDelURLSuffix), util.Map{"template_id": templateID}, nil).ToMap()
 }
 
@@ -115,7 +115,7 @@ content	模板内容
 example	模板内容示例
 */
 func (t *Template) GetTemplates(offset, count int) util.Map {
-	return t.GetClient().HttpPostJson(
+	return t.GetClient().HTTPPostJSON(
 		t.client.Link(templateListURLSuffix), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
@@ -136,7 +136,7 @@ keyword_id_list	是	开发者自行组合好的模板关键词列表，关键词
 template_id	添加至帐号下的模板id，发送小程序模板消息时所需
 */
 func (t *Template) Add(id string, keyword util.Map) util.Map {
-	return t.GetClient().HttpPostJson(
+	return t.GetClient().HTTPPostJSON(
 		t.client.Link(templateAddURLSuffix), util.Map{"id": id, "keyword_id_list": keyword}, nil).ToMap()
 }
 
@@ -166,7 +166,7 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 */
 func (t *Template) Send(template *message.Template) *net.Response {
 	token := t.token.GetToken()
-	resp := t.client.HttpPostJson(
+	resp := t.client.HTTPPostJSON(
 		t.client.Link(templateSendURLSuffix),
 		token.KeyMap(),
 		template,

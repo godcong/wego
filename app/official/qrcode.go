@@ -102,7 +102,7 @@ func NewQrCode() *QrCode {
 // {"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
 func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 	log.Debug("QrCode|Create", action)
-	resp := q.client.HttpPostJson(
+	resp := q.client.HTTPPostJSON(
 		q.client.Link(qrcodeCreateURLSuffix),
 
 		q.token.GetToken().KeyMap(),

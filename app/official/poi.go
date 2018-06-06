@@ -74,7 +74,7 @@ func (p *Poi) Add(biz *PoiBaseInfo) *net.Response {
 	log.Debug("Poi|Add", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpPostJson(
+	resp := p.client.HTTPPostJSON(
 		p.client.Link(poiAddPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
@@ -93,7 +93,7 @@ func (p *Poi) Get(poiID string) *net.Response {
 	log.Debug("Poi|Get", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpPostJson(
+	resp := p.client.HTTPPostJSON(
 		p.client.Link(poiGetPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
@@ -122,7 +122,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) *net.Response {
 	log.Debug("Poi|Update", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpPostJson(
+	resp := p.client.HTTPPostJSON(
 		p.client.Link(poiUpdatePoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
@@ -222,7 +222,7 @@ func (p *Poi) GetList(begin int, limit int) *net.Response {
 	log.Debug("Poi|GetList", begin, limit)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpPostJson(
+	resp := p.client.HTTPPostJSON(
 		p.client.Link(poiGetListPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
@@ -244,7 +244,7 @@ func (p *Poi) Del(poiID string) *net.Response {
 	log.Debug("Poi|Del", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HttpPostJson(
+	resp := p.client.HTTPPostJSON(
 		p.client.Link(poiDelPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{

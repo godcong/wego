@@ -53,13 +53,13 @@ func NewMenu() *Menu {
 func (m *Menu) Create(buttons *menu.Button) *net.Response {
 	token := m.token.GetToken().KeyMap()
 	if buttons.GetMatchRule() == nil {
-		resp := m.client.HttpPostJson(
+		resp := m.client.HTTPPostJSON(
 			m.client.Link(menuCreateURLSuffix),
 			token,
 			buttons)
 		return resp
 	}
-	resp := m.client.HttpPostJson(
+	resp := m.client.HTTPPostJSON(
 		m.client.Link(menuAddConditionalURLSuffix),
 		token,
 		buttons)
@@ -123,7 +123,7 @@ user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
 }
 */
 func (m *Menu) TryMatch(userID string) *net.Response {
-	resp := m.client.HttpPostJson(m.client.Link(menuTryMatchURLSuffix),
+	resp := m.client.HTTPPostJSON(m.client.Link(menuTryMatchURLSuffix),
 		m.token.GetToken().KeyMap(),
 		util.Map{"user_id": userID})
 	return resp
@@ -145,7 +145,7 @@ func (m *Menu) Delete(menuid int) *net.Response {
 		return resp
 	}
 
-	resp := m.client.HttpPostJson(m.client.Link(menuDeleteConditionalURLSuffix),
+	resp := m.client.HTTPPostJSON(m.client.Link(menuDeleteConditionalURLSuffix),
 		util.Map{"menuid": menuid},
 		token)
 	return resp
