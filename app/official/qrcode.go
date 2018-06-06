@@ -18,11 +18,11 @@ type QrCodeScene struct {
 
 /*QrCodeCard QrCodeCard*/
 type QrCodeCard struct {
-	CardID       string `json:"card_id,omitempty"`   // "card_id": "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
-	Code         string `json:"code"`                // "code": "198374613512",
-	OpenID       string `json:"openid,omitempty"`    // "openid": "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
-	IsUniqueCode bool   `json:"openid,omitempty"`    // "is_unique_code": false,
-	OuterStr     string `json:"outer_str,omitempty"` // "outer_str":"12b"
+	CardID       string `json:"card_id,omitempty"`        // "card_id": "pFS7Fjg8kV1IdDz01r4SQwMkuCKc",
+	Code         string `json:"code"`                     // "code": "198374613512",
+	OpenID       string `json:"openid,omitempty"`         // "openid": "oFS7Fjl0WsZ9AMZqrI80nbIq8xrA",
+	IsUniqueCode bool   `json:"is_unique_code,omitempty"` // "is_unique_code": false,
+	OuterStr     string `json:"outer_str,omitempty"`      // "outer_str":"12b"
 }
 
 /*QrCodeCardList QrCodeCardList*/

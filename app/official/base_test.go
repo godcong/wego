@@ -8,7 +8,7 @@ import (
 
 func TestBase_GetCallbackIp(t *testing.T) {
 	base := official.NewBase()
-	rlt := base.GetCallbackIp()
+	rlt := base.GetCallbackIP()
 	t.Log(rlt)
 }
 

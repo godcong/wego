@@ -44,7 +44,7 @@ func newOfficialAccount(config config.Config, application *core.Application) *Ac
 	}
 
 	client.SetDomain(domain)
-	client.SetDataType(core.DATA_TYPE_JSON)
+	client.SetDataType(core.DataTypeJSON)
 	return account
 }
 

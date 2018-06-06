@@ -56,25 +56,23 @@ const (
 
 type Request struct {
 	requestType RequestType
-	requestData *RequestData
-	request     *http.Request
+	//requestData *RequestData
+	httpRequest *http.Request
 	custom      func(*Request) string
 
 	error error
 }
 
-var DefaultRequest = NewRequest()
-
 func NewRequest() *Request {
 	r := Request{
-		request: nil,
-		error:   nil,
-		requestData: &RequestData{
-			Query:  "",
-			Body:   nil,
-			Method: "",
-			Header: http.Header{},
-		},
+		httpRequest: nil,
+		error:       nil,
+		//requestData: &RequestData{
+		//	Query:  "",
+		//	Body:   nil,
+		//	Method: "",
+		//	Header: http.Header{},
+		//},
 	}
 	return &r
 }
@@ -92,39 +90,44 @@ func (r *Request) Error() error {
 	return r.error
 }
 
-func (r *Request) RequestDataCopy() *RequestData {
-	data := *r.requestData
-	data.Header = cloneHeader(r.requestData.Header)
-
-	return &data
+func NewRequestData() *RequestData {
+	data := &RequestData{
+		Query:  "",
+		Body:   nil,
+		Method: "",
+		Header: http.Header{},
+	}
+	//data.Header = cloneHeader(r.requestData.Header)
+	return data
 }
 func ReqType(reqType string) RequestType {
 	log.Debug("reqType", reqType)
 	switch reqType {
-	case CONTENT_TYPE_JSON:
+	case ContentTypeJson:
 		return REQUEST_TYPE_JSON
-	case CONTENT_TYPE_HTML:
+	case ContentTypeHtml:
 		//return REQUEST_TYPE_HTML
-	case CONTENT_TYPE_XML, CONTENT_TYPE_XML2:
+	case ContentTypeXml, ContentTypeXml2:
 		return REQUEST_TYPE_XML
-	case CONTENT_TYPE_Plain:
-	case CONTENT_TYPE_POSTForm:
-	case CONTENT_TYPE_MultipartPOSTForm:
-	case CONTENT_TYPE_PROTOBUF:
-	case CONTENT_TYPE_MSGPACK:
-	case CONTENT_TYPE_MSGPACK2:
+	case ContentTypePlain:
+	case ContentTypePostForm:
+	case ContentTypeMultipartPostForm:
+	case ContentTypeProtoBuf:
+	case ContentTypeMsgPack:
+	case ContentTypeMsgPack2:
 	}
 	return REQUEST_TYPE_JSON
 }
 
 func (r *Request) HttpRequest() *http.Request {
-	return r.request
+	return r.httpRequest
 }
 
-func (r *Request) PerformRequest(url string, method string, data *RequestData) *Request {
+func PerformRequest(url string, method string, data *RequestData) *Request {
+	request := NewRequest()
 	var req *http.Request
 	var err error
-	data = dataProcess(r, method, data)
+	data = dataProcess(request, method, data)
 	url = parseQuery(url, data.Query)
 	log.Debug("PerformRequest|url", url)
 	log.Debug("PerformRequest|data", data.Header, data.Method, data.Query)
@@ -133,7 +136,7 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 
 	req, err = http.NewRequest(data.Method, url, data.Body)
 	if err != nil {
-		r.error = err
+		request.error = err
 	}
 
 	for k, v := range data.Header {
@@ -142,14 +145,14 @@ func (r *Request) PerformRequest(url string, method string, data *RequestData) *
 
 	log.Debug(req.Header)
 	log.Debug("PerformRequest|req", req)
-	r.request = req
-	r.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
-	return r
+	request.httpRequest = req
+	request.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
+	return request
 }
 
 func dataProcess(r *Request, method string, src *RequestData) *RequestData {
 	if src == nil {
-		src = r.RequestDataCopy()
+		src = NewRequestData()
 	}
 	src.Method = strings.ToUpper(method)
 

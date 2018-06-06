@@ -21,13 +21,14 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*DataType DataType */
 type DataType string
 type ContextKey struct{}
 
 const (
-	DATA_TYPE_XML       DataType = "xml"
-	DATA_TYPE_JSON      DataType = "json"
-	DATA_TYPE_MULTIPART DataType = "multipart"
+	DataTypeXML       DataType = "xml"
+	DataTypeJSON      DataType = "json"
+	DataTypeMultipart DataType = "multipart"
 )
 
 type URL struct {
@@ -41,9 +42,9 @@ type Client struct {
 	domain   *Domain
 	app      *Application
 	token    *AccessToken
-	request  *net.Request
-	response *net.Response
-	client   *http.Client
+	//request  *net.Request
+	//response *net.Response
+	client *http.Client
 }
 
 var defaultCa = []byte(`
@@ -76,11 +77,11 @@ func (c *Client) URL() string {
 	return c.domain.URL()
 }
 
-func (c *Client) HttpClient() *http.Client {
+func (c *Client) HTTPClient() *http.Client {
 	return c.client
 }
 
-func (c *Client) SetHttpClient(client *http.Client) *Client {
+func (c *Client) SetHTTPClient(client *http.Client) *Client {
 	c.client = client
 	return c
 }
@@ -95,7 +96,7 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 }
 
 func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
-	c.dataType = DATA_TYPE_JSON
+	c.dataType = DataTypeJSON
 	p := util.Map{
 		net.REQUEST_TYPE_JSON.String(): json,
 	}
@@ -106,7 +107,7 @@ func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net
 }
 
 func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
-	c.dataType = DATA_TYPE_XML
+	c.dataType = DataTypeXML
 	p := util.Map{
 		net.REQUEST_TYPE_XML.String(): xml,
 	}
@@ -117,7 +118,7 @@ func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.R
 }
 
 func (c *Client) HTTPUpload(url string, query, multi util.Map) *net.Response {
-	c.dataType = DATA_TYPE_MULTIPART
+	c.dataType = DataTypeMultipart
 	p := util.Map{
 		net.REQUEST_TYPE_MULTIPART.String(): multi,
 	}
@@ -150,8 +151,7 @@ func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Respons
 func (c *Client) Request(url string, ops util.Map, method string) *net.Response {
 	log.Debug("Request|httpClient", c.client)
 	c.client = buildTransport(c.Config)
-	c.response = request(c, url, ops, method)
-	return c.response
+	return request(c, url, ops, method)
 }
 
 func (c *Client) RequestRaw(url string, ops util.Map, method string) *net.Response {
@@ -161,8 +161,7 @@ func (c *Client) RequestRaw(url string, ops util.Map, method string) *net.Respon
 func (c *Client) SafeRequest(url string, ops util.Map, method string) *net.Response {
 	c.client = buildSafeTransport(c.Config)
 	log.Debug("SafeRequest|httpClient", c.client)
-	c.response = request(c, url, ops, method)
-	return c.response
+	return request(c, url, ops, method)
 }
 
 func (c *Client) Link(uri string) string {
@@ -172,14 +171,17 @@ func (c *Client) Link(uri string) string {
 	return c.domain.Link(uri)
 }
 
-func (c *Client) GetResponse() *net.Response {
-	return c.response
-}
+/*GetRequest get net response */
+//func (c *Client) GetResponse() *net.Response {
+//return c.response
+//}
 
-func (c *Client) GetRequest() *net.Request {
-	return c.request
-}
+/*GetRequest get net request */
+//func (c *Client) GetRequest() *net.Request {
+//	return c.request
+//}
 
+/*DefaultClient DefaultClient */
 func DefaultClient() *Client {
 	return nil
 }
@@ -192,9 +194,9 @@ func NewClient(config config.Config) *Client {
 		config = defaultConfig
 	}
 	return &Client{
-		request:  net.DefaultRequest,
+		//request:  net.DefaultRequest,
 		Config:   config,
-		dataType: DATA_TYPE_XML,
+		dataType: DataTypeXML,
 		domain:   domain,
 	}
 }
@@ -258,7 +260,7 @@ func buildSafeTransport(config config.Config) *http.Client {
 func request(c *Client, url string, ops util.Map, method string) *net.Response {
 	log.Debug("client|request", c, url, ops, method)
 	data := toRequestData(c, ops)
-	r := c.request.PerformRequest(url, method, data)
+	r := net.PerformRequest(url, method, data)
 	if r.Error() == nil {
 		return Do(context.Background(), c, r)
 	}
@@ -286,25 +288,25 @@ func Do(ctx context.Context, client *Client, request *net.Request) *net.Response
 	if r.StatusCode != http.StatusOK {
 		log.Debug("Do|StatusCode", r.StatusCode)
 	}
-	response = net.ParseResponse(client.request.GetRequestType(), r)
+	response = net.ParseResponse(request.GetRequestType(), r)
 
 	return response
 }
 
 func toRequestData(client *Client, ops util.Map) *net.RequestData {
-	data := client.request.RequestDataCopy()
+	data := net.NewRequestData()
 	data.Query = processQuery(ops.Get(net.REQUEST_TYPE_QUERY.String()))
 	data.Body = nil
-	if client.DataType() == DATA_TYPE_JSON {
+	if client.DataType() == DataTypeJSON {
 		data.SetHeaderJson()
 		data.Body = processJSON(ops.Get(net.REQUEST_TYPE_JSON.String()))
 	}
-	if client.DataType() == DATA_TYPE_XML {
+	if client.DataType() == DataTypeXML {
 		data.SetHeaderXml()
 		data.Body = processXML(ops.Get(net.REQUEST_TYPE_XML.String()))
 	}
 
-	if client.DataType() == DATA_TYPE_MULTIPART {
+	if client.DataType() == DataTypeMultipart {
 		buf := bytes.Buffer{}
 		writer := multipart.NewWriter(&buf)
 		writer = processMultipart(writer, ops.Get(net.REQUEST_TYPE_MULTIPART.String()))
@@ -464,7 +466,7 @@ func (u *URL) ShortURL(url string) util.Map {
 	ops := util.Map{
 		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
 	}
-	resp := u.client.HTTPPostJSON(u.client.Link(shorturlUrlSuffix), m, ops)
+	resp := u.client.HTTPPostJSON(u.client.domain.Link(shortURLSuffix), m, ops)
 	log.Debug("URL|ShortURL", *resp)
 	return resp.ToMap()
 }

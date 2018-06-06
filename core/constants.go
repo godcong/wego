@@ -24,13 +24,10 @@ const USERPAYING = "USERPAYING"
 //const SSLCERT_PATH = "./cert/apiclient_cert.pem"
 //const SSLKEY_PATH = "./cert/apiclient_key.pem"
 
-const reportUrlSuffix = "/payitil/report"
-const shorturlUrlSuffix = "/tool/shorturl"
+const reportURLSuffix = "/payitil/report"
+const shortURLSuffix = "/tool/shorturl"
 
-const sandboxUrlSuffix = "/sandboxnew"
-const sandboxSignkeyUrlSuffix = sandboxUrlSuffix + "/pay/getsignkey"
-
-const cgiBinTokenUrlSuffix = "/cgi-bin/token"
+const tokenURLSuffix = "/cgi-bin/token"
 
 //const CUSTOM_SEND_URL_SUFFIX = "/cgi-bin/message/custom/send"
 
@@ -44,3 +41,6 @@ const msgrecordGetmsglistURLSuffix = "/customservice/msgrecord/getmsglist"
 
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
 const getcallbackipURLSuffix = "/cgi-bin/getcallbackip"
+
+const sandboxUrlSuffix = "/sandboxnew"
+const sandboxSignkeyUrlSuffix = sandboxUrlSuffix + "/pay/getsignkey"

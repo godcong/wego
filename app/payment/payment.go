@@ -50,7 +50,7 @@ func newPayment(application *core.Application) *Payment {
 	}
 
 	client.SetDomain(domain)
-	client.SetDataType(core.DATA_TYPE_XML)
+	client.SetDataType(core.DataTypeXML)
 	return payment
 }
 
@@ -151,8 +151,5 @@ func (p *Payment) preRequest(params util.Map) util.Map {
 }
 
 func (p *Payment) Link(url string) string {
-	if p.config.GetBool("Sandbox") {
-		return p.client.URL() + core.sandboxUrlSuffix + url
-	}
-	return p.client.URL() + url
+	return p.client.Link(url)
 }

@@ -146,6 +146,6 @@ func TestGetOfficialAccount(t *testing.T) {
 }
 
 func testBase(t *testing.T, account wego.OfficialAccount) {
-	log.Println(account.Base().GetCallbackIp())
+	log.Println(account.Base().GetCallbackIP())
 	log.Println(account.Base().ClearQuota())
 }
