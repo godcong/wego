@@ -23,10 +23,10 @@ var defaultConfig config.Config
 var program *Program
 
 func init() {
-	defaultConfig = config.GetConfig("mini.default")
+	defaultConfig = config.GetConfig("mini_program.default")
 	app := core.App()
 	program = newMiniProgram(defaultConfig, app)
-	app.Register("mini", program)
+	app.Register("mini_program", program)
 	//app.Register(newMiniProgram())
 }
 

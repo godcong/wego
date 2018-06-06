@@ -55,7 +55,7 @@ func newDomain(s string) *Domain {
 			fallthrough
 		case "default":
 			url = BaseDomain
-		case "official", "mini":
+		case "official_account", "mini_program":
 			url = ApiWeixin
 		case "file":
 			url = FileApiWeixin

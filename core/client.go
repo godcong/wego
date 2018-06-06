@@ -3,16 +3,17 @@ package core
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
 	"encoding/xml"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
+
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 
 	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
@@ -183,6 +184,7 @@ func DefaultClient() *Client {
 	return nil
 }
 
+/*NewClient 创建一个client */
 func NewClient(config config.Config) *Client {
 	log.Debug("NewClient|config", config)
 	domain := NewDomain("default")
