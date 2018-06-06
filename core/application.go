@@ -9,6 +9,7 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
+/*Application Application */
 type Application struct {
 	config.Config
 	Client
@@ -19,6 +20,7 @@ var f = flag.String("f", "config.toml", "config file path")
 var app *Application
 var defaultConfig config.Config
 
+/*System 系统定义 */
 type System struct {
 	//debug = true
 	Debug bool `toml:"debug"`
@@ -104,10 +106,13 @@ func init() {
 //		v = v0
 //	}
 //}
+
+/*GetSystemConfig GetSystemConfig */
 func GetSystemConfig() System {
 	return system
 }
 
+/*Get 获取注册的interface */
 func (a *Application) Get(name string) interface{} {
 	if v, b := (*a).obj[name]; b {
 		return v
@@ -119,20 +124,24 @@ func (a *Application) Get(name string) interface{} {
 //	a.register(reflect.TypeOf(v).String(), v)
 //}
 
+/*Register 注册 */
 func (a *Application) Register(name string, v interface{}) {
 	a.obj[name] = v
 }
 
+/*App 获取App */
 func App() *Application {
 	log.Debug("app:", app)
 	return app
 }
 
+/*InSandbox 是否沙箱环境 */
 func (a *Application) InSandbox() bool {
 	//c := a.Get("config").(Config)
 	return a.GetBool("payment.default.sandbox")
 }
 
+/*GetKey 获取沙箱key */
 func (a *Application) GetKey(s string) string {
 	b := a.Get("sandbox").(*Sandbox)
 	if a.InSandbox() {
@@ -142,6 +151,7 @@ func (a *Application) GetKey(s string) string {
 
 }
 
+/*Scheme 获取微信Scheme */
 func (a *Application) Scheme(id string) string {
 	//c := a.Config
 	m := make(util.Map)
@@ -151,13 +161,14 @@ func (a *Application) Scheme(id string) string {
 	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("product_id", id)
 	m.Set("sign", GenerateSignature(m, a.Config.Get("aes_key"), MakeSignMD5))
-	return BizPayURL + m.UrlEncode()
+	return BizPayURL + m.URLEncode()
 }
 
-func (a *Application) HandleNotify(typ string, f func(interface{})) {
+//func (a *Application) HandleNotify(typ string, f func(interface{})) {
+//
+//}
 
-}
-
+/*SetSubMerchant 设置子商户id */
 func (a *Application) SetSubMerchant(mchid, appid string) *Application {
 	a.Config.Set("sub_mch_id", mchid)
 	a.Config.Set("sub_appid", appid)

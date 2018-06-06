@@ -21,5 +21,5 @@ func TestNewTransfer(t *testing.T) {
 	m.Set("bank_code", "1003")
 	m.Set("amount", "1000")
 	m1 := tran.ToBankCard(m)
-	t.Log(m1.ToXml())
+	t.Log(m1.ToXML())
 }

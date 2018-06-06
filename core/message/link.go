@@ -30,7 +30,7 @@ func (l *Link) ToXml() ([]byte, error) {
 
 func (l *Link) ToJson() ([]byte, error) {
 	m := l.ToMap()
-	return m.ToJson(), nil
+	return m.ToJSON(), nil
 }
 
 func (l *Link) ToMap() util.Map {

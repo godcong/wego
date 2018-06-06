@@ -1,13 +1,18 @@
 package work
 
-import "github.com/godcong/wego/config"
+import (
+	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/core"
+)
 
+/*Message Message */
 type Message interface {
 }
 
 type message struct {
 }
 
-func NewMessage(application Application, config config.Config) {
+/*NewMessage NewMessage */
+func NewMessage(application core.Application, config config.Config) {
 
 }

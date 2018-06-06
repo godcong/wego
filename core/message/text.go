@@ -11,12 +11,12 @@ type Text struct {
 	Content CDATA
 }
 
-func (t *Text) ToXml() ([]byte, error) {
+func (t *Text) ToXML() ([]byte, error) {
 	return xml.Marshal(*t)
 }
-func (t *Text) ToJson() ([]byte, error) {
+func (t *Text) ToJSON() ([]byte, error) {
 	m := t.ToMap()
-	return m.ToJson(), nil
+	return m.ToJSON(), nil
 }
 
 func (t *Text) ToMap() util.Map {

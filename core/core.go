@@ -15,15 +15,17 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*SignType SignType */
 type SignType int
 
+/*sign types */
 const (
-	SIGN_TYPE_MD5        SignType = iota
-	SIGN_TYPE_HMACSHA256 SignType = iota
+	SignTypeMd5        SignType = iota
+	SignTypeHmacSha256 SignType = iota
 )
 
 func (t SignType) String() string {
-	if t == SIGN_TYPE_HMACSHA256 {
+	if t == SignTypeHmacSha256 {
 		return HMACSHA256
 	}
 	return MD5
@@ -41,7 +43,8 @@ func SandboxSignKey(config config.Config) []byte {
 	return []byte(nil)
 }
 
-func GetServerIp() string {
+/*GetServerIP 获取服务端IP */
+func GetServerIP() string {
 	adds, err := net.InterfaceAddrs()
 	if err != nil {
 		return "127.0.0.1"
@@ -59,7 +62,8 @@ func GetServerIp() string {
 	return "127.0.0.1"
 }
 
-func GetClientIp(r *http.Request) string {
+/*GetClientIP 取得客户端IP */
+func GetClientIP(r *http.Request) string {
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err == nil && ip != "127.0.0.1" {
 		return ip
@@ -71,6 +75,7 @@ func GetClientIp(r *http.Request) string {
 	return ip
 }
 
+/*SignFunc sign函数定义 */
 type SignFunc func(data, key string) string
 
 // MakeSignHMACSHA256 make sign with hmac-sha256

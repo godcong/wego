@@ -6,7 +6,7 @@ var encodingAesKey = "TNwHN28RXXoyVxkMCUEqKuCL08eBpCKgWZTkWNVnGLu"
 var token = "godcong"
 var timeStamp = "1524409354"
 var nonce = "542437598"
-var appId = "wxbafed7010e0f4531"
+var appID = "wxbafed7010e0f4531"
 var text = `<xml>
     <ToUserName><![CDATA[gh_56870ffd193b]]></ToUserName>
     <FromUserName><![CDATA[oLyBi0hSYhggnD-kOIms0IzZFqrc]]></FromUserName>
@@ -21,7 +21,7 @@ var text2 = `<xml><Nonce>1632909179</Nonce><Encrypt><![CDATA[lAqgapbsGq3hpZC29u5
 var text3 = `<?xml version="1.0" encoding="UTF-8" standalone="no"?><xml><Encrypt><![CDATA[8YHvi544ufqOnTylGkwEkCtB/jf8THDLV7v9Q5FctW/Z4Y0Ied5B1Ch0mKhoMJpXylnqlfOFAovhUA8WDBhQSUparcfbx/WPMLUXXJRjgbtsde4fPII0vFyAeaiwlNeoiL17zhYRISdlMd55elzVxAYG6VQ+89MOcZ0p5YwjKwZfTXPLl2ZO5ADW6tVqjFld3DfGGNOP3yRtMaWqrCQo4ASk5bpOpCuYTd5p3dXygkKv5LwQyb+MB/xdt+Z4MeVWN0Wke+HE29iJWikvKUV9d0pNU81R+8PrTrsGs/4gtI/Nl5w5JKoxwZKSYhpVzoJvgvxu+z9UkoN/81BYY/AoPkI51fcRjcAXrViDN0TR+/EeDFd0KKnuoP6X8AtTm0JD3w68dSEjmT9U8CNFxydJsF3bYh37D7LeKuhXZDMA7vqTV2PF7LfiFer8UkcGnVNP]]></Encrypt><MsgSignature><![CDATA[8c0f8d64124367eccb5f292dad91955eb0cd12d8]]></MsgSignature><TimeStamp>1524421916</TimeStamp><Nonce>457570794</Nonce></xml>`
 
 func TestBizMsg_Encrypt(t *testing.T) {
-	biz := NewBizMsg(token, encodingAesKey, appId)
+	biz := NewBizMsg(token, encodingAesKey, appID)
 	var result string
 	var result0 []byte
 	var err error

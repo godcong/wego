@@ -7,15 +7,16 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Button Button */
 type Button util.Map
 
 //{
 //	Type     string //是	菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
 //	Name     string //是	菜单标题，不超过16个字节，子菜单不超过60个字节
 //	Key      string //click等点击类型必须	菜单KEY值，用于消息接口推送，不超过128字节
-//	Url      string //view、miniprogram类型必须	网页 链接，用户点击菜单可打开链接，不超过1024字节。 type为miniprogram时，不支持小程序的老版本客户端将打开本url。
-//	MediaId  string //media_id类型和view_limited类型必须	调用新增永久素材接口返回的合法media_id
-//	AppId    string //miniprogram类型必须	小程序的appid（仅认证公众号可配置）
+//	URL      string //view、miniprogram类型必须	网页 链接，用户点击菜单可打开链接，不超过1024字节。 type为miniprogram时，不支持小程序的老版本客户端将打开本url。
+//	MediaID  string //media_id类型和view_limited类型必须	调用新增永久素材接口返回的合法media_id
+//	AppID    string //miniprogram类型必须	小程序的appid（仅认证公众号可配置）
 //	Pagepath string //string miniprogram类型必须	小程序的页面路径
 //}
 
@@ -88,7 +89,7 @@ func (b *Button) SetSub(name string, sub []*Button) *Button {
 	return b
 }
 
-/*NewButton NewButton*/
+/*NewBaseButton NewBaseButton */
 func NewBaseButton() *Button {
 	button := make(Button)
 	return &button
@@ -100,7 +101,7 @@ func (b *Button) SetButtons(buttons []*Button) *Button {
 	return b
 }
 
-/*GetButtons GetButtons*/
+/*GetButtons GetButtons */
 func (b *Button) GetButtons() []*Button {
 	buttons := b.ToMap().Get("button")
 	if v0, b := buttons.([]*Button); b {

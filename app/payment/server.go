@@ -13,6 +13,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Server Server */
 type Server struct {
 	config.Config
 	*Payment
@@ -20,13 +21,15 @@ type Server struct {
 	callback []core.PaymentCallback
 }
 
+/*ActionResult ActionResult */
 type ActionResult struct {
 	XMLName    xml.Name      `xml:"xml"`
 	ReturnCode message.CDATA `xml:"return_code"`
 	ReturnMsg  message.CDATA `xml:"return_msg"`
 }
 
-var ACTION_SUCCESS = ActionResult{
+/*ActionSuccess ActionSuccess */
+var ActionSuccess = ActionResult{
 	ReturnCode: message.CDATA{
 		Value: "SUCCESS",
 	},
@@ -35,7 +38,8 @@ var ACTION_SUCCESS = ActionResult{
 	},
 }
 
-var ACTION_FAIL = ActionResult{
+/*ActionFail ActionFail */
+var ActionFail = ActionResult{
 	ReturnCode: message.CDATA{
 		Value: "FAIL",
 	},
@@ -55,10 +59,12 @@ func newServer(p *Payment) *Server {
 	}
 }
 
+/*NewServer NewServer */
 func NewServer() *Server {
 	return newServer(payment)
 }
 
+/*ServeHTTP 服务监听 */
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var bodyBytes []byte
 	var rlt message.Messager
@@ -75,7 +81,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	m := util.XmlToMap(bodyBytes)
+	m := util.XMLToMap(bodyBytes)
 	if validateCallback(m, s.config.Get("key")) {
 		rlt = s.ProcessCallback(m)
 
@@ -85,7 +91,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.Write(result)
 		return
 	}
-	rltXml, err := rlt.ToXml()
+	rltXML, err := rlt.ToXML()
 	//错误返回,并记录log
 	if err != nil {
 		log.Error(err)
@@ -94,12 +100,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//if encryptType == "aes" {
-	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXml), ts, nonce)
+	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXML), ts, nonce)
 	//	if err != nil {
 	//		log.Error(err)
 	//		return
 	//	}
-	//	rltXml = []byte(tmpStr)
+	//	rltXML = []byte(tmpStr)
 	//}
 	if s.mType == "xml" {
 		header := w.Header()
@@ -112,8 +118,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			header["Content-Type"] = []string{"application/json; charset=utf-8"}
 		}
 	}
-	log.Debug(string(rltXml))
-	w.Write(rltXml)
+	log.Debug(string(rltXML))
+	w.Write(rltXML)
 
 }
 
@@ -131,6 +137,7 @@ func validateCallback(p util.Map, key string) bool {
 	return false
 }
 
+/*AddCallback add callback */
 func (s *Server) AddCallback(pc core.PaymentCallback) *Server {
 	if s.callback == nil {
 		s.callback = []core.PaymentCallback{}
@@ -139,17 +146,20 @@ func (s *Server) AddCallback(pc core.PaymentCallback) *Server {
 	return s
 }
 
+/*SetCallback set callback */
 func (s *Server) SetCallback(pc []core.PaymentCallback) *Server {
 	s.callback = pc
 	return s
 }
 
+/*GetCallback get callback */
 func (s *Server) GetCallback() []core.PaymentCallback {
 	return s.callback
 }
 
+/*ProcessCallback process callback */
 func (s *Server) ProcessCallback(p util.Map) message.Messager {
-	rlt := ACTION_SUCCESS
+	rlt := ActionSuccess
 	if s.callback == nil {
 		rlt.ReturnMsg = message.CDATA{
 			Value: "UNPROCESSED",
@@ -171,14 +181,16 @@ func (s *Server) ProcessCallback(p util.Map) message.Messager {
 	return &rlt
 }
 
-func (r *ActionResult) ToXml() ([]byte, error) {
+/*ToXML transfer action result to xml */
+func (r *ActionResult) ToXML() ([]byte, error) {
 	return xml.Marshal(r)
 }
 
-func (r *ActionResult) ToJson() ([]byte, error) {
+/*ToJSON transfer action result to json */
+func (r *ActionResult) ToJSON() ([]byte, error) {
 	m := util.Map{
 		"return_code": r.ReturnCode,
 		"return_msg":  r.ReturnMsg,
 	}
-	return m.ToJson(), nil
+	return m.ToJSON(), nil
 }

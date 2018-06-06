@@ -16,7 +16,7 @@ type Order interface {
 	Unify(m util.Map) *net.Response
 	Close(no string) *net.Response
 	//Query(Map) Map
-	QueryByTransactionId(id string) *net.Response
+	QueryByTransactionID(id string) *net.Response
 	QueryByOutTradeNumber(no string) *net.Response
 }
 
@@ -43,11 +43,11 @@ type RedPack interface {
 /*Refund 退款*/
 type Refund interface {
 	ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) *net.Response
-	ByTransactionId(tid, num string, total, refund int, options util.Map) *net.Response
-	QueryByRefundId(id string) *net.Response
+	ByTransactionID(tid, num string, total, refund int, options util.Map) *net.Response
+	QueryByRefundID(id string) *net.Response
 	QueryByOutRefundNumber(id string) *net.Response
 	QueryByOutTradeNumber(id string) *net.Response
-	QueryByTransactionId(id string) *net.Response
+	QueryByTransactionID(id string) *net.Response
 
 	//Refund(string, int, int, Map) Map
 	//Query(Map) Map

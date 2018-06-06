@@ -9,7 +9,7 @@ import (
 )
 
 func TestLocalAddress(t *testing.T) {
-	core.GetServerIp()
+	core.GetServerIP()
 }
 
 func TestXmlToMap(t *testing.T) {

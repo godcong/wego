@@ -112,7 +112,7 @@ func (m *Media) GetJssdk(mediaID string) *net.Response {
 	resp := m.client.HTTPGet(
 		m.client.Link(mediaGetJssdkURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }

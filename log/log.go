@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+/*log types */
 const (
 	OFF = iota
 	FATAL
@@ -30,6 +31,7 @@ var logList = map[string]int{
 	"ALL":   ALL,
 }
 
+/*Log Log*/
 type Log struct {
 	//level = 'debug'
 	Level string
@@ -62,32 +64,39 @@ func initLog(l Log, d bool) {
 
 }
 
+/*InitLog log init */
 func InitLog(l Log, d bool) {
 	initLog(l, d)
 }
 
+/*DebugOn turn on Debug */
 func DebugOn() {
 	debug = true
 }
 
+/*DebugOff turn off Debug */
 func DebugOff() {
 	debug = false
 }
 
+/*IsDebug check IsDebug */
 func IsDebug() bool {
 	return debug
 }
 
+/*Println output Println log */
 func Println(v ...interface{}) {
 	_, f, l, _ := runtime.Caller(1)
 	log.Println(fmt.Sprintf("%s|%d", f, l), v)
 }
 
+/*Print output Print log */
 func Print(v ...interface{}) {
 	_, f, l, _ := runtime.Caller(1)
 	log.Print(fmt.Sprintf("%s|%d", f, l), v)
 }
 
+/*Debug output Debug log */
 func Debug(v ...interface{}) {
 	if DEBUG <= logs.LevelInt() || IsDebug() {
 		_, f, l, _ := runtime.Caller(1)
@@ -95,6 +104,7 @@ func Debug(v ...interface{}) {
 	}
 }
 
+/*Error output Error log */
 func Error(v ...interface{}) {
 	if ERROR <= logs.LevelInt() {
 		_, f, l, _ := runtime.Caller(1)
@@ -102,6 +112,7 @@ func Error(v ...interface{}) {
 	}
 }
 
+/*Info output Info log */
 func Info(v ...interface{}) {
 	if INFO <= logs.LevelInt() {
 		_, f, l, _ := runtime.Caller(1)
@@ -110,6 +121,7 @@ func Info(v ...interface{}) {
 
 }
 
+/*Warn output Warn log */
 func Warn(v ...interface{}) {
 	if WARN <= logs.LevelInt() {
 		_, f, l, _ := runtime.Caller(1)
@@ -118,6 +130,7 @@ func Warn(v ...interface{}) {
 
 }
 
+/*Fatal output fatal log */
 func Fatal(v ...interface{}) {
 	if FATAL <= logs.LevelInt() {
 		_, f, l, _ := runtime.Caller(1)
@@ -126,6 +139,7 @@ func Fatal(v ...interface{}) {
 
 }
 
+/*LevelInt 获取level */
 func (l *Log) LevelInt() (i int) {
 	if v, b := logList[strings.ToUpper(l.Level)]; b {
 		i = v

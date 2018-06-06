@@ -56,17 +56,17 @@ func RespType(reqType RequestType) ResponseType {
 	//case CONTENT_TYPE_PROTOBUF:
 	//case CONTENT_TYPE_MSGPACK:
 	//case CONTENT_TYPE_MSGPACK2:
-	case REQUEST_TYPE_JSON:
+	case RequestTypeJson:
 		return RESPONSE_TYPE_JSON
-	case REQUEST_TYPE_QUERY:
-	case REQUEST_TYPE_XML:
+	case RequestTypeQuery:
+	case RequestTypeXml:
 		return RESPONSE_TYPE_XML
-	case REQUEST_TYPE_FORM_PARAMS:
-	case REQUEST_TYPE_FILE:
-	case REQUEST_TYPE_MULTIPART:
-	case REQUEST_TYPE_STRING:
-	case REQUEST_TYPE_HEADERS:
-	case REQUEST_TYPE_CUSTOM:
+	case RequestTypeFormParams:
+	case RequestTypeFile:
+	case RequestTypeMultipart:
+	case RequestTypeString:
+	case RequestTypeHeaders:
+	case RequestTypeCustom:
 	}
 	return RESPONSE_TYPE_JSON
 }
@@ -88,37 +88,42 @@ func (r *Response) Error() error {
 
 func (r *Response) ToMap() util.Map {
 	if r.responseType == RESPONSE_TYPE_XML {
-		r.responseMap = util.XmlToMap(r.responseData)
+		r.responseMap = util.XMLToMap(r.responseData)
 	}
 	if r.responseType == RESPONSE_TYPE_JSON {
-		r.responseMap = util.JsonToMap(r.responseData)
+		r.responseMap = util.JSONToMap(r.responseData)
 	}
 
 	return r.responseMap
 }
 
-func (r *Response) ToXml() string {
+/*ToXML transfer response data to xml*/
+func (r *Response) ToXML() string {
 	if r.responseType == RESPONSE_TYPE_XML {
 		return string(r.responseData)
 	}
-	return r.responseMap.ToXml()
+	return r.responseMap.ToXML()
 }
 
-func (r *Response) ToJson() []byte {
+/*ToJSON transfer response data to json*/
+func (r *Response) ToJSON() []byte {
 	if r.responseType == RESPONSE_TYPE_JSON {
 		return r.responseData
 	}
-	return r.responseMap.ToJson()
+	return r.responseMap.ToJSON()
 }
 
+/*ToBytes transfer response data to bytes*/
 func (r *Response) ToBytes() []byte {
 	return r.responseData
 }
 
+/*ToString transfer response data to string*/
 func (r *Response) ToString() string {
 	return string(r.responseData)
 }
 
+/*ToFile save response data to file with path */
 func (r *Response) ToFile(path string) {
 	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if e != nil {
@@ -128,6 +133,7 @@ func (r *Response) ToFile(path string) {
 	file.Write(r.ToBytes())
 }
 
+/*CheckError check wechat result error */
 func (r *Response) CheckError() error {
 	if r.error != nil {
 		return r.error
@@ -139,6 +145,7 @@ func (r *Response) CheckError() error {
 	return r.error
 }
 
+/*ErrorResponse return response with error */
 func ErrorResponse(err error) *Response {
 	log.Debug("ErrorResponse|err", err)
 	return &Response{

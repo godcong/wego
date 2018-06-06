@@ -269,6 +269,6 @@ func (d *DataCube) get(url, beginDate, endDate string) *net.Response {
 	resp := d.client.HTTPPostJSON(
 		d.client.Link(url),
 		util.Map{"begin_date": beginDate, "end_date": endDate},
-		util.Map{net.REQUEST_TYPE_QUERY.String(): key})
+		util.Map{net.RequestTypeQuery.String(): key})
 	return resp
 }

@@ -39,7 +39,7 @@ func (t *Tag) Create(name string) *net.Response {
 			"tag": util.Map{"name": name},
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -55,7 +55,7 @@ func (t *Tag) Get() *net.Response {
 	resp := t.client.HTTPGet(
 		t.client.Link(tagsGetURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -74,7 +74,7 @@ func (t *Tag) Update(id int, name string) *net.Response {
 			"tag": util.Map{"id": id, "name": name},
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -95,7 +95,7 @@ func (t *Tag) Delete(id int) *net.Response {
 			"tag": util.Map{"id": id},
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -118,7 +118,7 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) *net.Response {
 		t.client.Link(userTagGetURLSuffix),
 		params,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -141,7 +141,7 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) *net.Response {
 		t.client.Link(tagsMembersBatchTaggingURLSuffix),
 		params,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -164,7 +164,7 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) *net.Response {
 		t.client.Link(tagsMembersBatchUntaggingURLSuffix),
 		params,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -185,7 +185,7 @@ func (t *Tag) GetIDList(openid string) *net.Response {
 		t.client.Link(tagsGetIDListURLSuffix),
 		params,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -205,7 +205,7 @@ func (t *Tag) GetBlackList(beginOpenid string) *net.Response {
 		t.client.Link(tagsMembersGetBlackListURLSuffix),
 		param,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): query,
+			net.RequestTypeQuery.String(): query,
 		})
 	return resp
 }
@@ -227,7 +227,7 @@ func (t *Tag) BatchBlackList(openidList []string) *net.Response {
 		t.client.Link(tagsMembersBatchBlackListURLSuffix),
 		param,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): query,
+			net.RequestTypeQuery.String(): query,
 		})
 	return resp
 }
@@ -249,7 +249,7 @@ func (t *Tag) BatchUnblackList(openidList []string) *net.Response {
 		t.client.Link(tagsMembersBatchUnblackListURLSuffix),
 		param,
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): query,
+			net.RequestTypeQuery.String(): query,
 		})
 	return resp
 }

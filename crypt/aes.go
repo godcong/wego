@@ -6,16 +6,19 @@ import (
 	"strings"
 )
 
+/*DataCrypt DataCrypt */
 type DataCrypt struct {
-	appId string
+	appID string
 }
 
+/*NewDataCrypt NewDataCrypt */
 func NewDataCrypt(id string) *DataCrypt {
 	return &DataCrypt{
-		appId: id,
+		appID: id,
 	}
 }
 
+/*Decrypt Decrypt */
 func (c *DataCrypt) Decrypt(data, iv, key string) ([]byte, error) {
 	dKey, e := Base64Decode([]byte(key))
 	if e != nil {

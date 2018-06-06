@@ -1,25 +1,32 @@
 package core
 
-const MpDomain = "https://mp.weixin.qq.com"
-const BaseDomain = "https://api.mch.weixin.qq.com"
-const ApiWeixin = "https://api.weixin.qq.com"
-const BackDomain = "https://api2.mch.weixin.qq.com"
-const HkDomain = "https://apihk.mch.weixin.qq.com"
-const UsDomain = "https://apius.mch.weixin.qq.com"
-const BizPayURL = "weixin://wxpay/bizpayurl?"
-const FileApiWeixin = "http://file.api.weixin.qq.com"
+/* domain defines */
+const (
+	MPDomain      = "https://mp.weixin.qq.com"
+	BaseDomain    = "https://api.mch.weixin.qq.com"
+	APIWeixin     = "https://api.weixin.qq.com"
+	API2Domain    = "https://api2.mch.weixin.qq.com"
+	HKDomain      = "https://apihk.mch.weixin.qq.com"
+	USDomain      = "https://apius.mch.weixin.qq.com"
+	BizPayURL     = "weixin://wxpay/bizpayurl?"
+	FileAPIWeixin = "http://file.api.weixin.qq.com"
+)
 
-const FAIL = "FAIL"
-const SUCCESS = "SUCCESS"
+/*HMACSHA256 定义:HMAC-SHA256 */
 const HMACSHA256 = "HMAC-SHA256"
+
+/*MD5 定义:MD5 */
 const MD5 = "MD5"
 
+/*FieldSign 定义:sign */
 const FieldSign = "sign"
+
+/*FieldSignType 定义:sign_type */
 const FieldSignType = "sign_type"
 
-const SYSTEMERROR = "SYSTEMERROR"
-const BANKERROR = "BANKERROR"
-const USERPAYING = "USERPAYING"
+//const SYSTEMERROR = "SYSTEMERROR"
+//const BANKERROR = "BANKERROR"
+//const USERPAYING = "USERPAYING"
 
 //const SSLCERT_PATH = "./cert/apiclient_cert.pem"
 //const SSLKEY_PATH = "./cert/apiclient_key.pem"
@@ -40,7 +47,7 @@ const kfaccountUploadheadimgURLSuffix = "/customservice/kfaccount/uploadheadimg"
 const msgrecordGetmsglistURLSuffix = "/customservice/msgrecord/getmsglist"
 
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
-const getcallbackipURLSuffix = "/cgi-bin/getcallbackip"
+const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
 
-const sandboxUrlSuffix = "/sandboxnew"
-const sandboxSignkeyUrlSuffix = sandboxUrlSuffix + "/pay/getsignkey"
+const sandboxURLSuffix = "/sandboxnew"
+const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"

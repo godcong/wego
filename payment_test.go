@@ -36,7 +36,7 @@ func TestOrder_QueryByOutTradeNumber(t *testing.T) {
 }
 
 func TestOrder_QueryByTransactionId(t *testing.T) {
-	r := wego.GetPayment().Order().QueryByTransactionId("123")
+	r := wego.GetPayment().Order().QueryByTransactionID("123")
 	log.Println(r.ToString())
 }
 
@@ -69,7 +69,7 @@ const rltRefund = `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_ms
 
 func TestRefund_Refund(t *testing.T) {
 	//r := wego.GetPayment().Refund().ByOutTradeNumber(`20180313160643671522177497`, `1`, 30, 30, nil)
-	r := wego.GetPayment().Refund().ByTransactionId(`4200000066201803138050731804`, `2`, 3, 3, nil)
+	r := wego.GetPayment().Refund().ByTransactionID(`4200000066201803138050731804`, `2`, 3, 3, nil)
 	log.Println(r.ToMap())
 	//{"appid":"wx426b3015555a46be","err_code":"ORDERNOTEXIST","err_code_des":"订单不存在","mch_id":"1900009851","nonce_str":"kSGYwLY4WNZvw91Y","result_code":"FAIL","return_code":"SUCCESS","return_msg":"OK","sign":"CC8F6CD5E5CADB15EEECEAA1DB4791FF"}
 }

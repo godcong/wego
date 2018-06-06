@@ -15,10 +15,12 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*PrpCrypt PrpCrypt */
 type PrpCrypt struct {
 	key []byte
 }
 
+/*NewPrp NewPrp */
 func NewPrp(key []byte) *PrpCrypt {
 	//k, err := base64.RawStdEncoding.DecodeString(key)
 	//if err != nil {
@@ -29,27 +31,31 @@ func NewPrp(key []byte) *PrpCrypt {
 	}
 }
 
+/*Random Random */
 func (c *PrpCrypt) Random() string {
-	return util.GenerateRandomString(16, util.T_RAND_ALL)
+	return util.GenerateRandomString(16, util.RandomAll)
 }
 
+/*LengthBytes LengthBytes */
 func (c *PrpCrypt) LengthBytes(s string) []byte {
 	var buf = make([]byte, 4)
 	binary.BigEndian.PutUint32(buf, uint32(len(s)))
 	return buf
 }
 
+/*BytesLength BytesLength */
 func (c *PrpCrypt) BytesLength(b []byte) uint32 {
 	return binary.BigEndian.Uint32(b)
 }
 
-func (c *PrpCrypt) Encrypt(text string, appId string) ([]byte, error) {
+/*Encrypt Encrypt */
+func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
 	buf := bytes.Buffer{}
 
 	buf.WriteString(c.Random())
 	buf.Write(c.LengthBytes(text))
 	buf.WriteString(text)
-	buf.WriteString(appId)
+	buf.WriteString(appid)
 	iv := c.key[:16]
 	block, err := aes.NewCipher([]byte(c.key)) //选择加密算法
 	if err != nil {
@@ -65,12 +71,15 @@ func (c *PrpCrypt) Encrypt(text string, appId string) ([]byte, error) {
 	return Base64Encode(ciphertext), nil
 }
 
+/*PKCS7Padding PKCS7Padding */
 func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
-func (c *PrpCrypt) Decrypt(ciphertext []byte, appId string) ([]byte, error) {
+
+/*Decrypt Decrypt */
+func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
 	if err != nil {
 		return nil, err
@@ -87,14 +96,15 @@ func (c *PrpCrypt) Decrypt(ciphertext []byte, appId string) ([]byte, error) {
 	content := plantText[16:]
 	xmlLen := c.BytesLength(content[0:4])
 	xmlContent := content[4 : xmlLen+4]
-	fromAppId := content[xmlLen+4:]
-	if string(fromAppId) != appId {
+	fromAppID := content[xmlLen+4:]
+	if string(fromAppID) != appid {
 		return nil, errors.New("ValidateAppidError")
 	}
 
 	return xmlContent, nil
 }
 
+/*PKCS7UnPadding PKCS7UnPadding */
 func PKCS7UnPadding(plantText []byte) []byte {
 	length := len(plantText)
 	unpadding := int(plantText[length-1])
@@ -104,6 +114,7 @@ func PKCS7UnPadding(plantText []byte) []byte {
 	return plantText[:(length - unpadding)]
 }
 
+/*SHA1 SHA1 */
 func SHA1(text ...string) string {
 	sort.Strings(text)
 	s := strings.Join(text, "")

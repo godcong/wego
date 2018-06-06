@@ -34,7 +34,7 @@ func (a *AppCode) Get(path string, optionals util.Map) util.Map {
 
 	j := a.getStream(a.client.Link(getwxacodeURLSuffix), params)
 
-	return util.JsonToMap(j)
+	return util.JSONToMap(j)
 }
 
 /*GetQrCode 获取小程序二维码
@@ -52,7 +52,7 @@ func (a *AppCode) GetQrCode(path string, width int) util.Map {
 	params := util.Map{"path": path, "width": width}
 
 	j := a.getStream(a.client.Link(createwxaqrcodeURLSuffix), params)
-	return util.JsonToMap(j)
+	return util.JSONToMap(j)
 }
 
 /*GetUnlimit 获取小程序码
@@ -76,7 +76,7 @@ func (a *AppCode) GetUnlimit(scene string, optionals util.Map) util.Map {
 	params.Join(optionals)
 
 	j := a.getStream(a.client.Link(getwxacodeunlimitURLSuffix), params)
-	return util.JsonToMap(j)
+	return util.JSONToMap(j)
 }
 
 func (a *AppCode) getStream(url string, m util.Map) []byte {
@@ -87,8 +87,8 @@ func (a *AppCode) getStream(url string, m util.Map) []byte {
 
 	resp := a.GetClient().RequestRaw(
 		url,
-		util.Map{net.REQUEST_TYPE_QUERY.String(): token.UrlEncode(),
-			net.REQUEST_TYPE_JSON.String(): m}, "post")
+		util.Map{net.RequestTypeQuery.String(): token.URLEncode(),
+			net.RequestTypeJson.String(): m}, "post")
 	panic(resp)
 	//TODO
 	return nil

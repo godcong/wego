@@ -13,15 +13,16 @@ import (
 	"github.com/godcong/wego/log"
 )
 
+/* all defined errors */
 var (
-	ErrorKeyMustBePEMEncoded       = errors.New("key must be pem encoded")
-	ErrorNotECPublicKey      error = errors.New("Key is not a valid ECDSA public key")
-	ErrorNotECPrivateKey           = errors.New("Key is not a valid ECDSA private key")
-	ErrorNotRSAPrivateKey          = errors.New("Key is not a valid RSA private key")
-	ErrorNotRSAPublicKey           = errors.New("Key is not a valid RSA public key")
+	ErrorKeyMustBePEMEncoded = errors.New("key must be pem encoded")
+	ErrorNotECPublicKey      = errors.New("Key is not a valid ECDSA public key")
+	ErrorNotECPrivateKey     = errors.New("Key is not a valid ECDSA private key")
+	ErrorNotRSAPrivateKey    = errors.New("Key is not a valid RSA private key")
+	ErrorNotRSAPublicKey     = errors.New("Key is not a valid RSA public key")
 )
 
-// Parse PEM encoded PKCS1 or PKCS8 private key
+/*ParseRSAPrivateKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 private key */
 func ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(key)
 	if block == nil {
@@ -40,7 +41,7 @@ func ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error) {
 	return pkey, nil
 }
 
-// Parse PEM encoded PKCS1 or PKCS8 public key
+/*ParseRSAPublicKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 public key */
 func ParseRSAPublicKeyFromPEM(key []byte) (*rsa.PublicKey, error) {
 	block, _ := pem.Decode(key)
 	if block == nil {
@@ -65,6 +66,7 @@ func ParseRSAPublicKeyFromPEM(key []byte) (*rsa.PublicKey, error) {
 
 }
 
+/*Decrypt Decrypt */
 func Decrypt(pri string, text string) string {
 	privateKey, e := ioutil.ReadFile(pri)
 	if e != nil {
@@ -88,6 +90,7 @@ func Decrypt(pri string, text string) string {
 	return string(b)
 }
 
+/*Encrypt Encrypt */
 func Encrypt(pub string, text string) string {
 	publicKey, e := ioutil.ReadFile(pub)
 	if e != nil {
@@ -108,13 +111,14 @@ func Encrypt(pub string, text string) string {
 	return base64.StdEncoding.EncodeToString(part)
 }
 
+/*Base64Encode Base64Encode */
 func Base64Encode(b []byte) []byte {
 	buf := make([]byte, base64.StdEncoding.EncodedLen(len(b)))
 	base64.StdEncoding.Encode(buf, b)
 	return buf
 }
 
-// Base64Decode
+/*Base64Decode Base64Decode */
 func Base64Decode(b []byte) ([]byte, error) {
 	buf := make([]byte, base64.StdEncoding.DecodedLen(len(b)))
 	n, err := base64.StdEncoding.Decode(buf, b)

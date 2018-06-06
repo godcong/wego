@@ -48,7 +48,7 @@ value	属性值对应的指标值，如指标为visit_uv,属性为province,属�
 */
 func (d *DataCube) UserPortrait(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeUserportraitURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*SummaryTrend 概况趋势
@@ -67,7 +67,7 @@ share_uv	转发人数
 */
 func (d *DataCube) SummaryTrend(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeDailysummarytrendURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*DailyVisitTrend 日趋势
@@ -90,7 +90,7 @@ visit_depth	平均访问深度 (浮点型)
 */
 func (d *DataCube) DailyVisitTrend(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeDailyvisittrendURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*WeeklyVisitTrend 周趋势
@@ -114,7 +114,7 @@ visit_depth	平均访问深度 (浮点型)
 */
 func (d *DataCube) WeeklyVisitTrend(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeWeeklyvisittrendURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*MonthlyVisitTrend 月趋势
@@ -138,7 +138,7 @@ visit_depth	平均访问深度 (浮点型)
 */
 func (d *DataCube) MonthlyVisitTrend(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeMonthlyvisittrendURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*VisitDistribution 访问分布
@@ -219,7 +219,7 @@ key对应关系如下：
 */
 func (d *DataCube) VisitDistribution(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeVisitdistributionURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*DailyRetainInfo 日留存
@@ -240,7 +240,7 @@ value	key对应日期的新增用户数/活跃用户数（key=0时）或留存�
 */
 func (d *DataCube) DailyRetainInfo(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeDailyretaininfoURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*WeeklyRetainInfo 周留存
@@ -263,7 +263,7 @@ value	key对应日期的新增用户数/活跃用户数（key=0时）或留存�
 */
 func (d *DataCube) WeeklyRetainInfo(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeWeeklyretaininfoURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*MonthlyRetainInfo 月留存
@@ -286,7 +286,7 @@ value	key对应日期的新增用户数/活跃用户数（key=0时）或留存�
 */
 func (d *DataCube) MonthlyRetainInfo(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeMonthlyretaininfoURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }
 
 /*VisitPage 访问页面
@@ -309,5 +309,5 @@ page_share_uv	转发人数
 */
 func (d *DataCube) VisitPage(from, to string) util.Map {
 	json := d.query(d.client.Link(datacubeVisitpageURLSuffix), from, to)
-	return util.JsonToMap(json)
+	return util.JSONToMap(json)
 }

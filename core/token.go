@@ -2,16 +2,13 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 	"time"
-
-	"errors"
 
 	"github.com/godcong/wego/util"
 )
 
-// type Token Map
-// {"access_token":"7_VnJy3IwXNobh33ctx2SGFs0VBUQwqJC3hixeK8XAr-Wf8z7pm86S1Fvk9J0tHbSoRjxBFmAIJ4asbnOdQWicag","expires_in":7200,"refresh_token":"7__-y8XCMD549OYO9PifRba08tUhIfDhKUNQsKGUPs0hNDhxli9nlm0DfaD-bwPyZx8aAvoUwNEslRP6ckl-BDnA","openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","scope":"snsapi_base"}
 // Token represents the credentials used to authorize
 // the requests to access protected resources on the OAuth 2.0
 // provider's backend.
@@ -37,7 +34,7 @@ type Token struct {
 	ExpiresIn int64 `json:"expires_in"`
 
 	// wechat openid
-	OpenId string `json:"openid"`
+	OpenID string `json:"openid"`
 
 	// wechat scope
 	Scope string `json:"scope"`
@@ -46,9 +43,10 @@ type Token struct {
 	Raw interface{}
 }
 
-const AccessTokenNil = "nil point access token"
-const TokenNil = "nil point token"
+const accessTokenNil = "nil point access token"
+const tokenNil = "nil point token"
 
+/*MustKeyMap get token's key,value with map when nil or error return nil map */
 func MustKeyMap(at *AccessToken) util.Map {
 	m := util.Map{}
 	if m, e := KeyMap(at); e != nil {
@@ -57,16 +55,18 @@ func MustKeyMap(at *AccessToken) util.Map {
 	return m
 }
 
+/*KeyMap get token's key,value with map */
 func KeyMap(at *AccessToken) (util.Map, error) {
 	if at == nil {
-		return nil, errors.New(AccessTokenNil)
+		return nil, errors.New(accessTokenNil)
 	}
 	if token := at.GetToken(); token != nil {
 		return token.KeyMap(), nil
 	}
-	return nil, errors.New(TokenNil)
+	return nil, errors.New(tokenNil)
 }
 
+/*KeyMap get token's key,value with map */
 func (t *Token) KeyMap() util.Map {
 	m := make(util.Map)
 	if t.AccessToken != "" {
@@ -75,16 +75,19 @@ func (t *Token) KeyMap() util.Map {
 	return m
 }
 
+/*SetExpiresIn set expires time */
 func (t *Token) SetExpiresIn(ti time.Time) *Token {
 	t.ExpiresIn = ti.Unix()
 	return t
 }
 
+/*GetExpiresIn get expires time */
 func (t *Token) GetExpiresIn() time.Time {
 	return time.Unix(t.ExpiresIn, 0)
 }
 
-func (t *Token) ToJson() string {
+/*ToJSON transfer token to json*/
+func (t *Token) ToJSON() string {
 	v, e := json.Marshal(t)
 	if e != nil {
 		return ""
@@ -92,15 +95,18 @@ func (t *Token) ToJson() string {
 	return string(v)
 }
 
+/*GetScopes get token scopes for get token*/
 func (t *Token) GetScopes() []string {
 	return strings.Split(t.Scope, ",")
 }
 
+/*SetScopes set token scopes for get token*/
 func (t *Token) SetScopes(s []string) *Token {
 	strings.Join(s, ",")
 	return t
 }
 
+/*ParseToken parse token from string*/
 func ParseToken(j string) (*Token, error) {
 	t := new(Token)
 	e := json.Unmarshal([]byte(j), t)

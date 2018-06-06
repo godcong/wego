@@ -33,7 +33,7 @@ func (m *Material) AddNews(articles []*media.Article) *net.Response {
 	resp := m.client.HTTPPostJSON(
 		m.client.Link(materialAddNewsURLSuffix),
 		util.Map{"articles": articles},
-		util.Map{net.REQUEST_TYPE_QUERY.String(): key})
+		util.Map{net.RequestTypeQuery.String(): key})
 	return resp
 }
 
@@ -57,7 +57,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *net.R
 			"media": filePath,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -81,7 +81,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) *net
 			},
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -102,7 +102,7 @@ func (m *Material) Get(mediaID string) *net.Response {
 			"media_id": mediaID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -123,7 +123,7 @@ func (m *Material) Del(mediaID string) *net.Response {
 			"media_id": mediaID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 
@@ -143,7 +143,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 			"articles": articles,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 
@@ -162,7 +162,7 @@ func (m *Material) GetMaterialCount() *net.Response {
 	resp := m.client.HTTPGet(
 		m.client.Link(materialGetMaterialcountURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -185,7 +185,7 @@ func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) *net.Re
 			"count":  count,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 

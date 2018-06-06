@@ -251,7 +251,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 	p := util.Map{
 		"access_token": token.AccessToken,
-		"openid":       token.OpenId,
+		"openid":       token.OpenID,
 		"lang":         "zh_CN",
 	}
 	response := o.client.HTTPGet(
@@ -275,12 +275,12 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 func (o *OAuth) Validate(token *core.Token) bool {
 	p := util.Map{
 		"access_token": token.AccessToken,
-		"openid":       token.OpenId,
+		"openid":       token.OpenID,
 	}
 	response := o.client.HTTPGet(
 		o.client.Link(oauth2AuthURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		},
 	)
 	log.Debug(response.ToString())

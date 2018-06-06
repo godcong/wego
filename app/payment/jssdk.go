@@ -8,6 +8,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*JSSDK JSSDK */
 type JSSDK struct {
 	config.Config
 	*Payment
@@ -20,14 +21,16 @@ func newJSSDK(p *Payment) *JSSDK {
 	}
 }
 
+/*NewJSSDK NewJSSDK */
 func NewJSSDK() *JSSDK {
 	return newJSSDK(payment)
 }
 
-func (j *JSSDK) getUrl() string {
-	return core.GetServerIp()
+func (j *JSSDK) getURL() string {
+	return core.GetServerIP()
 }
 
+/*BridgeConfig bridge 设置 */
 func (j *JSSDK) BridgeConfig(pid string) util.Map {
 	appid := j.Config.Get("sub_appid")
 	if appid == "" {
@@ -47,6 +50,7 @@ func (j *JSSDK) BridgeConfig(pid string) util.Map {
 	return m
 }
 
+/*SdkConfig sdk 设置 */
 func (j *JSSDK) SdkConfig(pid string) util.Map {
 	config := j.BridgeConfig(pid)
 
@@ -56,6 +60,7 @@ func (j *JSSDK) SdkConfig(pid string) util.Map {
 	return config
 }
 
+/*AppConfig app 设置 */
 func (j *JSSDK) AppConfig(pid string) util.Map {
 	m := util.Map{
 		"appid":     j.Config.Get("app_id"),
@@ -70,12 +75,13 @@ func (j *JSSDK) AppConfig(pid string) util.Map {
 	return m
 }
 
+/*ShareAddressConfig 共享地址设置 */
 func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 	token := ""
 	switch v := accessToken.(type) {
 	case core.AccessToken:
 		token0 := v.GetToken()
-		token = token0.ToJson()
+		token = token0.ToJSON()
 	case string:
 		token = accessToken.(string)
 	}
@@ -89,13 +95,13 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 
 	sm := util.Map{
 		"appid":       m.Get("appId"),
-		"url":         j.getUrl(),
+		"url":         j.getURL(),
 		"timestamp":   m.Get("timeStamp"),
 		"noncestr":    m.Get("nonceStr"),
 		"accesstoken": token,
 	}
 
-	m.Set("addrSign", util.SHA1(sm.UrlEncode()))
+	m.Set("addrSign", util.SHA1(sm.URLEncode()))
 
 	return m
 }

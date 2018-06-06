@@ -23,19 +23,24 @@ import (
 
 /*DataType DataType */
 type DataType string
+
+/*ContextKey ContextKey */
 type ContextKey struct{}
 
+/*data types*/
 const (
 	DataTypeXML       DataType = "xml"
 	DataTypeJSON      DataType = "json"
 	DataTypeMultipart DataType = "multipart"
 )
 
+/*URL URL */
 type URL struct {
 	token  *AccessToken
 	client *Client
 }
 
+/*Client Client */
 type Client struct {
 	config.Config
 	dataType DataType
@@ -68,79 +73,85 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`)
 
+/*SetDomain 设置拼接域名 */
 func (c *Client) SetDomain(domain *Domain) *Client {
 	c.domain = domain
 	return c
 }
 
-func (c *Client) URL() string {
-	return c.domain.URL()
-}
-
+/*HTTPClient http client */
 func (c *Client) HTTPClient() *http.Client {
 	return c.client
 }
 
+/*SetHTTPClient 设置http client */
 func (c *Client) SetHTTPClient(client *http.Client) *Client {
 	c.client = client
 	return c
 }
 
+/*DataType DataType */
 func (c *Client) DataType() DataType {
 	return c.dataType
 }
 
+/*SetDataType 设置数据类型 */
 func (c *Client) SetDataType(dataType DataType) *Client {
 	c.dataType = dataType
 	return c
 }
 
+/*HTTPPostJSON json post请求 */
 func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
 	c.dataType = DataTypeJSON
 	p := util.Map{
-		net.REQUEST_TYPE_JSON.String(): json,
+		net.RequestTypeJson.String(): json,
 	}
 	if query != nil {
-		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.RequestTypeQuery.String(), query)
 	}
 	return c.Request(url, p, "post")
 }
 
+/*HTTPPostXML xml post请求 */
 func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
 	c.dataType = DataTypeXML
 	p := util.Map{
-		net.REQUEST_TYPE_XML.String(): xml,
+		net.RequestTypeXml.String(): xml,
 	}
 	if query != nil {
-		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.RequestTypeQuery.String(), query)
 	}
 	return c.Request(url, p, "post")
 }
 
+/*HTTPUpload upload请求 */
 func (c *Client) HTTPUpload(url string, query, multi util.Map) *net.Response {
 	c.dataType = DataTypeMultipart
 	p := util.Map{
-		net.REQUEST_TYPE_MULTIPART.String(): multi,
+		net.RequestTypeMultipart.String(): multi,
 	}
 	if query != nil {
-		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.RequestTypeQuery.String(), query)
 	}
 
 	return c.Request(url, p, "post")
 }
 
+/*HTTPGet get请求 */
 func (c *Client) HTTPGet(url string, query util.Map) *net.Response {
 	p := util.Map{}
 	if query != nil {
-		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.RequestTypeQuery.String(), query)
 	}
 	return c.Request(url, p, "get")
 }
 
+/*HTTPPost post请求 */
 func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Response {
 	p := util.Map{}
 	if query != nil {
-		p.Set(net.REQUEST_TYPE_QUERY.String(), query)
+		p.Set(net.RequestTypeQuery.String(), query)
 	}
 	if ops != nil {
 		p.ReplaceJoin(ops)
@@ -148,25 +159,29 @@ func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Respons
 	return c.Request(url, p, "post")
 }
 
+/*Request 普通请求 */
 func (c *Client) Request(url string, ops util.Map, method string) *net.Response {
 	log.Debug("Request|httpClient", c.client)
 	c.client = buildTransport(c.Config)
 	return request(c, url, ops, method)
 }
 
+/*RequestRaw raw请求 */
 func (c *Client) RequestRaw(url string, ops util.Map, method string) *net.Response {
 	return c.Request(url, ops, method)
 }
 
+/*SafeRequest 安全请求 */
 func (c *Client) SafeRequest(url string, ops util.Map, method string) *net.Response {
 	c.client = buildSafeTransport(c.Config)
 	log.Debug("SafeRequest|httpClient", c.client)
 	return request(c, url, ops, method)
 }
 
+/*Link 拼接地址 */
 func (c *Client) Link(uri string) string {
 	if c.GetBool("sandbox") {
-		return c.URL() + sandboxUrlSuffix + uri
+		return c.domain.URL() + sandboxURLSuffix + uri
 	}
 	return c.domain.Link(uri)
 }
@@ -271,7 +286,7 @@ func request(c *Client, url string, ops util.Map, method string) *net.Response {
 func Do(ctx context.Context, client *Client, request *net.Request) *net.Response {
 	var response *net.Response
 
-	r, err := client.client.Do(request.HttpRequest().WithContext(ctx))
+	r, err := client.client.Do(request.HTTPRequest().WithContext(ctx))
 	// If we got an error, and the context has been canceled,
 	// the context's error is probably more useful.
 	if err != nil {
@@ -295,21 +310,21 @@ func Do(ctx context.Context, client *Client, request *net.Request) *net.Response
 
 func toRequestData(client *Client, ops util.Map) *net.RequestData {
 	data := net.NewRequestData()
-	data.Query = processQuery(ops.Get(net.REQUEST_TYPE_QUERY.String()))
+	data.Query = processQuery(ops.Get(net.RequestTypeQuery.String()))
 	data.Body = nil
 	if client.DataType() == DataTypeJSON {
 		data.SetHeaderJson()
-		data.Body = processJSON(ops.Get(net.REQUEST_TYPE_JSON.String()))
+		data.Body = processJSON(ops.Get(net.RequestTypeJson.String()))
 	}
 	if client.DataType() == DataTypeXML {
 		data.SetHeaderXml()
-		data.Body = processXML(ops.Get(net.REQUEST_TYPE_XML.String()))
+		data.Body = processXML(ops.Get(net.RequestTypeXml.String()))
 	}
 
 	if client.DataType() == DataTypeMultipart {
 		buf := bytes.Buffer{}
 		writer := multipart.NewWriter(&buf)
-		writer = processMultipart(writer, ops.Get(net.REQUEST_TYPE_MULTIPART.String()))
+		writer = processMultipart(writer, ops.Get(net.RequestTypeMultipart.String()))
 		data.Body = &buf
 		data.Header.Set("Content-Type", writer.FormDataContentType())
 		defer writer.Close()
@@ -344,7 +359,7 @@ func processMultipart(w *multipart.Writer, i interface{}) *multipart.Writer {
 		}
 		des := v.GetMap("description")
 		if des != nil {
-			w.WriteField("description", string(des.ToJson()))
+			w.WriteField("description", string(des.ToJSON()))
 		}
 
 	}
@@ -356,7 +371,7 @@ func processFormParams(i interface{}) string {
 	case string:
 		return v
 	case util.Map:
-		return v.ToXml()
+		return v.ToXML()
 	}
 	return ""
 }
@@ -369,8 +384,8 @@ func processXML(i interface{}) io.Reader {
 		log.Debug("processXML|[]byte", v)
 		return bytes.NewReader(v)
 	case util.Map:
-		log.Debug("processXML|util.Map", v.ToXml())
-		return strings.NewReader(v.ToXml())
+		log.Debug("processXML|util.Map", v.ToXML())
+		return strings.NewReader(v.ToXML())
 	default:
 		log.Debug("processXML|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
@@ -392,7 +407,7 @@ func processJSON(i interface{}) io.Reader {
 		return bytes.NewReader(v)
 	case util.Map:
 		log.Debug("processJSON|util.Map", v.String())
-		return bytes.NewReader(v.ToJson())
+		return bytes.NewReader(v.ToJSON())
 	default:
 		log.Debug("processJSON|default", v)
 		if v0, e := json.Marshal(v); e == nil {
@@ -408,7 +423,7 @@ func processQuery(i interface{}) string {
 	case string:
 		return v
 	case util.Map:
-		return v.UrlEncode()
+		return v.URLEncode()
 	}
 	return ""
 }
@@ -464,7 +479,7 @@ func (u *URL) ShortURL(url string) util.Map {
 	}
 	token := u.token.GetToken()
 	ops := util.Map{
-		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		net.RequestTypeQuery.String(): token.KeyMap(),
 	}
 	resp := u.client.HTTPPostJSON(u.client.domain.Link(shortURLSuffix), m, ops)
 	log.Debug("URL|ShortURL", *resp)

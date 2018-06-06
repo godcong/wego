@@ -7,30 +7,37 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*BizMsg BizMsg */
 type BizMsg struct {
 	token          string
 	encodingAESKey []byte
-	appId          string
+	appID          string
 }
+
+/*ErrorCodeType ErrorCodeType */
 type ErrorCodeType int
 
-const OK ErrorCodeType = 0
-const ValidateSignatureError = -40001
-const ParseXmlError = -40002
-const ComputeSignatureError = -40003
-const IllegalAesKey = -40004
-const ValidateAppidError = -40005
-const EncryptAESError = -40006
-const DecryptAESError = -40007
-const IllegalBuffer = -40008
-const EncodeBase64Error = -40009
-const DecodeBase64Error = -40010
-const GenReturnXmlError = -40011
+/*error code types */
+const (
+	OK                     ErrorCodeType = 0
+	ValidateSignatureError               = -40001
+	ParseXMLError                        = -40002
+	ComputeSignatureError                = -40003
+	IllegalAesKey                        = -40004
+	ValidateAppidError                   = -40005
+	EncryptAESError                      = -40006
+	DecryptAESError                      = -40007
+	IllegalBuffer                        = -40008
+	EncodeBase64Error                    = -40009
+	DecodeBase64Error                    = -40010
+	GenReturnXMLError                    = -40011
+)
 
+/*ErrorCode ErrorCode */
 var ErrorCode = map[string]ErrorCodeType{
 	"OK": OK,
 	"ValidateSignatureError": ValidateSignatureError,
-	"ParseXmlError":          ParseXmlError,
+	"ParseXMLError":          ParseXMLError,
 	"ComputeSignatureError":  ComputeSignatureError,
 	"IllegalAesKey":          IllegalAesKey,
 	"ValidateAppidError":     ValidateAppidError,
@@ -39,21 +46,23 @@ var ErrorCode = map[string]ErrorCodeType{
 	"IllegalBuffer":          IllegalBuffer,
 	"EncodeBase64Error":      EncodeBase64Error,
 	"DecodeBase64Error":      DecodeBase64Error,
-	"GenReturnXmlError":      GenReturnXmlError,
+	"GenReturnXMLError":      GenReturnXMLError,
 }
 
+/*NewBizMsg NewBizMsg */
 func NewBizMsg(token, key, id string) *BizMsg {
 	k, _ := base64.RawStdEncoding.DecodeString(key)
 	return &BizMsg{
 		token:          token,
 		encodingAESKey: k,
-		appId:          id,
+		appID:          id,
 	}
 }
 
+/*Encrypt Encrypt */
 func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	prp := NewPrp(m.encodingAESKey)
-	b, err := prp.Encrypt(text, m.appId)
+	b, err := prp.Encrypt(text, m.appID)
 	if err != nil {
 		return "", err
 	}
@@ -64,17 +73,18 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 		"TimeStamp":    timeStamp,
 		"Nonce":        nonce,
 	}
-	return p.ToXml(), nil
+	return p.ToXML(), nil
 }
 
+/*Decrypt Decrypt */
 func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]byte, error) {
-	p := util.XmlToMap([]byte(text))
+	p := util.XMLToMap([]byte(text))
 	enpt := p.GetString("Encrypt")
 	tSign := SHA1(m.token, timeStamp, nonce, enpt)
 	if msgSignature != tSign {
 		return nil, errors.New("ValidateSignatureError")
 	}
 	prp := NewPrp(m.encodingAESKey)
-	b, err := prp.Decrypt([]byte(enpt), m.appId)
+	b, err := prp.Decrypt([]byte(enpt), m.appID)
 	return b, err
 }

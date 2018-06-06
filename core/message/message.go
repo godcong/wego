@@ -8,8 +8,8 @@ import (
 )
 
 type Messager interface {
-	ToXml() ([]byte, error)
-	ToJson() ([]byte, error)
+	ToXML() ([]byte, error)
+	ToJSON() ([]byte, error)
 }
 
 type CDATA = util.CDATA

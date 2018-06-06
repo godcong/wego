@@ -121,7 +121,7 @@ func (q *QrCode) ShowQrCode(ticket string) *net.Response {
 	resp := q.client.HTTPGet(
 		q.client.Link(showQrcodeURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): util.Map{
+			net.RequestTypeQuery.String(): util.Map{
 				"ticket": url.QueryEscape(ticket),
 			},
 		})

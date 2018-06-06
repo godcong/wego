@@ -40,18 +40,20 @@ import (
 //	return &PayRequest{config: config}
 //}
 
+/*RequestType RequestType */
 type RequestType string
 
+/*request types */
 const (
-	REQUEST_TYPE_JSON        RequestType = "json"
-	REQUEST_TYPE_QUERY       RequestType = "query"
-	REQUEST_TYPE_XML         RequestType = "xml"
-	REQUEST_TYPE_FORM_PARAMS RequestType = "form_params"
-	REQUEST_TYPE_FILE        RequestType = "file"
-	REQUEST_TYPE_MULTIPART   RequestType = "multipart"
-	REQUEST_TYPE_STRING      RequestType = "string"
-	REQUEST_TYPE_HEADERS     RequestType = "headers"
-	REQUEST_TYPE_CUSTOM      RequestType = "custom"
+	RequestTypeJson       RequestType = "json"
+	RequestTypeQuery      RequestType = "query"
+	RequestTypeXml        RequestType = "xml"
+	RequestTypeFormParams RequestType = "form_params"
+	RequestTypeFile       RequestType = "file"
+	RequestTypeMultipart  RequestType = "multipart"
+	RequestTypeString     RequestType = "string"
+	RequestTypeHeaders    RequestType = "headers"
+	RequestTypeCustom     RequestType = "custom"
 )
 
 type Request struct {
@@ -63,6 +65,7 @@ type Request struct {
 	error error
 }
 
+/*NewRequest NewRequest */
 func NewRequest() *Request {
 	r := Request{
 		httpRequest: nil,
@@ -77,6 +80,7 @@ func NewRequest() *Request {
 	return &r
 }
 
+/*SetCustomCallback SetCustomCallback*/
 func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
 	r.custom = f
 	return r
@@ -104,11 +108,11 @@ func ReqType(reqType string) RequestType {
 	log.Debug("reqType", reqType)
 	switch reqType {
 	case ContentTypeJson:
-		return REQUEST_TYPE_JSON
+		return RequestTypeJson
 	case ContentTypeHtml:
 		//return REQUEST_TYPE_HTML
 	case ContentTypeXml, ContentTypeXml2:
-		return REQUEST_TYPE_XML
+		return RequestTypeXml
 	case ContentTypePlain:
 	case ContentTypePostForm:
 	case ContentTypeMultipartPostForm:
@@ -116,10 +120,10 @@ func ReqType(reqType string) RequestType {
 	case ContentTypeMsgPack:
 	case ContentTypeMsgPack2:
 	}
-	return REQUEST_TYPE_JSON
+	return RequestTypeJson
 }
 
-func (r *Request) HttpRequest() *http.Request {
+func (r *Request) HTTPRequest() *http.Request {
 	return r.httpRequest
 }
 

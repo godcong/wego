@@ -81,7 +81,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	result := s.CallbackFunc(message)
 	w.WriteHeader(http.StatusOK)
 
-	rltXML, err = result.ToXml()
+	rltXML, err = result.ToXML()
 	if err != nil {
 		log.Error(err)
 		return

@@ -392,7 +392,7 @@ func (c *Card) Create(card *OneCard) *net.Response {
 		c.client.Link(cardCreateURLSuffix),
 		util.Map{"card": d},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): key,
+			net.RequestTypeQuery.String(): key,
 		})
 	return resp
 }

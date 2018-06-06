@@ -51,7 +51,7 @@ func (u *User) UpdateRemark(openid, remark string) *net.Response {
 			"remark": remark,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -73,7 +73,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 	resp := u.client.HTTPGet(
 		u.client.Link(userInfoURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	var info core.UserInfo
 	json.Unmarshal(resp.ToBytes(), &info)
@@ -91,17 +91,17 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	log.Debug("User|BatchGet", openids, lang)
 	p := u.token.GetToken().KeyMap()
-	var list []*core.UserId
+	var list []*core.UserID
 
 	for _, v := range openids {
 		if lang != "" {
-			list = append(list, &core.UserId{
-				OpenId: v,
+			list = append(list, &core.UserID{
+				OpenID: v,
 				Lang:   lang,
 			})
 		} else {
-			list = append(list, &core.UserId{
-				OpenId: v,
+			list = append(list, &core.UserID{
+				OpenID: v,
 			})
 		}
 
@@ -112,7 +112,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 			"user_list": list,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 
 	m := make(map[string][]*core.UserInfo)
@@ -138,7 +138,7 @@ func (u *User) Get(nextOpenid string) *net.Response {
 	resp := u.client.HTTPGet(
 		u.client.Link(userGetURLSuffix),
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): query,
+			net.RequestTypeQuery.String(): query,
 		})
 
 	return resp

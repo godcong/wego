@@ -16,7 +16,7 @@ package menu
 //	return string(m)
 //}
 
-/* MatchRule */
+/*MatchRule MatchRule*/
 type MatchRule struct {
 	TagID              string `json:"tag_id,omitempty"`
 	Sex                string `json:"sex,omitempty"`

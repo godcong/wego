@@ -26,7 +26,7 @@ func (t *Image) ToXml() ([]byte, error) {
 }
 func (t *Image) ToJson() ([]byte, error) {
 	m := t.ToMap()
-	return m.ToJson(), nil
+	return m.ToJSON(), nil
 }
 
 func (t *Image) ToMap() util.Map {

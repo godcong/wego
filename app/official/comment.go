@@ -44,7 +44,7 @@ func (c *Comment) Open(id, index int) *net.Response {
 			"index":       index,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -67,7 +67,7 @@ func (c *Comment) Close(id, index int) *net.Response {
 			"index":       index,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -93,7 +93,7 @@ func (c *Comment) List(id, index, begin, count, typ int) *net.Response {
 			"type":        typ,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -119,7 +119,7 @@ func (c *Comment) Markelect(id, index, userCommentID int) *net.Response {
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -146,7 +146,7 @@ func (c *Comment) Unmarkelect(id, index, userCommentID int) *net.Response {
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -169,7 +169,7 @@ func (c *Comment) Delete(id, index, userCommentID int) *net.Response {
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -197,7 +197,7 @@ func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) *net.Re
 			"content":         content,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -223,7 +223,7 @@ func (c *Comment) ReplyDelete(id, index, userCommentID int) *net.Response {
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.REQUEST_TYPE_QUERY.String(): p,
+			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }

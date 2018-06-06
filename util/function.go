@@ -14,43 +14,50 @@ import (
 	"time"
 
 	"github.com/godcong/wego/log"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
-const CUSTOM_HEADER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
+/*CustomHeader xml header*/
+const CustomHeader = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
 
+/*CDATA xml cdata defines */
 type CDATA struct {
 	Value string `xml:",cdata"`
 }
 
+/* error types */
 var (
 	ErrorSignType  = errors.New("sign type error")
 	ErrorParameter = errors.New("JsonApiParameters() check error")
 	ErrorToken     = errors.New("EditAddressParameters() token is nil")
 )
 
+/*RandomKind RandomKind */
 type RandomKind int
 
+/*random kinds */
 const (
-	T_RAND_NUM      RandomKind = iota // 纯数字
-	T_RAND_LOWER                      // 小写字母
-	T_RAND_UPPER                      // 大写字母
-	T_RAND_LOWERNUM                   // 数字、小写字母
-	T_RAND_UPPERNUM                   // 数字、大写字母
-	T_RAND_ALL                        // 数字、大小写字母
+	RandomNum      RandomKind = iota // 纯数字
+	RandomLower                      // 小写字母
+	RandomUpper                      // 大写字母
+	RandomLowerNum                   // 数字、小写字母
+	RandomUpperNum                   // 数字、大写字母
+	RandomAll                        // 数字、大小写字母
 )
 
+/*RandomString defines */
 var (
 	RandomString = map[RandomKind]string{
-		T_RAND_NUM:      "0123456789",
-		T_RAND_LOWER:    "abcdefghijklmnopqrstuvwxyz",
-		T_RAND_UPPER:    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		T_RAND_LOWERNUM: "0123456789abcdefghijklmnopqrstuvwxyz",
-		T_RAND_UPPERNUM: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		T_RAND_ALL:      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		RandomNum:      "0123456789",
+		RandomLower:    "abcdefghijklmnopqrstuvwxyz",
+		RandomUpper:    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		RandomLowerNum: "0123456789abcdefghijklmnopqrstuvwxyz",
+		RandomUpperNum: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		RandomAll:      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	}
 )
 
+/*ParseNumber parse interface to number */
 func ParseNumber(v interface{}) float64 {
 	switch v.(type) {
 	case float64:
@@ -61,6 +68,7 @@ func ParseNumber(v interface{}) float64 {
 	return 0
 }
 
+/*ParseInt parse interface to int64 */
 func ParseInt(v interface{}) int64 {
 	switch v0 := v.(type) {
 	case int:
@@ -80,14 +88,14 @@ func ParseInt(v interface{}) int64 {
 	return 0
 }
 
-// util.MapToXml Convert MAP to XML
-func MapToXml(m Map) (string, error) {
-	return mapToXml(m, false)
+/*MapToXML Convert MAP to XML */
+func MapToXML(m Map) (string, error) {
+	return mapToXML(m, false)
 }
 
-func mapToXml(m Map, needHeader bool) (string, error) {
+func mapToXML(m Map, needHeader bool) (string, error) {
 
-	buff := bytes.NewBuffer([]byte(CUSTOM_HEADER))
+	buff := bytes.NewBuffer([]byte(CustomHeader))
 	if needHeader {
 		buff.Write([]byte(xml.Header))
 	}
@@ -110,20 +118,21 @@ func mapToXml(m Map, needHeader bool) (string, error) {
 	return buff.String(), nil
 }
 
-// XmlToMap Convert XML to MAP
-func XmlToMap(contentXml []byte) Map {
-	return xmlToMap(contentXml, false)
+/*XMLToMap Convert XML to MAP */
+func XMLToMap(contentXML []byte) Map {
+	return xmlToMap(contentXML, false)
 }
 
-func JsonToMap(content []byte) Map {
+/*JSONToMap Convert JSON to MAP */
+func JSONToMap(content []byte) Map {
 	m := Map{}
 	json.Unmarshal(content, &m)
 	return m
 }
 
-func xmlToMap(contentXml []byte, hasHeader bool) Map {
+func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	m := make(Map)
-	dec := xml.NewDecoder(bytes.NewReader(contentXml))
+	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	ele, val := "", ""
 
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
@@ -164,6 +173,7 @@ func xmlToMap(contentXml []byte, hasHeader bool) Map {
 	return m
 }
 
+/*Time get time string */
 func Time(t ...*time.Time) string {
 	if t == nil {
 		return strconv.Itoa(time.Now().Nanosecond())
@@ -171,10 +181,12 @@ func Time(t ...*time.Time) string {
 	return strconv.Itoa(t[0].Nanosecond())
 }
 
+/*GenerateNonceStr GenerateNonceStr */
 func GenerateNonceStr() string {
 	return GenerateUUID()
 }
 
+/*GenerateUUID GenerateUUID */
 func GenerateUUID() string {
 	s := uuid.NewV1().String()
 	s = strings.Replace(s, "-", "", -1)
@@ -182,6 +194,7 @@ func GenerateUUID() string {
 	return string(run)
 }
 
+/*In check v is in source */
 func In(source []string, v string) bool {
 	for _, v0 := range source {
 		if v0 == v {
@@ -191,7 +204,7 @@ func In(source []string, v string) bool {
 	return false
 }
 
-// MapToString
+/*MapToString MapToString */
 func MapToString(data Map, skip []string) string {
 	var keys sort.StringSlice
 	for k := range data {
@@ -214,7 +227,8 @@ func MapToString(data Map, skip []string) string {
 	return strings.Join(sign, "&")
 }
 
-func ToUrlParams(data Map, skip []string) string {
+/*ToURLParams map to url params */
+func ToURLParams(data Map, skip []string) string {
 	keys := data.SortKeys()
 	var sign []string
 
@@ -245,10 +259,12 @@ func CurrentTimeStamp() int64 {
 	return time.Now().Unix()
 }
 
+// CurrentTimeStampString get current time to string
 func CurrentTimeStampString() string {
 	return strconv.FormatInt(CurrentTimeStamp(), 10)
 }
 
+// SHA1 transfer string to sha1
 func SHA1(s string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
@@ -269,14 +285,14 @@ func signatureSHA1(m Map) string {
 	return SHA1(sb)
 }
 
-// 随机字符串
+//GenerateRandomString2 随机字符串
 func GenerateRandomString2(size int, kind int) []byte {
 	ikind, kinds, result := kind, [][]int{{10, 48}, {26, 97}, {26, 65}}, make([]byte, size)
-	is_all := kind > 2 || kind < 0
+	isAll := kind > 2 || kind < 0
 
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < size; i++ {
-		if is_all { // random ikind
+		if isAll { // random ikind
 			ikind = rand.Intn(3)
 		}
 		scope, base := kinds[ikind][0], kinds[ikind][1]
@@ -285,9 +301,9 @@ func GenerateRandomString2(size int, kind int) []byte {
 	return result
 }
 
+//GenerateRandomString 随机字符串
 func GenerateRandomString(size int, kind ...RandomKind) string {
-
-	bytes := RandomString[T_RAND_ALL]
+	bytes := RandomString[RandomAll]
 	if kind != nil {
 		if k, b := RandomString[kind[0]]; b == true {
 			bytes = k

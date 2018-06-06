@@ -7,11 +7,13 @@ import (
 	"github.com/godcong/wego/log"
 )
 
+/*Domain Domain*/
 type Domain struct {
 	url string
 	app *Application
 }
 
+/*URL domain当前url */
 func (d *Domain) URL() string {
 	if d.url == "" {
 		return BaseDomain
@@ -19,6 +21,7 @@ func (d *Domain) URL() string {
 	return d.url
 }
 
+/*Link 地址拼接 */
 func (d *Domain) Link(s string) string {
 	url := ""
 	switch {
@@ -41,6 +44,8 @@ func (d *Domain) Link(s string) string {
 //		app:    application,
 //	}
 //}
+
+/*DeployJoin 字符串拼接 */
 func DeployJoin(v ...string) string {
 	return strings.Join(v, ".")
 }
@@ -56,13 +61,13 @@ func newDomain(s string) *Domain {
 		case "default":
 			url = BaseDomain
 		case "official_account", "mini_program":
-			url = ApiWeixin
+			url = APIWeixin
 		case "file":
-			url = FileApiWeixin
+			url = FileAPIWeixin
 		case "mp":
-			url = MpDomain
+			url = MPDomain
 		default:
-			url = BackDomain
+			url = API2Domain
 		}
 	}
 	return &Domain{
@@ -70,10 +75,12 @@ func newDomain(s string) *Domain {
 	}
 }
 
+/*NewDomain NewDomain*/
 func NewDomain(prefix string) *Domain {
 	return newDomain(prefix)
 }
 
+/*DomainHost get host domain*/
 func DomainHost() *Domain {
 	return newDomain("host")
 }

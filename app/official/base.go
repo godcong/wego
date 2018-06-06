@@ -41,7 +41,7 @@ func (b *Base) ClearQuota() util.Map {
 		"appid": b.config.Get("app_id"),
 	}
 	resp := b.client.HTTPPostJSON(b.client.Link(clearQuotaURLSuffix), params, util.Map{
-		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		net.RequestTypeQuery.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
 }
@@ -57,7 +57,7 @@ func (b *Base) ClearQuota() util.Map {
 func (b *Base) GetCallbackIP() util.Map {
 	token := b.token.GetToken()
 	resp := b.client.HTTPGet(b.client.Link(getCallbackIPUrlSuffix), util.Map{
-		net.REQUEST_TYPE_QUERY.String(): token.KeyMap(),
+		net.RequestTypeQuery.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
 }

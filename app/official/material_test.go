@@ -19,12 +19,12 @@ func TestMaterial_AddNews(t *testing.T) {
 	resp = material.AddNews([]*media.Article{
 		{
 			Title:            "name",
-			ThumbMediaId:     "9fCk1Any5VcwmbJPzGztWMq3a1PsWv11KpgLTdM_YXgIlwdAUosdeSI_M6M7Qtwb",
+			ThumbMediaID:     "9fCk1Any5VcwmbJPzGztWMq3a1PsWv11KpgLTdM_YXgIlwdAUosdeSI_M6M7Qtwb",
 			Author:           "cc",
 			Digest:           "ab",
 			ShowCoverPic:     "0",
 			Content:          "bb",
-			ContentSourceUrl: "a",
+			ContentSourceURL: "a",
 		},
 	})
 	t.Log(resp.ToString())

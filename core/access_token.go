@@ -12,6 +12,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*AccessToken AccessToken */
 type AccessToken struct {
 	config.Config
 	client      *Client
@@ -19,9 +20,13 @@ type AccessToken struct {
 	token       string
 }
 
+/*AccessTokenKey 键值 */
 const AccessTokenKey = "access_token"
+
+/*AccessTokenExpiresIn 过期 */
 const AccessTokenExpiresIn = "expires_in"
 
+/*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) getQuery() util.Map {
@@ -44,6 +49,7 @@ func (a *AccessToken) sendRequest(s string) []byte {
 
 }
 
+/*NewAccessToken NewAccessToken*/
 func NewAccessToken(config config.Config, client *Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
@@ -51,23 +57,26 @@ func NewAccessToken(config config.Config, client *Client) *AccessToken {
 	}
 }
 
+/*Refresh 刷新AccessToken */
 func (a *AccessToken) Refresh() *AccessToken {
 	log.Debug("AccessToken|Refresh")
 	a.getToken(true)
 	return a
 }
 
+/*GetRefreshedToken 获取刷新token */
 func (a *AccessToken) GetRefreshedToken() *Token {
 	log.Debug("AccessToken|GetRefreshedToken")
 	return a.getToken(true)
 }
 
+/*GetToken 获取token */
 func (a *AccessToken) GetToken() *Token {
 	log.Debug("AccessToken|GetToken")
 	return a.getToken(false)
 }
 
-/* */
+/*GetTokenWithRefresh 重新获取token */
 func (a *AccessToken) GetTokenWithRefresh() *Token {
 	log.Debug("AccessToken|GetTokenWithRefresh")
 	return a.getToken(true)
@@ -100,6 +109,8 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	return token
 
 }
+
+/*RequestToken 请求获取token */
 func (a *AccessToken) RequestToken(credentials string) *Token {
 	var token Token
 	tokenByte := a.sendRequest(credentials)
@@ -115,10 +126,12 @@ func (a *AccessToken) RequestToken(credentials string) *Token {
 	return &token
 }
 
+/*SetTokenWithLife set string token with life time */
 func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {
 	return a.setToken(token, lifeTime)
 }
 
+/*SetToken set string token */
 func (a *AccessToken) SetToken(token string) *AccessToken {
 	return a.setToken(token, time.Unix(7200, 0))
 }
@@ -132,7 +145,7 @@ func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
 }
 
 func (a *AccessToken) getCredentials() string {
-	c := md5.Sum(a.credentials.ToJson())
+	c := md5.Sum(a.credentials.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 

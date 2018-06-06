@@ -1,5 +1,6 @@
 package net
 
+/*content types */
 const (
 	ContentTypeJson              = "application/json"
 	ContentTypeHtml              = "text/html"
