@@ -37,7 +37,7 @@ var system System
 var useCache = false
 
 func initLoader() *config.Tree {
-	t, err := config.ConfigTree(*f)
+	t, err := config.GetConfigTree(*f)
 	if err != nil {
 		t = &config.Tree{}
 	}

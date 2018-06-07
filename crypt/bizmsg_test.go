@@ -13,7 +13,7 @@ var text = `<xml>
     <CreateTime>1524409354</CreateTime>
     <MsgType><![CDATA[text]]></MsgType>
     <Content><![CDATA[你好啊你好啊你好啊]]></Content>
-    <MsgId>6547288321577417974</MsgId>
+    <MsgID>6547288321577417974</MsgID>
 </xml>`
 
 var text1 = `<xml><ToUserName><![CDATA[gh_56870ffd193b]]></ToUserName><Encrypt><![CDATA[iiCKU5aC+BE0DDhjW8qWvqfQGkIgEVNSYI3SSlaLy9xq7VUKMUFW7jXH1VBX4ZpkRJLpiSoXqSyF2S7hclV37IpphXNzQpKwwP6UvoSuZNQyhF7bQraLm3QmxBV1JNt/tH5qoV1nPIwmj/tgdIDNfiTkMi8We1984Sb+T6lB6zPMsaIRTCXHdV+5/yx98veVv3MTY3nkmFCR738wxbQ1wZxqQyuHs8AYBWAByVbm5MCdrwO8KF2xxvnX1Zneng+UjbNVh9KCWllYoNIQPgGpy2y9HGlwcYNwtPRomfb/dWYr1J43aaVMIrh8KU/cJH3V0fF/zdX0yTpNAWyMhYP2fUHARpr9qBFWacbFTcAuBMaNTeFlFUvgRb/sM3G9wRkEFm1okMcDz7o4vqE03ZAwT9BPyjr3sYBpTdgq4CHj4cKgw2+W32m+PvAa/BFmLMCSWutJExu/ze4SfkJO/3xCzw==]]></Encrypt></xml>`

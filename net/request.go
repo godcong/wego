@@ -45,9 +45,9 @@ type RequestType string
 
 /*request types */
 const (
-	RequestTypeJson       RequestType = "json"
+	RequestTypeJSON       RequestType = "json"
 	RequestTypeQuery      RequestType = "query"
-	RequestTypeXml        RequestType = "xml"
+	RequestTypeXML        RequestType = "xml"
 	RequestTypeFormParams RequestType = "form_params"
 	RequestTypeFile       RequestType = "file"
 	RequestTypeMultipart  RequestType = "multipart"
@@ -56,6 +56,7 @@ const (
 	RequestTypeCustom     RequestType = "custom"
 )
 
+/*Request Request */
 type Request struct {
 	requestType RequestType
 	//requestData *RequestData
@@ -86,6 +87,7 @@ func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
 	return r
 }
 
+/*GetRequestType GetRequestType */
 func (r *Request) GetRequestType() RequestType {
 	return r.requestType
 }
@@ -94,6 +96,7 @@ func (r *Request) Error() error {
 	return r.error
 }
 
+/*NewRequestData NewRequestData */
 func NewRequestData() *RequestData {
 	data := &RequestData{
 		Query:  "",
@@ -104,15 +107,17 @@ func NewRequestData() *RequestData {
 	//data.Header = cloneHeader(r.requestData.Header)
 	return data
 }
+
+/*ReqType get request type */
 func ReqType(reqType string) RequestType {
 	log.Debug("reqType", reqType)
 	switch reqType {
-	case ContentTypeJson:
-		return RequestTypeJson
-	case ContentTypeHtml:
+	case ContentTypeJSON:
+		return RequestTypeJSON
+	case ContentTypeHTML:
 		//return REQUEST_TYPE_HTML
-	case ContentTypeXml, ContentTypeXml2:
-		return RequestTypeXml
+	case ContentTypeXML, ContentTypeXML2:
+		return RequestTypeXML
 	case ContentTypePlain:
 	case ContentTypePostForm:
 	case ContentTypeMultipartPostForm:
@@ -120,13 +125,15 @@ func ReqType(reqType string) RequestType {
 	case ContentTypeMsgPack:
 	case ContentTypeMsgPack2:
 	}
-	return RequestTypeJson
+	return RequestTypeJSON
 }
 
+/*HTTPRequest get http request*/
 func (r *Request) HTTPRequest() *http.Request {
 	return r.httpRequest
 }
 
+/*PerformRequest pre process */
 func PerformRequest(url string, method string, data *RequestData) *Request {
 	request := NewRequest()
 	var req *http.Request
@@ -193,6 +200,7 @@ func parseBody(body string) io.Reader {
 	return bytes.NewBufferString(body)
 }
 
+/*UseUTF8 return true */
 func UseUTF8() bool {
 	return true
 }

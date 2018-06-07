@@ -6,33 +6,38 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Link Link */
 type Link struct {
 	*Message
 	Title       string //消息标题
-	Url         string //消息链接
-	ThumbUrl    string //消息链接
+	URL         string //消息链接
+	ThumbURL    string //消息链接
 	Description string //消息描述
 }
 
-func NewLink(msg *Message, title, url, thumbUrl, desc string) *Link {
+/*NewLink NewLink */
+func NewLink(msg *Message, title, url, thumbURL, desc string) *Link {
 	return &Link{
 		Message:     msg,
 		Title:       title,
-		Url:         url,
-		ThumbUrl:    thumbUrl,
+		URL:         url,
+		ThumbURL:    thumbURL,
 		Description: desc,
 	}
 }
 
-func (l *Link) ToXml() ([]byte, error) {
+/*ToXML transfer link to xml */
+func (l *Link) ToXML() ([]byte, error) {
 	return xml.Marshal(*l)
 }
 
-func (l *Link) ToJson() ([]byte, error) {
+/*ToJSON transfer link to json */
+func (l *Link) ToJSON() ([]byte, error) {
 	m := l.ToMap()
 	return m.ToJSON(), nil
 }
 
+/*ToMap transfer link to map */
 func (l *Link) ToMap() util.Map {
 	m := util.Map{
 		"msgtype": l.MsgType.String(),
@@ -40,8 +45,8 @@ func (l *Link) ToMap() util.Map {
 		l.MsgType.String(): util.Map{
 			"title":       l.Title,
 			"description": l.Description,
-			"url":         l.Url,
-			"thumb_url":   l.ThumbUrl,
+			"url":         l.URL,
+			"thumb_url":   l.ThumbURL,
 		},
 	}
 	return m

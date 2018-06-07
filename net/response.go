@@ -11,6 +11,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+/*Response Response */
 type Response struct {
 	responseType ResponseType
 	responseData []byte
@@ -19,12 +20,14 @@ type Response struct {
 	error error
 }
 
+/*ResponseType ResponseType */
 type ResponseType string
 
+/*response types */
 const (
-	RESPONSE_TYPE_JSON ResponseType = "json"
-	RESPONSE_TYPE_XML               = "xml"
-	RESPONSE_TYPE_HTML              = "html"
+	ResponseTypeJSON ResponseType = "json"
+	ResponseTypeXML               = "xml"
+	ResponseTypeHTML              = "html"
 	//RESPONSE_TYPE_ARRAY               = "array"
 	//RESPONSE_TYPE_STRUCT              = "struct"
 	//RESPONSE_TYPE_MAP                 = "map"
@@ -41,6 +44,7 @@ func filterContent(content string) string {
 	return content
 }
 
+/*RespType RespType */
 func RespType(reqType RequestType) ResponseType {
 	log.Debug("reqType", reqType)
 	switch reqType {
@@ -56,11 +60,11 @@ func RespType(reqType RequestType) ResponseType {
 	//case CONTENT_TYPE_PROTOBUF:
 	//case CONTENT_TYPE_MSGPACK:
 	//case CONTENT_TYPE_MSGPACK2:
-	case RequestTypeJson:
-		return RESPONSE_TYPE_JSON
+	case RequestTypeJSON:
+		return ResponseTypeJSON
 	case RequestTypeQuery:
-	case RequestTypeXml:
-		return RESPONSE_TYPE_XML
+	case RequestTypeXML:
+		return ResponseTypeXML
 	case RequestTypeFormParams:
 	case RequestTypeFile:
 	case RequestTypeMultipart:
@@ -68,9 +72,10 @@ func RespType(reqType RequestType) ResponseType {
 	case RequestTypeHeaders:
 	case RequestTypeCustom:
 	}
-	return RESPONSE_TYPE_JSON
+	return ResponseTypeJSON
 }
 
+/*ParseResponse get response data */
 func ParseResponse(typ RequestType, r *http.Response) *Response {
 	var resp Response
 	resp.responseData, resp.error = ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
@@ -86,39 +91,39 @@ func (r *Response) Error() error {
 	return r.error
 }
 
+/*ToMap transfer response data to map data */
 func (r *Response) ToMap() util.Map {
-	if r.responseType == RESPONSE_TYPE_XML {
+	if r.responseType == ResponseTypeXML {
 		r.responseMap = util.XMLToMap(r.responseData)
 	}
-	if r.responseType == RESPONSE_TYPE_JSON {
+	if r.responseType == ResponseTypeJSON {
 		r.responseMap = util.JSONToMap(r.responseData)
 	}
-
 	return r.responseMap
 }
 
-/*ToXML transfer response data to xml*/
+/*ToXML transfer response data to xml */
 func (r *Response) ToXML() string {
-	if r.responseType == RESPONSE_TYPE_XML {
+	if r.responseType == ResponseTypeXML {
 		return string(r.responseData)
 	}
 	return r.responseMap.ToXML()
 }
 
-/*ToJSON transfer response data to json*/
+/*ToJSON transfer response data to json */
 func (r *Response) ToJSON() []byte {
-	if r.responseType == RESPONSE_TYPE_JSON {
+	if r.responseType == ResponseTypeJSON {
 		return r.responseData
 	}
 	return r.responseMap.ToJSON()
 }
 
-/*ToBytes transfer response data to bytes*/
+/*ToBytes transfer response data to bytes */
 func (r *Response) ToBytes() []byte {
 	return r.responseData
 }
 
-/*ToString transfer response data to string*/
+/*ToString transfer response data to string */
 func (r *Response) ToString() string {
 	return string(r.responseData)
 }

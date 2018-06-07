@@ -1,9 +1,10 @@
 package message
 
+/*Location Location*/
 type Location struct {
 	Message
-	Location_X string
-	Location_Y string
-	Scale      string
-	Label      string
+	LocationX string `xml:"location_x"`
+	LocationY string `xml:"location_y"`
+	Scale     string `xml:"scale"`
+	Label     string `xml:"label"`
 }

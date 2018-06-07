@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+/*RequestData RequestData */
 type RequestData struct {
 	Query  string
 	Method string
@@ -12,12 +13,14 @@ type RequestData struct {
 	Body   io.Reader
 }
 
-func (r *RequestData) SetHeaderJson() *RequestData {
+/*SetJSONHeader set content type with json */
+func (r *RequestData) SetJSONHeader() *RequestData {
 	r.Header.Set("Content-Type", "application/json")
 	return r
 }
 
-func (r *RequestData) SetHeaderXml() *RequestData {
+/*SetXMLHeader set content type with xml */
+func (r *RequestData) SetXMLHeader() *RequestData {
 	r.Header.Set("Content-Type", "application/xml")
 	return r
 }

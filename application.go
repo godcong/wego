@@ -18,7 +18,7 @@ type Application interface {
 	SetSubMerchant(mchid, appid string) *core.Application
 }
 
-/*AccessToken 访问Token*/
+/*AccessToken 访问Token */
 type AccessToken interface {
 	GetToken() core.Token
 	GetTokenWithRefresh() core.Token

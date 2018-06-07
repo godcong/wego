@@ -25,7 +25,7 @@ type Server interface {
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
-/*Account 公众号*/
+/*OfficialAccount 公众号*/
 type OfficialAccount interface {
 	Base() Base
 	Menu() Menu

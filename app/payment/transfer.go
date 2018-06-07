@@ -197,6 +197,6 @@ func (t *Transfer) ToBankCard(m util.Map) *net.Response {
 	m.Set("enc_true_name", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
 	m.Set("sign", core.GenerateSignature(m, t.client.Get("key"), core.MakeSignMD5))
 	return t.client.SafeRequest(t.client.Link(mmPaySpTransPayBankURLSuffix), util.Map{
-		net.RequestTypeXml.String(): m,
+		net.RequestTypeXML.String(): m,
 	}, "post")
 }

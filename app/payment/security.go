@@ -66,6 +66,6 @@ openssl rsa -pubin -in <filename> -RSAPublicKey_out
 func (s *Security) GetPublicKey() *net.Response {
 	s.client.SetDataType(core.DataTypeXML)
 	return s.client.SafeRequest(riskGetPublicKeyURLSuffix, util.Map{
-		net.RequestTypeXml.String(): s.preRequest(util.Map{"sign_type": "MD5"}),
+		net.RequestTypeXML.String(): s.preRequest(util.Map{"sign_type": "MD5"}),
 	}, "post")
 }

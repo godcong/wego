@@ -1,5 +1,6 @@
 package message
 
+/*SendLocationInfo SendLocationInfo */
 type SendLocationInfo struct {
 	LocationX float64 `xml:"LocationX"`
 	LocationY float64 `xml:"LocationY"`

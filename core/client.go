@@ -105,7 +105,7 @@ func (c *Client) SetDataType(dataType DataType) *Client {
 func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
 	c.dataType = DataTypeJSON
 	p := util.Map{
-		net.RequestTypeJson.String(): json,
+		net.RequestTypeJSON.String(): json,
 	}
 	if query != nil {
 		p.Set(net.RequestTypeQuery.String(), query)
@@ -117,7 +117,7 @@ func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net
 func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
 	c.dataType = DataTypeXML
 	p := util.Map{
-		net.RequestTypeXml.String(): xml,
+		net.RequestTypeXML.String(): xml,
 	}
 	if query != nil {
 		p.Set(net.RequestTypeQuery.String(), query)
@@ -313,12 +313,12 @@ func toRequestData(client *Client, ops util.Map) *net.RequestData {
 	data.Query = processQuery(ops.Get(net.RequestTypeQuery.String()))
 	data.Body = nil
 	if client.DataType() == DataTypeJSON {
-		data.SetHeaderJson()
-		data.Body = processJSON(ops.Get(net.RequestTypeJson.String()))
+		data.SetJSONHeader()
+		data.Body = processJSON(ops.Get(net.RequestTypeJSON.String()))
 	}
 	if client.DataType() == DataTypeXML {
-		data.SetHeaderXml()
-		data.Body = processXML(ops.Get(net.RequestTypeXml.String()))
+		data.SetXMLHeader()
+		data.Body = processXML(ops.Get(net.RequestTypeXML.String()))
 	}
 
 	if client.DataType() == DataTypeMultipart {

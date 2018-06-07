@@ -48,8 +48,8 @@ func testTemplate_Send(t *testing.T, template *mini.Template) {
 	//t.Log(rlt1.ToString())
 	rlt := template.Send(&message.Template{
 		ToUser:     "oE_gl0Yr54fUjBhU5nBlP4hS2efo",
-		TemplateId: "0-A8LciZI4nQpjFnQ_jtykix4rqKlMcqbSILDaJKPhQ",
-		Url:        "",
+		TemplateID: "0-A8LciZI4nQpjFnQ_jtykix4rqKlMcqbSILDaJKPhQ",
+		URL:        "",
 		Data: message.TemplateData{
 			"keyword1": &message.ValueColor{
 				Value: "恭喜你成功购买奇葩商品一枚！",
@@ -69,7 +69,7 @@ func testTemplate_Send(t *testing.T, template *mini.Template) {
 			},
 		},
 		Page:            "index?value=123",
-		FormId:          "1523991474645",
+		FormID:          "1523991474645",
 		EmphasisKeyword: "keyword1.DATA",
 	})
 	t.Log(rlt.ToString())

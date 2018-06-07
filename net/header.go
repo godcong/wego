@@ -2,10 +2,10 @@ package net
 
 /*content types */
 const (
-	ContentTypeJson              = "application/json"
-	ContentTypeHtml              = "text/html"
-	ContentTypeXml               = "application/xml"
-	ContentTypeXml2              = "text/xml"
+	ContentTypeJSON              = "application/json"
+	ContentTypeHTML              = "text/html"
+	ContentTypeXML               = "application/xml"
+	ContentTypeXML2              = "text/xml"
 	ContentTypePlain             = "text/plain"
 	ContentTypePostForm          = "application/x-www-form-urlencoded"
 	ContentTypeMultipartPostForm = "multipart/form-data"

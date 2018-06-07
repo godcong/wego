@@ -1,9 +1,8 @@
 package cache
 
-import (
-	"time"
-)
+import "time"
 
+/*Cache define an cache interface */
 type Cache interface {
 	Get(key string) interface{}
 	GetD(key string, v interface{}) interface{}
@@ -20,12 +19,14 @@ type Cache interface {
 //var cache sync.Map
 var cache map[string]Cache
 
+/*DefaultCacheName defined the default cache */
 const DefaultCacheName = "map_cache"
 
 func init() {
 	RegisterCache(DefaultCacheName, NewMapCache())
 }
 
+/*RegisterCache register cache to map */
 func RegisterCache(name string, c Cache) {
 	if cache == nil {
 		cache = make(map[string]Cache)
@@ -33,6 +34,7 @@ func RegisterCache(name string, c Cache) {
 	cache[name] = c
 }
 
+/*GetCache get cache from map */
 func GetCache(name ...string) Cache {
 	if name != nil {
 		if v, b := cache[name[0]]; b {

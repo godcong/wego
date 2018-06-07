@@ -48,8 +48,8 @@ func testTemplate_Send(t *testing.T, template *official.Template) {
 	//t.Log(rlt1.ToString())
 	rlt := template.Send(&message.Template{
 		ToUser:     "ogJPnwU54xYMetJLjCbh6ycRvJW4",
-		TemplateId: "tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo",
-		Url:        "http://baidu.com",
+		TemplateID: "tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo",
+		URL:        "http://baidu.com",
 		Data: message.TemplateData{
 			"first": &message.ValueColor{
 				Value: "恭喜你成功购买奇葩商品一枚！",

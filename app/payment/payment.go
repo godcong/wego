@@ -69,7 +69,7 @@ func (p *Payment) GetClient() *core.Client {
 /*Request 普通请求*/
 func (p *Payment) Request(url string, params util.Map) *net.Response {
 	m := util.Map{
-		net.RequestTypeXml.String(): p.preRequest(params),
+		net.RequestTypeXML.String(): p.preRequest(params),
 	}
 
 	return p.client.Request(p.client.Link(url), m, "post")
@@ -78,7 +78,7 @@ func (p *Payment) Request(url string, params util.Map) *net.Response {
 /*RequestRaw raw请求*/
 func (p *Payment) RequestRaw(url string, params util.Map) *net.Response {
 	m := util.Map{
-		net.RequestTypeXml.String(): p.preRequest(params),
+		net.RequestTypeXML.String(): p.preRequest(params),
 	}
 
 	return p.client.RequestRaw(p.client.Link(url), m, "post")
@@ -87,7 +87,7 @@ func (p *Payment) RequestRaw(url string, params util.Map) *net.Response {
 /*SafeRequest 安全请求*/
 func (p *Payment) SafeRequest(url string, params util.Map) *net.Response {
 	m := util.Map{
-		net.RequestTypeXml.String(): p.preRequest(params),
+		net.RequestTypeXML.String(): p.preRequest(params),
 	}
 
 	return p.client.SafeRequest(p.client.Link(url), m, "post")
