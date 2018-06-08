@@ -14,7 +14,6 @@
 
 ## 第一步,取得OpenId
 
->
     //创建微信授权
     oauth:=official_account.NewOauth()
     //生成一个跳转链接,state自定义
@@ -32,7 +31,6 @@
 
 ### 注册回调监听
 
->
     oauth.RegisterAllCallback(func(w http.ResponseWriter, r *http.Request, val *official_account.CallbackValue) []byte {
         if val.Type == "info" {
             info := val.Value.(*core.UserInfo)
@@ -43,13 +41,12 @@
 
 ### 注册回调地址
 
->
     http.HandleFunc("/oauth_callback", oauth.ServeHTTP)
 
 ## 第二部,支付请求：
 
 数据初始化：
->
+
     data := make(util.Map)
     data.Set("body", "腾讯充值中心-QQ会员充值")
     data.Set("out_trade_no", out_trade_no)
@@ -63,7 +60,6 @@
 
 //也可以直接初始化
 
->
     data := util.Map{
     "body":"腾讯充值中心-QQ会员充值",
     ...,
@@ -73,46 +69,97 @@
 
 ### 所需参数可参考微信接口定义
 
-before：
-创建order对象：order:=payment.NewOrder()
-创建refund对象: refund:=payment.NewRefund()
-创建bill对象：bill:= payment.NewBill()
+创建order：
+
+    order:=payment.NewOrder()
+
+创建refund:
+
+    refund:=payment.NewRefund()
+
+创建bill：
+
+    bill:= payment.NewBill()
+
+创建server:
+
+    server:=payment.NewServer()
 
 a. 统一下单： <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1>
 
-调用接口： order.Unify(#data#)
+调用接口：
+
+    order.Unify(#data#)
+
 PS：data参数及返回值请参考微信API
 
 b. 查询订单: <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2>
 
-调用接口： order.QueryByTransactionId(#transaction_id#)
-          order.QueryByOutTradeNumber(#out_trade_no#)
+调用接口：
+
+    order.QueryByTransactionId(#transaction_id#)
+调用接口：
+
+    order.QueryByOutTradeNumber(#out_trade_no#)
 
 c. 关闭订单: <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3>
 
-调用接口： order.Close(#out_trade_no#)
+调用接口：
+
+    order.Close(#out_trade_no#)
 
 d. 申请退款: <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4>
 
-调用接口： refund.ByOutTradeNumber(#out_trade_no#, #out_refund_no#, #total_fee#, #refund_fee#,#options#)
-调用接口： refund.ByTransactionId(#transaction_id#, #out_refund_no#, #total_fee#, #refund_fee#,#options#)
+调用接口：
+
+    refund.ByOutTradeNumber(#out_trade_no#, #out_refund_no#, #total_fee#, #refund_fee#,#options#)
+调用接口：
+
+    refund.ByTransactionId(#transaction_id#, #out_refund_no#, #total_fee#, #refund_fee#,#options#)
 
 e. 查询退款: <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_5>
 
-调用接口： refund.QueryByRefundId(#refund_id#)
-调用接口： refund.QueryByOutRefundNumber(#out_refund_no#)
-调用接口： refund.QueryByOutTradeNumber(#out_trade_no#)
-调用接口： refund.QueryByTransactionId(#transaction_id#)
+调用接口：
+
+    refund.QueryByRefundId(#refund_id#)
+调用接口：
+
+    refund.QueryByOutRefundNumber(#out_refund_no#)
+调用接口：
+
+    refund.QueryByOutTradeNumber(#out_trade_no#)
+调用接口：
+
+    refund.QueryByTransactionId(#transaction_id#)
 
 f. 下载对账单 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6>
 
-调用接口： bill.Get(#bill_date#, #bill_type#,#options#)
+调用接口：
+
+    bill.Get(#bill_date#, #bill_type#,#options#)
 
 g. 支付结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7>
 
+收到通知时会调用接口：
+
+    server.AddCallback(pc core.PaymentCallback)
+注册监听：
+
+    server.ServeHTTP(http.ResponseWriter,*http.Request)
 
 h. 交易保障 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_8>
 
+none
+
 i. 退款结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=9>
 
+收到通知时会调用接口：
+
+    server.AddCallback(pc core.PaymentCallback)
+注册监听：
+
+    server.ServeHTTP(http.ResponseWriter,*http.Request)
+
 j. 拉取订单评价数据 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10>
+
+none
