@@ -65,9 +65,7 @@
     ...,
     }
 
-## 第三部,调用接口
-
-### 所需参数可参考微信接口定义
+## 第三部,调用接口(所需参数可参考微信接口定义)
 
 创建order：
 
@@ -145,7 +143,7 @@ g. 支付结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=
     server.AddCallback(pc core.PaymentCallback)
 注册监听：
 
-    server.ServeHTTP(http.ResponseWriter,*http.Request)
+    http.HandleFunc("/point/to/your/redirect/url", server.ServeHTTP)
 
 h. 交易保障 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_8>
 
@@ -158,7 +156,7 @@ i. 退款结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=
     server.AddCallback(pc core.PaymentCallback)
 注册监听：
 
-    server.ServeHTTP(http.ResponseWriter,*http.Request)
+    http.HandleFunc("/point/to/your/redirect/url", server.ServeHTTP)
 
 j. 拉取订单评价数据 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10>
 
