@@ -71,7 +71,7 @@
 
     order:=payment.NewOrder()
 
-创建refund:
+创建refund：
 
     refund:=payment.NewRefund()
 
@@ -79,9 +79,11 @@
 
     bill:= payment.NewBill()
 
-创建server:
+创建server：
 
     server:=payment.NewServer()
+    
+PS：用到那个就创建那个,没用到不用创建
 
 a. 统一下单： <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1>
 
