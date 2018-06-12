@@ -2,9 +2,9 @@
 
 ## 第零步，配置config.toml中[payment.default]部分
 
-            app_id ='wx1ad61aeef1903b93'                //AppId
-            mch_id = '1498009232'                        //商户ID
-            key = 'O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ'    //支付key
+            app_id ='wx1ad61aeexxxxxxx'                //AppId
+            mch_id = '1498xxxxx32'                        //商户ID
+            key = 'O9aVVkxxxxxxxxxxxxxxxbZ2NQSJ'    //支付key
             notify_url ='https://mp.quick58.com/charge/callback' //支付回调地址
             cert_path = 'cert/apiclient_cert.pem'   //支付证书地址
             key_path = 'cert/apiclient_key.pem'      //支付证书地址
