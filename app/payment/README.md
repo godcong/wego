@@ -16,6 +16,7 @@
 
     //创建微信授权
     oauth:=official_account.NewOauth()
+
     //生成一个跳转链接,state自定义
     oauth.AuthCodeURL(#state#)
 
