@@ -17,13 +17,16 @@
 
 配置config.toml，请参考config.toml.example
 
+接口具体说明可以参考godoc
+>godoc -http:6060
+
 使用哪个模块就New哪个模块
 
-使用Wego搭建微信支付模块：
+Wego搭建微信支付模块参考文档：
 [支付模块README](https://github.com/godcong/wego/blob/master/app/payment/README.md)
 
-使用Wego搭建公众号：
+Wego搭建公众号参考文档：
 [公众号模块README](https://github.com/godcong/wego/blob/master/app/official_account/README.md)
 
-使用Wego搭建小程序后台：
+Wego搭建小程序后台参考文档：
 [小程序模块README](https://github.com/godcong/wego/blob/master/app/mini_program/README.md)
