@@ -6,7 +6,7 @@ import (
 	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"github.com/pelletier/go-toml"
+	toml "github.com/pelletier/go-toml"
 )
 
 /*Application Application */
