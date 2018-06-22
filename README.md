@@ -20,13 +20,13 @@
 接口具体说明可以参考godoc
 >godoc -http:6060
 
-使用哪个模块就New哪个模块
+使用哪个模块就New哪个模块，具体文档在各个模块下。
 
 Wego搭建微信支付模块参考文档：
 [支付模块README](https://github.com/godcong/wego/blob/master/app/payment/README.md)
 
 Wego搭建公众号参考文档：
-[公众号模块README](https://github.com/godcong/wego/blob/master/app/official_account/README.md)
+[公众号模块README](https://github.com/godcong/wego/blob/master/app/official/README.md)
 
 Wego搭建小程序后台参考文档：
-[小程序模块README](https://github.com/godcong/wego/blob/master/app/mini_program/README.md)
+[小程序模块README](https://github.com/godcong/wego/blob/master/app/mini/README.md)
