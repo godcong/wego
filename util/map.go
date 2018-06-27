@@ -40,6 +40,11 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
+/*ParseMap transfer to Map from map[string]interface{} */
+func ParseMap(p map[string]interface{}) Map {
+	return Map(p)
+}
+
 /*Set set interface */
 func (m *Map) Set(s string, v interface{}) *Map {
 	(*m)[s] = v
