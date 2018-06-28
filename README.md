@@ -9,16 +9,20 @@
 
 ## 时尚，简单，卓越，高性能的微信支付接口
 
-获取包:
+获取包：
 > go get github.com/godcong/wego
 
 建议使用golang/dep添加包：
 > dep ensure --add github.com/godcong/wego
 
-配置config.toml，请参考config.toml.example
+或者vgo添加：
+> vgo get github.com/godcong/wego@v0.1.0 
 
-接口具体说明可以参考godoc
->godoc -http:6060
+配置config.toml：
+> 参考config.toml.example
+
+接口说明可以参考godoc
+> godoc -http:6060
 
 使用哪个模块就New哪个模块，具体文档在各个模块下。
 
