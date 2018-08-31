@@ -35,5 +35,5 @@ Wego搭建公众号参考文档：
 Wego搭建小程序后台参考文档：
 [小程序模块README](https://github.com/godcong/wego/blob/master/app/mini/README.md)
 
-# PS:有部分接口,因微信权限原因无法测试,故进展比较缓慢.
+# PS:因微信接口超过,还有部分接口,因微信权限原因无法调试,故剩下部分进展比较缓慢.
 # 如有需要的接口还未开发.请提交issue.
