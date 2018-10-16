@@ -33,7 +33,7 @@ func init() {
 
 func newOfficialAccount(config config.Config, application *core.Application) *Account {
 	client := core.NewClient(config)
-	token := core.NewAccessToken(config, client)
+	token := core.newAccessToken(config, client)
 	domain := core.NewDomain("official_account")
 
 	account := &Account{

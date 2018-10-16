@@ -36,7 +36,7 @@ func newMiniProgram(config config.Config, application *core.Application) *Progra
 		app:    application,
 		client: core.NewClient(config),
 	}
-	mini0.token = core.NewAccessToken(config, mini0.client)
+	mini0.token = core.NewAccessToken()
 	mini0.client.SetDataType(core.DataTypeJSON)
 	mini0.client.SetDomain(core.NewDomain("mini"))
 	return mini0
@@ -101,7 +101,7 @@ func (m *Program) Template() *Template {
 func (m *Program) AccessToken() *core.AccessToken {
 	log.Debug("Program|AccessToken")
 	if m.token == nil {
-		m.token = core.NewAccessToken(m.Config, m.client)
+		m.token = core.NewAccessToken()
 	}
 	return m.token
 }

@@ -99,14 +99,6 @@ func init() {
 	initApp(defaultConfig)
 }
 
-//func (a *Application) Get(v interface{}) {
-//	name := reflect.TypeOf(v).String()
-//
-//	if v0, b := (*a).obj[name]; b {
-//		v = v0
-//	}
-//}
-
 /*GetSystemConfig GetSystemConfig */
 func GetSystemConfig() System {
 	return system
@@ -119,10 +111,6 @@ func (a *Application) Get(name string) interface{} {
 	}
 	return nil
 }
-
-//func (a *Application) Register(v interface{}) {
-//	a.register(reflect.TypeOf(v).String(), v)
-//}
 
 /*Register 注册 */
 func (a *Application) Register(name string, v interface{}) {

@@ -40,7 +40,7 @@ func init() {
 
 func newPayment(application *core.Application) *Payment {
 	client := core.NewClient(defaultConfig)
-	token := core.NewAccessToken(defaultConfig, client)
+	token := core.NewAccessToken()
 	domain := core.NewDomain("default")
 
 	payment = &Payment{
@@ -163,7 +163,7 @@ func (p *Payment) Refund() wego.Refund {
 /*AccessToken 获取AccessToken*/
 func (p *Payment) AccessToken() *core.AccessToken {
 	if p.token == nil {
-		p.token = core.NewAccessToken(p.config, p.client)
+		p.token = core.NewAccessToken()
 	}
 	return p.token
 }

@@ -49,12 +49,16 @@ func (a *AccessToken) sendRequest(s string) []byte {
 
 }
 
-/*NewAccessToken NewAccessToken*/
-func NewAccessToken(config config.Config, client *Client) *AccessToken {
+func newAccessToken(config config.Config, client *Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
 		client: client,
 	}
+}
+
+/*NewAccessToken NewAccessToken*/
+func NewAccessToken() *AccessToken {
+	return newAccessToken(defaultConfig, NewClient(defaultConfig))
 }
 
 /*Refresh 刷新AccessToken */

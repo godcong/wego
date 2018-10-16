@@ -19,14 +19,14 @@ func newBase(config config.Config) *Base {
 	return &Base{
 		Config: config,
 		client: client,
-		token:  NewAccessToken(config, client),
+		token:  NewAccessToken(),
 	}
 }
 
-//// NewBase
-//func NewBase() *Base {
-//	return newBase(config)
-//}
+//NewBase NewBase
+func NewBase() *Base {
+	return newBase(defaultConfig)
+}
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零
 公众号调用或第三方平台帮公众号调用对公众号的所有api调用（包括第三方帮其调用）次数进行清零：

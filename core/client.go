@@ -489,7 +489,7 @@ func (u *URL) ShortURL(url string) util.Map {
 /*NewURL NewURL*/
 func NewURL(config config.Config, client *Client) *URL {
 	return &URL{
-		token:  NewAccessToken(config, client),
+		token:  newAccessToken(config, client),
 		client: client,
 	}
 }
