@@ -9,7 +9,7 @@ import (
 
 /*Tag Tag */
 type Tag struct {
-	config.Config
+	Config
 	*Account
 }
 

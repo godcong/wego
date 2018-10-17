@@ -1,7 +1,7 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
+	//"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
@@ -37,13 +37,13 @@ type PoiBaseInfo struct {
 
 /*Poi Poi */
 type Poi struct {
-	config config.Config
+	//config Config
 	*Account
 }
 
 func newPoi(account *Account) *Poi {
 	return &Poi{
-		config:  defaultConfig,
+		//config:  defaultConfig,
 		Account: account,
 	}
 }

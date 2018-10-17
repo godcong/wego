@@ -89,35 +89,35 @@ type Payment interface {
 }
 
 //
-//func NewJSSDK(application Application, config config.Config) *payment.JSSDK {
+//func NewJSSDK(application Application, config Config) *payment.JSSDK {
 //	return &payment.JSSDK{
 //		Config: config,
 //		//app:    application,
 //	}
 //}
 //
-//func NewRedPack(application core.Application, config config.Config) *payment.RedPack {
+//func NewRedPack(application core.Application, config Config) *payment.RedPack {
 //	return &payment.RedPack{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewBill(application Application, config config.Config) *payment.Bill {
+//func NewBill(application Application, config Config) *payment.Bill {
 //	return &payment.Bill{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewSecurity(application Application, config config.Config) *payment.Security {
+//func NewSecurity(application Application, config Config) *payment.Security {
 //	return &payment.Security{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewOrder(application Application, config config.Config) *payment.Order {
+//func NewOrder(application Application, config Config) *payment.Order {
 //	return &payment.Order{
 //		//app:    application,
 //		//Payment: application.Payment(),
@@ -125,21 +125,21 @@ type Payment interface {
 //	}
 //}
 //
-//func NewSandbox(application Application, config config.Config) *core.Sandbox {
+//func NewSandbox(application Application, config Config) *core.Sandbox {
 //	return &core.Sandbox{
 //		Config: config,
 //		//app:    application,
 //	}
 //}
 //
-//func NewReverse(application Application, config config.Config) *payment.Reverse {
+//func NewReverse(application Application, config Config) *payment.Reverse {
 //	return &payment.Reverse{
 //		Config: config,
 //		//Payment: application.Payment(),
 //	}
 //}
 //
-//func NewTransfer(application Application, config config.Config) *payment.Transfer {
+//func NewTransfer(application Application, config Config) *payment.Transfer {
 //	return &payment.Transfer{
 //		Config: config,
 //		//Payment: application.Payment(),

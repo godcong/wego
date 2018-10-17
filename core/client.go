@@ -15,7 +15,6 @@ import (
 	"crypto/x509"
 	"io/ioutil"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
@@ -42,7 +41,7 @@ type URL struct {
 
 /*Client Client */
 type Client struct {
-	config.Config
+	Config
 	dataType DataType
 	domain   *Domain
 	app      *Application
@@ -202,11 +201,11 @@ func DefaultClient() *Client {
 }
 
 /*NewClient 创建一个client */
-func NewClient(config config.Config) *Client {
+func NewClient(config Config) *Client {
 	log.Debug("NewClient|config", config)
 	domain := NewDomain("default")
 	if config == nil {
-		config = defaultConfig
+		config = App().GetConfig()
 	}
 	return &Client{
 		//request:  net.DefaultRequest,
@@ -216,7 +215,7 @@ func NewClient(config config.Config) *Client {
 	}
 }
 
-func buildTransport(config config.Config) *http.Client {
+func buildTransport(config Config) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
 			//Dial: (&net.Dialer{
@@ -238,7 +237,7 @@ func buildTransport(config config.Config) *http.Client {
 
 }
 
-func buildSafeTransport(config config.Config) *http.Client {
+func buildSafeTransport(config Config) *http.Client {
 	log.Debug("buildSafeTransport", config.Get("cert_path"), config.Get("key_path"), config.Get("rootca_path"))
 	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
 	if err != nil {
@@ -487,7 +486,7 @@ func (u *URL) ShortURL(url string) util.Map {
 }
 
 /*NewURL NewURL*/
-func NewURL(config config.Config, client *Client) *URL {
+func NewURL(config Config, client *Client) *URL {
 	return &URL{
 		token:  newAccessToken(config, client),
 		client: client,

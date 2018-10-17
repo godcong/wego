@@ -7,7 +7,7 @@ import (
 
 /*DataCube DataCube */
 type DataCube struct {
-	config.Config
+	Config
 	*Program
 }
 

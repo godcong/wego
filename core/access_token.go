@@ -7,14 +7,13 @@ import (
 	"time"
 
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	config.Config
+	Config
 	client      *Client
 	credentials util.Map
 	token       string
@@ -49,7 +48,7 @@ func (a *AccessToken) sendRequest(s string) []byte {
 
 }
 
-func newAccessToken(config config.Config, client *Client) *AccessToken {
+func newAccessToken(config Config, client *Client) *AccessToken {
 	return &AccessToken{
 		Config: config,
 		client: client,
@@ -58,7 +57,7 @@ func newAccessToken(config config.Config, client *Client) *AccessToken {
 
 /*NewAccessToken NewAccessToken*/
 func NewAccessToken() *AccessToken {
-	return newAccessToken(defaultConfig, NewClient(defaultConfig))
+	return newAccessToken(App().GetConfig(), NewClient(App().GetConfig()))
 }
 
 /*Refresh 刷新AccessToken */

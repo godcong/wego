@@ -8,7 +8,7 @@ import (
 
 /*Bill Bill */
 type Bill struct {
-	config.Config
+	Config
 	*Payment
 }
 

@@ -9,7 +9,7 @@ import (
 
 /*Message Message */
 type Message struct {
-	config.Config
+	Config
 	*Program
 	//client *core.Client
 }

@@ -11,7 +11,7 @@ import (
 
 /*Order Order */
 type Order struct {
-	config.Config
+	Config
 	*Payment
 	request *http.Request
 }

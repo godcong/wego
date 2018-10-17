@@ -9,7 +9,7 @@ import (
 
 /*Program Program */
 type Program struct {
-	config.Config
+	Config
 	client   *core.Client
 	app      *core.Application
 	token    *core.AccessToken
@@ -19,7 +19,7 @@ type Program struct {
 	template *Template
 }
 
-var defaultConfig config.Config
+var defaultConfig Config
 var program *Program
 
 func init() {
@@ -30,7 +30,7 @@ func init() {
 	//app.Register(newMiniProgram())
 }
 
-func newMiniProgram(config config.Config, application *core.Application) *Program {
+func newMiniProgram(config Config, application *core.Application) *Program {
 	mini0 := &Program{
 		Config: config,
 		app:    application,
@@ -131,7 +131,7 @@ func (m *Program) AccessToken() *core.AccessToken {
 //
 //type MiniProgramAccessToken struct {
 //	token.accessToken
-//	config.Config
+//	Config
 //	app core.Application
 //}
 //

@@ -10,7 +10,7 @@ import (
 
 /*AppCode AppCode*/
 type AppCode struct {
-	config.Config
+	Config
 	*Program
 }
 

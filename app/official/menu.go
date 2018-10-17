@@ -1,7 +1,7 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
+	//"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/menu"
 	"github.com/godcong/wego/net"
@@ -10,7 +10,7 @@ import (
 
 /*Menu Menu*/
 type Menu struct {
-	config  config.Config
+	//config  Config
 	account *Account
 	client  *core.Client
 	token   *core.AccessToken
@@ -18,7 +18,7 @@ type Menu struct {
 
 func newMenu(account *Account) *Menu {
 	return &Menu{
-		config:  defaultConfig,
+		//config:  defaultConfig,
 		account: account,
 		client:  account.client,
 		token:   account.token,

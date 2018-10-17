@@ -9,7 +9,7 @@ import (
 
 /*Security Security */
 type Security struct {
-	config.Config
+	Config
 	*Payment
 }
 

@@ -11,7 +11,7 @@ import (
 
 /*Payment Payment */
 type Payment struct {
-	config  config.Config
+	config  Config
 	client  *core.Client
 	token   *core.AccessToken
 	sandbox *core.Sandbox
@@ -26,7 +26,7 @@ type Payment struct {
 	jssdk    *JSSDK
 }
 
-var defaultConfig config.Config
+var defaultConfig Config
 var payment *Payment
 
 func init() {

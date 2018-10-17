@@ -1,18 +1,17 @@
 package core
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/util"
 )
 
 /*Sandbox 沙箱 */
 type Sandbox struct {
-	config.Config
+	Config
 	client *Client
 }
 
 /*NewSandbox NewSandbox */
-func NewSandbox(config config.Config) *Sandbox {
+func NewSandbox(config Config) *Sandbox {
 	return &Sandbox{
 		Config: config,
 		client: NewClient(config),

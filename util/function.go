@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/godcong/wego/log"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 /*CustomHeader xml header*/
@@ -58,34 +58,48 @@ var (
 )
 
 /*ParseNumber parse interface to number */
-func ParseNumber(v interface{}) float64 {
-	switch v.(type) {
+func ParseNumber(v interface{}) (float64, bool) {
+	switch v0 := v.(type) {
 	case float64:
-		return v.(float64)
+		return v0, true
 	case float32:
-		return float64(v.(float32))
+		return float64(v0), true
 	}
-	return 0
+	return 0, false
 }
 
 /*ParseInt parse interface to int64 */
-func ParseInt(v interface{}) int64 {
+func ParseInt(v interface{}) (int64, bool) {
 	switch v0 := v.(type) {
 	case int:
-		return int64(v0)
+		return int64(v0), true
 	case int32:
-		return int64(v0)
+		return int64(v0), true
 	case int64:
-		return int64(v0)
+		return int64(v0), true
 	case uint:
-		return int64(v0)
+		return int64(v0), true
 	case uint32:
-		return int64(v0)
+		return int64(v0), true
 	case uint64:
-		return int64(v0)
+		return int64(v0), true
 	default:
 	}
-	return 0
+	return 0, false
+}
+
+/*ParseString parse interface to string */
+func ParseString(v interface{}) (string, bool) {
+	switch v0 := v.(type) {
+	case string:
+		return v0, true
+	case []byte:
+		return string(v0), true
+	case bytes.Buffer:
+		return v0.String(), true
+	default:
+	}
+	return "", false
 }
 
 /*MapToXML Convert MAP to XML */
@@ -174,7 +188,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 }
 
 /*Time get time string */
-func Time(t ...*time.Time) string {
+func Time(t ...time.Time) string {
 	if t == nil {
 		return strconv.Itoa(time.Now().Nanosecond())
 	}

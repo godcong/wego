@@ -9,7 +9,7 @@ import (
 
 /*Base 基本功能组件 */
 type Base struct {
-	config  config.Config
+	config  Config
 	account *Account
 	client  *core.Client
 	token   *core.AccessToken

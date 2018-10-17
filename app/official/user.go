@@ -12,7 +12,7 @@ import (
 
 /*User User*/
 type User struct {
-	config.Config
+	Config
 	*Account
 }
 

@@ -26,7 +26,7 @@ type CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValu
 /*OAuth OAuth */
 type OAuth struct {
 	*Account
-	config.Config
+	Config
 	domain *core.Domain
 	//response    *net.Response
 	callback    map[string]CallbackFunc

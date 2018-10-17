@@ -10,7 +10,7 @@ import (
 
 /*JSSDK JSSDK */
 type JSSDK struct {
-	config.Config
+	Config
 	*Payment
 }
 

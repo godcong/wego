@@ -3,7 +3,6 @@ package official
 import (
 	"time"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
@@ -11,13 +10,13 @@ import (
 
 /*DataCube DataCube */
 type DataCube struct {
-	config.Config
+	//Config
 	*Account
 }
 
 func newDataCube(officialAccount *Account) *DataCube {
 	return &DataCube{
-		Config:  defaultConfig,
+		//Config:  defaultConfig,
 		Account: officialAccount,
 	}
 }

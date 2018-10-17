@@ -8,7 +8,7 @@ import (
 
 /*Comment Comment*/
 type Comment struct {
-	config config.Config
+	config Config
 	*Account
 }
 

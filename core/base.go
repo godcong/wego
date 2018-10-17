@@ -1,20 +1,19 @@
 package core
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
 /*Base 基础 */
 type Base struct {
-	config.Config
+	Config
 
 	client *Client
 	token  *AccessToken
 }
 
-func newBase(config config.Config) *Base {
+func newBase(config Config) *Base {
 	client := NewClient(config)
 	return &Base{
 		Config: config,
@@ -25,7 +24,7 @@ func newBase(config config.Config) *Base {
 
 //NewBase NewBase
 func NewBase() *Base {
-	return newBase(defaultConfig)
+	return newBase(App().GetConfig())
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零

@@ -10,7 +10,7 @@ import (
 
 /*Refund Refund */
 type Refund struct {
-	config.Config
+	Config
 	*Payment
 }
 

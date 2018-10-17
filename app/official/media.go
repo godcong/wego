@@ -1,7 +1,6 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/net"
@@ -10,13 +9,13 @@ import (
 
 /*Media Media */
 type Media struct {
-	config config.Config
+	//config Config
 	*Account
 }
 
 func newMedia(account *Account) *Media {
 	return &Media{
-		config:  defaultConfig,
+		//config:  defaultConfig,
 		Account: account,
 	}
 }

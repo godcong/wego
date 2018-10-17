@@ -10,7 +10,7 @@ import (
 
 /*Card Card*/
 type Card struct {
-	config.Config
+	Config
 	*Account
 }
 

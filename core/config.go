@@ -1,9 +1,6 @@
-package config
+package core
 
 import (
-	"strconv"
-
-	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/pelletier/go-toml"
@@ -12,23 +9,24 @@ import (
 //const FileLoadError = "cannot find config file"
 //const ConfigReadError = "cannot read config file"
 
-/*Tree Tree */
+/*Tree Config Tree */
 type Tree toml.Tree
 
-var useCache = true
-
-/*Config Config */
+//Config Application config interface */
 type Config interface {
 	Get(s string) string
 	GetD(s, d string) string
 	Set(k, v string) *Tree
 	GetBool(s string) bool
-	GetConfig(s string) Config
+	GetBoolD(s string, d bool) bool
+	GetInt(s string) int64
+	GetIntD(s string, d int64) int64
+	GetSubConfig(s string) Config
 	GetTree(s string) interface{}
 }
 
-/*GetConfigTree get config tree with file name*/
-func GetConfigTree(f string) (*Tree, error) {
+/*LoadConfig get config tree with file name*/
+func LoadConfig(f string) (Config, error) {
 	t, e := toml.LoadFile(f)
 	if e != nil {
 		log.Println("filepath: " + f)
@@ -38,43 +36,8 @@ func GetConfigTree(f string) (*Tree, error) {
 	return (*Tree)(t), nil
 }
 
-func treeLoader() *Tree {
-	c := cache.GetCache()
-	if UseCache() {
-		t, b := c.Get("cache").(*Tree)
-		if t != nil && b {
-			return t
-		}
-	}
-
-	t, err := GetConfigTree("config.toml")
-	if err != nil {
-		log.Error(err)
-		return nil
-	}
-	if UseCache() {
-		c.Set("cache", t)
-	}
-	return t
-}
-
-/*GetConfig get config with path */
-func GetConfig(path string) Config {
-	log.Debug("GetConfig|path", path)
-	c := treeLoader()
-	if v, b := c.GetTree(path).(*toml.Tree); b {
-		return (*Tree)(v)
-	}
-	return (*Tree)(nil)
-}
-
-/*GetRootConfig get root config */
-func GetRootConfig() Config {
-	return treeLoader()
-}
-
-/*GetConfig get config or sub config */
-func (t *Tree) GetConfig(s string) Config {
+/*GetSubConfig get sub config from current config */
+func (t *Tree) GetSubConfig(s string) Config {
 	if v, b := t.GetTree(s).(*toml.Tree); b {
 		return (*Tree)(v)
 	}
@@ -95,12 +58,7 @@ func (t *Tree) Get(s string) string {
 	if v, b := v.(string); b {
 		return v
 	}
-	v0 := util.ParseInt(v)
-	if v0 == 0 {
-		return ""
-	}
-	return strconv.FormatInt(v0, 10)
-
+	return ""
 }
 
 /*GetD get string with default value */
@@ -128,17 +86,32 @@ func (t *Tree) GetBool(s string) bool {
 	return false
 }
 
-/*CacheOn turn on cache */
-func CacheOn() {
-	useCache = true
+//GetBoolD get bool with default value
+func (t *Tree) GetBoolD(s string, d bool) bool {
+	v := t.GetTree(s)
+	if v, b := v.(bool); b {
+		return v
+	}
+
+	return d
 }
 
-/*CacheOff turn off cache */
-func CacheOff() {
-	useCache = false
+//GetInt get int value
+func (t *Tree) GetInt(s string) int64 {
+	v := t.GetTree(s)
+	v0, b := util.ParseInt(v)
+	if !b {
+		return 0
+	}
+	return v0
 }
 
-/*UseCache return cache status */
-func UseCache() bool {
-	return useCache
+//GetIntD get int with default value
+func (t *Tree) GetIntD(s string, d int64) int64 {
+	v := t.GetTree(s)
+	v0, b := util.ParseInt(v)
+	if !b {
+		return d
+	}
+	return v0
 }

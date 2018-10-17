@@ -11,7 +11,7 @@ import (
 
 /*Transfer Transfer */
 type Transfer struct {
-	config.Config
+	Config
 	*Payment
 }
 

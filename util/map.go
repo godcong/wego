@@ -123,8 +123,8 @@ func (m *Map) GetNumber(s string) float64 {
 
 /*GetNumberD get float64 from map with default */
 func (m *Map) GetNumberD(s string, i float64) float64 {
-	n := ParseNumber(m.Get(s))
-	if n != 0 {
+	n, b := ParseNumber(m.Get(s))
+	if b {
 		return n
 	}
 	return i
@@ -132,7 +132,11 @@ func (m *Map) GetNumberD(s string, i float64) float64 {
 
 /*GetInt64 get int64 from map with out default */
 func (m *Map) GetInt64(s string) int64 {
-	return ParseInt(m.Get(s))
+	i, b := ParseInt(m.Get(s))
+	if b {
+		return i
+	}
+	return 0
 }
 
 /*GetString get string from map with out default */

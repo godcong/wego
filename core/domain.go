@@ -3,7 +3,6 @@ package core
 import (
 	"strings"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
 )
 
@@ -51,7 +50,7 @@ func DeployJoin(v ...string) string {
 }
 
 func newDomain(s string) *Domain {
-	url := config.GetConfig(DeployJoin("domain", s)).Get("url")
+	url := App().GetConfig().GetConfig(DeployJoin("domain", s)).Get("url")
 	if url == "" {
 		switch s {
 		case "host":

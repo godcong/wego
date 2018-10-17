@@ -8,7 +8,7 @@ import (
 
 /*Reverse Reverse */
 type Reverse struct {
-	config.Config
+	Config
 	*Payment
 }
 

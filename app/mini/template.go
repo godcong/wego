@@ -9,7 +9,7 @@ import (
 
 /*Template Template */
 type Template struct {
-	config.Config
+	Config
 	*Program
 	//client *core.Client
 }

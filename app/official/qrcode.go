@@ -67,7 +67,7 @@ const (
 
 /*QrCode QrCode*/
 type QrCode struct {
-	config.Config
+	Config
 	*Account
 }
 

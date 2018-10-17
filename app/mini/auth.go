@@ -10,7 +10,7 @@ import (
 
 /*Auth Auth */
 type Auth struct {
-	config.Config
+	Config
 	*Program
 	dc *crypt.DataCrypt
 }

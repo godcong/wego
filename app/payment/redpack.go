@@ -11,7 +11,7 @@ import (
 
 /*RedPack RedPack */
 type RedPack struct {
-	config.Config
+	Config
 	*Payment
 }
 

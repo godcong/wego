@@ -15,7 +15,7 @@ import (
 
 /*Server Server */
 type Server struct {
-	config.Config
+	Config
 	*Payment
 	mType    string
 	callback []core.PaymentCallback

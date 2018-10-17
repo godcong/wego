@@ -8,7 +8,7 @@ import (
 
 /*Ticket Ticket */
 type Ticket struct {
-	config.Config
+	Config
 	*Account
 }
 

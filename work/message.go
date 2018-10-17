@@ -1,7 +1,6 @@
 package work
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 )
 
@@ -13,6 +12,6 @@ type message struct {
 }
 
 /*NewMessage NewMessage */
-func NewMessage(application core.Application, config config.Config) {
+func NewMessage(application core.Application) {
 
 }
