@@ -25,6 +25,7 @@ type Config interface {
 	GetIntD(s string, d int64) int64
 	GetSubConfig(s string) Config
 	GetTree(s string) interface{}
+	Unmarshal(v interface{}) error
 }
 
 /*LoadConfig get config tree with file name*/
@@ -131,6 +132,10 @@ func (t *Tree) GetIntD(s string, d int64) int64 {
 		return d
 	}
 	return v0
+}
+
+func (t *Tree) Unmarshal(v interface{}) error {
+	return (*toml.Tree)(t).Unmarshal(v)
 }
 
 //Has check config elements

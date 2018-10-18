@@ -96,7 +96,7 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 //}
 
 /*HTTPPostJSON json post请求 */
-func HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
+func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
 	p := util.Map{
 		net.RequestTypeJSON.String(): json,
 	}

@@ -116,19 +116,19 @@ func mapToXML(m Map, needHeader bool) (string, error) {
 
 	enc := xml.NewEncoder(buff)
 
-	enc.EncodeToken(xml.StartElement{Name: xml.Name{Local: "xml"}})
+	_ = enc.EncodeToken(xml.StartElement{Name: xml.Name{Local: "xml"}})
 	for k, v := range m {
 		if v0, b := v.(string); b {
 			if _, err := strconv.ParseInt(v0, 10, 0); err != nil {
-				enc.EncodeElement(
+				_ = enc.EncodeElement(
 					CDATA{Value: v0}, xml.StartElement{Name: xml.Name{Local: k}})
 				continue
 			}
 		}
-		enc.EncodeElement(v, xml.StartElement{Name: xml.Name{Local: k}})
+		_ = enc.EncodeElement(v, xml.StartElement{Name: xml.Name{Local: k}})
 	}
-	enc.EncodeToken(xml.EndElement{Name: xml.Name{Local: "xml"}})
-	enc.Flush()
+	_ = enc.EncodeToken(xml.EndElement{Name: xml.Name{Local: "xml"}})
+	_ = enc.Flush()
 	return buff.String(), nil
 }
 
@@ -140,7 +140,7 @@ func XMLToMap(contentXML []byte) Map {
 /*JSONToMap Convert JSON to MAP */
 func JSONToMap(content []byte) Map {
 	m := Map{}
-	json.Unmarshal(content, &m)
+	_ = json.Unmarshal(content, &m)
 	return m
 }
 

@@ -1,4 +1,4 @@
-package net
+package core
 
 /*content types */
 const (

@@ -1,4 +1,4 @@
-package net
+package core
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ func WriteJSON(w http.ResponseWriter, status int, obj interface{}) error {
 	if err != nil {
 		return err
 	}
-	w.Write(jsonBytes)
+	_, _ = w.Write(jsonBytes)
 	return nil
 }
 
