@@ -76,13 +76,13 @@ func init() {
 }
 
 //GetConfig get application config interface
-func (a *Application) GetConfig() core.Config {
-	config := core.Tree{}
+func (a *Application) GetConfig() *core.Config {
+	config := core.Config{}
 	b := a.Get(RegConfig, &config)
 	if b {
 		return &config
 	}
-	return core.Config(nil)
+	return (*core.Config)(nil)
 }
 
 //GetClient get application client instance

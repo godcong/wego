@@ -10,45 +10,45 @@ import (
 //const ConfigReadError = "cannot read config file"
 
 /*Tree Config Tree */
-type Tree toml.Tree
+type Config toml.Tree
 
 //Config Application config interface */
-type Config interface {
-	Get(s string) interface{}
-	GetD(s string, d interface{}) interface{}
-	Set(k string, v interface{}) *Tree
-	GetString(k string) string
-	GetStringD(k, d string) string
-	GetBool(s string) bool
-	GetBoolD(s string, d bool) bool
-	GetInt(s string) int64
-	GetIntD(s string, d int64) int64
-	GetSubConfig(s string) Config
-	GetTree(s string) interface{}
-	Unmarshal(v interface{}) error
-}
+//type Config interface {
+//	Get(s string) interface{}
+//	GetD(s string, d interface{}) interface{}
+//	Set(k string, v interface{}) *Tree
+//	GetString(k string) string
+//	GetStringD(k, d string) string
+//	GetBool(s string) bool
+//	GetBoolD(s string, d bool) bool
+//	GetInt(s string) int64
+//	GetIntD(s string, d int64) int64
+//	GetSubConfig(s string) Config
+//	GetTree(s string) interface{}
+//	Unmarshal(v interface{}) error
+//}
 
 /*LoadConfig get config tree with file name*/
-func LoadConfig(f string) (Config, error) {
+func LoadConfig(f string) (*Config, error) {
 	t, e := toml.LoadFile(f)
 	if e != nil {
 		log.Println("filepath: " + f)
 		log.Println(e.Error())
 		return nil, e
 	}
-	return (*Tree)(t), nil
+	return (*Config)(t), nil
 }
 
 /*GetSubConfig get sub config from current config */
-func (t *Tree) GetSubConfig(s string) Config {
+func (t *Config) GetSubConfig(s string) *Config {
 	if v, b := t.GetTree(s).(*toml.Tree); b {
-		return (*Tree)(v)
+		return (*Config)(v)
 	}
-	return (*Tree)(nil)
+	return (*Config)(nil)
 }
 
 /*GetTree get config tree */
-func (t *Tree) GetTree(s string) interface{} {
+func (t *Config) GetTree(s string) interface{} {
 	if t == nil {
 		return nil
 	}
@@ -57,12 +57,12 @@ func (t *Tree) GetTree(s string) interface{} {
 }
 
 /*Get get an interface from config */
-func (t *Tree) Get(s string) interface{} {
+func (t *Config) Get(s string) interface{} {
 	return t.GetTree(s)
 }
 
 /*GetD get interface with default value */
-func (t *Tree) GetD(s string, d interface{}) interface{} {
+func (t *Config) GetD(s string, d interface{}) interface{} {
 	v := t.GetTree(s)
 	if v == nil {
 		return d
@@ -71,7 +71,7 @@ func (t *Tree) GetD(s string, d interface{}) interface{} {
 }
 
 /*GetString get string with out default value */
-func (t *Tree) GetString(s string) string {
+func (t *Config) GetString(s string) string {
 	v := t.GetTree(s)
 	if v, b := v.(string); b {
 		return v
@@ -80,7 +80,7 @@ func (t *Tree) GetString(s string) string {
 }
 
 /*GetStringD get string with default value */
-func (t *Tree) GetStringD(s, d string) string {
+func (t *Config) GetStringD(s, d string) string {
 	v := t.GetTree(s)
 	if v, b := v.(string); b {
 		return v
@@ -89,13 +89,13 @@ func (t *Tree) GetStringD(s, d string) string {
 }
 
 /*Set set value */
-func (t *Tree) Set(k string, v interface{}) *Tree {
+func (t *Config) Set(k string, v interface{}) *Config {
 	(*toml.Tree)(t).Set(k, v)
 	return t
 }
 
 /*GetBool get bool value */
-func (t *Tree) GetBool(s string) bool {
+func (t *Config) GetBool(s string) bool {
 	v := t.GetTree(s)
 	if v, b := v.(bool); b {
 		return v
@@ -105,7 +105,7 @@ func (t *Tree) GetBool(s string) bool {
 }
 
 //GetBoolD get bool with default value
-func (t *Tree) GetBoolD(s string, d bool) bool {
+func (t *Config) GetBoolD(s string, d bool) bool {
 	v := t.GetTree(s)
 	if v, b := v.(bool); b {
 		return v
@@ -115,7 +115,7 @@ func (t *Tree) GetBoolD(s string, d bool) bool {
 }
 
 //GetInt get int value
-func (t *Tree) GetInt(s string) int64 {
+func (t *Config) GetInt(s string) int64 {
 	v := t.GetTree(s)
 	v0, b := util.ParseInt(v)
 	if !b {
@@ -125,7 +125,7 @@ func (t *Tree) GetInt(s string) int64 {
 }
 
 //GetIntD get int with default value
-func (t *Tree) GetIntD(s string, d int64) int64 {
+func (t *Config) GetIntD(s string, d int64) int64 {
 	v := t.GetTree(s)
 	v0, b := util.ParseInt(v)
 	if !b {
@@ -134,12 +134,12 @@ func (t *Tree) GetIntD(s string, d int64) int64 {
 	return v0
 }
 
-func (t *Tree) Unmarshal(v interface{}) error {
+func (t *Config) Unmarshal(v interface{}) error {
 	return (*toml.Tree)(t).Unmarshal(v)
 }
 
 //Has check config elements
-func (t *Tree) Has(key string) bool {
+func (t *Config) Has(key string) bool {
 	if t == nil {
 		return false
 	}
@@ -148,6 +148,6 @@ func (t *Tree) Has(key string) bool {
 }
 
 //NewConfig create a null config
-func NewConfig() Config {
-	return &Tree{}
+func NewConfig() *Config {
+	return &Config{}
 }
