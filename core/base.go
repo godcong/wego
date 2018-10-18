@@ -8,7 +8,6 @@ import (
 /*Base 基础 */
 type Base struct {
 	Config
-
 	client *Client
 	token  *AccessToken
 }
@@ -39,12 +38,13 @@ appid	是	公众号的APPID
 如果调用超过限制次数，则返回：
 { "errcode" :48006, "errmsg" : "forbid to clear quota because of reaching the limit" }
 */
-func (b *Base) ClearQuota() util.Map {
-	token := b.token.GetToken()
+func ClearQuota() util.Map {
+	token := App().GetAccessToken().GetToken()
+	config := App().GetConfig()
 	params := util.Map{
-		"appid": b.Config.Get("app_id"),
+		"appid": config.Get("app_id"),
 	}
-	resp := b.client.HTTPPostJSON(b.client.Link(clearQuotaURLSuffix), params, util.Map{
+	resp := App().GetClient().HTTPPostJSON(Link(clearQuotaURLSuffix), params, util.Map{
 		net.RequestTypeQuery.String(): token.KeyMap(),
 	})
 	return resp.ToMap()
@@ -65,12 +65,50 @@ func (b *Base) ClearQuota() util.Map {
   {"errcode":40013,"errmsg":"invalid appid"}
   成功:
   {"ip_list":["101.226.62.77","101.226.62.78","101.226.62.79","101.226.62.80","101.226.62.81","101.226.62.82","101.226.62.83","101.226.62.84","101.226.62.85","101.226.62.86","101.226.103.59","101.226.103.60","101.226.103.61","101.226.103.62","101.226.103.63","101.226.103.69","101.226.103.70","101.226.103.71","101.226.103.72","101.226.103.73","140.207.54.73","140.207.54.74","140.207.54.75","140.207.54.76","140.207.54.77","140.207.54.78","140.207.54.79","140.207.54.80","182.254.11.203","182.254.11.202","182.254.11.201","182.254.11.200","182.254.11.199","182.254.11.198","59.37.97.100","59.37.97.101","59.37.97.102","59.37.97.103","59.37.97.104","59.37.97.105","59.37.97.106","59.37.97.107","59.37.97.108","59.37.97.109","59.37.97.110","59.37.97.111","59.37.97.112","59.37.97.113","59.37.97.114","59.37.97.115","59.37.97.116","59.37.97.117","59.37.97.118","112.90.78.158","112.90.78.159","112.90.78.160","112.90.78.161","112.90.78.162","112.90.78.163","112.90.78.164","112.90.78.165","112.90.78.166","112.90.78.167","140.207.54.19","140.207.54.76","140.207.54.77","140.207.54.78","140.207.54.79","140.207.54.80","180.163.15.149","180.163.15.151","180.163.15.152","180.163.15.153","180.163.15.154","180.163.15.155","180.163.15.156","180.163.15.157","180.163.15.158","180.163.15.159","180.163.15.160","180.163.15.161","180.163.15.162","180.163.15.163","180.163.15.164","180.163.15.165","180.163.15.166","180.163.15.167","180.163.15.168","180.163.15.169","180.163.15.170","101.226.103.0\/25","101.226.233.128\/25","58.247.206.128\/25","182.254.86.128\/25","103.7.30.21","103.7.30.64\/26","58.251.80.32\/27","183.3.234.32\/27","121.51.130.64\/27"]}
-
   失败:
   {"errcode":40013,"errmsg":"invalid appid"}
 */
-func (b *Base) GetCallbackIP() util.Map {
-	token := b.token.GetToken()
-	resp := b.client.HTTPGet(b.client.Link(getCallbackIPURLSuffix), token.KeyMap())
+func GetCallbackIP() util.Map {
+	token := App().GetAccessToken().GetToken()
+	resp := App().GetClient().HTTPGet(Link(getCallbackIPURLSuffix), token.KeyMap())
 	return resp.ToMap()
+}
+
+/*Link 拼接地址 */
+func Link(uri string, suffix ...string) string {
+	url := ""
+	if suffix != nil {
+		url = suffix[0]
+	}
+	url = domainURL(url)
+	if IsSandBox() {
+		return url + sandboxURLSuffix + uri
+	}
+	return url + uri
+}
+
+func domainURL(suffix string) string {
+
+	url := App().GetConfig().Get("domain." + suffix + ".url")
+	if url == "" {
+		switch suffix {
+		case "host":
+			url = "localhost"
+		case "payment":
+			fallthrough
+		case "default":
+			url = BaseDomain
+		case "official_account", "mini_program":
+			url = APIWeixin
+		case "file":
+			url = FileAPIWeixin
+		case "mp":
+			url = MPDomain
+		case "api2":
+			url = API2Domain
+		default:
+			url = BaseDomain
+		}
+	}
+	return url
 }

@@ -9,6 +9,12 @@ import (
 
 const configPath = "config.toml"
 
+//RegConfig config
+const RegConfig = "config"
+
+//RegClient client
+const RegClient = "client"
+
 var app *Application
 
 func initSystem(v interface{}) *System {
@@ -32,7 +38,10 @@ func initSystem(v interface{}) *System {
 }
 
 //NewApplication create an application instance
-func NewApplication() *Application {
+func NewApplication(s ...string) *Application {
+	if s != nil {
+		return newApplication(s[0])
+	}
 	return newApplication(configPath)
 }
 
@@ -45,15 +54,13 @@ func newApplication(cpath string) *Application {
 	if err != nil {
 		panic(err)
 	}
-	app.Register("config", config)
+	app.Register(RegConfig, config)
+
+	app.Register(RegClient, client)
+
 	app.System = initSystem(config.GetSubConfig("system"))
 
 	return app
-}
-
-//DefaultApplication returns an application with default config
-func DefaultApplication() *Application {
-	return initApp(configPath)
 }
 
 func initApp(cpath string) *Application {
@@ -70,11 +77,31 @@ func init() {
 //GetConfig get application config interface
 func (a *Application) GetConfig() Config {
 	config := Tree{}
-	b := a.Get("config", &config)
+	b := a.Get(RegConfig, &config)
 	if b {
 		return &config
 	}
 	return Config(nil)
+}
+
+//GetClient get application client instance
+func (a *Application) GetClient() *Client {
+	client := Client{}
+	b := a.Get(RegClient, &client)
+	if b {
+		return &client
+	}
+	return nil
+}
+
+//GetAccessToken get application access token instance
+func (a *Application) GetAccessToken() *AccessToken {
+	token := AccessToken{}
+	b := a.Get(RegClient, &token)
+	if b {
+		return &token
+	}
+	return nil
 }
 
 /*Get 获取注册的数据 */
@@ -109,7 +136,7 @@ func (a *Application) Register(name string, v interface{}) {
 /*App 获取App */
 func App() *Application {
 	log.Debug("app:", app)
-	return app
+	return initApp(configPath)
 }
 
 /*InSandbox 是否沙箱环境 */
@@ -132,17 +159,17 @@ func (a *Application) GetKey(s string) string {
 }
 
 /*Scheme 获取微信Scheme */
-//func (a *Application) Scheme(id string) string {
-//	//c := a.Config
-//	m := make(util.Map)
-//	m.Set("appid", a.Config.Get("app_id"))
-//	m.Set("mch_id", a.Config.Get("mch_id"))
-//	m.Set("time_stamp", util.Time())
-//	m.Set("nonce_str", util.GenerateNonceStr())
-//	m.Set("product_id", id)
-//	m.Set("sign", GenerateSignature(m, a.Config.Get("aes_key"), MakeSignMD5))
-//	return BizPayURL + m.URLEncode()
-//}
+func (a *Application) Scheme(id string) string {
+	cfg := a.GetConfig().GetSubConfig("official_account.default") //TODO: get used config
+	m := make(util.Map)
+	m.Set("appid", cfg.Get("app_id"))
+	m.Set("mch_id", cfg.Get("mch_id"))
+	m.Set("time_stamp", util.Time())
+	m.Set("nonce_str", util.GenerateNonceStr())
+	m.Set("product_id", id)
+	m.Set("sign", GenerateSignature(m, cfg.Get("aes_key"), MakeSignMD5))
+	return BizPayURL + m.URLEncode()
+}
 
 //func (a *Application) HandleNotify(typ string, f func(interface{})) {
 //

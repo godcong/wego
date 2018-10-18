@@ -41,14 +41,15 @@ type URL struct {
 
 /*Client Client */
 type Client struct {
-	Config
-	dataType DataType
-	domain   *Domain
-	app      *Application
-	token    *AccessToken
+	context.Context
+	//Config
+	//dataType DataType
+	//domain   *Domain
+	//app      *Application
+	//token    *AccessToken
 	//request  *net.Request
 	//response *net.Response
-	client *http.Client
+	//client *http.Client
 }
 
 var defaultCa = []byte(`
@@ -72,49 +73,41 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`)
 
-/*SetDomain 设置拼接域名 */
-func (c *Client) SetDomain(domain *Domain) *Client {
-	c.domain = domain
-	return c
-}
+///*HTTPClient http client */
+//func (c *Client) HTTPClient() *http.Client {
+//	return c.client
+//}
+//
+///*SetHTTPClient 设置http client */
+//func (c *Client) SetHTTPClient(client *http.Client) *Client {
+//	c.client = client
+//	return c
+//}
 
-/*HTTPClient http client */
-func (c *Client) HTTPClient() *http.Client {
-	return c.client
-}
-
-/*SetHTTPClient 设置http client */
-func (c *Client) SetHTTPClient(client *http.Client) *Client {
-	c.client = client
-	return c
-}
-
-/*DataType DataType */
-func (c *Client) DataType() DataType {
-	return c.dataType
-}
-
-/*SetDataType 设置数据类型 */
-func (c *Client) SetDataType(dataType DataType) *Client {
-	c.dataType = dataType
-	return c
-}
+///*DataType DataType */
+//func (c *Client) DataType() DataType {
+//	return c.dataType
+//}
+//
+///*SetDataType 设置数据类型 */
+//func (c *Client) SetDataType(dataType DataType) *Client {
+//	c.dataType = dataType
+//	return c
+//}
 
 /*HTTPPostJSON json post请求 */
-func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
-	c.dataType = DataTypeJSON
+func HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
 	p := util.Map{
 		net.RequestTypeJSON.String(): json,
 	}
 	if query != nil {
 		p.Set(net.RequestTypeQuery.String(), query)
 	}
-	return c.Request(url, p, "post")
+	return Request(url, p, "post")
 }
 
 /*HTTPPostXML xml post请求 */
 func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
-	c.dataType = DataTypeXML
 	p := util.Map{
 		net.RequestTypeXML.String(): xml,
 	}
@@ -126,7 +119,6 @@ func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.R
 
 /*HTTPUpload upload请求 */
 func (c *Client) HTTPUpload(url string, query, multi util.Map) *net.Response {
-	c.dataType = DataTypeMultipart
 	p := util.Map{
 		net.RequestTypeMultipart.String(): multi,
 	}
@@ -161,7 +153,7 @@ func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Respons
 /*Request 普通请求 */
 func (c *Client) Request(url string, ops util.Map, method string) *net.Response {
 	log.Debug("Request|httpClient", c.client)
-	c.client = buildTransport(c.Config)
+	client := buildTransport(c.Config)
 	return request(c, url, ops, method)
 }
 
@@ -203,7 +195,6 @@ func DefaultClient() *Client {
 /*NewClient 创建一个client */
 func NewClient(config Config) *Client {
 	log.Debug("NewClient|config", config)
-	domain := NewDomain("default")
 	if config == nil {
 		config = App().GetConfig()
 	}
@@ -211,7 +202,6 @@ func NewClient(config Config) *Client {
 		//request:  net.DefaultRequest,
 		Config:   config,
 		dataType: DataTypeXML,
-		domain:   domain,
 	}
 }
 
@@ -238,13 +228,13 @@ func buildTransport(config Config) *http.Client {
 }
 
 func buildSafeTransport(config Config) *http.Client {
-	log.Debug("buildSafeTransport", config.Get("cert_path"), config.Get("key_path"), config.Get("rootca_path"))
-	cert, err := tls.LoadX509KeyPair(config.Get("cert_path"), config.Get("key_path"))
+	log.Debug("buildSafeTransport", config.GetString("cert_path"), config.GetString("key_path"), config.GetString("rootca_path"))
+	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
 	if err != nil {
 		panic(err)
 	}
 
-	caFile, err := ioutil.ReadFile(config.Get("rootca_path"))
+	caFile, err := ioutil.ReadFile(config.GetString("rootca_path"))
 	if err != nil {
 		caFile = defaultCa
 	}
@@ -271,7 +261,7 @@ func buildSafeTransport(config Config) *http.Client {
 	}
 }
 
-func request(c *Client, url string, ops util.Map, method string) *net.Response {
+func request(c *http.Client, url string, ops util.Map, method string) *net.Response {
 	log.Debug("client|request", c, url, ops, method)
 	data := toRequestData(c, ops)
 	r := net.PerformRequest(url, method, data)
@@ -282,10 +272,10 @@ func request(c *Client, url string, ops util.Map, method string) *net.Response {
 }
 
 /*Do do request */
-func Do(ctx context.Context, client *Client, request *net.Request) *net.Response {
+func Do(ctx context.Context, client *http.Client, request *net.Request) *net.Response {
 	var response *net.Response
 
-	r, err := client.client.Do(request.HTTPRequest().WithContext(ctx))
+	r, err := client.Do(request.HTTPRequest().WithContext(ctx))
 	// If we got an error, and the context has been canceled,
 	// the context's error is probably more useful.
 	if err != nil {

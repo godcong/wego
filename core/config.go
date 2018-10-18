@@ -78,7 +78,7 @@ func (t *Tree) GetString(s string) string {
 	return ""
 }
 
-/*GetString get string with out default value */
+/*GetStringD get string with default value */
 func (t *Tree) GetStringD(s, d string) string {
 	v := t.GetTree(s)
 	if v, b := v.(string); b {
@@ -133,6 +133,7 @@ func (t *Tree) GetIntD(s string, d int64) int64 {
 	return v0
 }
 
+//Has check config elements
 func (t *Tree) Has(key string) bool {
 	if t == nil {
 		return false
