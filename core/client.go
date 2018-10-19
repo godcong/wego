@@ -63,51 +63,63 @@ type Client struct {
 	//client *http.Client
 }
 
+//Config get client config
 func (c *Client) Config() *Config {
 	return c.config
 }
 
+//SetConfig set client config
 func (c *Client) SetConfig(config *Config) {
 	c.config = config
 }
 
+//RequestType get client request type
 func (c *Client) RequestType() string {
 	return c.requestType
 }
 
+//SetRequestType set client request type
 func (c *Client) SetRequestType(requestType string) {
 	c.requestType = requestType
 }
 
+//ResponseData get client response data
 func (c *Client) ResponseData() []byte {
 	return c.responseData
 }
 
+//SetResponseData set client response data
 func (c *Client) SetResponseData(responseData []byte) {
 	c.responseData = responseData
 }
 
-func (c *Client) HttpClient() *http.Client {
+//HTTPClient get client http Client
+func (c *Client) HTTPClient() *http.Client {
 	return c.httpClient
 }
 
-func (c *Client) SetHttpClient(httpClient *http.Client) {
+//SetHTTPClient set client http Client
+func (c *Client) SetHTTPClient(httpClient *http.Client) {
 	c.httpClient = httpClient
 }
 
-func (c *Client) HttpResponse() *http.Response {
+//HTTPResponse get client http Response
+func (c *Client) HTTPResponse() *http.Response {
 	return c.httpResponse
 }
 
-func (c *Client) SetHttpResponse(httpResponse *http.Response) {
+//SetHTTPResponse set client http Response
+func (c *Client) SetHTTPResponse(httpResponse *http.Response) {
 	c.httpResponse = httpResponse
 }
 
-func (c *Client) HttpRequest() *http.Request {
+//HTTPRequest get client http Request
+func (c *Client) HTTPRequest() *http.Request {
 	return c.httpRequest
 }
 
-func (c *Client) SetHttpRequest(httpRequest *http.Request) {
+//SetHTTPRequest set client http Request
+func (c *Client) SetHTTPRequest(httpRequest *http.Request) {
 	c.httpRequest = httpRequest
 }
 
