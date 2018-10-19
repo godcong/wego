@@ -72,7 +72,7 @@ goods_detail
 指定支付方式	limit_pay	否	String(32)	no_credit	no_credit--指定不能使用信用卡支付
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
-func (o *Order) Unify(m util.Map) *net.Response {
+func (o *Order) Unify(m util.Map) *util.Map {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIP())
@@ -83,7 +83,7 @@ func (o *Order) Unify(m util.Map) *net.Response {
 		}
 	}
 
-	m.Set("appid", o.Config.Get("app_id"))
+	m.Set("appid", o.config.Get("app_id"))
 
 	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
 	if !m.Has("notify_url") {

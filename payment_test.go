@@ -54,7 +54,7 @@ func TestOrder_Unify(t *testing.T) {
 	//m.Set("openid", "oE_gl0Yr54fUjBhU5nBlP4hS2efo")
 
 	////m.Set("product_id", "12")
-	r := wego.GetPayment().Order().Unify(m)
+	r := wego.Payment().Order().Unify(m)
 
 	log.Println(string(r.ToString()))
 	log.Println(r.ToMap())
