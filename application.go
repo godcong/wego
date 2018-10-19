@@ -18,7 +18,7 @@ const RegClient = "client"
 
 var app *Application
 
-func initSystem(cfg core.Config) *System {
+func initSystem(cfg *core.Config) *System {
 	var system System
 	if cfg != nil {
 		err := cfg.Unmarshal(&system)
@@ -36,6 +36,11 @@ func initSystem(cfg core.Config) *System {
 		},
 	}
 
+}
+
+//DefaultApplication result an default application
+func DefaultApplication() *Application {
+	return app
 }
 
 //NewApplication create an application instance
@@ -75,8 +80,8 @@ func init() {
 	initApp(configPath)
 }
 
-//GetConfig get application config interface
-func (a *Application) GetConfig() *core.Config {
+//Config get application config interface
+func (a *Application) Config() *core.Config {
 	config := core.Config{}
 	b := a.Get(RegConfig, &config)
 	if b {
@@ -85,8 +90,8 @@ func (a *Application) GetConfig() *core.Config {
 	return (*core.Config)(nil)
 }
 
-//GetClient get application client instance
-func (a *Application) GetClient() *core.Client {
+//Client get application client instance
+func (a *Application) Client() *core.Client {
 	client := core.Client{}
 	b := a.Get(RegClient, &client)
 	if b {
@@ -95,8 +100,8 @@ func (a *Application) GetClient() *core.Client {
 	return nil
 }
 
-//GetAccessToken get application access token instance
-func (a *Application) GetAccessToken() *core.AccessToken {
+//AccessToken get application access token instance
+func (a *Application) AccessToken() *core.AccessToken {
 	token := core.AccessToken{}
 	b := a.Get(RegClient, &token)
 	if b {

@@ -17,7 +17,7 @@ type Cache interface {
 }
 
 //var cache sync.Map
-var cache map[string]Cache
+var cache Cache
 
 /*DefaultCacheName defined the default cache */
 const DefaultCacheName = "map_cache"
@@ -28,18 +28,10 @@ func init() {
 
 /*RegisterCache register cache to map */
 func RegisterCache(name string, c Cache) {
-	if cache == nil {
-		cache = make(map[string]Cache)
-	}
-	cache[name] = c
+	cache = c
 }
 
 /*GetCache get cache from map */
 func GetCache(name ...string) Cache {
-	if name != nil {
-		if v, b := cache[name[0]]; b {
-			return v
-		}
-	}
-	return cache[DefaultCacheName]
+	return cache
 }

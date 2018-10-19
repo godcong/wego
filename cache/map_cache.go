@@ -13,7 +13,6 @@ type MapCache struct {
 /*NewMapCache NewMapCache */
 func NewMapCache() Cache {
 	c := &MapCache{}
-
 	return c
 }
 
