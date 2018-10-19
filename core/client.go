@@ -16,41 +16,16 @@ import (
 	"io/ioutil"
 
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
-/*DataType DataType */
-type DataType string
-
-/*ContextKey ContextKey */
-type ContextKey struct{}
-
 /*data types*/
 const (
-	DataTypeXML       DataType = "xml"
-	DataTypeJSON      DataType = "json"
-	DataTypeMultipart DataType = "multipart"
+	DataTypeXML       = "xml"
+	DataTypeJSON      = "json"
+	DataTypeQuery     = "query"
+	DataTypeMultipart = "multipart"
 )
-
-/*URL URL */
-type URL struct {
-	token  *AccessToken
-	client *Client
-}
-
-/*Client Client */
-type Client struct {
-	context.Context
-	//Config
-	//dataType DataType
-	//domain   *Domain
-	//app      *Application
-	//token    *AccessToken
-	//request  *net.Request
-	//response *net.Response
-	//client *http.Client
-}
 
 var defaultCa = []byte(`
 -----BEGIN CERTIFICATE-----
@@ -73,109 +48,191 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`)
 
-///*HTTPClient http client */
-//func (c *Client) HTTPClient() *http.Client {
-//	return c.client
-//}
-//
-///*SetHTTPClient 设置http client */
-//func (c *Client) SetHTTPClient(client *http.Client) *Client {
-//	c.client = client
-//	return c
-//}
-
-///*DataType DataType */
-//func (c *Client) DataType() DataType {
-//	return c.dataType
-//}
-//
-///*SetDataType 设置数据类型 */
-//func (c *Client) SetDataType(dataType DataType) *Client {
-//	c.dataType = dataType
-//	return c
-//}
-
-/*HTTPPostJSON json post请求 */
-func (c *Client) HTTPPostJSON(url string, query util.Map, json interface{}) *net.Response {
-	p := util.Map{
-		net.RequestTypeJSON.String(): json,
-	}
-	if query != nil {
-		p.Set(net.RequestTypeQuery.String(), query)
-	}
-	return Request(url, p, "post")
+/*Client Client */
+type Client struct {
+	context.Context
+	config       *Config
+	requestType  string
+	responseData []byte
+	httpRequest  *http.Request
+	httpResponse *http.Response
+	httpClient   *http.Client
+	//app      *Application
+	//token    *AccessToken
+	//request  *net.Request
+	//client *http.Client
 }
 
-/*HTTPPostXML xml post请求 */
-func (c *Client) HTTPPostXML(url string, query util.Map, xml interface{}) *net.Response {
-	p := util.Map{
-		net.RequestTypeXML.String(): xml,
-	}
-	if query != nil {
-		p.Set(net.RequestTypeQuery.String(), query)
-	}
-	return c.Request(url, p, "post")
+func (c *Client) Config() *Config {
+	return c.config
 }
 
-/*HTTPUpload upload请求 */
-func (c *Client) HTTPUpload(url string, query, multi util.Map) *net.Response {
-	p := util.Map{
-		net.RequestTypeMultipart.String(): multi,
-	}
-	if query != nil {
-		p.Set(net.RequestTypeQuery.String(), query)
-	}
-
-	return c.Request(url, p, "post")
+func (c *Client) SetConfig(config *Config) {
+	c.config = config
 }
 
-/*HTTPGet get请求 */
-func (c *Client) HTTPGet(url string, query util.Map) *net.Response {
+func (c *Client) RequestType() string {
+	return c.requestType
+}
+
+func (c *Client) SetRequestType(requestType string) {
+	c.requestType = requestType
+}
+
+func (c *Client) ResponseData() []byte {
+	return c.responseData
+}
+
+func (c *Client) SetResponseData(responseData []byte) {
+	c.responseData = responseData
+}
+
+func (c *Client) HttpClient() *http.Client {
+	return c.httpClient
+}
+
+func (c *Client) SetHttpClient(httpClient *http.Client) {
+	c.httpClient = httpClient
+}
+
+func (c *Client) HttpResponse() *http.Response {
+	return c.httpResponse
+}
+
+func (c *Client) SetHttpResponse(httpResponse *http.Response) {
+	c.httpResponse = httpResponse
+}
+
+func (c *Client) HttpRequest() *http.Request {
+	return c.httpRequest
+}
+
+func (c *Client) SetHttpRequest(httpRequest *http.Request) {
+	c.httpRequest = httpRequest
+}
+
+/*PostJSON json post请求 */
+func (c *Client) PostJSON(url string, query util.Map, json interface{}) util.Map {
+	p := util.Map{
+		DataTypeJSON: json,
+	}
+	if query != nil {
+		p.Set(DataTypeQuery, query)
+	}
+	return c.Request(url, "post", p)
+}
+
+/*PostXML xml post请求 */
+func (c *Client) PostXML(url string, query util.Map, xml interface{}) util.Map {
+	p := util.Map{
+		DataTypeXML: xml,
+	}
+	if query != nil {
+		p.Set(DataTypeQuery, query)
+	}
+	return c.Request(url, "post", p)
+}
+
+/*Upload upload请求 */
+func (c *Client) Upload(url string, query, multi util.Map) util.Map {
+	p := util.Map{
+		DataTypeMultipart: multi,
+	}
+	if query != nil {
+		p.Set(DataTypeQuery, query)
+	}
+
+	return c.Request(url, "post", p)
+}
+
+/*Get get请求 */
+func (c *Client) Get(url string, query util.Map) util.Map {
 	p := util.Map{}
 	if query != nil {
-		p.Set(net.RequestTypeQuery.String(), query)
+		p.Set(DataTypeQuery, query)
 	}
-	return c.Request(url, p, "get")
+	return c.Request(url, "get", p)
 }
 
-/*HTTPPost post请求 */
-func (c *Client) HTTPPost(url string, query util.Map, ops util.Map) *net.Response {
+/*Post post请求 */
+func (c *Client) Post(url string, query util.Map, ops util.Map) util.Map {
 	p := util.Map{}
 	if query != nil {
-		p.Set(net.RequestTypeQuery.String(), query)
+		p.Set(DataTypeQuery, query)
 	}
 	if ops != nil {
 		p.ReplaceJoin(ops)
 	}
-	return c.Request(url, p, "post")
+	return c.Request(url, "post", p)
 }
 
 /*Request 普通请求 */
-func (c *Client) Request(url string, ops util.Map, method string) *net.Response {
-	log.Debug("Request|httpClient", c.client)
-	client := buildTransport(c.Config)
-	return request(c, url, ops, method)
+func (c *Client) Request(url string, method string, ops util.Map) util.Map {
+	log.Debug("Request|httpClient", c.httpClient)
+	c.httpClient = buildTransport(c.config)
+	response, err := request(c, url, method, ops)
+	if err != nil {
+		return nil
+	}
+	b, err := ParseBody(response)
+	if err != nil {
+		return nil
+	}
+	return BodyToMap(b, c.requestType)
 }
 
 /*RequestRaw raw请求 */
-func (c *Client) RequestRaw(url string, ops util.Map, method string) *net.Response {
-	return c.Request(url, ops, method)
+func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
+	log.Debug("Request|httpClient", c.httpClient)
+	c.httpClient = buildTransport(c.config)
+	response, err := request(c, url, method, ops)
+	if err != nil {
+		return nil
+	}
+	b, err := ParseBody(response)
+	if err != nil {
+		return nil
+	}
+	return b
 }
 
 /*SafeRequest 安全请求 */
-func (c *Client) SafeRequest(url string, ops util.Map, method string) *net.Response {
-	c.client = buildSafeTransport(c.Config)
-	log.Debug("SafeRequest|httpClient", c.client)
-	return request(c, url, ops, method)
+func (c *Client) SafeRequest(url string, method string, ops util.Map) util.Map {
+	c.httpClient = buildSafeTransport(c.config)
+	log.Debug("SafeRequest|httpClient", c.httpClient)
+	response, err := request(c, url, method, ops)
+	if err != nil {
+		return nil
+	}
+	b, err := ParseBody(response)
+	if err != nil {
+		return nil
+	}
+	return BodyToMap(b, c.requestType)
 }
 
-/*Link 拼接地址 */
-func (c *Client) Link(uri string) string {
-	if c.GetBool("sandbox") {
-		return c.domain.URL() + sandboxURLSuffix + uri
+/*SafeRequestRaw 安全请求 */
+func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
+	c.httpClient = buildSafeTransport(c.config)
+	log.Debug("SafeRequest|httpClient", c.httpClient)
+	response, err := request(c, url, method, ops)
+	if err != nil {
+		return nil
 	}
-	return c.domain.Link(uri)
+	b, err := ParseBody(response)
+	if err != nil {
+		return nil
+	}
+	return b
 }
+
+///*Link 拼接地址 */
+//func (c *Client) Link(uri string) string {
+//	if c.GetBool("sandbox") {
+//		return c.domain.URL() + sandboxURLSuffix + uri
+//	}
+//	return c.domain.Link(uri)
+//}
 
 /*GetRequest get net response */
 //func (c *Client) GetResponse() *net.Response {
@@ -187,25 +244,20 @@ func (c *Client) Link(uri string) string {
 //	return c.request
 //}
 
-/*DefaultClient DefaultClient */
-func DefaultClient() *Client {
-	return nil
-}
-
 /*NewClient 创建一个client */
-func NewClient(config Config) *Client {
-	log.Debug("NewClient|config", config)
-	if config == nil {
-		config = App().GetConfig()
-	}
+func NewClient(config *Config) *Client {
 	return &Client{
-		//request:  net.DefaultRequest,
-		Config:   config,
-		dataType: DataTypeXML,
+		Context:      context.Background(),
+		config:       config,
+		requestType:  DataTypeXML,
+		responseData: nil,
+		httpRequest:  nil,
+		httpResponse: nil,
+		httpClient:   nil,
 	}
 }
 
-func buildTransport(config Config) *http.Client {
+func buildTransport(config *Config) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
 			//Dial: (&net.Dialer{
@@ -227,7 +279,7 @@ func buildTransport(config Config) *http.Client {
 
 }
 
-func buildSafeTransport(config Config) *http.Client {
+func buildSafeTransport(config *Config) *http.Client {
 	log.Debug("buildSafeTransport", config.GetString("cert_path"), config.GetString("key_path"), config.GetString("rootca_path"))
 	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
 	if err != nil {
@@ -261,150 +313,135 @@ func buildSafeTransport(config Config) *http.Client {
 	}
 }
 
-func request(c *http.Client, url string, ops util.Map, method string) *net.Response {
-	log.Debug("client|request", c, url, ops, method)
-	data := toRequestData(c, ops)
-	r := net.PerformRequest(url, method, data)
-	if r.Error() == nil {
-		return Do(context.Background(), c, r)
+func request(client *Client, url string, method string, ops util.Map) (*http.Response, error) {
+	query := processQuery(ops.Get(DataTypeQuery))
+	url = parseQuery(url, query)
+
+	if client.httpRequest == nil {
+		newRequest := requestData(client.requestType)
+		client.httpRequest = newRequest(method, url, ops.Get(client.requestType))
+
 	}
-	return net.ErrorResponse(r.Error())
-}
 
-/*Do do request */
-func Do(ctx context.Context, client *http.Client, request *net.Request) *net.Response {
-	var response *net.Response
-
-	r, err := client.Do(request.HTTPRequest().WithContext(ctx))
-	// If we got an error, and the context has been canceled,
-	// the context's error is probably more useful.
+	log.Debug("client|request", client, url, method, ops)
+	response, err := http.DefaultClient.Do(client.httpRequest.WithContext(client.Context))
 	if err != nil {
-		select {
-		case <-ctx.Done():
-			err = ctx.Err()
-		default:
-		}
 		log.Error("Client|Do", err)
-		return net.ErrorResponse(err)
-	}
-	defer r.Body.Close()
+		select {
+		case <-client.Context.Done():
+			return nil, err
+		default:
+			return nil, client.Context.Err()
+		}
 
-	if r.StatusCode != http.StatusOK {
-		log.Debug("Do|StatusCode", r.StatusCode)
+		return nil, err
 	}
-	response = net.ParseResponse(request.GetRequestType(), r)
-
-	return response
+	return response, err
 }
 
-func toRequestData(client *Client, ops util.Map) *net.RequestData {
-	data := net.NewRequestData()
-	data.Query = processQuery(ops.Get(net.RequestTypeQuery.String()))
-	data.Body = nil
-	if client.DataType() == DataTypeJSON {
-		data.SetJSONHeader()
-		data.Body = processJSON(ops.Get(net.RequestTypeJSON.String()))
+func requestData(dt string) func(string, string, interface{}) *http.Request {
+	if dt == DataTypeJSON {
+		return processJSON
+	} else if dt == DataTypeXML {
+		return processXML
+	} else if dt == DataTypeMultipart {
+		return processMultipart
 	}
-	if client.DataType() == DataTypeXML {
-		data.SetXMLHeader()
-		data.Body = processXML(ops.Get(net.RequestTypeXML.String()))
-	}
-
-	if client.DataType() == DataTypeMultipart {
-		buf := bytes.Buffer{}
-		writer := multipart.NewWriter(&buf)
-		writer = processMultipart(writer, ops.Get(net.RequestTypeMultipart.String()))
-		data.Body = &buf
-		data.Header.Set("Content-Type", writer.FormDataContentType())
-		defer writer.Close()
-	}
-
-	return data
+	return nil
 }
-func processMultipart(w *multipart.Writer, i interface{}) *multipart.Writer {
+
+func processMultipart(method, url string, i interface{}) *http.Request {
+	buf := bytes.Buffer{}
+	writer := multipart.NewWriter(&buf)
+	defer writer.Close()
 	log.Debug("processMultipart|i", i)
 	switch v := i.(type) {
 	case util.Map:
 		path := v.GetString("media")
-		// log.Debug("processMultipart|name", name)
-
-		// log.Debug("processMultipart|path", path)
 		fh, e := os.Open(path)
 		if e != nil {
 			log.Debug("processMultipart|e", e)
-			return w
+			return nil
 		}
 		defer fh.Close()
 
-		fw, e := w.CreateFormFile("media", path)
+		fw, e := writer.CreateFormFile("media", path)
 		if e != nil {
 			log.Debug("processMultipart|e", e)
-			return w
+			return nil
 		}
 
 		if _, e = io.Copy(fw, fh); e != nil {
 			log.Debug("processMultipart|e", e)
-			return w
+			return nil
 		}
 		des := v.GetMap("description")
 		if des != nil {
-			w.WriteField("description", string(des.ToJSON()))
+			writer.WriteField("description", string(des.ToJSON()))
 		}
-
 	}
-	return w
+	request, err := http.NewRequest(method, url, &buf)
+	if err != nil {
+		return nil
+	}
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	return request
 }
 
-func processFormParams(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case util.Map:
-		return v.ToXML()
-	}
-	return ""
-}
-func processXML(i interface{}) io.Reader {
+func processXML(method, url string, i interface{}) *http.Request {
+	var reader io.Reader
 	switch v := i.(type) {
 	case string:
 		log.Debug("processXML|string", v)
-		return strings.NewReader(v)
+		reader = strings.NewReader(v)
 	case []byte:
 		log.Debug("processXML|[]byte", v)
-		return bytes.NewReader(v)
+		reader = bytes.NewReader(v)
 	case util.Map:
 		log.Debug("processXML|util.Map", v.ToXML())
-		return strings.NewReader(v.ToXML())
+		reader = strings.NewReader(v.ToXML())
 	default:
 		log.Debug("processXML|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
 			log.Debug("processXML|v0", v0, e)
-			return bytes.NewReader(v0)
+			reader = bytes.NewReader(v0)
 		}
-		return nil
 	}
 
+	request, err := http.NewRequest(method, url, reader)
+	if err != nil {
+		return nil
+	}
+	request.Header["Content-Type"] = []string{"application/xml; charset=utf-8"}
+	return request
 }
 
-func processJSON(i interface{}) io.Reader {
+func processJSON(method, url string, i interface{}) *http.Request {
+	var reader io.Reader
 	switch v := i.(type) {
 	case string:
 		log.Debug("processJSON|string", v)
-		return strings.NewReader(v)
+		reader = strings.NewReader(v)
 	case []byte:
 		log.Debug("processJSON|[]byte", string(v))
-		return bytes.NewReader(v)
+		reader = bytes.NewReader(v)
 	case util.Map:
 		log.Debug("processJSON|util.Map", v.String())
-		return bytes.NewReader(v.ToJSON())
+		reader = bytes.NewReader(v.ToJSON())
 	default:
 		log.Debug("processJSON|default", v)
 		if v0, e := json.Marshal(v); e == nil {
 			log.Debug("processJSON|v0", string(v0), e)
-			return bytes.NewReader(v0)
+			reader = bytes.NewReader(v0)
 		}
+	}
+
+	request, err := http.NewRequest(method, url, reader)
+	if err != nil {
 		return nil
 	}
+	request.Header["Content-Type"] = []string{"application/json; charset=utf-8"}
+	return request
 }
 
 func processQuery(i interface{}) string {
@@ -415,70 +452,4 @@ func processQuery(i interface{}) string {
 		return v.URLEncode()
 	}
 	return ""
-}
-
-/*ShortURL 转换短链接
-https://apihk.mch.weixin.qq.com/tools/shorturl    （建议接入点：东南亚）
-https://apius.mch.weixin.qq.com/tools/shorturl    （建议接入点：其它）
-https://api.mch.weixin.qq.com/tools/shorturl        （建议接入点：中国国内）
-是否需要证书
-否
-请求参数
-字段名	变量名	必填	类型	示例值	描述
-公众账号ID	appid	是	String(32)	wx8888888888888888	微信分配的公众账号ID（企业号corpid即为此appId）
-商户号	mch_id	是	String(32)	1900000109	微信支付分配的商户号
-URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid=XXXXX&mch_id=XXXXX&product_id=XXXXXX&time_stamp=XXXXXX&nonce_str=XXXXX	需要转换的URL，签名用原串，传输需URLencode
-随机字符串	nonce_str	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，不长于32位。推荐随机数生成算法
-签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
-签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
-返回结果
-字段名	变量名	必填	类型	示例值	描述
-返回状态码	return_code	是	String(16)	SUCCESS
-SUCCESS/FAIL
-此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
-返回信息	return_msg	否	String(128)	签名失败
-返回信息，如非空，为错误原因签名失败
-参数格式校验错误
-以下字段在return_code为SUCCESS的时候有返回
-字段名	变量名	必填	类型	示例值	描述
-公众账号ID	appid	是	String(32)	wx8888888888888888	微信分配的公众账号ID
-商户号	mch_id	是	String(32)	1900000109	微信支付分配的商户号
-随机字符串	nonce_str	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，不长于32位。推荐随机数生成算法
-签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
-业务结果	result_code	是	String(16)	SUCCESS	SUCCESS/FAIL
-错误代码	err_code	否	String(32)	SYSTEMERROR
-SYSTEMERROR—系统错误
-URLFORMATERROR—URL格式错误
-URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
-错误码
-名称	描述	原因	解决方案
-SIGNERROR	签名错误	参数签名结果不正确	请检查签名参数和方法是否都符合签名算法要求
-REQUIRE_POST_METHOD	请使用post方法	未使用post传递参数	请检查请求参数是否通过post方法提交
-APPID_NOT_EXIST	APPID不存在	参数中缺少APPID	请检查APPID是否正确
-MCHID_NOT_EXIST	MCHID不存在	参数中缺少MCHID	请检查MCHID是否正确
-APPID_MCHID_NOT_MATCH	appid和mch_id不匹配	appid和mch_id不匹配	请确认appid和mch_id是否匹配
-LACK_PARAMS	缺少参数	缺少必要的请求参数	请检查参数是否齐全
-XML_FORMAT_ERROR	XML格式错误	XML格式错误	请检查XML参数格式是否正确
-POST_DATA_EMPTY	post数据为空	post数据不能为空	请检查post数据是否为空
-*/
-func (u *URL) ShortURL(url string) util.Map {
-	m := util.Map{
-		"action":   "long2short",
-		"long_url": url,
-	}
-	token := u.token.GetToken()
-	ops := util.Map{
-		net.RequestTypeQuery.String(): token.KeyMap(),
-	}
-	resp := u.client.HTTPPostJSON(u.client.domain.Link(shortURLSuffix), m, ops)
-	log.Debug("URL|ShortURL", *resp)
-	return resp.ToMap()
-}
-
-/*NewURL NewURL*/
-func NewURL(config Config, client *Client) *URL {
-	return &URL{
-		token:  newAccessToken(config, client),
-		client: client,
-	}
 }

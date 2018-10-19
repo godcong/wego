@@ -9,24 +9,10 @@ import (
 //const FileLoadError = "cannot find config file"
 //const ConfigReadError = "cannot read config file"
 
-/*Tree Config Tree */
-type Config toml.Tree
-
-//Config Application config interface */
-//type Config interface {
-//	Get(s string) interface{}
-//	GetD(s string, d interface{}) interface{}
-//	Set(k string, v interface{}) *Tree
-//	GetString(k string) string
-//	GetStringD(k, d string) string
-//	GetBool(s string) bool
-//	GetBoolD(s string, d bool) bool
-//	GetInt(s string) int64
-//	GetIntD(s string, d int64) int64
-//	GetSubConfig(s string) Config
-//	GetTree(s string) interface{}
-//	Unmarshal(v interface{}) error
-//}
+/*Config Config Tree */
+type Config struct {
+	*toml.Tree
+}
 
 /*LoadConfig get config tree with file name*/
 func LoadConfig(f string) (*Config, error) {
@@ -36,15 +22,15 @@ func LoadConfig(f string) (*Config, error) {
 		log.Println(e.Error())
 		return nil, e
 	}
-	return (*Config)(t), nil
+	return cfg(t), nil
 }
 
 /*GetSubConfig get sub config from current config */
 func (t *Config) GetSubConfig(s string) *Config {
 	if v, b := t.GetTree(s).(*toml.Tree); b {
-		return (*Config)(v)
+		return cfg(v)
 	}
-	return (*Config)(nil)
+	return cfg(nil)
 }
 
 /*GetTree get config tree */
@@ -53,7 +39,7 @@ func (t *Config) GetTree(s string) interface{} {
 		return nil
 	}
 
-	return (*toml.Tree)(t).Get(s)
+	return t.Tree.Get(s)
 }
 
 /*Get get an interface from config */
@@ -90,7 +76,7 @@ func (t *Config) GetStringD(s, d string) string {
 
 /*Set set value */
 func (t *Config) Set(k string, v interface{}) *Config {
-	(*toml.Tree)(t).Set(k, v)
+	t.Tree.Set(k, v)
 	return t
 }
 
@@ -134,20 +120,29 @@ func (t *Config) GetIntD(s string, d int64) int64 {
 	return v0
 }
 
-func (t *Config) Unmarshal(v interface{}) error {
-	return (*toml.Tree)(t).Unmarshal(v)
-}
+//func (t *Config) Unmarshal(v interface{}) error {
+//	return t.Tree.Unmarshal(v)
+//}
+//
+////Has check config elements
+//func (t *Config) Has(key string) bool {
+//	if t == nil {
+//		return false
+//	}
+//
+//	return t.Tree.Has(key)
+//}
 
-//Has check config elements
-func (t *Config) Has(key string) bool {
-	if t == nil {
-		return false
+//cfg create a null config
+func cfg(tree *toml.Tree) *Config {
+	return &Config{
+		Tree: tree,
 	}
-
-	return (*toml.Tree)(t).Has(key)
 }
 
-//NewConfig create a null config
+//NewConfig create a new null config
 func NewConfig() *Config {
-	return &Config{}
+	return &Config{
+		Tree: &toml.Tree{},
+	}
 }

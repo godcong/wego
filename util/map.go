@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"sort"
+	"strings"
 )
 
 /*StringAble StringAble */
@@ -218,13 +219,26 @@ func (m *Map) ParseJSON(b []byte) *Map {
 
 /*URLEncode transfer map to url encode */
 func (m *Map) URLEncode() string {
-	url := url.Values{}
-	for key, v := range *m {
-		if v0, b := v.(string); b {
-			url.Add(key, v0)
-		}
+	var buf strings.Builder
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
 	}
-	return url.Encode()
+	sort.Strings(keys)
+	for _, k := range keys {
+		vs := (*m)[k]
+		keyEscaped := url.QueryEscape(k)
+		if v, b := vs.(string); b {
+			if buf.Len() > 0 {
+				buf.WriteByte('&')
+			}
+			buf.WriteString(keyEscaped)
+			buf.WriteByte('=')
+			buf.WriteString(url.QueryEscape(v))
+		}
+
+	}
+	return buf.String()
 }
 
 func (m *Map) join(source Map, replace bool) *Map {

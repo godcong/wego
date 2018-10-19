@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"io"
 	"net/http"
-	"strings"
-
-	"github.com/godcong/wego/log"
 )
 
 //
@@ -41,151 +38,77 @@ import (
 //}
 
 /*RequestType RequestType */
-type RequestType string
+//type RequestType string
 
 /*request types */
-const (
-	RequestTypeJSON       RequestType = "json"
-	RequestTypeQuery      RequestType = "query"
-	RequestTypeXML        RequestType = "xml"
-	RequestTypeFormParams RequestType = "form_params"
-	RequestTypeFile       RequestType = "file"
-	RequestTypeMultipart  RequestType = "multipart"
-	RequestTypeString     RequestType = "string"
-	RequestTypeHeaders    RequestType = "headers"
-	RequestTypeCustom     RequestType = "custom"
-)
+//const (
+//RequestTypeJSON       RequestType = "json"
+//RequestTypeQuery      RequestType = "query"
+//RequestTypeXML        RequestType = "xml"
+//RequestTypeFormParams RequestType = "form_params"
+//RequestTypeFile       RequestType = "file"
+//RequestTypeMultipart  RequestType = "multipart"
+//RequestTypeString     RequestType = "string"
+//RequestTypeHeaders    RequestType = "headers"
+//RequestTypeCustom     RequestType = "custom"
+//)
 
-/*Request Request */
-type Request struct {
-	requestType RequestType
-	//requestData *RequestData
-	httpRequest *http.Request
-	custom      func(*Request) string
-
-	error error
-}
+///*Request Request */
+//type Request struct {
+//	requestType RequestType
+//	//requestData *RequestData
+//	httpRequest *http.Request
+//	custom      func(*Request) string
+//	error error
+//}
 
 /*NewRequest NewRequest */
-func NewRequest() *Request {
-	r := Request{
-		httpRequest: nil,
-		error:       nil,
-		//requestData: &RequestData{
-		//	Query:  "",
-		//	Body:   nil,
-		//	Method: "",
-		//	Header: http.Header{},
-		//},
-	}
-	return &r
-}
+//func NewRequest() *Request {
+//	r := Request{
+//		httpRequest: nil,
+//		error:       nil,
+//		//requestData: &RequestData{
+//		//	Query:  "",
+//		//	Body:   nil,
+//		//	Method: "",
+//		//	Header: http.Header{},
+//		//},
+//	}
+//	return &r
+//}
+//
+///*SetCustomCallback SetCustomCallback*/
+//func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
+//	r.custom = f
+//	return r
+//}
+//
+///*GetRequestType GetRequestType */
+//func (r *Request) GetRequestType() RequestType {
+//	return r.requestType
+//}
+//
+//func (r *Request) Error() error {
+//	return r.error
+//}
+//
+///*NewRequestData NewRequestData */
+//func NewRequestData() *RequestData {
+//	data := &RequestData{
+//		Query:  "",
+//		Body:   nil,
+//		Method: "",
+//		Header: http.Header{},
+//	}
+//	//data.Header = cloneHeader(r.requestData.Header)
+//	return data
+//}
 
-/*SetCustomCallback SetCustomCallback*/
-func (r *Request) SetCustomCallback(f func(*Request) string) *Request {
-	r.custom = f
-	return r
-}
+/*httpRequest get http request*/
+//func (r *Request) httpRequest() *http.Request {
+//	return r.httpRequest
+//}
 
-/*GetRequestType GetRequestType */
-func (r *Request) GetRequestType() RequestType {
-	return r.requestType
-}
-
-func (r *Request) Error() error {
-	return r.error
-}
-
-/*NewRequestData NewRequestData */
-func NewRequestData() *RequestData {
-	data := &RequestData{
-		Query:  "",
-		Body:   nil,
-		Method: "",
-		Header: http.Header{},
-	}
-	//data.Header = cloneHeader(r.requestData.Header)
-	return data
-}
-
-/*ReqType get request type */
-func ReqType(reqType string) RequestType {
-	log.Debug("reqType", reqType)
-	switch reqType {
-	case ContentTypeJSON:
-		return RequestTypeJSON
-	case ContentTypeHTML:
-		//return REQUEST_TYPE_HTML
-	case ContentTypeXML, ContentTypeXML2:
-		return RequestTypeXML
-	case ContentTypePlain:
-	case ContentTypePostForm:
-	case ContentTypeMultipartPostForm:
-	case ContentTypeProtoBuf:
-	case ContentTypeMsgPack:
-	case ContentTypeMsgPack2:
-	}
-	return RequestTypeJSON
-}
-
-/*HTTPRequest get http request*/
-func (r *Request) HTTPRequest() *http.Request {
-	return r.httpRequest
-}
-
-/*PerformRequest pre process */
-func PerformRequest(url string, method string, data *RequestData) *Request {
-	request := NewRequest()
-	var req *http.Request
-	var err error
-	data = dataProcess(request, method, data)
-	url = parseQuery(url, data.Query)
-	log.Debug("PerformRequest|url", url)
-	log.Debug("PerformRequest|data", data.Header, data.Method, data.Query)
-	// b, e := ioutil.ReadAll(data.Body)
-	// Debug("PerformRequest|data.Body", b, e)
-
-	req, err = http.NewRequest(data.Method, url, data.Body)
-	if err != nil {
-		request.error = err
-	}
-
-	for k, v := range data.Header {
-		req.Header[k] = v
-	}
-
-	log.Debug(req.Header)
-	log.Debug("PerformRequest|req", req)
-	request.httpRequest = req
-	request.requestType = ReqType(filterContent(data.Header.Get("Content-Type")))
-	return request
-}
-
-func dataProcess(r *Request, method string, src *RequestData) *RequestData {
-	if src == nil {
-		src = NewRequestData()
-	}
-	src.Method = strings.ToUpper(method)
-
-	if src.Header.Get("Content-Type") == "" {
-		src.Header.Set("Content-Type", "application/json")
-	}
-
-	if UseUTF8() {
-		src.Header.Add("Content-Type", "charset=utf-8")
-	}
-
-	return src
-}
-
-//REQUEST_TYPE_JSON:        nil,
-//REQUEST_TYPE_QUERY:       nil,
-//REQUEST_TYPE_XML:         nil,
-//REQUEST_TYPE_FORM_PARAMS: nil,
-//REQUEST_TYPE_FILE:        nil,
-//REQUEST_TYPE_MULTIPART:   nil,
-//REQUEST_TYPE_STRING:      nil,
-//REQUEST_TYPE_HEADERS:     nil,
 func parseQuery(url, query string) string {
 	if query == "" {
 		return url
@@ -203,10 +126,6 @@ func parseBody(body string) io.Reader {
 /*UseUTF8 return true */
 func UseUTF8() bool {
 	return true
-}
-
-func (r RequestType) String() string {
-	return string(r)
 }
 
 func cloneHeader(h http.Header) http.Header {
