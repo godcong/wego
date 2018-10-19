@@ -166,6 +166,15 @@ func (c *Client) Get(url string, query util.Map) util.Map {
 	return c.Request(url, "get", p)
 }
 
+//GetRaw get request result raw data
+func (c *Client) GetRaw(url string, query util.Map) []byte {
+	p := util.Map{}
+	if query != nil {
+		p.Set(DataTypeQuery, query)
+	}
+	return c.RequestRaw(url, "get", p)
+}
+
 /*Post post请求 */
 func (c *Client) Post(url string, query util.Map, ops util.Map) util.Map {
 	p := util.Map{}

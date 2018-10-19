@@ -13,10 +13,10 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	Config
+	config      *Config
 	client      *Client
 	credentials util.Map
-	token       string
+	//token       string
 }
 
 /*AccessTokenKey 键值 */
@@ -35,29 +35,24 @@ func (a *AccessToken) getQuery() util.Map {
 func (a *AccessToken) sendRequest(s string) []byte {
 	m := util.Map{
 		"grant_type": "client_credential",
-		"appid":      a.Get("app_id"),
-		"secret":     a.Get("secret"),
+		"appid":      a.config.Get("app_id"),
+		"secret":     a.config.Get("secret"),
 	}
 
-	resp := a.client.HTTPGet(a.client.Link(tokenURLSuffix), m)
-	log.Debug("AccessToken|sendRequest", resp.ToString())
-	if resp.CheckError() != nil {
-		return nil
-	}
-	return resp.ToBytes()
-
+	resp := a.client.GetRaw(Link(tokenURLSuffix), m)
+	return resp
 }
 
-func newAccessToken(config Config, client *Client) *AccessToken {
+func newAccessToken(config *Config, client *Client) *AccessToken {
 	return &AccessToken{
-		Config: config,
+		config: config,
 		client: client,
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken() *AccessToken {
-	return newAccessToken(App().GetConfig(), NewClient(App().GetConfig()))
+func NewAccessToken(config *Config, client *Client) *AccessToken {
+	return newAccessToken(config, client)
 }
 
 /*Refresh 刷新AccessToken */
