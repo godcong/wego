@@ -16,6 +16,9 @@ const RegConfig = "config"
 //RegClient client
 const RegClient = "client"
 
+//RegAccessToken access token
+const RegAccessToken = "access_token"
+
 var app *Application
 
 func initSystem(cfg *core.Config) *System {
@@ -82,40 +85,38 @@ func init() {
 
 //Config get application config interface
 func (a *Application) Config() *core.Config {
-	config := core.Config{}
-	b := a.Get(RegConfig, &config)
+	v, b := a.Get(RegConfig)
 	if b {
-		return &config
+		return v.(*core.Config)
 	}
 	return (*core.Config)(nil)
 }
 
 //Client get application client instance
 func (a *Application) Client() *core.Client {
-	client := core.Client{}
-	b := a.Get(RegClient, &client)
+	v, b := a.Get(RegClient)
 	if b {
-		return &client
+		return v.(*core.Client)
 	}
 	return nil
 }
 
 //AccessToken get application access token instance
 func (a *Application) AccessToken() *core.AccessToken {
-	token := core.AccessToken{}
-	b := a.Get(RegClient, &token)
+	v, b := a.Get(RegAccessToken)
 	if b {
-		return &token
+		return v.(*core.AccessToken)
 	}
 	return nil
 }
 
 /*Get 获取注册的数据 */
-func (a *Application) Get(name string, v interface{}) bool {
+func (a *Application) Get(name string) (interface{}, bool) {
 	if v0, b := a.objects[name]; b {
-		return reflectSet(v, v0)
+		//return reflectSet(v, v0)
+		return v0, true
 	}
-	return false
+	return nil, false
 }
 
 func reflectSet(tar, src interface{}) bool {
