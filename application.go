@@ -14,7 +14,7 @@ const configPath = "config.toml"
 const RegConfig = "config"
 
 //RegClient client
-const RegClient = "client"
+//const RegClient = "client"
 
 //RegAccessToken access token
 const RegAccessToken = "access_token"
@@ -93,13 +93,13 @@ func (a *Application) Config() *core.Config {
 }
 
 //Client get application client instance
-func (a *Application) Client() *core.Client {
-	v, b := a.Get(RegClient)
-	if b {
-		return v.(*core.Client)
-	}
-	return nil
-}
+//func (a *Application) Client() *core.Client {
+//	v, b := a.Get(RegClient)
+//	if b {
+//		return v.(*core.Client)
+//	}
+//	return nil
+//}
 
 //AccessToken get application access token instance
 func (a *Application) AccessToken() *core.AccessToken {
