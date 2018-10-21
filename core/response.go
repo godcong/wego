@@ -24,7 +24,13 @@ type ResponseJSON struct {
 }
 
 type ResponseXML struct {
-	data util.Map
+	Data  []byte
+	error error
+}
+
+type ResponseHtml struct {
+	Data  []byte
+	error error
 }
 
 func NewResponse() Response {
