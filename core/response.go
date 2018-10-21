@@ -8,12 +8,27 @@ import (
 	"net/http"
 )
 
+type CanMap interface {
+	ToMap() util.Map
+}
+
 /*Response Response */
-type Response struct {
-	responseData []byte
-	responseMap  util.Map
-	//response     *http.Response
+type Response interface {
+	//dataFunc func([]byte) util.Map
+	//error    error
+}
+
+type ResponseJSON struct {
+	Data  []byte
 	error error
+}
+
+type ResponseXML struct {
+	data util.Map
+}
+
+func NewResponse() Response {
+	return nil
 }
 
 /*ResponseType ResponseType */
@@ -88,19 +103,33 @@ func BodyToMap(b []byte, d string) util.Map {
 	return nil
 }
 
-/*ToXML transfer response data to xml */
-//func ToXML() string {
-//	if r.responseType == ResponseTypeXML {
-//		return string(r.responseData)
+///*ToXML transfer response data to xml */
+//func (r *Response) ToXML() []byte {
+//	if r.dataType == DataTypeXML {
+//		return r.data
+//	} else if r.dataType == DataTypeJSON {
+//		return []byte(util.XMLToMap(r.data).ToXML())
 //	}
-//	return r.responseMap.ToXML()
+//	return nil
 //}
-
-/*ToJSON transfer response data to json */
-//func (r *Response) ToJSON() []byte {
-//	if r.responseType == ResponseTypeJSON {
-//		return r.responseData
+//
+//func (r *Response) ToMap() util.Map {
+//	if r.dataType == DataTypeJSON {
+//		return util.JSONToMap(r.data)
+//	} else if r.dataType == DataTypeXML {
+//		return util.XMLToMap(r.data)
+//	} else {
+//
 //	}
+//
+//	return nil
+//}
+//
+///*ToJSON transfer response data to json */
+//func (r *Response) ToJSON() []byte {
+//	if r.dataType == DataTypeJSON {
+//		return r.data
+//	} else if
 //	return r.responseMap.ToJSON()
 //}
 

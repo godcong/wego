@@ -140,6 +140,11 @@ func (a *Application) Register(name string, v interface{}) {
 	a.objects[name] = v
 }
 
+//New create an new instance
+func (a *Application) New(name string, args ...interface{}) interface{} {
+	return nil
+}
+
 /*App 获取App */
 func App() *Application {
 	log.Debug("app:", app)
@@ -151,7 +156,7 @@ type System struct {
 	//debug = true
 	Debug bool `toml:"debug"`
 	//response_type = 'array'
-	ResponseType string `toml:"response_type"`
+	//ResponseType string `toml:"response_type"`
 	//use_cache = true
 	//DataType DataType `toml:"data_type"`
 
