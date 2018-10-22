@@ -27,7 +27,6 @@ func (m *MapCache) Get(key string) interface{} {
 /*Set check exist */
 func (m *MapCache) Set(key string, val interface{}) Cache {
 	m.Store(key, val)
-
 	return m
 }
 
@@ -81,7 +80,7 @@ func (m *MapCache) GetMultiple(keys []string) map[string]interface{} {
 }
 
 /*SetMultiple set multiple values */
-func (m *MapCache) SetMultiple(values map[string]interface{}) {
+func (m *MapCache) SetMultiple(values map[string]interface{}) Cache {
 
 	for k, v := range values {
 		m.Set(k, v)
