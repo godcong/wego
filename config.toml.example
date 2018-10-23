@@ -12,6 +12,7 @@
 
 [domain]
        [domain.host]
+#客户服务器域名，用于注册回调等服务时使用
             url = 'http://shop.commm.top'
         [domain.default]
 #https://apihk.mch.weixin.qq.com/pay/unifiedorder    （建议接入点：东南亚）
