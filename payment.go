@@ -119,6 +119,10 @@ func Order() *payment.Order {
 	return app.Payment("payment.default").Order()
 }
 
+func Refund() *payment.Refund {
+	return app.Payment("payment.default").Refund()
+}
+
 //func NewSandbox(application Application, config Config) *core.Sandbox {
 //	return &core.Sandbox{
 //		Config: config,

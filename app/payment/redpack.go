@@ -12,6 +12,17 @@ type RedPack struct {
 	*Payment
 }
 
+func newRedPack(payment *Payment) *RedPack {
+	return &RedPack{
+		Payment: payment,
+	}
+}
+
+//NewRedPack NewRedPack
+func NewRedPack(config *core.Config) *RedPack {
+	return newRedPack(NewPayment(config))
+}
+
 /*Info 查询红包记录
 接口调用请求说明
 请求Url	https://api.mch.weixin.qq.com/mmpaymkttransfers/gethbinfo

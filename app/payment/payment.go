@@ -18,13 +18,21 @@ type Payment struct {
 	redPack  *RedPack
 	order    *Order
 	refund   *Refund
+	reverse  *Reverse
 	security *Security
 	jssdk    *JSSDK
 }
 
-func init() {
-
-}
+//var sub util.Map
+//
+//func init() {
+//	sub = util.Map{
+//		"Reverse":  newReverse,
+//		"Security": newSecurity,
+//		"Refund":   newRefund,
+//		"Order":    newOrder,
+//	}
+//}
 
 func newPayment(config *core.Config) *Payment {
 	client := core.NewClient(config)
@@ -117,28 +125,64 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Response {
 	return p.Request(authCodeToOpenidURLSuffix, m)
 }
 
+//Reverse Reverse
+func (p *Payment) Reverse() *Reverse {
+	obj, b := p.sub["Reverse"]
+	if !b {
+		obj = newReverse(p)
+		p.sub["Reverse"] = obj
+	}
+	return obj.(*Reverse)
+}
+
+//JSSDK JSSDK
+func (p *Payment) JSSDK() *JSSDK {
+	obj, b := p.sub["JSSDK"]
+	if !b {
+		obj = newJSSDK(p)
+		p.sub["JSSDK"] = obj
+	}
+	return obj.(*JSSDK)
+}
+
+//RedPack RedPack
+func (p *Payment) RedPack() *RedPack {
+	obj, b := p.sub["RedPack"]
+	if !b {
+		obj = newRedPack(p)
+		p.sub["RedPack"] = obj
+	}
+	return obj.(*RedPack)
+}
+
 /*Security Security */
 func (p *Payment) Security() *Security {
-	if p.security == nil {
-		p.security = newSecurity(p)
+	obj, b := p.sub["Security"]
+	if !b {
+		obj = newSecurity(p)
+		p.sub["Security"] = obj
 	}
-	return p.security
+	return obj.(*Security)
 }
 
 /*Refund 获取Refund*/
 func (p *Payment) Refund() *Refund {
-	if p.refund == nil {
-		p.refund = newRefund(p)
+	obj, b := p.sub["Refund"]
+	if !b {
+		obj = newRefund(p)
+		p.sub["Refund"] = obj
 	}
-	return p.refund
+	return obj.(*Refund)
 }
 
 /*Order 获取order*/
 func (p *Payment) Order() *Order {
-	if p.order == nil {
-		p.order = newOrder(p)
+	obj, b := p.sub["Order"]
+	if !b {
+		obj = newOrder(p)
+		p.sub["Order"] = obj
 	}
-	return p.order
+	return obj.(*Order)
 }
 
 func (p *Payment) initRequest(params util.Map) util.Map {
