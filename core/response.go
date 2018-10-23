@@ -8,32 +8,58 @@ import (
 	"net/http"
 )
 
-type CanMap interface {
-	ToMap() util.Map
-}
-
 /*Response Response */
 type Response interface {
-	//dataFunc func([]byte) util.Map
-	//error    error
+	ToMap() util.Map
+	Bytes() []byte
+	Error() error
 }
 
 type ResponseJSON struct {
-	Data  []byte
-	error error
+	Data []byte
 }
 
 type ResponseXML struct {
-	Data  []byte
-	error error
+	Data []byte
 }
 
-type ResponseHtml struct {
-	Data  []byte
-	error error
+type ResponseError struct {
+	Err error
 }
 
-func NewResponse() Response {
+func (r *ResponseJSON) ToMap() util.Map {
+	return util.JSONToMap(r.Data)
+}
+
+func (r *ResponseJSON) Bytes() []byte {
+	return r.Data
+}
+
+func (*ResponseJSON) Error() error {
+	return nil
+}
+
+func (r *ResponseError) ToMap() util.Map {
+	return nil
+}
+
+func (r *ResponseError) Bytes() []byte {
+	return nil
+}
+
+func (r *ResponseError) Error() error {
+	return r.Err
+}
+
+func (r *ResponseXML) ToMap() util.Map {
+	return util.XMLToMap(r.Data)
+}
+
+func (r *ResponseXML) Bytes() []byte {
+	return r.Data
+}
+
+func (r *ResponseXML) Error() error {
 	return nil
 }
 

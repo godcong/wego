@@ -1,17 +1,36 @@
 package core
 
 import (
+	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/pelletier/go-toml"
 )
 
-//const FileLoadError = "cannot find config file"
-//const ConfigReadError = "cannot read config file"
+const configPath = "config.toml"
+
+func init() {
+	config, err := LoadConfig(configPath)
+	if err != nil {
+		log.Println("no config files loaded")
+		log.Error(err)
+		return
+	}
+	cache.Set("config", config)
+}
 
 /*Config Config Tree */
 type Config struct {
 	*toml.Tree
+}
+
+func DefaultConfig() *Config {
+	if c := cache.Get("config"); c != nil {
+		if v, b := c.(*Config); b {
+			return v
+		}
+	}
+	return nil
 }
 
 /*LoadConfig get config tree with file name*/
