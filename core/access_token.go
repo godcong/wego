@@ -16,7 +16,6 @@ type AccessToken struct {
 	config      *Config
 	client      *Client
 	credentials util.Map
-	//token       string
 }
 
 /*AccessTokenKey 键值 */
@@ -82,11 +81,10 @@ func (a *AccessToken) GetTokenWithRefresh() *Token {
 
 func (a *AccessToken) getToken(refresh bool) *Token {
 	key := a.getCacheKey()
-	c := cache.GetCache()
 
-	if !refresh && c.Has(key) {
+	if !refresh && cache.Has(key) {
 		log.Debug("cached token", key)
-		if v, b := c.Get(key).(*Token); b {
+		if v, b := cache.Get(key).(*Token); b {
 			if v.ExpiresIn > time.Now().Unix() {
 				return v
 			}

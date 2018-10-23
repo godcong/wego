@@ -24,6 +24,7 @@ type Config struct {
 	*toml.Tree
 }
 
+//DefaultConfig get the default config from cache
 func DefaultConfig() *Config {
 	if c := cache.Get("config"); c != nil {
 		if v, b := c.(*Config); b {
@@ -139,18 +140,18 @@ func (t *Config) GetIntD(s string, d int64) int64 {
 	return v0
 }
 
-//func (t *Config) Unmarshal(v interface{}) error {
-//	return t.Tree.Unmarshal(v)
-//}
-//
-////Has check config elements
-//func (t *Config) Has(key string) bool {
-//	if t == nil {
-//		return false
-//	}
-//
-//	return t.Tree.Has(key)
-//}
+//Check check all input keys
+//return 0 if all is exist
+//return index when not found
+func (t *Config) Check(arr ...string) int {
+	for i, v := range arr {
+		if t.Has(v) {
+			continue
+		}
+		return i
+	}
+	return 0
+}
 
 //cfg create a null config
 func cfg(tree *toml.Tree) *Config {

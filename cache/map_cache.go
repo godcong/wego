@@ -41,7 +41,7 @@ func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
 
 /*SetWithTTL set interface with ttl */
 func (m *MapCache) SetWithTTL(key string, val interface{}, ttl time.Time) Cache {
-	//TODO: ttl not set
+	//TODO: ttl not used
 	m.Store(key, val)
 	return m
 }
@@ -81,11 +81,10 @@ func (m *MapCache) GetMultiple(keys []string) map[string]interface{} {
 
 /*SetMultiple set multiple values */
 func (m *MapCache) SetMultiple(values map[string]interface{}) Cache {
-
 	for k, v := range values {
 		m.Set(k, v)
 	}
-
+	return m
 }
 
 /*DeleteMultiple delete multiple values */

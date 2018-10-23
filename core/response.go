@@ -15,67 +15,81 @@ type Response interface {
 	Error() error
 }
 
-type ResponseJSON struct {
+type responseMap struct {
+	Data util.Map
+}
+
+type responseJSON struct {
 	Data []byte
 }
 
-type ResponseXML struct {
+type responseXML struct {
 	Data []byte
 }
 
-type ResponseError struct {
+type responseError struct {
 	Err error
 }
 
-func (r *ResponseJSON) ToMap() util.Map {
+//ToMap response to map
+func (r *responseMap) ToMap() util.Map {
+	return r.Data
+}
+
+//Bytes response to bytes
+func (r *responseMap) Bytes() []byte {
+	return r.Data.ToJSON()
+}
+
+//Error response error
+func (r *responseMap) Error() error {
+	return nil
+}
+
+//ToMap response to map
+func (r *responseJSON) ToMap() util.Map {
 	return util.JSONToMap(r.Data)
 }
 
-func (r *ResponseJSON) Bytes() []byte {
+//Bytes response to bytes
+func (r *responseJSON) Bytes() []byte {
 	return r.Data
 }
 
-func (*ResponseJSON) Error() error {
+//Error response error
+func (*responseJSON) Error() error {
 	return nil
 }
 
-func (r *ResponseError) ToMap() util.Map {
+//ToMap response to map
+func (r *responseError) ToMap() util.Map {
 	return nil
 }
 
-func (r *ResponseError) Bytes() []byte {
+//Bytes response to bytes
+func (r *responseError) Bytes() []byte {
 	return nil
 }
 
-func (r *ResponseError) Error() error {
+//Error response error
+func (r *responseError) Error() error {
 	return r.Err
 }
 
-func (r *ResponseXML) ToMap() util.Map {
+//ToMap response to map
+func (r *responseXML) ToMap() util.Map {
 	return util.XMLToMap(r.Data)
 }
 
-func (r *ResponseXML) Bytes() []byte {
+//Bytes response to bytes
+func (r *responseXML) Bytes() []byte {
 	return r.Data
 }
 
-func (r *ResponseXML) Error() error {
+//Error response error
+func (r *responseXML) Error() error {
 	return nil
 }
-
-/*ResponseType ResponseType */
-//type ResponseType string
-
-/*response types */
-const (
-//ResponseTypeJSON ResponseType = "json"
-//ResponseTypeXML  ResponseType = "xml"
-//ResponseTypeHTML ResponseType = "html"
-//RESPONSE_TYPE_ARRAY               = "array"
-//RESPONSE_TYPE_STRUCT              = "struct"
-//RESPONSE_TYPE_MAP                 = "map"
-//RESPONSE_TYPE_RAW                 = "raw"
-)
 
 func filterContent(content string) string {
 	log.Debug("content", content)

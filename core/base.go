@@ -132,7 +132,7 @@ URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid
 返回状态码	return_code	是	String(16)	SUCCESS/FAIL
 URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
 */
-func (u *URL) ShortURL(url string) util.Map {
+func (u *URL) ShortURL(url string) Response {
 	m := util.Map{
 		"action":   "long2short",
 		"long_url": url,

@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -124,7 +126,8 @@ func (c *Client) SetHTTPRequest(httpRequest *http.Request) {
 }
 
 /*PostJSON json post请求 */
-func (c *Client) PostJSON(url string, query util.Map, json interface{}) util.Map {
+func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
+	c.requestType = DataTypeJSON
 	p := util.Map{
 		DataTypeJSON: json,
 	}
@@ -135,7 +138,8 @@ func (c *Client) PostJSON(url string, query util.Map, json interface{}) util.Map
 }
 
 /*PostXML xml post请求 */
-func (c *Client) PostXML(url string, query util.Map, xml interface{}) util.Map {
+func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
+	c.requestType = DataTypeXML
 	p := util.Map{
 		DataTypeXML: xml,
 	}
@@ -146,7 +150,8 @@ func (c *Client) PostXML(url string, query util.Map, xml interface{}) util.Map {
 }
 
 /*Upload upload请求 */
-func (c *Client) Upload(url string, query, multi util.Map) util.Map {
+func (c *Client) Upload(url string, query, multi util.Map) Response {
+	c.requestType = DataTypeMultipart
 	p := util.Map{
 		DataTypeMultipart: multi,
 	}
@@ -158,7 +163,7 @@ func (c *Client) Upload(url string, query, multi util.Map) util.Map {
 }
 
 /*Get get请求 */
-func (c *Client) Get(url string, query util.Map) util.Map {
+func (c *Client) Get(url string, query util.Map) Response {
 	p := util.Map{}
 	if query != nil {
 		p.Set(DataTypeQuery, query)
@@ -176,7 +181,7 @@ func (c *Client) GetRaw(url string, query util.Map) []byte {
 }
 
 /*Post post请求 */
-func (c *Client) Post(url string, query util.Map, ops util.Map) util.Map {
+func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
 	p := util.Map{}
 	if query != nil {
 		p.Set(DataTypeQuery, query)
@@ -188,18 +193,34 @@ func (c *Client) Post(url string, query util.Map, ops util.Map) util.Map {
 }
 
 /*Request 普通请求 */
-func (c *Client) Request(url string, method string, ops util.Map) util.Map {
+func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", c.httpClient)
 	c.httpClient = buildTransport(c.config)
 	response, err := request(c, url, method, ops)
 	if err != nil {
-		return nil
+		return parseResponse(nil, err.Error())
 	}
 	b, err := ParseBody(response)
 	if err != nil {
-		return nil
+		return parseResponse(nil, err.Error())
 	}
-	return BodyToMap(b, c.requestType)
+
+	return parseResponse(b, c.requestType)
+}
+
+func parseResponse(b []byte, t string) Response {
+	if t == DataTypeXML {
+		return &responseXML{
+			Data: b,
+		}
+	} else if t == DataTypeJSON {
+		return &responseJSON{
+			Data: b,
+		}
+	}
+	return &responseError{
+		Err: errors.New(t),
+	}
 }
 
 /*RequestRaw raw请求 */
@@ -218,18 +239,18 @@ func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
 }
 
 /*SafeRequest 安全请求 */
-func (c *Client) SafeRequest(url string, method string, ops util.Map) util.Map {
+func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
 	c.httpClient = buildSafeTransport(c.config)
 	log.Debug("SafeRequest|httpClient", c.httpClient)
 	response, err := request(c, url, method, ops)
 	if err != nil {
-		return nil
+		return parseResponse(nil, err.Error())
 	}
 	b, err := ParseBody(response)
 	if err != nil {
-		return nil
+		return parseResponse(nil, err.Error())
 	}
-	return BodyToMap(b, c.requestType)
+	return parseResponse(b, c.requestType)
 }
 
 /*SafeRequestRaw 安全请求 */
@@ -279,6 +300,7 @@ func NewClient(config *Config) *Client {
 }
 
 func buildTransport(config *Config) *http.Client {
+	_ = config
 	return &http.Client{
 		Transport: &http.Transport{
 			//Dial: (&net.Dialer{
@@ -301,7 +323,10 @@ func buildTransport(config *Config) *http.Client {
 }
 
 func buildSafeTransport(config *Config) *http.Client {
-	log.Debug("buildSafeTransport", config.GetString("cert_path"), config.GetString("key_path"), config.GetString("rootca_path"))
+	if idx := config.Check("cert_path", "key_path"); idx != 0 {
+		panic(fmt.Sprintf("the %d key was not found", idx))
+	}
+
 	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
 	if err != nil {
 		panic(err)
