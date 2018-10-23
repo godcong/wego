@@ -2,7 +2,6 @@
 
 [![GoDoc](https://godoc.org/github.com/godcong/wego?status.svg)](http://godoc.org/github.com/godcong/wego)
 [![license](https://img.shields.io/github/license/godcong/wego.svg)](https://github.com/godcong/wego/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/godcong/wego.svg?branch=master)](https://travis-ci.org/godcong/wego)
 [![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wego)](https://goreportcard.com/report/github.com/godcong/wego)
 
 ## a fashion fast wechat pay api for golang
@@ -24,20 +23,16 @@
 接口说明可以参考godoc
 > godoc -http:6060
 
-使用哪个模块就New哪个模块，具体文档在各个模块下。
+> [公众号](https://github.com/godcong/wego/blob/master/app/official/README.md)
 
-Wego搭建微信支付模块参考文档：
-[支付模块README](https://github.com/godcong/wego/blob/master/app/payment/README.md)
+> [小程序](https://github.com/godcong/wego/blob/master/app/mini/README.md)
 
-Wego搭建公众号参考文档：
-[公众号模块README](https://github.com/godcong/wego/blob/master/app/official/README.md)
+> [微信支付](https://github.com/godcong/wego/blob/master/app/payment/README.md)
 
-Wego搭建小程序后台参考文档：
-[小程序模块README](https://github.com/godcong/wego/blob/master/app/mini/README.md)
+> 开放平台 //TODO:
 
-# 具体功能涵盖，微信模板，企业转账，微信红包，微信支付，微信客服，微信小程序等常用接口。
+> 企业微信 //TODO:
 
- 
-# 如有需要的接口还未开发.请提交issue.
+> 企业微信开放平台 //TODO:
 
-PS:因微信接口繁多,还有少部分接口,因微信权限原因无法调试,故剩下部分进展比较缓慢.
+### 具体功能涵盖，微信模板，企业转账，微信红包，微信支付，微信客服，微信小程序等常用接口。
