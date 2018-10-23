@@ -9,8 +9,7 @@ import (
 
 /*Account Account*/
 type Account struct {
-	Config
-	app             *core.Application
+	config          *core.Config
 	client          *core.Client
 	token           *core.AccessToken
 	base            *Base
@@ -19,22 +18,13 @@ type Account struct {
 	customerService *CustomerService
 }
 
-var defaultConfig Config
-var account *Account
-
 func init() {
-	log.Debug("Account|init")
-	defaultConfig = config.GetConfig("official_account.default")
 
-	app := core.App()
-	account = newOfficialAccount(defaultConfig, app)
-	app.Register("official_account", account)
 }
 
-func newOfficialAccount(config Config, application *core.Application) *Account {
+func newOfficialAccount(config *core.Config) *Account {
 	client := core.NewClient(config)
-	token := core.newAccessToken(config, client)
-	domain := core.NewDomain("official_account")
+	token := core.NewAccessToken(config, client)
 
 	account := &Account{
 		app:    application,

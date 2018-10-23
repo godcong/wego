@@ -11,16 +11,15 @@ type Payment struct {
 	config *core.Config
 	client *core.Client
 	token  *core.AccessToken
-	//sandbox *core.Sandbox
 
-	sub      util.Map
-	bill     *Bill
-	redPack  *RedPack
-	order    *Order
-	refund   *Refund
-	reverse  *Reverse
-	security *Security
-	jssdk    *JSSDK
+	sub util.Map
+	//bill     *Bill
+	//redPack  *RedPack
+	//order    *Order
+	//refund   *Refund
+	//reverse  *Reverse
+	//security *Security
+	//jssdk    *JSSDK
 }
 
 //var sub util.Map
@@ -36,11 +35,13 @@ type Payment struct {
 
 func newPayment(config *core.Config) *Payment {
 	client := core.NewClient(config)
+	client.SetRequestType(core.DataTypeXML)
 	token := core.NewAccessToken(config, client)
 	payment := &Payment{
 		config: config,
 		client: client,
 		token:  token,
+		sub:    util.Map{},
 	}
 
 	return payment
@@ -53,7 +54,6 @@ func NewPayment(config *core.Config) *Payment {
 
 /*Request 普通请求*/
 func (p *Payment) Request(url string, params util.Map) core.Response {
-	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}
@@ -63,7 +63,6 @@ func (p *Payment) Request(url string, params util.Map) core.Response {
 
 /*RequestRaw raw请求*/
 func (p *Payment) RequestRaw(url string, params util.Map) []byte {
-	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}
@@ -73,7 +72,6 @@ func (p *Payment) RequestRaw(url string, params util.Map) []byte {
 
 /*SafeRequest 安全请求*/
 func (p *Payment) SafeRequest(url string, params util.Map) core.Response {
-	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}

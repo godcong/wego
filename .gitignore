@@ -16,3 +16,5 @@
 vendor/
 config.toml
 cert/
+/cert
+/config.toml

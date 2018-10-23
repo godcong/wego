@@ -205,7 +205,6 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	if err != nil {
 		return parseResponse(nil, err.Error())
 	}
-	log.Println(string(b))
 	return parseResponse(b, c.requestType)
 }
 
@@ -220,7 +219,8 @@ func parseResponse(b []byte, t string) Response {
 		}
 	}
 	return &responseError{
-		Err: errors.New(t),
+		Data: b,
+		Err:  errors.New(t),
 	}
 }
 

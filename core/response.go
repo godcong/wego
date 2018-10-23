@@ -28,7 +28,8 @@ type responseXML struct {
 }
 
 type responseError struct {
-	Err error
+	Data []byte
+	Err  error
 }
 
 //ToMap response to map
@@ -68,7 +69,7 @@ func (r *responseError) ToMap() util.Map {
 
 //Bytes response to bytes
 func (r *responseError) Bytes() []byte {
-	return nil
+	return r.Data
 }
 
 //Error response error
