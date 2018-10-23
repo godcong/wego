@@ -100,7 +100,7 @@ func NewQrCode() *QrCode {
 // {"action_name": "QR_LIMIT_STR_SCENE", "action_info": {"scene": {"scene_str": "test"}}}
 // 成功:
 // {"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
-func (q *QrCode) Create(action *QrCodeAction) *net.Response {
+func (q *QrCode) Create(action *QrCodeAction) core.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.HTTPPostJSON(
 		q.client.Link(qrcodeCreateURLSuffix),
@@ -114,7 +114,7 @@ func (q *QrCode) Create(action *QrCodeAction) *net.Response {
 //ShowQrCode 显示二维码
 // HTTP GET请求（请使用https协议）https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
 // 提醒：TICKET记得进行UrlEncode
-func (q *QrCode) ShowQrCode(ticket string) *net.Response {
+func (q *QrCode) ShowQrCode(ticket string) core.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
 	q.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))

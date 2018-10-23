@@ -3,15 +3,12 @@ package payment
 import (
 	"strconv"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
 /*RedPack RedPack */
 type RedPack struct {
-	Config
 	*Payment
 }
 
@@ -71,8 +68,8 @@ NORMAL:普通红包
 金额	amount	是	100	int	领取金额
 接收时间	rcv_time	是	2015-04-21 20:00:00	String(32)	领取红包的时间
 */
-func (r *RedPack) Info(m util.Map) *net.Response {
-	m.Set("appid", r.Config.Get("app_id"))
+func (r *RedPack) Info(m util.Map) core.Response {
+	m.Set("appid", r.config.Get("app_id"))
 	m.Set("bill_type", "MCHT")
 	return r.SafeRequest(getHBInfoURLSuffix, m)
 
@@ -142,10 +139,10 @@ clientversion :用户操作的客户端版本
 urlencode(posttime=xx& mobile =xx&deviceid=xx)
 扣钱方mchid	consume_mch_id	否	10000098	String(32)	常规模式下无效，服务商模式下选填，服务商模式下不填默认扣子商户的钱
 */
-func (r *RedPack) SendNormal(m util.Map) *net.Response {
+func (r *RedPack) SendNormal(m util.Map) core.Response {
 	m.Set("total_num", strconv.Itoa(1))
 	m.Set("client_ip", core.GetServerIP())
-	m.Set("wxappid", r.Config.Get("app_id"))
+	m.Set("wxappid", r.config.Get("app_id"))
 	return r.SafeRequest(sendRedPackURLSuffix, m)
 }
 
@@ -209,8 +206,8 @@ urlencode(posttime=xx& mobile =xx&deviceid=xx)
 服务商替特约商户发放时使用
 扣钱方mchid	consume_mch_id	否	10000098	String(32)	常规模式下无效，服务商模式下选填，服务商模式下不填默认扣子商户的钱
 */
-func (r *RedPack) SendGroup(m util.Map) *net.Response {
+func (r *RedPack) SendGroup(m util.Map) core.Response {
 	m.Set("amt_type", "ALL_RAND")
-	m.Set("wxappid", r.Config.Get("app_id"))
+	m.Set("wxappid", r.config.Get("app_id"))
 	return r.SafeRequest(sendGroupRedPackURLSuffix, m)
 }

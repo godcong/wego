@@ -41,7 +41,7 @@ func NewUser() *User {
 // {"errcode":0,"errmsg":"ok"}
 // 失败:
 // {"errcode":40013,"errmsg":"invalid appid"}
-func (u *User) UpdateRemark(openid, remark string) *net.Response {
+func (u *User) UpdateRemark(openid, remark string) core.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
 	resp := u.client.HTTPPostJSON(
@@ -128,7 +128,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 //Get 获取用户列表
 // http请求方式: GET（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
-func (u *User) Get(nextOpenid string) *net.Response {
+func (u *User) Get(nextOpenid string) core.Response {
 	log.Debug("User|Get", nextOpenid)
 	query := u.token.GetToken().KeyMap()
 	if nextOpenid != "" {

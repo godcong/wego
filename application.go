@@ -195,12 +195,12 @@ type Application struct {
 //	SetDataType(dataType core.DataType) Client
 //	URL() string
 //	SetDomain(domain *core.Domain) Client
-//	HttpGet(url string, m util.Map) *net.Response
-//	HttpPost(url string, m util.Map) *net.Response
-//	HttpPostJson(url string, m util.Map, query util.Map) *net.Response
-//	Request(url string, params util.Map, method string, options util.Map) *net.Response
-//	RequestRaw(url string, params util.Map, method string, options util.Map) *net.Response
-//	SafeRequest(url string, params util.Map, method string, options util.Map) *net.Response
+//	HttpGet(url string, m util.Map) core.Response
+//	HttpPost(url string, m util.Map) core.Response
+//	HttpPostJson(url string, m util.Map, query util.Map) core.Response
+//	Request(url string, params util.Map, method string, options util.Map) core.Response
+//	RequestRaw(url string, params util.Map, method string, options util.Map) core.Response
+//	SafeRequest(url string, params util.Map, method string, options util.Map) core.Response
 //	Link(string) string
 //}
 

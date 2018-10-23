@@ -70,7 +70,7 @@ Add 创建门店
 	"errmsg":"invalid credential"
 	}
 */
-func (p *Poi) Add(biz *PoiBaseInfo) *net.Response {
+func (p *Poi) Add(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Add", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
@@ -89,7 +89,7 @@ http请求方式	POST
 请求Url	http://api.weixin.qq.com/cgi-bin/poi/getpoi?access_token=TOKEN
 POST数据格式	json
 */
-func (p *Poi) Get(poiID string) *net.Response {
+func (p *Poi) Get(poiID string) core.Response {
 	log.Debug("Poi|Get", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
@@ -118,7 +118,7 @@ POST数据格式	buffer
 "errmsg":"ok"
 }
 */
-func (p *Poi) Update(biz *PoiBaseInfo) *net.Response {
+func (p *Poi) Update(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Update", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
@@ -218,7 +218,7 @@ GetList 查询门店列表
 }
 失败返回:
 */
-func (p *Poi) GetList(begin int, limit int) *net.Response {
+func (p *Poi) GetList(begin int, limit int) core.Response {
 	log.Debug("Poi|GetList", begin, limit)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
@@ -240,7 +240,7 @@ http请求方式	POST/FROM
 POST数据格式	buffer
 
 */
-func (p *Poi) Del(poiID string) *net.Response {
+func (p *Poi) Del(poiID string) core.Response {
 	log.Debug("Poi|Del", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
@@ -263,7 +263,7 @@ http请求方式	GET
 ["美食,江浙菜,上海菜","美食,江浙菜,淮扬菜","美食,江浙菜,浙江菜","美食,江浙菜,南京菜 ","美食,江浙菜,苏帮菜…"]
 }
 */
-func (p *Poi) GetCategory() *net.Response {
+func (p *Poi) GetCategory() core.Response {
 	log.Debug("Poi|GetCategory")
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))

@@ -28,7 +28,7 @@ type OAuth struct {
 	*Account
 	Config
 	domain *core.Domain
-	//response    *net.Response
+	//response    core.Response
 	callback    map[string]CallbackFunc
 	authorize   string
 	scopes      string
@@ -181,7 +181,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 }
 
 /* */
-//func (o *OAuth) GetResponse() *net.Response {
+//func (o *OAuth) GetResponse() core.Response {
 //	return o.response
 //}
 

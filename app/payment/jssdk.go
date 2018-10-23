@@ -3,27 +3,24 @@ package payment
 import (
 	"strings"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
 
 /*JSSDK JSSDK */
 type JSSDK struct {
-	Config
 	*Payment
 }
 
 func newJSSDK(p *Payment) *JSSDK {
 	return &JSSDK{
-		Config:  defaultConfig,
 		Payment: p,
 	}
 }
 
 /*NewJSSDK NewJSSDK */
-func NewJSSDK() *JSSDK {
-	return newJSSDK(payment)
+func NewJSSDK(config *core.Config) *JSSDK {
+	return newJSSDK(NewPayment(config))
 }
 
 func (j *JSSDK) getURL() string {
@@ -32,9 +29,9 @@ func (j *JSSDK) getURL() string {
 
 /*BridgeConfig bridge 设置 */
 func (j *JSSDK) BridgeConfig(pid string) util.Map {
-	appid := j.Config.Get("sub_appid")
+	appid := j.config.Get("sub_appid")
 	if appid == "" {
-		appid = j.Config.Get("app_id")
+		appid = j.config.Get("app_id")
 	}
 
 	m := util.Map{
@@ -45,7 +42,7 @@ func (j *JSSDK) BridgeConfig(pid string) util.Map {
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", core.GenerateSignature(m, j.Config.Get("key"), core.MakeSignMD5))
+	m.Set("paySign", core.GenerateSignature(m, j.config.GetString("key"), core.MakeSignMD5))
 
 	return m
 }
@@ -63,15 +60,15 @@ func (j *JSSDK) SdkConfig(pid string) util.Map {
 /*AppConfig app 设置 */
 func (j *JSSDK) AppConfig(pid string) util.Map {
 	m := util.Map{
-		"appid":     j.Config.Get("app_id"),
-		"partnerid": j.Config.Get("mch_id"),
+		"appid":     j.config.Get("app_id"),
+		"partnerid": j.config.Get("mch_id"),
 		"prepayid":  pid,
 		"noncestr":  util.GenerateNonceStr(),
 		"timestamp": util.Time(),
 		"package":   "Sign=WXPay",
 	}
 
-	m.Set("sign", core.GenerateSignature(m, j.Config.Get("aes_key"), core.MakeSignMD5))
+	m.Set("sign", core.GenerateSignature(m, j.config.GetString("aes_key"), core.MakeSignMD5))
 	return m
 }
 
@@ -86,7 +83,7 @@ func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
 		token = accessToken.(string)
 	}
 	m := util.Map{
-		"appId":     j.Config.Get("app_id"),
+		"appId":     j.config.Get("app_id"),
 		"scope":     "jsapi_address",
 		"timeStamp": util.Time(),
 		"nonceStr":  util.GenerateNonceStr(),

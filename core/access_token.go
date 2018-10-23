@@ -37,8 +37,8 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"appid":      a.config.Get("app_id"),
 		"secret":     a.config.Get("secret"),
 	}
-
-	resp := a.client.GetRaw(Link(tokenURLSuffix), m)
+	a.client.SetRequestType(DataTypeQuery)
+	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, m)
 	return resp
 }
 
@@ -113,7 +113,7 @@ func (a *AccessToken) RequestToken(credentials string) *Token {
 	if tokenByte == nil {
 		return nil
 	}
-
+	log.Println(string(tokenByte))
 	err := json.Unmarshal(tokenByte, &token)
 	if err != nil {
 		log.Error(err)
@@ -133,7 +133,7 @@ func (a *AccessToken) SetToken(token string) *AccessToken {
 }
 
 func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
-	cache.GetCache().SetWithTTL(a.getCacheKey(), &Token{
+	cache.SetWithTTL(a.getCacheKey(), &Token{
 		AccessToken: token,
 		ExpiresIn:   time.Now().Unix() + lifeTime.Unix(),
 	}, time.Now())

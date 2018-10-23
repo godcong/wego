@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/log"
@@ -15,7 +14,6 @@ import (
 
 /*Server Server */
 type Server struct {
-	Config
 	*Payment
 	mType    string
 	callback []core.PaymentCallback
@@ -53,15 +51,14 @@ var result = []byte(`<xml><return_code><![CDATA[FAIL]]></return_code><return_msg
 func newServer(p *Payment) *Server {
 	return &Server{
 		mType:    "xml",
-		Config:   defaultConfig,
-		Payment:  payment,
+		Payment:  p,
 		callback: nil,
 	}
 }
 
 /*NewServer NewServer */
-func NewServer() *Server {
-	return newServer(payment)
+func NewServer(config *core.Config) *Server {
+	return newServer(NewPayment(config))
 }
 
 /*ServeHTTP 服务监听 */
@@ -82,7 +79,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	m := util.XMLToMap(bodyBytes)
-	if validateCallback(m, s.config.Get("key")) {
+	if validateCallback(m, s.config.GetString("key")) {
 		rlt = s.ProcessCallback(m)
 
 	}

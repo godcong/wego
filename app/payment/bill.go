@@ -1,27 +1,24 @@
 package payment
 
 import (
-	"github.com/godcong/wego/config"
-	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
 
 /*Bill Bill */
 type Bill struct {
-	Config
 	*Payment
 }
 
 func newBill(p *Payment) *Bill {
 	return &Bill{
-		Config:  defaultConfig,
 		Payment: p,
 	}
 }
 
 /*NewBill NewBill */
-func NewBill() *Bill {
-	return newBill(payment)
+func NewBill(config *core.Config) *Bill {
+	return newBill(NewPayment(config))
 }
 
 /*Get 下载对账单
@@ -44,11 +41,11 @@ REFUND，返回当日退款订单
 RECHARGE_REFUND，返回当日充值退款订单
 压缩账单	tar_type	否	String(8)	GZIP	非必传参数，固定值：GZIP，返回格式为.gzip的压缩包账单。不传则默认为数据流形式。
 */
-func (b *Bill) Get(bd string, bt string, op util.Map) *net.Response {
+func (b *Bill) Get(bd string, bt string, op util.Map) core.Response {
 	m := make(util.Map)
-	m.Set("appid", b.Config.Get("app_id"))
+	m.Set("appid", b.config.Get("app_id"))
 	m.Set("bill_date", bd)
 	m.Set("bill_type", bt)
 	m.Join(op)
-	return b.RequestRaw(downloadBillURLSuffix, m)
+	return b.Request(downloadBillURLSuffix, m)
 }

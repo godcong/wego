@@ -10,21 +10,21 @@ import (
 
 /*Order Order */
 type Order struct {
-	config  *core.Config
-	client  *core.Client
-	payment *Payment
+	//config  *core.Config
+	//client  *core.Client
+	*Payment
 	request *http.Request
 }
 
-func newOrder(config *core.Config) *Order {
+func newOrder(payment *Payment) *Order {
 	return &Order{
-		config: config,
+		Payment: payment,
 	}
 }
 
 /*NewOrder NewOrder */
 func NewOrder(config *core.Config) *Order {
-	return newOrder(config)
+	return newOrder(NewPayment(config))
 }
 
 //SetRequest to set a http request for Unify to get the client ip
@@ -71,7 +71,7 @@ goods_detail
 指定支付方式	limit_pay	否	String(32)	no_credit	no_credit--指定不能使用信用卡支付
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
-func (o *Order) Unify(m util.Map) util.Map {
+func (o *Order) Unify(m util.Map) core.Response {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIP())
@@ -82,14 +82,13 @@ func (o *Order) Unify(m util.Map) util.Map {
 		}
 	}
 
-	m.Set("appid", o.config.Get("app_id"))
+	m.Set("appid", o.config.GetString("app_id"))
 
 	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
 	if !m.Has("notify_url") {
-		m.Set("notify_url", o.config.Get("notify_url"))
+		m.Set("notify_url", o.config.GetString("notify_url"))
 	}
-	resp := o.payment.Request(unifiedOrderURLSuffix, m)
-	return resp
+	return o.Request(unifiedOrderURLSuffix, m)
 }
 
 /*Close 关闭订单
@@ -109,12 +108,11 @@ https://api.mch.weixin.qq.com/pay/closeorder       （建议接入点：中国�
 签名	sign	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
-func (o *Order) Close(no string) util.Map {
+func (o *Order) Close(no string) core.Response {
 	m := make(util.Map)
 	m.Set("appid", o.config.Get("app_id"))
 	m.Set("out_trade_no", no)
-	resp := o.payment.Request(closeOrderURLSuffix, m)
-	return resp
+	return o.Request(closeOrderURLSuffix, m)
 }
 
 /** QueryOrder 查询订单
@@ -136,17 +134,17 @@ https://api.mch.weixin.qq.com/pay/orderquery        （建议接入点：中国�
 签名	sign	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	签名，详见签名生成算法
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
-func (o *Order) query(m util.Map) *net.Response {
-	m.Set("appid", o.Config.Get("app_id"))
-	return o.payment.Request(orderQueryURLSuffix, m)
+func (o *Order) query(m util.Map) core.Response {
+	m.Set("appid", o.config.Get("app_id"))
+	return o.Request(orderQueryURLSuffix, m)
 }
 
 /*QueryByTransactionID 通过transaction_id查询订单 */
-func (o *Order) QueryByTransactionID(id string) *net.Response {
+func (o *Order) QueryByTransactionID(id string) core.Response {
 	return o.query(util.Map{"transaction_id": id})
 }
 
 /*QueryByOutTradeNumber 通过out_trade_no查询订单 */
-func (o *Order) QueryByOutTradeNumber(no string) *net.Response {
+func (o *Order) QueryByOutTradeNumber(no string) core.Response {
 	return o.query(util.Map{"out_trade_no": no})
 }

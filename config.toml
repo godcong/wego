@@ -20,7 +20,7 @@
 #上海域名(sh.api.weixin.qq.com)，使用该域名将访问上海的接入点；
 #深圳域名(sz.api.weixin.qq.com)，使用该域名将访问深圳的接入点；
 #香港域名(hk.api.weixin.qq.com)，使用该域名将访问香港的接入点。
-#            url = 'https://api.weixin.qq.com'
+            url = 'https://api.weixin.qq.com'
 
 [official_account]
 #        [official.config]

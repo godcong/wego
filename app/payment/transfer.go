@@ -1,30 +1,27 @@
 package payment
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
 /*Transfer Transfer */
 type Transfer struct {
-	Config
 	*Payment
 }
 
 func newTransfer(pay *Payment) *Transfer {
 	return &Transfer{
-		Config:  defaultConfig,
 		Payment: pay,
 	}
 }
 
 /*NewTransfer NewTransfer */
-func NewTransfer() *Transfer {
-	return newTransfer(payment)
+func NewTransfer(config *core.Config) *Transfer {
+	return newTransfer(NewPayment(config))
 }
 
 /*QueryBalanceOrder 查询企业付款
@@ -40,10 +37,10 @@ func NewTransfer() *Transfer {
 商户号	mch_id	是	10000098	String(32)	微信支付分配的商户号
 Appid	appid	是	wxe062425f740d30d8	String(32)	商户号的appid
 */
-func (t *Transfer) QueryBalanceOrder(s string) *net.Response {
+func (t *Transfer) QueryBalanceOrder(s string) core.Response {
 	m := util.Map{
-		"appid":            t.Config.Get("app_id"),
-		"mch_id":           t.Config.Get("mch_id"),
+		"appid":            t.config.Get("app_id"),
+		"mch_id":           t.config.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(getTransferInfoURLSuffix, m)
@@ -72,10 +69,10 @@ FORCE_CHECK：强校验真实姓名
 企业付款描述信息	desc	是	理赔	String	企业付款操作说明信息。必填。
 Ip地址	spbill_create_ip	是	192.168.0.1	String(32)	该IP同在商户平台设置的IP白名单中的IP没有关联，该IP可传用户端或者服务端的IP。
 */
-func (t *Transfer) ToBalance(m util.Map) *net.Response {
-	m.Set("mch_id", "")
-	m.Set("mchid", t.Config.Get("mch_id"))
-	m.Set("mch_appid", t.Config.Get("app_id"))
+func (t *Transfer) ToBalance(m util.Map) core.Response {
+	m.Delete("mch_id")
+	m.Set("mchid", t.config.Get("mch_id"))
+	m.Set("mch_appid", t.config.Get("app_id"))
 
 	if !m.Has("spbill_create_ip") {
 		m.Set("spbill_create_ip", core.GetServerIP())
@@ -124,9 +121,9 @@ BANK_FAIL（银行退票，订单状态由付款成功流转至退票,退票时�
 成功付款时间	pay_succ_time	否	String	微信侧付款成功时间（但无法保证银行不会退票）
 失败原因	reason	否	String	订单失败原因（如：余额不足）
 */
-func (t *Transfer) QueryBankCardOrder(s string) *net.Response {
+func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 	m := util.Map{
-		"mch_id":           t.Config.Get("mch_id"),
+		"mch_id":           t.config.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(mmPaySpTransQueryBankURLSuffix, m)
@@ -182,7 +179,7 @@ string(32)
 微信企业付款单号	payment_no	是	string(64)	代付成功后，返回的内部业务单号
 手续费金额	cmms_amt	是	int	手续费金额 RMB：分
 */
-func (t *Transfer) ToBankCard(m util.Map) *net.Response {
+func (t *Transfer) ToBankCard(m util.Map) core.Response {
 	keys := []string{"bank_code", "partner_trade_no", "enc_bank_no", "enc_true_name", "amount"}
 	for _, v := range keys {
 		if !m.Has(v) {
@@ -190,13 +187,13 @@ func (t *Transfer) ToBankCard(m util.Map) *net.Response {
 			return nil
 		}
 	}
-	m.Set("mch_id", t.client.Get("mch_id"))
+	m.Set("mch_id", t.config.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateUUID())
 
-	m.Set("enc_bank_no", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_bank_no")))
-	m.Set("enc_true_name", crypt.Encrypt(t.Get("pubkey_path"), m.GetString("enc_true_name")))
-	m.Set("sign", core.GenerateSignature(m, t.client.Get("key"), core.MakeSignMD5))
-	return t.client.SafeRequest(t.client.Link(mmPaySpTransPayBankURLSuffix), util.Map{
-		net.RequestTypeXML.String(): m,
-	}, "post")
+	m.Set("enc_bank_no", crypt.Encrypt(t.config.GetString("pubkey_path"), m.GetString("enc_bank_no")))
+	m.Set("enc_true_name", crypt.Encrypt(t.config.GetString("pubkey_path"), m.GetString("enc_true_name")))
+	m.Set("sign", core.GenerateSignature(m, t.config.GetString("key"), core.MakeSignMD5))
+	return t.client.SafeRequest(core.Link(mmPaySpTransPayBankURLSuffix), "post", util.Map{
+		core.DataTypeXML: m,
+	})
 }

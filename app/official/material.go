@@ -27,7 +27,7 @@ func NewMaterial() *Material {
 //AddNews 新增永久素材
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
-func (m *Material) AddNews(articles []*media.Article) *net.Response {
+func (m *Material) AddNews(articles []*media.Article) core.Response {
 	log.Debug("Material|AddNews", articles)
 	key := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPPostJSON(
@@ -43,7 +43,7 @@ func (m *Material) AddNews(articles []*media.Article) *net.Response {
 // 调用示例（使用curl命令，用FORM表单方式新增一个其他类型的永久素材，curl命令的使用请自行查阅资料）
 // 成功:
 // {"media_id":"HIWcj9t3AI_b8qCQSu8lrY5DkGL1LMl8_eTrDv4aUo8","url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0?wx_fmt=jpeg"}
-func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *net.Response {
+func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.Response {
 	log.Debug("Material|AddMaterial", filePath, mediaType)
 	if mediaType == core.MediaTypeVideo {
 		log.Error("please use Material.UploadVideo() function")
@@ -67,7 +67,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) *net.R
 // https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
 // 成功:
 // {"media_id":"HIWcj9t3AI_b8qCQSu8lrTBEyIAO-uPSQhTiI2uoENk"}
-func (m *Material) UploadVideo(filePath string, title, introduction string) *net.Response {
+func (m *Material) UploadVideo(filePath string, title, introduction string) core.Response {
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
@@ -93,7 +93,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) *net
 // {"errcode":40007,"errmsg":"invalid media_id hint: [YoxHSA07631538]"}
 // 成功:
 // {"title":"ceshi2","description":"only test","down_url":"http:\/\/203.205.158.71\/vweixinp.tc.qq.com\/1007_ad755ea12b3043e893e174d18de97f24.f10.mp4?vkey=22A7BCCDB429DF3613D50C1CAC510BDDCD12030895D782B3FAE00FB6989E4FFA640EB7EB8B498E560D08C84D808EF352BFFB0B15FA743556DB96BBF0239FC41F6DAFEEBA1024DBCA0954FBE09A66AA5381AB9CA50D1F8AE2&sha=0&save=1"}
-func (m *Material) Get(mediaID string) *net.Response {
+func (m *Material) Get(mediaID string) core.Response {
 	log.Debug("Material|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPPostJSON(
@@ -114,7 +114,7 @@ func (m *Material) Get(mediaID string) *net.Response {
 // {"errcode":0,"errmsg":"ok"}
 // 失败:
 // {"errcode":-1,"errmsg":"system error hint: [NX0zcA05993060]"}
-func (m *Material) Del(mediaID string) *net.Response {
+func (m *Material) Del(mediaID string) core.Response {
 	log.Debug("Material|Del", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPPostJSON(
@@ -132,7 +132,7 @@ func (m *Material) Del(mediaID string) *net.Response {
 //UpdateNews 修改永久图文素材
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN
-func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) *net.Response {
+func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) core.Response {
 	log.Debug("Material|UpdateNews", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPPostJSON(
@@ -156,7 +156,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 // {"voice_count":0,"video_count":2,"image_count":0,"news_count":0}
 // 失败:
 // {"errcode":-1,"errmsg":"system error"}
-func (m *Material) GetMaterialCount() *net.Response {
+func (m *Material) GetMaterialCount() core.Response {
 	log.Debug("Material|GetMaterialCount")
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPGet(
@@ -174,7 +174,7 @@ func (m *Material) GetMaterialCount() *net.Response {
 // {"item":[{"media_id":"HIWcj9t3AI_b8qCQSu8lrTgTis9nPHNyIkIEWaDdHzY","name":"ceshi2","update_time":1521355652}],"total_count":2,"item_count":1}
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
-func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) *net.Response {
+func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Response {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPPostJSON(

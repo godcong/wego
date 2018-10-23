@@ -1,27 +1,24 @@
 package payment
 
 import (
-	"github.com/godcong/wego/config"
-	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
 
 /*Reverse Reverse */
 type Reverse struct {
-	Config
 	*Payment
 }
 
 func newReverse(p *Payment) *Reverse {
 	return &Reverse{
-		Config:  defaultConfig,
 		Payment: p,
 	}
 }
 
 /*NewReverse NewReverse */
-func NewReverse() *Reverse {
-	return newReverse(payment)
+func NewReverse(config *core.Config) *Reverse {
+	return newReverse(NewPayment(config))
 }
 
 /*ByOutTradeNumber 通过out_trade_no撤销订单
@@ -42,7 +39,7 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点：中
 签名	sign	String(32)	是	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
-func (r *Reverse) ByOutTradeNumber(num string) *net.Response {
+func (r *Reverse) ByOutTradeNumber(num string) core.Response {
 	return r.reverse(util.Map{"out_trade_no": num})
 }
 
@@ -64,11 +61,11 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点：中
 签名	sign	String(32)	是	C380BEC2BFD727A4B6845133519F3AD6	签名，详见签名生成算法
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
-func (r *Reverse) ByTransactionID(id string) *net.Response {
+func (r *Reverse) ByTransactionID(id string) core.Response {
 	return r.reverse(util.Map{"transaction_id": id})
 }
 
-func (r *Reverse) reverse(m util.Map) *net.Response {
-	m.Set("appid", r.Config.Get("app_id"))
+func (r *Reverse) reverse(m util.Map) core.Response {
+	m.Set("appid", r.config.Get("app_id"))
 	return r.SafeRequest(reverseURLSuffix, m)
 }

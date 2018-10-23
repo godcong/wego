@@ -37,7 +37,7 @@ media	是	form-data中媒体文件标识，有filename、filelength、content-ty
 失败:
 {"errcode":41005,"errmsg":"media data missing hint: [1HqFUa09681538]"}
 */
-func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response {
+func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response {
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
@@ -53,28 +53,28 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) *net.Response 
 /*UploadThumb UploadVoice
 see Upload
 */
-func (m *Media) UploadThumb(filePath string) *net.Response {
+func (m *Media) UploadThumb(filePath string) core.Response {
 	return m.Upload(filePath, core.MediaTypeThumb)
 }
 
 /*UploadVoice UploadVoice
 see Upload
 */
-func (m *Media) UploadVoice(filePath string) *net.Response {
+func (m *Media) UploadVoice(filePath string) core.Response {
 	return m.Upload(filePath, core.MediaTypeVoice)
 }
 
 /*UploadVideo UploadVideo
 see Upload
 */
-func (m *Media) UploadVideo(filePath string) *net.Response {
+func (m *Media) UploadVideo(filePath string) core.Response {
 	return m.Upload(filePath, core.MediaTypeVideo)
 }
 
 /*UploadImage UploadImage
 see Upload
 */
-func (m *Media) UploadImage(filePath string) *net.Response {
+func (m *Media) UploadImage(filePath string) core.Response {
 	return m.Upload(filePath, core.MediaTypeImage)
 }
 
@@ -88,7 +88,7 @@ curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKE
 失败:
 {"errcode":40007,"errmsg":"invalid media_id"}
 */
-func (m *Media) Get(mediaID string) *net.Response {
+func (m *Media) Get(mediaID string) core.Response {
 	log.Debug("Media|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
@@ -105,7 +105,7 @@ func (m *Media) Get(mediaID string) *net.Response {
 // curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
-func (m *Media) GetJssdk(mediaID string) *net.Response {
+func (m *Media) GetJssdk(mediaID string) core.Response {
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
 	resp := m.client.HTTPGet(
@@ -123,7 +123,7 @@ func (m *Media) GetJssdk(mediaID string) *net.Response {
 // curl -F media=@test.jpg "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN"
 // 成功:
 // {"url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0"}
-func (m *Media) UploadMediaImg(filePath string) *net.Response {
+func (m *Media) UploadMediaImg(filePath string) core.Response {
 	return m.uploadImg("media", filePath)
 }
 
@@ -133,11 +133,11 @@ func (m *Media) UploadMediaImg(filePath string) *net.Response {
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）：curl –Fbuffer=@test.jpg
 // 返回正确的示例：{"url":"http://mmbiz.qpic.cn/mmbiz/iaL1LJM1mF9aRKPZJkmG8xXhiaHqkKSVMMWeN3hLut7X7hicFNjakmxibMLGWpXrEXB33367o7zHN0CwngnQY7zb7g/0"}
 // 返回错误的示例{"errcode":40009,"errmsg":"invalid image size"}
-func (m *Media) UploadBufferImg(filePath string) *net.Response {
+func (m *Media) UploadBufferImg(filePath string) core.Response {
 	return m.uploadImg("buffer", filePath)
 }
 
-func (m *Media) uploadImg(name string, filePath string) *net.Response {
+func (m *Media) uploadImg(name string, filePath string) core.Response {
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.HTTPUpload(
 		m.client.Link(mediaUploadImgURLSuffix),

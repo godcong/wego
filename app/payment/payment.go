@@ -26,7 +26,9 @@ func init() {
 
 }
 
-func newPayment(config *core.Config, client *core.Client, token *core.AccessToken) *Payment {
+func newPayment(config *core.Config) *Payment {
+	client := core.NewClient(config)
+	token := core.NewAccessToken(config, client)
 	payment := &Payment{
 		config: config,
 		client: client,
@@ -36,12 +38,14 @@ func newPayment(config *core.Config, client *core.Client, token *core.AccessToke
 	return payment
 }
 
-func NewPayment(config *core.Config, client *core.Client, token *core.AccessToken) *Payment {
-	return newPayment(config, client, token)
+//NewPayment create an payment instance
+func NewPayment(config *core.Config) *Payment {
+	return newPayment(config)
 }
 
 /*Request 普通请求*/
-func (p *Payment) Request(url string, params util.Map) util.Map {
+func (p *Payment) Request(url string, params util.Map) core.Response {
+	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}
@@ -51,6 +55,7 @@ func (p *Payment) Request(url string, params util.Map) util.Map {
 
 /*RequestRaw raw请求*/
 func (p *Payment) RequestRaw(url string, params util.Map) []byte {
+	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}
@@ -59,7 +64,8 @@ func (p *Payment) RequestRaw(url string, params util.Map) []byte {
 }
 
 /*SafeRequest 安全请求*/
-func (p *Payment) SafeRequest(url string, params util.Map) util.Map {
+func (p *Payment) SafeRequest(url string, params util.Map) core.Response {
+	p.client.SetRequestType(core.DataTypeXML)
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(params),
 	}
@@ -95,7 +101,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (p *Payment) Pay(params util.Map) util.Map {
+func (p *Payment) Pay(params util.Map) core.Response {
 	params.Set("appid", p.config.Get("app_id"))
 	return p.Request(microPayURLSuffix, params)
 }
@@ -104,7 +110,7 @@ func (p *Payment) Pay(params util.Map) util.Map {
 接口链接: https://api.mch.weixin.qq.com/tools/authcodetoopenid
 通过授权码查询公众号Openid，调用查询后，该授权码只能由此商户号发起扣款，直至授权码更新。
 */
-func (p *Payment) AuthCodeToOpenid(authCode string) util.Map {
+func (p *Payment) AuthCodeToOpenid(authCode string) core.Response {
 	m := make(util.Map)
 	m.Set("appid", p.config.Get("app_id"))
 	m.Set("auth_code", authCode)
@@ -114,7 +120,7 @@ func (p *Payment) AuthCodeToOpenid(authCode string) util.Map {
 /*Security Security */
 func (p *Payment) Security() *Security {
 	if p.security == nil {
-		p.security = NewSecurity()
+		p.security = newSecurity(p)
 	}
 	return p.security
 }
@@ -122,10 +128,7 @@ func (p *Payment) Security() *Security {
 /*Refund 获取Refund*/
 func (p *Payment) Refund() *Refund {
 	if p.refund == nil {
-		p.refund = &Refund{
-			Config:  p.config,
-			Payment: p,
-		}
+		p.refund = newRefund(p)
 	}
 	return p.refund
 }
@@ -133,10 +136,7 @@ func (p *Payment) Refund() *Refund {
 /*Order 获取order*/
 func (p *Payment) Order() *Order {
 	if p.order == nil {
-		p.order = &Order{
-			Config:  p.config,
-			Payment: p,
-		}
+		p.order = newOrder(p)
 	}
 	return p.order
 }

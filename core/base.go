@@ -29,8 +29,8 @@ func newBase(config *Config) *Base {
 }
 
 //NewBase NewBase
-func NewBase() *Base {
-	return newBase(DefaultConfig())
+func NewBase(config *Config) *Base {
+	return newBase(config)
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零
@@ -77,14 +77,14 @@ func (b *Base) ClearQuota() Response {
 */
 func (b *Base) GetCallbackIP() Response {
 	token := b.token.GetToken()
-	return b.client.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
+	b.client.SetRequestType(DataTypeJSON)
+	return b.client.Get(APIWeixin+getCallbackIPURLSuffix, token.KeyMap())
 }
 
 /*ShortURL 转换短链接
 https://apihk.mch.weixin.qq.com/tools/shorturl    （建议接入点：东南亚）
 https://apius.mch.weixin.qq.com/tools/shorturl    （建议接入点：其它）
 https://api.mch.weixin.qq.com/tools/shorturl        （建议接入点：中国国内）
-
 请求参数
 URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid=XXXXX&mch_id=XXXXX&product_id=XXXXXX&time_stamp=XXXXXX&nonce_str=XXXXX	需要转换的URL，签名用原串，传输需URLencode
 返回结果
@@ -92,24 +92,26 @@ URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid
 URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
 */
 func (u *URL) ShortURL(url string) Response {
+	//TODO:need fix
+	//token := u.token.GetToken()
+	//ops := util.Map{
+	//	DataTypeQuery: token.KeyMap(),
+	//}
 	m := util.Map{
 		"action":   "long2short",
 		"long_url": url,
 	}
-	token := u.token.GetToken()
-	ops := util.Map{
-		DataTypeQuery: token.KeyMap(),
-	}
-	resp := u.client.PostJSON(Link(shortURLSuffix), m, ops)
+	resp := u.client.PostJSON(APIWeixin+shortURLSuffix, m, nil)
 	log.Debug("URL|ShortURL", resp)
 	return resp
 }
 
 /*NewURL NewURL*/
-func NewURL(config *Config, token *AccessToken, client *Client) *URL {
+func NewURL(config *Config) *URL {
+	client := NewClient(config)
 	return &URL{
 		config: config,
-		token:  token,
+		token:  NewAccessToken(config, client),
 		client: client,
 	}
 }

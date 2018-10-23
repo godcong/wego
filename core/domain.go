@@ -242,7 +242,7 @@ func DomainHost() *Domain {
 
 /*Link 拼接地址 */
 func Link(uri string, suffix ...string) string {
-	url := ""
+	url := "default"
 	if suffix != nil {
 		url = suffix[0]
 	}

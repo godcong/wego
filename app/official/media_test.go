@@ -9,7 +9,7 @@ import (
 
 func TestMedia_Upload(t *testing.T) {
 	media := official.NewMedia()
-	var resp *net.Response
+	var resp core.Response
 	// resp = media.UploadImage(`test.jpg`)
 	resp = media.UploadImage(`D:\temp\微信图片_20180516164809.jpg`)
 	t.Log(resp.ToString())

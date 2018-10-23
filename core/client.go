@@ -197,6 +197,7 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", c.httpClient)
 	c.httpClient = buildTransport(c.config)
 	response, err := request(c, url, method, ops)
+	defer response.Body.Close()
 	if err != nil {
 		return parseResponse(nil, err.Error())
 	}
@@ -204,7 +205,7 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	if err != nil {
 		return parseResponse(nil, err.Error())
 	}
-
+	log.Println(string(b))
 	return parseResponse(b, c.requestType)
 }
 
@@ -277,7 +278,7 @@ func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte 
 //}
 
 /*GetRequest get net response */
-//func (c *Client) GetResponse() *net.Response {
+//func (c *Client) GetResponse() core.Response {
 //return c.response
 //}
 
@@ -366,8 +367,12 @@ func request(client *Client, url string, method string, ops util.Map) (*http.Res
 	if client.httpRequest == nil {
 		newRequest := requestData(client.requestType)
 		client.httpRequest = newRequest(method, url, ops.Get(client.requestType))
-
 	}
+
+	defer func() {
+		//clear request when done
+		client.httpRequest = nil
+	}()
 
 	log.Debug("client|request", client, url, method, ops)
 	response, err := http.DefaultClient.Do(client.httpRequest.WithContext(client.Context))
@@ -392,8 +397,18 @@ func requestData(dt string) func(string, string, interface{}) *http.Request {
 		return processXML
 	} else if dt == DataTypeMultipart {
 		return processMultipart
+	} else {
+
 	}
-	return nil
+	return processNothing
+}
+
+func processNothing(method, url string, i interface{}) *http.Request {
+	request, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return nil
+	}
+	return request
 }
 
 func processMultipart(method, url string, i interface{}) *http.Request {

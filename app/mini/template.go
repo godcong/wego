@@ -164,7 +164,7 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 41030	page不正确
 45009	接口调用超过限额（目前默认每个帐号日调用限额为100万）
 */
-func (t *Template) Send(template *message.Template) *net.Response {
+func (t *Template) Send(template *message.Template) core.Response {
 	token := t.token.GetToken()
 	resp := t.client.HTTPPostJSON(
 		t.client.Link(templateSendURLSuffix),

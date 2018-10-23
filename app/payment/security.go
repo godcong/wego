@@ -1,28 +1,24 @@
 package payment
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
 /*Security Security */
 type Security struct {
-	Config
 	*Payment
 }
 
 func newSecurity(pay *Payment) *Security {
 	return &Security{
-		Config:  defaultConfig,
 		Payment: pay,
 	}
 }
 
 /*NewSecurity NewSecurity */
-func NewSecurity() *Security {
-	return newSecurity(payment)
+func NewSecurity(config *core.Config) *Security {
+	return newSecurity(NewPayment(config))
 }
 
 /*GetPublicKey 获取RSA加密公钥API
@@ -63,9 +59,8 @@ openssl rsa -RSAPublicKey_in -in <filename> -pubout
 PKCS#8 转 PKCS#1:
 openssl rsa -pubin -in <filename> -RSAPublicKey_out
 */
-func (s *Security) GetPublicKey() *net.Response {
-	s.client.SetDataType(core.DataTypeXML)
-	return s.client.SafeRequest(riskGetPublicKeyURLSuffix, util.Map{
-		net.RequestTypeXML.String(): s.preRequest(util.Map{"sign_type": "MD5"}),
-	}, "post")
+func (s *Security) GetPublicKey() core.Response {
+	return s.client.SafeRequest(riskGetPublicKeyURLSuffix, "post", util.Map{
+		core.DataTypeXML: s.initRequest(util.Map{"sign_type": "MD5"}),
+	})
 }

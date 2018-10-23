@@ -34,7 +34,7 @@ func NewDataCube() *DataCube {
 // {"list":[{"ref_date":"2018-03-19","user_source":0,"new_user":0,"cancel_user":0},{"ref_date":"2018-03-19","user_source":17,"new_user":1,"cancel_user":0}]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserSummary", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserSummaryURLSuffix,
@@ -49,7 +49,7 @@ func (d *DataCube) GetUserSummary(beginDate, endDate time.Time) *net.Response {
 // {"list":[{"ref_date":"2018-03-18","user_source":0,"cumulate_user":5},{"ref_date":"2018-03-19","user_source":0,"cumulate_user":6},{"ref_date":"2018-03-20","user_source":0,"cumulate_user":6}]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserCumulate", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserCumulateURLSuffix,
@@ -64,7 +64,7 @@ func (d *DataCube) GetUserCumulate(beginDate, endDate time.Time) *net.Response {
 // {"list":[]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetArticleSummary", beginDate, endDate)
 	return d.get(
 		dataCubeGetArticleSummaryURLSuffix,
@@ -79,7 +79,7 @@ func (d *DataCube) GetArticleSummary(beginDate, endDate time.Time) *net.Response
 // {"list":[]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetArticleTotal", beginDate, endDate)
 	return d.get(
 		dataCubeGetArticleTotalURLSuffix,
@@ -94,7 +94,7 @@ func (d *DataCube) GetArticleTotal(beginDate, endDate time.Time) *net.Response {
 // {"list":[]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserRead(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserRead(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserRead", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserReadURLSuffix,
@@ -109,7 +109,7 @@ func (d *DataCube) GetUserRead(beginDate, endDate time.Time) *net.Response {
 // {"list":[]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserReadHourURLSuffix,
@@ -124,7 +124,7 @@ func (d *DataCube) GetUserReadHour(beginDate, endDate time.Time) *net.Response {
 // {"list":[]}
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserShare(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserShare(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserShareURLSuffix,
@@ -137,7 +137,7 @@ func (d *DataCube) GetUserShare(beginDate, endDate time.Time) *net.Response {
 // https://api.weixin.qq.com/datacube/getusersharehour?access_token=ACCESS_TOKEN
 // 失败:
 // {"errcode":61501,"errmsg":"date range error hint: [_muTLA05701504]"}
-func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return d.get(
 		dataCubeGetUserShareHourURLSuffix,
@@ -150,7 +150,7 @@ func (d *DataCube) GetUserShareHour(beginDate, endDate time.Time) *net.Response 
 // https://api.weixin.qq.com/datacube/getupstreammsg?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgURLSuffix,
@@ -163,7 +163,7 @@ func (d *DataCube) GetUpstreamMsg(beginDate, endDate time.Time) *net.Response {
 // https://api.weixin.qq.com/datacube/getupstreammsghour?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgHourURLSuffix,
@@ -176,7 +176,7 @@ func (d *DataCube) GetUpstreamMsgHour(beginDate, endDate time.Time) *net.Respons
 // https://api.weixin.qq.com/datacube/getupstreammsgweek?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgWeekURLSuffix,
@@ -189,7 +189,7 @@ func (d *DataCube) GetUpstreamMsgWeek(beginDate, endDate time.Time) *net.Respons
 // https://api.weixin.qq.com/datacube/getupstreammsgmonth?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgMonth", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgMonthURLSuffix,
@@ -202,7 +202,7 @@ func (d *DataCube) GetUpstreamMsgMonth(beginDate, endDate time.Time) *net.Respon
 // https://api.weixin.qq.com/datacube/getupstreammsgdist?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgDistURLSuffix,
@@ -215,7 +215,7 @@ func (d *DataCube) GetUpstreamMsgDist(beginDate, endDate time.Time) *net.Respons
 // https://api.weixin.qq.com/datacube/getupstreammsgdistweek?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgDistWeekURLSuffix,
@@ -228,7 +228,7 @@ func (d *DataCube) GetUpstreamMsgDistWeek(beginDate, endDate time.Time) *net.Res
 // https://api.weixin.qq.com/datacube/getupstreammsgdistmonth?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[]}
-func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
 	return d.get(
 		dataCubeGetUpstreamMsgDistMonthURLSuffix,
@@ -241,7 +241,7 @@ func (d *DataCube) GetUpstreamMsgDistMonth(beginDate, endDate time.Time) *net.Re
 // https://api.weixin.qq.com/datacube/getinterfacesummary?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[{"ref_date":"2018-03-20","callback_count":24,"fail_count":0,"total_time_cost":5965,"max_time_cost":1290}]}
-func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetInterfaceSummary", beginDate, endDate)
 	return d.get(
 		dataCubeGetInterfaceSummaryURLSuffix,
@@ -254,7 +254,7 @@ func (d *DataCube) GetInterfaceSummary(beginDate, endDate time.Time) *net.Respon
 // https://api.weixin.qq.com/datacube/getinterfacesummaryhour?access_token=ACCESS_TOKEN
 // 成功:
 // {"list":[{"ref_date":"2018-03-20","ref_hour":1800,"callback_count":24,"fail_count":0,"total_time_cost":5965,"max_time_cost":1290}]}
-func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) *net.Response {
+func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) core.Response {
 	log.Debug("DataCube|GetInterfaceSummaryHour", beginDate, endDate)
 	return d.get(
 		dataCubeGetInterfaceSummaryHourURLSuffix,
@@ -263,7 +263,7 @@ func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) *net.Re
 	)
 }
 
-func (d *DataCube) get(url, beginDate, endDate string) *net.Response {
+func (d *DataCube) get(url, beginDate, endDate string) core.Response {
 	key := d.token.GetToken().KeyMap()
 	resp := d.client.HTTPPostJSON(
 		d.client.Link(url),
