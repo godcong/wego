@@ -9,7 +9,7 @@ import (
 /*Domain Domain*/
 type Domain struct {
 	url string
-	app *Application
+	//app *Application
 }
 
 /*URL domain当前url */
@@ -50,7 +50,7 @@ func DeployJoin(v ...string) string {
 }
 
 func newDomain(s string) *Domain {
-	url := App().GetConfig().GetConfig(DeployJoin("domain", s)).Get("url")
+	url := DefaultConfig().GetString("domain." + s + ".url")
 	if url == "" {
 		switch s {
 		case "host":
@@ -239,3 +239,41 @@ func DomainHost() *Domain {
 //	}
 //
 //}
+
+/*Link 拼接地址 */
+func Link(uri string, suffix ...string) string {
+	url := ""
+	if suffix != nil {
+		url = suffix[0]
+	}
+	url = domainURL(url)
+	if UseSandBox() {
+		return url + sandboxURLSuffix + uri
+	}
+	return url + uri
+}
+
+func domainURL(suffix string) string {
+	url := DefaultConfig().GetString("domain." + suffix + ".url")
+	if url == "" {
+		switch suffix {
+		case "host":
+			url = "localhost"
+		case "payment":
+			fallthrough
+		case "default":
+			url = BaseDomain
+		case "official_account", "mini_program":
+			url = APIWeixin
+		case "file":
+			url = FileAPIWeixin
+		case "mp":
+			url = MPDomain
+		case "api2":
+			url = API2Domain
+		default:
+			url = BaseDomain
+		}
+	}
+	return url
+}

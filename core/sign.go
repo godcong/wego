@@ -33,7 +33,7 @@ func SandboxSignKey(config Config) []byte {
 	m := make(util.Map)
 	m.Set("mch_id", config.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := GenerateSignature(m, config.Get("aes_key"), MakeSignMD5)
+	sign := GenerateSignature(m, config.GetString("aes_key"), MakeSignMD5)
 	m.Set("sign", sign)
 	// _ = NewApplication(config)
 	// return app.GetRequest().Request(SANDBOX_SIGNKEY_URL_SUFFIX, m)

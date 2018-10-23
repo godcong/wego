@@ -1,23 +1,18 @@
 package core
 
-//Core core set
-type Core struct {
-	//config
-}
-
-var isSandbox = false
+var sandbox = false
 
 //SandBoxOn open sandbox
 func SandBoxOn() {
-	isSandbox = true
+	sandbox = true
 }
 
 //SandBoxOff close sandbox
 func SandBoxOff() {
-	isSandbox = false
+	sandbox = false
 }
 
-//IsSandBox check sandbox
-func IsSandBox() bool {
-	return isSandbox
+//UseSandBox check sandbox
+func UseSandBox() bool {
+	return sandbox
 }

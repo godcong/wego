@@ -1,9 +1,7 @@
-package core
+package core_test
 
 import (
 	"testing"
-
-	"github.com/godcong/wego/core"
 )
 
 //
@@ -75,12 +73,12 @@ import (
 
 func TestNewReqeust(t *testing.T) {
 	//wego.NewRequest(wego.GetConfig("payment.default"))
-	req := core.DefaultRequest
-	data := req.RequestDataCopy()
-	data.Query = "hell=world"
-	data.Header.Set("Content-Type", "application/xml")
-	r := req.PerformRequest("http://y11e.com", "get", data)
-	core.Println(r.Error())
+	//req := core.DefaultRequest
+	//data := req.RequestDataCopy()
+	//data.Query = "hell=world"
+	//data.Header.Set("Content-Type", "application/xml")
+	//r := req.PerformRequest("http://y11e.com", "get", data)
+	//core.Println(r.Error())
 }
 
 func TestRequest_SafeRequest(t *testing.T) {

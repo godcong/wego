@@ -8,8 +8,6 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-const configPath = "config.toml"
-
 //RegConfig config
 const RegConfig = "config"
 
@@ -30,9 +28,8 @@ func initSystem(cfg *core.Config) *System {
 		}
 	}
 	return &System{
-		Debug:        false,
-		ResponseType: "array",
-		UseCache:     false,
+		Debug:    false,
+		UseCache: false,
 		Log: log.Log{
 			Level: "debug",
 			File:  "logs/wechat.log",
@@ -159,9 +156,9 @@ type System struct {
 	//ResponseType string `toml:"response_type"`
 	//use_cache = true
 	//DataType DataType `toml:"data_type"`
-
-	UseCache bool `toml:"use_cache"`
-	Log      log.Log
+	UseSandbox bool `toml:"use_sandbox"`
+	UseCache   bool `toml:"use_cache"`
+	Log        log.Log
 }
 
 /*Application Application */

@@ -42,7 +42,7 @@ type Log struct {
 var debug = false
 var logs = Log{
 	Level: "debug",
-	File:  "config.toml",
+	File:  "wechat.log",
 }
 
 func initLog(l Log, d bool) {

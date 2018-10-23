@@ -2,13 +2,12 @@ package core
 
 import (
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
 /*Base 基础 */
 type Base struct {
-	Config
+	config *Config
 	client *Client
 	token  *AccessToken
 }
@@ -20,18 +19,18 @@ type URL struct {
 	client *Client
 }
 
-func newBase(config Config) *Base {
+func newBase(config *Config) *Base {
 	client := NewClient(config)
 	return &Base{
-		Config: config,
+		config: config,
 		client: client,
-		token:  NewAccessToken(),
+		token:  NewAccessToken(config, client),
 	}
 }
 
 //NewBase NewBase
 func NewBase() *Base {
-	return newBase(App().GetConfig())
+	return newBase(DefaultConfig())
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零
@@ -46,16 +45,16 @@ appid	是	公众号的APPID
 如果调用超过限制次数，则返回：
 { "errcode" :48006, "errmsg" : "forbid to clear quota because of reaching the limit" }
 */
-func ClearQuota() util.Map {
-	token := App().GetAccessToken().GetToken()
-	config := App().GetConfig()
+func (b *Base) ClearQuota() Response {
+	token := b.token.GetToken()
+
 	params := util.Map{
-		"appid": config.Get("app_id"),
+		"appid": b.config.Get("app_id"),
 	}
-	resp := App().GetClient().HTTPPostJSON(Link(clearQuotaURLSuffix), params, util.Map{
-		net.RequestTypeQuery.String(): token.KeyMap(),
+	return b.client.PostJSON(Link(clearQuotaURLSuffix), params, util.Map{
+		DataTypeQuery: token.KeyMap(),
 	})
-	return resp.ToMap()
+
 }
 
 /*GetCallbackIP 请求微信的服务器IP列表
@@ -76,49 +75,9 @@ func ClearQuota() util.Map {
   失败:
   {"errcode":40013,"errmsg":"invalid appid"}
 */
-func GetCallbackIP() util.Map {
-	token := App().GetAccessToken().GetToken()
-	resp := App().GetClient().HTTPGet(Link(getCallbackIPURLSuffix), token.KeyMap())
-	return resp.ToMap()
-}
-
-/*Link 拼接地址 */
-func Link(uri string, suffix ...string) string {
-	url := ""
-	if suffix != nil {
-		url = suffix[0]
-	}
-	url = domainURL(url)
-	if IsSandBox() {
-		return url + sandboxURLSuffix + uri
-	}
-	return url + uri
-}
-
-func domainURL(suffix string) string {
-
-	url := App().GetConfig().Get("domain." + suffix + ".url")
-	if url == "" {
-		switch suffix {
-		case "host":
-			url = "localhost"
-		case "payment":
-			fallthrough
-		case "default":
-			url = BaseDomain
-		case "official_account", "mini_program":
-			url = APIWeixin
-		case "file":
-			url = FileAPIWeixin
-		case "mp":
-			url = MPDomain
-		case "api2":
-			url = API2Domain
-		default:
-			url = BaseDomain
-		}
-	}
-	return url
+func (b *Base) GetCallbackIP() Response {
+	token := b.token.GetToken()
+	return b.client.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
 }
 
 /*ShortURL 转换短链接
