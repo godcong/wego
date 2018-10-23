@@ -96,14 +96,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//if encryptType == "aes" {
-	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXML), ts, nonce)
-	//	if err != nil {
-	//		log.Error(err)
-	//		return
-	//	}
-	//	rltXML = []byte(tmpStr)
-	//}
 	if s.mType == "xml" {
 		header := w.Header()
 		if val := header["Content-Type"]; len(val) == 0 {

@@ -145,7 +145,7 @@ func (p *Payment) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
-//RedPack RedPack
+//RedPack get RedPack
 func (p *Payment) RedPack() *RedPack {
 	obj, b := p.sub["RedPack"]
 	if !b {
@@ -155,7 +155,7 @@ func (p *Payment) RedPack() *RedPack {
 	return obj.(*RedPack)
 }
 
-/*Security Security */
+/*Security get Security */
 func (p *Payment) Security() *Security {
 	obj, b := p.sub["Security"]
 	if !b {
@@ -165,7 +165,7 @@ func (p *Payment) Security() *Security {
 	return obj.(*Security)
 }
 
-/*Refund 获取Refund*/
+/*Refund get Refund*/
 func (p *Payment) Refund() *Refund {
 	obj, b := p.sub["Refund"]
 	if !b {
@@ -175,7 +175,7 @@ func (p *Payment) Refund() *Refund {
 	return obj.(*Refund)
 }
 
-/*Order 获取order*/
+/*Order get Order*/
 func (p *Payment) Order() *Order {
 	obj, b := p.sub["Order"]
 	if !b {
@@ -183,6 +183,26 @@ func (p *Payment) Order() *Order {
 		p.sub["Order"] = obj
 	}
 	return obj.(*Order)
+}
+
+/*Bill get Bill*/
+func (p *Payment) Bill() *Bill {
+	obj, b := p.sub["Bill"]
+	if !b {
+		obj = newBill(p)
+		p.sub["Bill"] = obj
+	}
+	return obj.(*Bill)
+}
+
+/*Transfer get Transfer*/
+func (p *Payment) Transfer() *Transfer {
+	obj, b := p.sub["Transfer"]
+	if !b {
+		obj = newTransfer(p)
+		p.sub["Transfer"] = obj
+	}
+	return obj.(*Transfer)
 }
 
 func (p *Payment) initRequest(params util.Map) util.Map {
