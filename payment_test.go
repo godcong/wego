@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/godcong/wego"
-	"github.com/godcong/wego/app/payment"
 	_ "github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/util"
 )
@@ -18,26 +17,26 @@ func TestOrder_Query(t *testing.T) {
 	//m := make(wego.Map)
 	//m.Set("out_trade_no", out_trade_no)
 
-	r := wego.GetPayment().Order()
+	r := wego.Payment().Order()
 	log.Println(r)
 	// {"appid":"wx426b3015555a46be","attach":"","mch_id":"1900009851","nonce_str":"lJhbZ9dwP4Pd5aKm","out_trade_no":"201813091059590000003433-asd002","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"2F60EDECAAC5F139A82570B6724AA941","trade_state":"CLOSED","trade_state_desc":"订单已关闭"}
 
 }
 
 func TestOrder_Close(t *testing.T) {
-	r := wego.GetPayment().Order().Close(out_trade_no)
-	log.Println(string(r.ToString()))
+	//r := wego.App().Payment().Order().Close(out_trade_no)
+	//log.Println(string(r.ToString()))
 
 }
 
 func TestOrder_QueryByOutTradeNumber(t *testing.T) {
-	r := wego.GetPayment().Order().QueryByOutTradeNumber(out_trade_no)
-	log.Println(r.ToString())
+	//r := wego.GetPayment().Order().QueryByOutTradeNumber(out_trade_no)
+	//log.Println(r.ToString())
 }
 
 func TestOrder_QueryByTransactionId(t *testing.T) {
-	r := wego.GetPayment().Order().QueryByTransactionID("123")
-	log.Println(r.ToString())
+	//r := wego.GetPayment().Order().QueryByTransactionID("123")
+	//log.Println(r.ToString())
 }
 
 func TestOrder_Unify(t *testing.T) {
@@ -56,11 +55,11 @@ func TestOrder_Unify(t *testing.T) {
 	////m.Set("product_id", "12")
 	r := wego.Payment().Order().Unify(m)
 
-	log.Println(string(r.ToString()))
+	log.Println(string(r.Bytes()))
 	log.Println(r.ToMap())
-	order := payment.NewOrder()
-	resp := order.Unify(m)
-	log.Println(resp.ToMap())
+	//order := payment.NewOrder()
+	//resp := order.Unify(m)
+	//log.Println(resp.ToMap())
 	//{"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=D3sNT8y","mch_id":"1900009851","nonce_str":"FRFByNNdrzRuEGkp","prepay_id":"wx20180220113507842dff20340601189342","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"D398DA0644A14D0BC00A8B82D8D4ECDC","trade_type":"NATIVE"}
 
 }
@@ -69,19 +68,19 @@ const rltRefund = `<xml><return_code><![CDATA[SUCCESS]]></return_code><return_ms
 
 func TestRefund_Refund(t *testing.T) {
 	//r := wego.GetPayment().Refund().ByOutTradeNumber(`20180313160643671522177497`, `1`, 30, 30, nil)
-	r := wego.GetPayment().Refund().ByTransactionID(`4200000066201803138050731804`, `2`, 3, 3, nil)
-	log.Println(r.ToMap())
+	//r := wego.GetPayment().Refund().ByTransactionID(`4200000066201803138050731804`, `2`, 3, 3, nil)
+	//log.Println(r.ToMap())
 	//{"appid":"wx426b3015555a46be","err_code":"ORDERNOTEXIST","err_code_des":"订单不存在","mch_id":"1900009851","nonce_str":"kSGYwLY4WNZvw91Y","result_code":"FAIL","return_code":"SUCCESS","return_msg":"OK","sign":"CC8F6CD5E5CADB15EEECEAA1DB4791FF"}
 }
 
 func TestRefund_Query(t *testing.T) {
-	r := wego.GetPayment().Refund().QueryByOutTradeNumber(out_trade_no)
-	log.Println(r.ToMap())
+	//r := wego.GetPayment().Refund().QueryByOutTradeNumber(out_trade_no)
+	//log.Println(r.ToMap())
 	// {"appid":"wx426b3015555a46be","err_code":"REFUNDNOTEXIST","err_code_des":"not exist","mch_id":"1900009851","nonce_str":"QBHv3JDrQ21HsOrG","result_code":"FAIL","return_code":"SUCCESS","return_msg":"OK","sign":"5EB4E68C6DA23B4E9EBEF07A069792BF"}
 
 }
 
 func TestSecurity_GetPublicKey(t *testing.T) {
-	m := wego.GetSecurity().GetPublicKey()
-	log.Println(m.ToMap())
+	//m := wego.GetSecurity().GetPublicKey()
+	//log.Println(m.ToMap())
 }

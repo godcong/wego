@@ -27,7 +27,7 @@ func TestBase_GetCallbackIP(t *testing.T) {
 }
 
 func TestURL_ShortURL(t *testing.T) {
-	resp := core.NewURL(config).ShortURL("https://mp.wechat.qq.com")
+	resp := core.NewURL(config).ShortURL("weixin://wxpay/bizpayurl?pr=etxB4DY")
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
 	t.Log(string(resp.Bytes()))

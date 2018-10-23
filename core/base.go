@@ -93,15 +93,12 @@ URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
 */
 func (u *URL) ShortURL(url string) Response {
 	//TODO:need fix
-	//token := u.token.GetToken()
-	//ops := util.Map{
-	//	DataTypeQuery: token.KeyMap(),
-	//}
+	token := u.token.GetToken()
 	m := util.Map{
 		"action":   "long2short",
 		"long_url": url,
 	}
-	resp := u.client.PostJSON(APIWeixin+shortURLSuffix, m, nil)
+	resp := u.client.PostJSON(APIWeixin+shortURLSuffix, token.KeyMap(), m)
 	log.Debug("URL|ShortURL", resp)
 	return resp
 }

@@ -109,21 +109,14 @@ import (
 //	}
 //}
 //
-//func NewSecurity(application Application, config Config) *payment.Security {
-//	return &payment.Security{
-//		Config: config,
-//		//Payment: application.Payment(),
-//	}
-//}
-//
-//func NewOrder(application Application, config Config) *payment.Order {
-//	return &payment.Order{
-//		//app:    application,
-//		//Payment: application.Payment(),
-//		Config: config,
-//	}
-//}
-//
+func Security() *payment.Security {
+	return app.Payment("payment.default").Security()
+}
+
+func Order() *payment.Order {
+	return app.Payment("payment.default").Order()
+}
+
 //func NewSandbox(application Application, config Config) *core.Sandbox {
 //	return &core.Sandbox{
 //		Config: config,
@@ -131,28 +124,15 @@ import (
 //	}
 //}
 //
-//func NewReverse(application Application, config Config) *payment.Reverse {
-//	return &payment.Reverse{
-//		Config: config,
-//		//Payment: application.Payment(),
-//	}
+//func Reverse() *payment.Reverse {
+//return app.Payment("payment.default").
 //}
 //
-//func NewTransfer(application Application, config Config) *payment.Transfer {
-//	return &payment.Transfer{
-//		Config: config,
-//		//Payment: application.Payment(),
-//	}
+//func Transfer(application Application, config Config) *payment.Transfer {
+//return app.Payment("payment.default").
 //}
 
 /*GetPayment 获取支付*/
 func Payment() *payment.Payment {
-	var p *payment.Payment
-	b := App().Get("payment", &p)
-	if b {
-		return p
-	}
-	p = payment.NewPayment(App().Config().GetSubConfig("payment.default"), App().Client(), App().AccessToken())
-	App().Register("payment", p)
-	return p
+	return app.Payment("payment.default")
 }

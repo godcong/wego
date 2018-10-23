@@ -1,19 +1,7 @@
 package wego_test
 
 import (
-	"bytes"
-	"encoding/xml"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"testing"
-
-	"github.com/godcong/wego"
-	_ "github.com/godcong/wego/app/official"
-	"github.com/godcong/wego/config"
-	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/log"
 )
 
 func TestOfficialAccount(t *testing.T) {
@@ -54,98 +42,98 @@ var rltNews = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserN
 
 func TestGetApp(t *testing.T) {
 
-	server := wego.GetOfficialAccount().Server()
-	//s := official_account.NewServer()
-	server.RegisterCallback(func(mess *core.Message) message.Messager {
-		//mess.LocationX = 123456789444
-		//v, _ := xml.Marshal(*mess)
-		//log.Info(string(v))
-		//if mess.Event.Compare(message.EventView) == 0 {
-		//	log.Info(message.EventView)
-		//}
-		return message.NewText(&mess.Message, "msg")
-	})
-
-	rlist := [][]byte{
-		//rltText,
-		//rltImage,
-		//rltVoice,
-		//rltVideo,
-		//rltMusic,
-		rltNews,
-	}
-	count := 0
-
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		if count >= len(rlist) {
-			count = 0
-		}
-
-		server.ServeHTTP(w, r)
-		//t.Log(string(body))
-		//var msg core.Message
-		//var msg core.Message
-		//e = xml.Unmarshal(body, &msg)
-
-		////xml.NewDecoder(bytes.NewReader(body)).
-		//if msg.GetType() == message.TypeText {
-		//	b, e := xml.Marshal(msg)
-		//	t.Log(string(b), e)
-		//	t.Log(m)
-		//}
-		count++
-	}))
-	defer ts.Close()
-
-	list := [][]byte{
-		//msgText,
-		//msgImage,
-		//msgVoice,
-		//msgVoice2,
-		//msgVideo,
-		//msgShortVideo,
-		//msgLocaltion,
-		//msgLink,
-		//evtSubscribe,
-		//evtQRScene,
-		//evtScan,
-		//evtLocation,
-		//evtClick,
-		//evtView,
-		//evtView2,
-		//evtScancodePush,
-		//evtScancodeWaitmsg,
-		evtPicSysphoto,
-		evtPicPhotoOrAlbum,
-		//evtPicWeixin,
-		//evtLocationSelect,
-	}
-
-	for _, v := range list {
-		resp, e := http.Post(ts.URL+"/callback", "Content-Type:application/xml", bytes.NewReader(v))
-		msg := new(core.Message)
-		b, e := ioutil.ReadAll(resp.Body)
-
-		xml.Unmarshal(b, msg)
-		log.Info(msg, e)
-	}
+	//server := wego.GetOfficialAccount().Server()
+	////s := official_account.NewServer()
+	//server.RegisterCallback(func(mess *core.Message) message.Messager {
+	//	//mess.LocationX = 123456789444
+	//	//v, _ := xml.Marshal(*mess)
+	//	//log.Info(string(v))
+	//	//if mess.Event.Compare(message.EventView) == 0 {
+	//	//	log.Info(message.EventView)
+	//	//}
+	//	return message.NewText(&mess.Message, "msg")
+	//})
+	//
+	//rlist := [][]byte{
+	//	//rltText,
+	//	//rltImage,
+	//	//rltVoice,
+	//	//rltVideo,
+	//	//rltMusic,
+	//	rltNews,
+	//}
+	//count := 0
+	//
+	//ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//
+	//	if count >= len(rlist) {
+	//		count = 0
+	//	}
+	//
+	//	server.ServeHTTP(w, r)
+	//	//t.Log(string(body))
+	//	//var msg core.Message
+	//	//var msg core.Message
+	//	//e = xml.Unmarshal(body, &msg)
+	//
+	//	////xml.NewDecoder(bytes.NewReader(body)).
+	//	//if msg.GetType() == message.TypeText {
+	//	//	b, e := xml.Marshal(msg)
+	//	//	t.Log(string(b), e)
+	//	//	t.Log(m)
+	//	//}
+	//	count++
+	//}))
+	//defer ts.Close()
+	//
+	//list := [][]byte{
+	//	//msgText,
+	//	//msgImage,
+	//	//msgVoice,
+	//	//msgVoice2,
+	//	//msgVideo,
+	//	//msgShortVideo,
+	//	//msgLocaltion,
+	//	//msgLink,
+	//	//evtSubscribe,
+	//	//evtQRScene,
+	//	//evtScan,
+	//	//evtLocation,
+	//	//evtClick,
+	//	//evtView,
+	//	//evtView2,
+	//	//evtScancodePush,
+	//	//evtScancodeWaitmsg,
+	//	evtPicSysphoto,
+	//	evtPicPhotoOrAlbum,
+	//	//evtPicWeixin,
+	//	//evtLocationSelect,
+	//}
+	//
+	//for _, v := range list {
+	//	resp, e := http.Post(ts.URL+"/callback", "Content-Type:application/xml", bytes.NewReader(v))
+	//	msg := new(core.Message)
+	//	b, e := ioutil.ReadAll(resp.Body)
+	//
+	//	xml.Unmarshal(b, msg)
+	//	log.Info(msg, e)
+	//}
 
 }
 
 func TestCoreUrl(t *testing.T) {
-	conf := config.GetConfig("payment.default")
-	url := core.NewURL(conf, core.NewClient(conf))
-	l := url.ShortURL("https://y11e.com")
-	log.Println(l)
+	//conf := config.GetConfig("payment.default")
+	//url := core.NewURL(conf, core.NewClient(conf))
+	//l := url.ShortURL("https://y11e.com")
+	//log.Println(l)
 }
 
 func TestGetOfficialAccount(t *testing.T) {
-	oa := wego.GetOfficialAccount()
-	testBase(t, oa)
+	//oa := wego.GetOfficialAccount()
+	//testBase(t, oa)
 }
 
-func testBase(t *testing.T, account wego.OfficialAccount) {
-	log.Println(account.Base().GetCallbackIP())
-	log.Println(account.Base().ClearQuota())
-}
+//func testBase(t *testing.T, account wego.OfficialAccount) {
+//log.Println(account.Base().GetCallbackIP())
+//log.Println(account.Base().ClearQuota())
+//}

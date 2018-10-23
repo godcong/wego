@@ -1,6 +1,7 @@
 package wego
 
 import (
+	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/log"
 	"reflect"
 
@@ -44,40 +45,34 @@ func DefaultApplication() *Application {
 }
 
 //NewApplication create an application instance
-func NewApplication(s ...string) *Application {
-	if s != nil {
-		return newApplication(s[0])
+func NewApplication(path string) *Application {
+	config, err := core.LoadConfig(path)
+	if err != nil {
+		panic(err)
 	}
-	return newApplication(configPath)
+
+	return newApplication(config)
 }
 
-func newApplication(cpath string) *Application {
+func newApplication(config *core.Config) *Application {
 	app := &Application{
 		objects: make(util.Map),
 	}
 
-	config, err := core.LoadConfig(cpath)
-	if err != nil {
-		panic(err)
-	}
-	app.Register(RegConfig, config)
-
-	//app.Register(RegClient, client)
-
 	app.System = initSystem(config.GetSubConfig("system"))
-
+	app.Register(RegConfig, config)
 	return app
 }
 
-func initApp(cpath string) *Application {
-	if app == nil {
-		app = newApplication(cpath)
-	}
-	return app
-}
+//func initApp() *Application {
+//	if app == nil {
+//		app = newApplication(core.DefaultConfig())
+//	}
+//	return app
+//}
 
 func init() {
-	initApp(configPath)
+	app = newApplication(core.DefaultConfig())
 }
 
 //Config get application config interface
@@ -91,27 +86,23 @@ func (a *Application) Config() *core.Config {
 
 //Client get application client instance
 //func (a *Application) Client() *core.Client {
-//	v, b := a.Get(RegClient)
-//	if b {
-//		return v.(*core.Client)
-//	}
-//	return nil
+//	return core.NewClient(a.Config())
 //}
 
 //AccessToken get application access token instance
-func (a *Application) AccessToken() *core.AccessToken {
-	v, b := a.Get(RegAccessToken)
-	if b {
-		return v.(*core.AccessToken)
-	}
-	return nil
+//func (a *Application) AccessToken() *core.AccessToken {
+//	return core.NewAccessToken(a.Config(), a.Client())
+//}
+
+//Payment return a default payment
+func (a *Application) Payment(arg string) *payment.Payment {
+	return payment.NewPayment(a.Config().GetSubConfig(arg))
 }
 
 /*Get 获取注册的数据 */
 func (a *Application) Get(name string) (interface{}, bool) {
-	if v0, b := a.objects[name]; b {
-		//return reflectSet(v, v0)
-		return v0, true
+	if v, b := a.objects[name]; b {
+		return v, true
 	}
 	return nil, false
 }
@@ -145,7 +136,7 @@ func (a *Application) New(name string, args ...interface{}) interface{} {
 /*App 获取App */
 func App() *Application {
 	log.Debug("app:", app)
-	return initApp(configPath)
+	return newApplication(core.DefaultConfig())
 }
 
 /*System 系统定义 */

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
