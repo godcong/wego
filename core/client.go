@@ -361,6 +361,7 @@ func buildSafeTransport(config *Config) *http.Client {
 }
 
 func request(client *Client, url string, method string, ops util.Map) (*http.Response, error) {
+	method = strings.ToUpper(method)
 	query := processQuery(ops.Get(DataTypeQuery))
 	url = parseQuery(url, query)
 

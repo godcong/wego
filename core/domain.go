@@ -259,9 +259,7 @@ func domainURL(suffix string) string {
 		switch suffix {
 		case "host":
 			url = "localhost"
-		case "payment":
-			fallthrough
-		case "default":
+		case "payment", "default":
 			url = BaseDomain
 		case "official_account", "mini_program":
 			url = APIWeixin

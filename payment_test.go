@@ -17,26 +17,26 @@ func TestOrder_Query(t *testing.T) {
 	//m := make(wego.Map)
 	//m.Set("out_trade_no", out_trade_no)
 
-	r := wego.Payment().Order()
-	log.Println(r)
+	//r := wego.Payment().Order()
+	//log.Println(r)
 	// {"appid":"wx426b3015555a46be","attach":"","mch_id":"1900009851","nonce_str":"lJhbZ9dwP4Pd5aKm","out_trade_no":"201813091059590000003433-asd002","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"2F60EDECAAC5F139A82570B6724AA941","trade_state":"CLOSED","trade_state_desc":"订单已关闭"}
 
 }
 
 func TestOrder_Close(t *testing.T) {
-	//r := wego.App().Payment().Order().Close(out_trade_no)
-	//log.Println(string(r.ToString()))
+	r := wego.Order().Close(out_trade_no + "4")
+	log.Println(string(r.Bytes()))
 
 }
 
 func TestOrder_QueryByOutTradeNumber(t *testing.T) {
-	//r := wego.GetPayment().Order().QueryByOutTradeNumber(out_trade_no)
-	//log.Println(r.ToString())
+	r := wego.Order().QueryByOutTradeNumber(out_trade_no + "4")
+	log.Println(string(r.Bytes()))
 }
 
 func TestOrder_QueryByTransactionId(t *testing.T) {
-	//r := wego.GetPayment().Order().QueryByTransactionID("123")
-	//log.Println(r.ToString())
+	r := wego.Order().QueryByTransactionID(out_trade_no + "4")
+	log.Println(string(r.Bytes()))
 }
 
 func TestOrder_Unify(t *testing.T) {
@@ -54,7 +54,9 @@ func TestOrder_Unify(t *testing.T) {
 
 	////m.Set("product_id", "12")
 	r := wego.Payment().Order().Unify(m)
-
+	if r.Error() != nil {
+		t.Log(r)
+	}
 	log.Println(string(r.Bytes()))
 	log.Println(r.ToMap())
 	//order := payment.NewOrder()

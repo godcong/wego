@@ -108,11 +108,13 @@ import (
 //		//Payment: application.Payment(),
 //	}
 //}
-//
+
+//Security result payment security
 func Security() *payment.Security {
 	return app.Payment("payment.default").Security()
 }
 
+//Order result payment order
 func Order() *payment.Order {
 	return app.Payment("payment.default").Order()
 }
@@ -132,7 +134,7 @@ func Order() *payment.Order {
 //return app.Payment("payment.default").
 //}
 
-/*GetPayment 获取支付*/
+/*Payment 获取支付*/
 func Payment() *payment.Payment {
 	return app.Payment("payment.default")
 }
