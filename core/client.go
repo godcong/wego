@@ -350,7 +350,7 @@ func (c *Client) clear() {
 
 func request(client *Client, url string, method string, ops util.Map) Response {
 	method = strings.ToUpper(method)
-	query := processQuery(ops.Get(DataTypeQuery))
+	query := buildHttpQuery(ops.Get(DataTypeQuery))
 	url = parseQuery(url, query)
 
 	if client.httpRequest == nil {
@@ -492,7 +492,7 @@ func processJSON(method, url string, i interface{}) *http.Request {
 	return request
 }
 
-func processQuery(i interface{}) string {
+func buildHttpQuery(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v
