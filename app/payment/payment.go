@@ -36,7 +36,7 @@ type Payment struct {
 func newPayment(config *core.Config) *Payment {
 	client := core.NewClient(config)
 	client.SetRequestType(core.DataTypeXML)
-	token := core.NewAccessToken(config, client)
+	token := core.NewAccessToken(config)
 	payment := &Payment{
 		config: config,
 		client: client,

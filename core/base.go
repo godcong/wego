@@ -16,7 +16,7 @@ func newBase(config *Config) *Base {
 	return &Base{
 		config: config,
 		client: client,
-		token:  NewAccessToken(config, client),
+		token:  NewAccessToken(config),
 	}
 }
 
