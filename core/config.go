@@ -42,7 +42,6 @@ func LoadConfig(f string) (*Config, error) {
 		log.Println(e.Error())
 		return nil, e
 	}
-	log.Println(t.String())
 	return cfg(t), nil
 }
 
