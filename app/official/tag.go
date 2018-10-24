@@ -33,7 +33,7 @@ func NewTag() *Tag {
 func (t *Tag) Create(name string) core.Response {
 	log.Debug("Tag|Create", name)
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsCreateURLSuffix),
 		util.Map{
 			"tag": util.Map{"name": name},
@@ -68,7 +68,7 @@ func (t *Tag) Get() core.Response {
 func (t *Tag) Update(id int, name string) core.Response {
 	log.Debug("Tag|Update", id, name)
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsUpdateURLSuffix),
 		util.Map{
 			"tag": util.Map{"id": id, "name": name},
@@ -89,7 +89,7 @@ func (t *Tag) Update(id int, name string) core.Response {
 func (t *Tag) Delete(id int) core.Response {
 	log.Debug("Tag|Update", id)
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsDeleteURLSuffix),
 		util.Map{
 			"tag": util.Map{"id": id},
@@ -114,7 +114,7 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) core.Response {
 		params.Set("next_openid", nextOpenid)
 	}
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(userTagGetURLSuffix),
 		params,
 		util.Map{
@@ -137,7 +137,7 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) core.Response {
 		params.Set("openid_list", openids)
 	}
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsMembersBatchTaggingURLSuffix),
 		params,
 		util.Map{
@@ -160,7 +160,7 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) core.Response {
 		params.Set("openid_list", openids)
 	}
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsMembersBatchUntaggingURLSuffix),
 		params,
 		util.Map{
@@ -181,7 +181,7 @@ func (t *Tag) GetIDList(openid string) core.Response {
 	}
 
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsGetIDListURLSuffix),
 		params,
 		util.Map{
@@ -201,7 +201,7 @@ func (t *Tag) GetBlackList(beginOpenid string) core.Response {
 	}
 
 	query := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsMembersGetBlackListURLSuffix),
 		param,
 		util.Map{
@@ -223,7 +223,7 @@ func (t *Tag) BatchBlackList(openidList []string) core.Response {
 	}
 
 	query := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsMembersBatchBlackListURLSuffix),
 		param,
 		util.Map{
@@ -245,7 +245,7 @@ func (t *Tag) BatchUnblackList(openidList []string) core.Response {
 	}
 
 	query := t.token.GetToken().KeyMap()
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(tagsMembersBatchUnblackListURLSuffix),
 		param,
 		util.Map{

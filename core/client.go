@@ -197,7 +197,11 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", c.httpClient)
 	c.httpClient = buildTransport(c.config)
 	response, err := request(c, url, method, ops)
-	defer response.Body.Close()
+
+	log.Println(response.Header)
+	log.Println(response.ContentLength)
+	log.Println(response.Status)
+	log.Println(response.StatusCode)
 	if err != nil {
 		return parseResponse(nil, err.Error())
 	}

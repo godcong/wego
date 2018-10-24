@@ -1,32 +1,24 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
 /*Base 基本功能组件 */
 type Base struct {
-	config  Config
-	account *Account
-	client  *core.Client
-	token   *core.AccessToken
+	*Account
 }
 
 func newBase(account *Account) *Base {
 	return &Base{
-		config:  account.Config,
-		account: account,
-		client:  account.client,
-		token:   account.token,
+		Account: account,
 	}
 }
 
 // NewBase 基础库
-func NewBase() *Base {
-	return newBase(account)
+func NewBase(config *core.Config) *Base {
+	return newBase(NewAccount(config))
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零
@@ -35,15 +27,16 @@ HTTP调用： https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_
 成功:
 {"errcode":0,"errmsg":"ok"}
 */
-func (b *Base) ClearQuota() util.Map {
+func (b *Base) ClearQuota() core.Response {
 	token := b.token.GetToken()
+
 	params := util.Map{
 		"appid": b.config.Get("app_id"),
 	}
-	resp := b.client.HTTPPostJSON(b.client.Link(clearQuotaURLSuffix), params, util.Map{
-		net.RequestTypeQuery.String(): token.KeyMap(),
+	return b.client.PostJSON(core.Link(clearQuotaURLSuffix), params, util.Map{
+		core.DataTypeQuery: token.KeyMap(),
 	})
-	return resp.ToMap()
+
 }
 
 /*GetCallbackIP 请求微信的服务器IP列表
@@ -54,10 +47,8 @@ func (b *Base) ClearQuota() util.Map {
   失败:
   {"errcode":40013,"errmsg":"invalid appid"}
 */
-func (b *Base) GetCallbackIP() util.Map {
+func (b *Base) GetCallbackIP() core.Response {
 	token := b.token.GetToken()
-	resp := b.client.HTTPGet(b.client.Link(getCallbackIPUrlSuffix), util.Map{
-		net.RequestTypeQuery.String(): token.KeyMap(),
-	})
-	return resp.ToMap()
+	b.client.SetRequestType(core.DataTypeJSON)
+	return b.client.Get(core.APIWeixin+getCallbackIPURLSuffix, token.KeyMap())
 }

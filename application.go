@@ -1,6 +1,7 @@
 package wego
 
 import (
+	"github.com/godcong/wego/app/official"
 	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/log"
 	"reflect"
@@ -99,6 +100,10 @@ func (a *Application) Payment(arg string) *payment.Payment {
 	return payment.NewPayment(a.Config().GetSubConfig(arg))
 }
 
+func (a *Application) OfficialAccount(arg string) *official.Account {
+	return official.NewAccount(a.Config().GetSubConfig(arg))
+}
+
 /*Get 获取注册的数据 */
 func (a *Application) Get(name string) (interface{}, bool) {
 	if v, b := a.objects[name]; b {
@@ -188,7 +193,7 @@ type Application struct {
 //	SetDomain(domain *core.Domain) Client
 //	HttpGet(url string, m util.Map) core.Response
 //	HttpPost(url string, m util.Map) core.Response
-//	HttpPostJson(url string, m util.Map, query util.Map) core.Response
+//	PostJSON(url string, m util.Map, query util.Map) core.Response
 //	Request(url string, params util.Map, method string, options util.Map) core.Response
 //	RequestRaw(url string, params util.Map, method string, options util.Map) core.Response
 //	SafeRequest(url string, params util.Map, method string, options util.Map) core.Response

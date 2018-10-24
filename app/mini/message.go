@@ -61,7 +61,7 @@ func (m *Message) Send(msg util.Map) core.Response {
 	log.Debug("Message|Send", msg)
 
 	key := m.token.GetToken().KeyMap()
-	resp := m.client.HTTPPostJSON(
+	resp := m.client.PostJSON(
 		m.client.Link(customSendURLSuffix),
 		key,
 		msg)

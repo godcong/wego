@@ -16,7 +16,7 @@ func (d *DataCube) query(api, from, to string) []byte {
 		"begin_date": from,
 		"end_date":   to,
 	}
-	m := d.GetClient().HTTPPostJSON(api, params, nil)
+	m := d.GetClient().PostJSON(api, params, nil)
 	return m.ToBytes()
 }
 

@@ -15,6 +15,7 @@ import (
 
 /*Server Server */
 type Server struct {
+	*Account
 	CryptResponse   bool
 	message         *core.Message
 	mType           string
@@ -135,7 +136,11 @@ func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
 	return result
 }
 
-func newServer(token, key, id string) *Server {
+func newServer(account *Account) *Server {
+	token := account.config.GetString("token")
+	key := account.config.GetString("aes_key")
+	id := account.config.GetString("app_id")
+
 	return &Server{
 		mType:           "xml",
 		bizMsg:          crypt.NewBizMsg(token, key, id),
@@ -146,7 +151,6 @@ func newServer(token, key, id string) *Server {
 }
 
 /*NewServer NewServer*/
-func NewServer() *Server {
-	log.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
-	return newServer(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
+func NewServer(config *core.Config) *Server {
+	return newServer(newAccount(config))
 }

@@ -265,7 +265,7 @@ func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) core.Re
 
 func (d *DataCube) get(url, beginDate, endDate string) core.Response {
 	key := d.token.GetToken().KeyMap()
-	resp := d.client.HTTPPostJSON(
+	resp := d.client.PostJSON(
 		d.client.Link(url),
 		util.Map{"begin_date": beginDate, "end_date": endDate},
 		util.Map{net.RequestTypeQuery.String(): key})

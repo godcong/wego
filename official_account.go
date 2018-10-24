@@ -1,5 +1,9 @@
 package wego
 
+import (
+	"github.com/godcong/wego/app/official"
+)
+
 //
 ///*Base 基础*/
 //type Base interface {
@@ -25,8 +29,6 @@ package wego
 //}
 //
 ///*GetOfficialAccount 获取公众号*/
-//func GetOfficialAccount() OfficialAccount {
-//	obj := GetApp().Get("official").(OfficialAccount)
-//	log.Debug("GetOfficialAccount|obj:", obj)
-//	return obj
-//}
+func OfficialAccount() *official.Account {
+	return App().OfficialAccount("official_account.default")
+}

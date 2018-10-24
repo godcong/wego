@@ -1,20 +1,17 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
-	"github.com/godcong/wego/net"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
 
 /*Comment Comment*/
 type Comment struct {
-	config Config
 	*Account
 }
 
 func newComment(officialAccount *Account) *Comment {
 	return &Comment{
-		config:  defaultConfig,
 		Account: officialAccount,
 	}
 }
@@ -22,8 +19,8 @@ func newComment(officialAccount *Account) *Comment {
 /*
 NewComment 新建Comment
 */
-func NewComment() *Comment {
-	return newComment(account)
+func NewComment(config *core.Config) *Comment {
+	return newComment(NewAccount(config))
 }
 
 /*
@@ -37,14 +34,14 @@ Open 打开文章评论
 */
 func (c *Comment) Open(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentOpenURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentOpenURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -60,14 +57,14 @@ Close 关闭评论
 */
 func (c *Comment) Close(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentCloseURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentCloseURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -83,8 +80,8 @@ List 获取文章评论
 */
 func (c *Comment) List(id, index, begin, count, typ int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentListURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentListURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
@@ -93,7 +90,7 @@ func (c *Comment) List(id, index, begin, count, typ int) core.Response {
 			"type":        typ,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -111,15 +108,15 @@ Markelect  将评论标记精选
 */
 func (c *Comment) Markelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentMarkelectURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentMarkelectURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -138,15 +135,15 @@ user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentUnmarkelectURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentUnmarkelectURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -161,15 +158,15 @@ user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Delete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentDeleteURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentDeleteURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -188,8 +185,8 @@ ReplyAdd 回复评论
 */
 func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentReplyAddURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentReplyAddURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
@@ -197,7 +194,7 @@ func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Re
 			"content":         content,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -215,15 +212,15 @@ ReplyDelete 删除回复
 */
 func (c *Comment) ReplyDelete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
-	resp := c.client.HTTPPostJSON(
-		c.client.Link(commentReplyDeleteURLSuffix),
+	resp := c.client.PostJSON(
+		core.Link(commentReplyDeleteURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
 		},
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		})
 	return resp
 }

@@ -1,7 +1,7 @@
 package official
 
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
-const getCallbackIPUrlSuffix = "/cgi-bin/getcallbackip"
+const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
 
 const getKFListURLSuffix = "/cgi-bin/customservice/getkflist"
 

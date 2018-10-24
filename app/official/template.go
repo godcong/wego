@@ -79,7 +79,7 @@ func NewTemplate() *Template {
 //失败：
 //{"errcode":43100,"errmsg":"change template too frequently hint: [ZJ3zDA0168vr23]"}
 func (t *Template) SetIndustry(id1, id2 string) core.Response {
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(templateAPISetIndustryURLSuffix),
 		t.token.GetToken().KeyMap(),
 		util.Map{"industry_id1": id1, "industry_id2": id2},
@@ -107,7 +107,7 @@ func (t *Template) GetIndustry() core.Response {
 // 成功：
 // {"errcode":0,"errmsg":"ok","template_id":"tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo"}
 func (t *Template) Add(shortID string) core.Response {
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(templateAPIAddTemplateURLSuffix),
 		t.token.GetToken().KeyMap(),
 		util.Map{"template_id_short": shortID})
@@ -123,7 +123,7 @@ func (t *Template) Add(shortID string) core.Response {
 //成功:
 //{"errcode":0,"errmsg":"ok","msgid":191569096301903872}
 func (t *Template) Send(template *message.Template) core.Response {
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(messageTemplateSendURLSuffix),
 		t.token.GetToken().KeyMap(),
 		template,
@@ -148,7 +148,7 @@ func (t *Template) GetAllPrivate() core.Response {
 //成功:
 //{"errcode":0,"errmsg":"ok"}
 func (t *Template) DelAllPrivate(templateID string) core.Response {
-	resp := t.client.HTTPPostJSON(
+	resp := t.client.PostJSON(
 		t.client.Link(templateDelPrivateTemplateURLSuffix),
 		t.token.GetToken().KeyMap(),
 		util.Map{"template_id": templateID},
