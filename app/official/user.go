@@ -3,29 +3,26 @@ package official
 import (
 	"encoding/json"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
 /*User User*/
 type User struct {
-	Config
 	*Account
 }
 
 func newUser(account *Account) *User {
 	return &User{
-		Config:  defaultConfig,
 		Account: account,
 	}
 }
 
 /*NewUser NewUser */
-func NewUser() *User {
-	return newUser(account)
+func NewUser(config *core.Config) *User {
+	return newUser(NewAccount(config))
 }
 
 //UpdateRemark 设置用户备注名
@@ -45,13 +42,11 @@ func (u *User) UpdateRemark(openid, remark string) core.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.token.GetToken().KeyMap()
 	resp := u.client.PostJSON(
-		u.client.Link(userInfoUpdateRemarkURLSuffix),
+		Link(userInfoUpdateRemarkURLSuffix),
+		p,
 		util.Map{
 			"openid": openid,
 			"remark": remark,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -70,13 +65,11 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 		p.Set("lang", lang)
 	}
 
-	resp := u.client.HTTPGet(
-		u.client.Link(userInfoURLSuffix),
-		util.Map{
-			net.RequestTypeQuery.String(): p,
-		})
+	resp := u.client.Get(
+		Link(userInfoURLSuffix),
+		p)
 	var info core.UserInfo
-	json.Unmarshal(resp.ToBytes(), &info)
+	json.Unmarshal(resp.Bytes(), &info)
 
 	return &info
 }
@@ -107,16 +100,14 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 
 	}
 	resp := u.client.PostJSON(
-		u.client.Link(userInfoBatchGetURLSuffix),
+		Link(userInfoBatchGetURLSuffix),
+		p,
 		util.Map{
 			"user_list": list,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 
 	m := make(map[string][]*core.UserInfo)
-	e := json.Unmarshal(resp.ToBytes(), &m)
+	e := json.Unmarshal(resp.Bytes(), &m)
 	if e == nil {
 		if v, b := m["user_info_list"]; b {
 			return v
@@ -135,11 +126,9 @@ func (u *User) Get(nextOpenid string) core.Response {
 		query.Set("next_openid", nextOpenid)
 	}
 
-	resp := u.client.HTTPGet(
-		u.client.Link(userGetURLSuffix),
-		util.Map{
-			net.RequestTypeQuery.String(): query,
-		})
+	resp := u.client.Get(
+		Link(userGetURLSuffix),
+		query)
 
 	return resp
 }

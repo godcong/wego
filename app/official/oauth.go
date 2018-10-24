@@ -37,7 +37,7 @@ func newOAuth(acc *Account) *OAuth {
 		Account:  acc,
 		callback: map[string]CallbackFunc{},
 	}
-
+	//oauth.client.SetRequestType(core.DataTypeJSON)
 	oauth.scopes = oauth.config.GetStringArrayD("oauth.scopes", []string{snsapiBase})
 	oauth.redirectURI = oauth.config.GetStringD("oauth.redirect_uri", defaultOauthRedirectURLSuffix)
 	oauth.authorize = oauth.config.GetStringD("oauth.authorize", oauth2AuthorizeURLSuffix)
@@ -157,7 +157,8 @@ func (o *OAuth) AuthCodeURL(state string) string {
 		"appid":         {o.config.GetString("app_id")},
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", Link(o.redirectURI, "host"))
+		log.Println(core.Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
 	if o.scopes != nil {
 		v["scope"] = o.scopes
@@ -190,21 +191,19 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 		"refresh_token": refresh,
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
 	response := o.client.Post(
 		Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
 	)
-	log.Debug("RefreshToken|response", response)
-	var token core.Token
-	e := json.Unmarshal(response.Bytes(), &token)
-	if e != nil {
-		log.Debug("RefreshToken|e", e)
+	log.Debug("AccessToken|response", string(response.Bytes()), response.Error())
+	if response.Error() != nil {
 		return nil
 	}
-	return &token
+
+	return unmarshalToken(response.Bytes())
 }
 
 /*AccessToken AccessToken*/
@@ -216,21 +215,19 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 		"grant_type": "authorization_code",
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
 	response := o.client.Post(
 		Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,
 	)
-	log.Debug("AccessToken|response", string(response.Bytes()))
-	var token core.Token
-	e := json.Unmarshal(response.Bytes(), &token)
-	if e != nil {
-		log.Debug("AccessToken|e", e)
+	log.Debug("AccessToken|response", string(response.Bytes()), response.Error())
+	if response.Error() != nil {
 		return nil
 	}
-	return &token
+
+	return unmarshalToken(response.Bytes())
 }
 
 //UserInfo 用户信息
@@ -250,13 +247,12 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		Link(oauth2UserinfoURLSuffix),
 		p,
 	)
-	var info core.UserInfo
-	err := json.Unmarshal(response.Bytes(), &info)
-	if err != nil {
-		log.Debug(err)
+	log.Debug("UserInfo|response", string(response.Bytes()), response.Error())
+	if response.Error() != nil {
 		return nil
 	}
-	return &info
+
+	return unmarshalUserInfo(response.Bytes())
 }
 
 //Validate 验证
@@ -271,10 +267,34 @@ func (o *OAuth) Validate(token *core.Token) bool {
 	}
 	response := o.client.Get(
 		Link(oauth2AuthURLSuffix),
-		util.Map{
-			core.DataTypeQuery: p,
-		},
-	)
-	log.Debug(response.Bytes())
+		p)
+	log.Debug("Validate|response", string(response.Bytes()), response.Error())
+	if response.Error() == nil {
+		m := response.ToMap()
+		if m.GetInt64("errcode") == 0 &&
+			m.GetString("errmsg") == "ok" {
+			return true
+		}
+	}
+
 	return false
+}
+
+func unmarshalToken(data []byte) *core.Token {
+	var token core.Token
+	err := json.Unmarshal(data, &token)
+	if err != nil {
+		return nil
+	}
+	return &token
+}
+
+func unmarshalUserInfo(data []byte) *core.UserInfo {
+	var info core.UserInfo
+	err := json.Unmarshal(data, &info)
+	if err != nil {
+		log.Debug(err)
+		return nil
+	}
+	return &info
 }

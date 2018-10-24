@@ -1,9 +1,9 @@
 package official
 
 import (
+	"github.com/godcong/wego/core"
 	//"github.com/godcong/wego/config"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -49,8 +49,8 @@ func newPoi(account *Account) *Poi {
 }
 
 /*NewPoi NewPoi */
-func NewPoi() *Poi {
-	return newPoi(account)
+func NewPoi(config *core.Config) *Poi {
+	return newPoi(NewAccount(config))
 }
 
 /*
@@ -58,24 +58,13 @@ Add 创建门店
 	http请求方式	POST/FORM
 	请求Url	https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 	POST数据格式	buffer
-	成功返回:
-	{
-	"errcode":0,
-	"errmsg":"ok"
-	"poi_id":460123456
-	}
-	失败返回:
-	{
-	"errcode":40001,
-	"errmsg":"invalid credential"
-	}
 */
 func (p *Poi) Add(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Add", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
-		p.client.Link(poiAddPoiURLSuffix),
+		Link(poiAddPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -94,7 +83,7 @@ func (p *Poi) Get(poiID string) core.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
-		p.client.Link(poiGetPoiURLSuffix),
+		Link(poiGetPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiID,
@@ -123,7 +112,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) core.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
-		p.client.Link(poiUpdatePoiURLSuffix),
+		Link(poiUpdatePoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
@@ -223,7 +212,7 @@ func (p *Poi) GetList(begin int, limit int) core.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
-		p.client.Link(poiGetListPoiURLSuffix),
+		Link(poiGetListPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"begin": begin,
@@ -245,7 +234,7 @@ func (p *Poi) Del(poiID string) core.Response {
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
-		p.client.Link(poiDelPoiURLSuffix),
+		Link(poiDelPoiURLSuffix),
 		p.token.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiID,
@@ -267,8 +256,8 @@ func (p *Poi) GetCategory() core.Response {
 	log.Debug("Poi|GetCategory")
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.HTTPGet(
-		p.client.Link(poiGetWXCategoryURLSuffix),
+	resp := p.client.Get(
+		Link(poiGetWXCategoryURLSuffix),
 		p.token.GetToken().KeyMap())
 	return resp
 }

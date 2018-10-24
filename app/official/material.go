@@ -4,7 +4,6 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/media"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -20,8 +19,8 @@ func newMaterial(media *Media) *Material {
 }
 
 /*NewMaterial NewMaterial */
-func NewMaterial() *Material {
-	return newMaterial(NewMedia())
+func NewMaterial(config *core.Config) *Material {
+	return newMaterial(NewMedia(config))
 }
 
 //AddNews 新增永久素材
@@ -31,9 +30,9 @@ func (m *Material) AddNews(articles []*media.Article) core.Response {
 	log.Debug("Material|AddNews", articles)
 	key := m.token.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(materialAddNewsURLSuffix),
-		util.Map{"articles": articles},
-		util.Map{net.RequestTypeQuery.String(): key})
+		Link(materialAddNewsURLSuffix),
+		key,
+		util.Map{"articles": articles})
 	return resp
 }
 
@@ -51,13 +50,11 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.R
 
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.HTTPUpload(
-		m.client.Link(materialAddMaterialURLSuffix),
+	resp := m.client.Upload(
+		Link(materialAddMaterialURLSuffix),
+		p,
 		util.Map{
 			"media": filePath,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -71,17 +68,15 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) core
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
-	resp := m.client.HTTPUpload(
-		m.client.Link(materialAddMaterialURLSuffix),
+	resp := m.client.Upload(
+		Link(materialAddMaterialURLSuffix),
+		p,
 		util.Map{
 			"media": filePath,
 			"description": util.Map{
 				"title":        title,
 				"introduction": introduction,
 			},
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -97,12 +92,10 @@ func (m *Material) Get(mediaID string) core.Response {
 	log.Debug("Material|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(materialGetMaterialURLSuffix),
+		Link(materialGetMaterialURLSuffix),
+		p,
 		util.Map{
 			"media_id": mediaID,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }
@@ -118,12 +111,10 @@ func (m *Material) Del(mediaID string) core.Response {
 	log.Debug("Material|Del", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(materialDelMaterialURLSuffix),
+		Link(materialDelMaterialURLSuffix),
+		p,
 		util.Map{
 			"media_id": mediaID,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 
@@ -136,14 +127,12 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 	log.Debug("Material|UpdateNews", mediaID)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(materialUpdateNewsURLSuffix),
+		Link(materialUpdateNewsURLSuffix),
+		p,
 		util.Map{
 			"media_id": mediaID,
 			"index":    index,
 			"articles": articles,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 
@@ -152,40 +141,33 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 //GetMaterialCount 获取素材总数
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=ACCESS_TOKEN
-// 成功:
-// {"voice_count":0,"video_count":2,"image_count":0,"news_count":0}
-// 失败:
-// {"errcode":-1,"errmsg":"system error"}
 func (m *Material) GetMaterialCount() core.Response {
 	log.Debug("Material|GetMaterialCount")
 	p := m.token.GetToken().KeyMap()
-	resp := m.client.HTTPGet(
-		m.client.Link(materialGetMaterialcountURLSuffix),
-		util.Map{
-			net.RequestTypeQuery.String(): p,
-		})
+	resp := m.client.Get(
+		Link(materialGetMaterialcountURLSuffix),
+		p)
 	return resp
 }
 
-//BatchGet BatchGet
+//BatchGet 获取素材列表
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=ACCESS_TOKEN
-// 成功:
-// {"item":[{"media_id":"HIWcj9t3AI_b8qCQSu8lrTgTis9nPHNyIkIEWaDdHzY","name":"ceshi2","update_time":1521355652}],"total_count":2,"item_count":1}
-// 失败:
-// {"errcode":40007,"errmsg":"invalid media_id"}
+//参数说明
+//参数	是否必须	说明
+//type	是	素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+//offset	是	从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
+//count	是	返回素材的数量，取值在1到20之间
 func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Response {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.token.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(materialBatchgetMaterialURLSuffix),
+		Link(materialBatchgetMaterialURLSuffix),
+		p,
 		util.Map{
 			"type":   mediaType.String(),
 			"offset": offset,
 			"count":  count,
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 

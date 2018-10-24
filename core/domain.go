@@ -258,7 +258,7 @@ func domainURL(suffix string) string {
 	if url == "" {
 		switch suffix {
 		case "host":
-			url = "localhost"
+			url = "http://localhost"
 		case "payment", "default":
 			url = BaseDomain
 		case "official_account", "mini_program":

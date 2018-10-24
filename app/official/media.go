@@ -3,7 +3,6 @@ package official
 import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -21,8 +20,8 @@ func newMedia(account *Account) *Media {
 }
 
 /*NewMedia NewMedia*/
-func NewMedia() *Media {
-	return newMedia(account)
+func NewMedia(config *core.Config) *Media {
+	return newMedia(NewAccount(config))
 }
 
 /*Upload 媒体文件上传接口
@@ -41,8 +40,8 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response 
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.token.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.HTTPUpload(
-		m.client.Link(mediaUploadURLSuffix),
+	resp := m.client.Upload(
+		Link(mediaUploadURLSuffix),
 		p,
 		util.Map{
 			"media": filePath,
@@ -92,8 +91,8 @@ func (m *Media) Get(mediaID string) core.Response {
 	log.Debug("Media|Get", mediaID)
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.HTTPGet(
-		m.client.Link(mediaGetURLSuffix),
+	resp := m.client.Get(
+		Link(mediaGetURLSuffix),
 		p)
 	return resp
 }
@@ -108,11 +107,9 @@ func (m *Media) Get(mediaID string) core.Response {
 func (m *Media) GetJssdk(mediaID string) core.Response {
 	p := m.token.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.HTTPGet(
-		m.client.Link(mediaGetJssdkURLSuffix),
-		util.Map{
-			net.RequestTypeQuery.String(): p,
-		})
+	resp := m.client.Get(
+		Link(mediaGetJssdkURLSuffix),
+		p)
 	return resp
 }
 
@@ -139,8 +136,8 @@ func (m *Media) UploadBufferImg(filePath string) core.Response {
 
 func (m *Media) uploadImg(name string, filePath string) core.Response {
 	p := m.token.GetToken().KeyMap()
-	resp := m.client.HTTPUpload(
-		m.client.Link(mediaUploadImgURLSuffix),
+	resp := m.client.Upload(
+		Link(mediaUploadImgURLSuffix),
 		p,
 		util.Map{
 			name: filePath,

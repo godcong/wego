@@ -10,5 +10,5 @@ type CustomerService struct {
 
 /*List List */
 func (c *CustomerService) List() {
-	c.HTTPGet(c.Link(getKFListURLSuffix), nil)
+	c.Get(Link(getKFListURLSuffix), nil)
 }

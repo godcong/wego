@@ -8,7 +8,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-var card = official.NewCard()
+var card = official.NewCard(config)
 
 //step 1:
 //{
@@ -35,7 +35,7 @@ func TestCard_CreateLandingPage(t *testing.T) {
 			},
 		},
 	)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_Create(t *testing.T) {
@@ -92,7 +92,7 @@ func TestCard_Create(t *testing.T) {
 	})
 	oc.AddDealDetail("this is a test")
 	resp := card.Create(oc)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_Deposit(t *testing.T) {
@@ -103,12 +103,12 @@ func TestCard_Deposit(t *testing.T) {
 		"44444",
 		"55555",
 	})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_GetDepositCount(t *testing.T) {
 	resp := card.GetDepositCount("pDF3iY0_dVjb_Pua96MMewA96qvA")
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_CheckCode(t *testing.T) {
@@ -119,17 +119,17 @@ func TestCard_CheckCode(t *testing.T) {
 		"44444",
 		"55555",
 	})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_GetHtml(t *testing.T) {
 	resp := card.GetHTML("oLyBi0hSYhggnD-kOIms0IzZFqrc")
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_SetTestWhiteList(t *testing.T) {
 	resp := card.SetTestWhiteList("openid", []string{"o5jo6s3RZ6rxuVAW33IpTjYWQOg4"})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_CreateQrCode(t *testing.T) {
@@ -155,12 +155,12 @@ func TestCard_CreateQrCode(t *testing.T) {
 			//},
 		},
 	})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestCard_GetCode(t *testing.T) {
 	resp := card.GetCode(util.Map{
 		"card_id": "card_id_123+",
 	})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }

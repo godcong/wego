@@ -6,7 +6,7 @@ import (
 	"github.com/godcong/wego/app/official"
 )
 
-var u = official.NewUser()
+var u = official.NewUser(config)
 
 func TestNewUser(t *testing.T) {
 
@@ -14,7 +14,7 @@ func TestNewUser(t *testing.T) {
 
 func TestUser_UpdateRemark(t *testing.T) {
 	resp := u.UpdateRemark("oLyBi0tDnybg0WFkhKsn5HRetX1I", "nishi123")
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestUser_UserInfo(t *testing.T) {
@@ -30,5 +30,5 @@ func TestUser_BatchGet(t *testing.T) {
 func TestUser_Get(t *testing.T) {
 	resp := u.Get("")
 	resp1 := u.Get("oLyBi0tDnybg0WFkhKsn5HRetX1I")
-	t.Log(resp.ToString(), resp1.ToString())
+	t.Log(string(resp.Bytes()), string(resp1.Bytes()))
 }

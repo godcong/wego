@@ -21,10 +21,11 @@ type URL struct {
 
 func newBase(config *Config) *Base {
 	client := NewClient(config)
+	token := NewAccessToken(config)
 	return &Base{
 		config: config,
 		client: client,
-		token:  NewAccessToken(config, client),
+		token:  token,
 	}
 }
 
@@ -106,9 +107,10 @@ func (u *URL) ShortURL(url string) Response {
 /*NewURL NewURL*/
 func NewURL(config *Config) *URL {
 	client := NewClient(config)
+	token := NewAccessToken(config)
 	return &URL{
 		config: config,
-		token:  NewAccessToken(config, client),
+		token:  token,
 		client: client,
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/godcong/wego/app/official"
 )
 
-var dc = official.NewDataCube()
+var dc = official.NewDataCube(config)
 
 func TestNewDataCube(t *testing.T) {
 	t0, err := time.Parse("2006-01-02", "2018-03-20")
@@ -46,86 +46,86 @@ func TestNewDataCube(t *testing.T) {
 
 func testDataCube_GetUpstreamMsg(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsg(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgDist(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgDist(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgDistMonth(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgDistMonth(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgDistWeek(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgDistWeek(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgHour(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgHour(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgMonth(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgMonth(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetUpstreamMsgWeek(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetUpstreamMsgWeek(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetInterfaceSummary(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetInterfaceSummary(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func testDataCube_GetInterfaceSummaryHour(t *testing.T, t0, t1 time.Time) {
 	resp := dc.GetInterfaceSummaryHour(t0, t1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 //
 // func testDataCube_GetUserCumulate(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserCumulate(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetUserSummary(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserSummary(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetArticleSummary(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetArticleSummary(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetArticleTotal(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetArticleTotal(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetUserRead(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserRead(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetUserReadHour(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserReadHour(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetUserShare(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserShare(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }
 //
 // func testDataCube_GetUserShareHour(t *testing.T, t0, t1 time.Time) {
 // 	resp := dc.GetUserShareHour(t0, t1)
-// 	t.Log(resp.ToString())
+// 	t.Log(string(resp.Bytes()))
 // }

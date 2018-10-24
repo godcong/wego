@@ -10,14 +10,12 @@ import (
 /*Menu Menu*/
 type Menu struct {
 	//config  Config
-	account *Account
-	client  *core.Client
-	token   *core.AccessToken
+	*Account
 }
 
 func newMenu(account *Account) *Menu {
 	return &Menu{
-		account: account,
+		Account: account,
 	}
 }
 

@@ -10,9 +10,9 @@ type Comment struct {
 	*Account
 }
 
-func newComment(officialAccount *Account) *Comment {
+func newComment(acc *Account) *Comment {
 	return &Comment{
-		Account: officialAccount,
+		Account: acc,
 	}
 }
 
@@ -36,12 +36,10 @@ func (c *Comment) Open(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentOpenURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -59,12 +57,10 @@ func (c *Comment) Close(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentCloseURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -82,15 +78,13 @@ func (c *Comment) List(id, index, begin, count, typ int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentListURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
 			"begin":       begin,
 			"count":       count,
 			"type":        typ,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -110,13 +104,11 @@ func (c *Comment) Markelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentMarkelectURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -137,13 +129,11 @@ func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentUnmarkelectURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -160,13 +150,11 @@ func (c *Comment) Delete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentDeleteURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -187,14 +175,12 @@ func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Re
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentReplyAddURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
 			"content":         content,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }
@@ -214,13 +200,11 @@ func (c *Comment) ReplyDelete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentReplyDeleteURLSuffix),
+		p,
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
 			"user_comment_id": userCommentID,
-		},
-		util.Map{
-			core.DataTypeQuery: p,
 		})
 	return resp
 }

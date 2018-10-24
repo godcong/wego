@@ -1,10 +1,10 @@
 package official
 
 import (
+	"github.com/godcong/wego/core"
 	"time"
 
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -14,16 +14,16 @@ type DataCube struct {
 	*Account
 }
 
-func newDataCube(officialAccount *Account) *DataCube {
+func newDataCube(acc *Account) *DataCube {
 	return &DataCube{
 		//Config:  defaultConfig,
-		Account: officialAccount,
+		Account: acc,
 	}
 }
 
 /*NewDataCube NewDataCube*/
-func NewDataCube() *DataCube {
-	return newDataCube(account)
+func NewDataCube(config *core.Config) *DataCube {
+	return newDataCube(NewAccount(config))
 }
 
 //GetUserSummary 获取用户增减数据（getusersummary）	7
@@ -266,8 +266,8 @@ func (d *DataCube) GetInterfaceSummaryHour(beginDate, endDate time.Time) core.Re
 func (d *DataCube) get(url, beginDate, endDate string) core.Response {
 	key := d.token.GetToken().KeyMap()
 	resp := d.client.PostJSON(
-		d.client.Link(url),
-		util.Map{"begin_date": beginDate, "end_date": endDate},
-		util.Map{net.RequestTypeQuery.String(): key})
+		Link(url),
+		key,
+		util.Map{"begin_date": beginDate, "end_date": endDate})
 	return resp
 }

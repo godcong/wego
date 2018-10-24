@@ -6,7 +6,7 @@ import (
 	"github.com/godcong/wego/app/official"
 )
 
-var poi = official.NewPoi()
+var poi = official.NewPoi(config)
 
 func TestPoi_Add(t *testing.T) {
 
@@ -34,10 +34,10 @@ func TestPoi_Add(t *testing.T) {
 		OpenTime:     "",
 		AvgPrice:     0,
 	})
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }
 
 func TestPoi_Get(t *testing.T) {
 	resp := poi.Get("12121321")
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
 }

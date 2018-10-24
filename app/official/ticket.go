@@ -1,27 +1,24 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 )
 
 /*Ticket Ticket */
 type Ticket struct {
-	Config
 	*Account
 }
 
-func newTicket(officialAccount *Account) *Ticket {
+func newTicket(acc *Account) *Ticket {
 	return &Ticket{
-		Config:  defaultConfig,
-		Account: officialAccount,
+		Account: acc,
 	}
 }
 
 /*NewTicket NewTicket */
-func NewTicket() *Ticket {
-	return newTicket(account)
+func NewTicket(config *core.Config) *Ticket {
+	return newTicket(NewAccount(config))
 }
 
 //Get 获取api_ticket
@@ -33,8 +30,8 @@ func (t *Ticket) Get(typ string) core.Response {
 	log.Debug("Ticket|Get", typ)
 	p := t.token.GetToken().KeyMap()
 	p.Set("type", typ)
-	resp := t.client.HTTPGet(
-		t.client.Link(getTicketURLSuffix),
+	resp := t.client.Get(
+		Link(getTicketURLSuffix),
 		p)
 	return resp
 }

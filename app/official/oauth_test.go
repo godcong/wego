@@ -1,6 +1,7 @@
 package official_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -12,13 +13,13 @@ import (
 )
 
 func TestOAuth_AuthCodeURL(t *testing.T) {
-	oauth := official.NewOAuth()
+	oauth := official.NewOAuth(config)
 	rlt := oauth.AuthCodeURL("run")
 	t.Log(rlt)
 }
 
 func TestOAuth_ServeHTTP(t *testing.T) {
-	oauth := official.NewOAuth()
+	oauth := official.NewOAuth(config)
 	oauth.RegisterCodeCallback(func(w http.ResponseWriter, r *http.Request, val *official.CallbackValue) []byte {
 		log.Debug(val)
 
@@ -47,27 +48,31 @@ func TestOAuth_ServeHTTP(t *testing.T) {
 }
 
 func TestOAuth_AccessToken(t *testing.T) {
-	oauth := official.NewOAuth()
-	token := oauth.AccessToken("012QfESl1absJl0S73Tl1R7DSl1QfES4")
-	t.Log(*token)
+	oauth := official.NewOAuth(config)
+	token := oauth.AccessToken("011e3u1S0YsI082tiH0S0UEK1S0e3u1A")
+	//{15_wrO-m7suC_CjAuogtANDIL6iQk9KSQaAIBq2WuhINwHj_Eii6UNDm-3Y-L6Yzz2fLARsuV07f193vWAVdkE6EQ 15_kB8iaR-T_YirCLd6NQYNJiVRO7eAuGo3rYnYSf8FISxAs2Ifpml59Oox0fpi6WsaXZT7LYRXy-J8wUG2g04GDQ 7200 oJ9y41a_Sv0XSliN-dOEoobF-B3U snsapi_userinfo <nil>}
+	t.Log(fmt.Sprintf("%+v", token))
+	testOAuth_Validate(t, token)
 }
 
 func TestOAuth_RefreshToken(t *testing.T) {
-	oauth := official.NewOAuth()
-	token := oauth.RefreshToken("7_Ug1inUynfYtLPvPPRmlSlRGLhHq9Y1YyH0PO9dLjxTpnJl7XERCc6_qTmaaj5Y-_tPHI2ib8m8fB2Tq_Epjb7w")
-	t.Log(*token)
-	testOAuth_Validate(t, oauth)
+	oauth := official.NewOAuth(config)
+	token := oauth.RefreshToken("15_kB8iaR-T_YirCLd6NQYNJiVRO7eAuGo3rYnYSf8FISxAs2Ifpml59Oox0fpi6WsaXZT7LYRXy-J8wUG2g04GDQ")
+	//&{AccessToken:15_wrO-m7suC_CjAuogtANDIL6iQk9KSQaAIBq2WuhINwHj_Eii6UNDm-3Y-L6Yzz2fLARsuV07f193vWAVdkE6EQ RefreshToken:15_kB8iaR-T_YirCLd6NQYNJiVRO7eAuGo3rYnYSf8FISxAs2Ifpml59Oox0fpi6WsaXZT7LYRXy-J8wUG2g04GDQ ExpiresIn:7200 OpenID:oJ9y41a_Sv0XSliN-dOEoobF-B3U Scope:snsapi_base,snsapi_userinfo, Raw:<nil>}
+	t.Log(fmt.Sprintf("%+v", token))
+	testOAuth_Validate(t, token)
 }
 
 func TestOAuth_UserInfo(t *testing.T) {
-	oauth := official.NewOAuth()
-	token := oauth.RefreshToken("7_Ug1inUynfYtLPvPPRmlSlRGLhHq9Y1YyH0PO9dLjxTpnJl7XERCc6_qTmaaj5Y-_tPHI2ib8m8fB2Tq_Epjb7w")
+	oauth := official.NewOAuth(config)
+	token := oauth.RefreshToken("15_kB8iaR-T_YirCLd6NQYNJiVRO7eAuGo3rYnYSf8FISxAs2Ifpml59Oox0fpi6WsaXZT7LYRXy-J8wUG2g04GDQ")
+	//{"openid":"oJ9y41a_Sv0XSliN-dOEoobF-B3U","access_token":"15_wrO-m7suC_CjAuogtANDIL6iQk9KSQaAIBq2WuhINwHj_Eii6UNDm-3Y-L6Yzz2fLARsuV07f193vWAVdkE6EQ","expires_in":7200,"refresh_token":"15_kB8iaR-T_YirCLd6NQYNJiVRO7eAuGo3rYnYSf8FISxAs2Ifpml59Oox0fpi6WsaXZT7LYRXy-J8wUG2g04GDQ","scope":"snsapi_base,snsapi_userinfo,"}
 	rlt := oauth.UserInfo(token)
-	t.Log(*rlt)
+	t.Log(fmt.Sprintf("%+v", rlt))
 }
 
-func testOAuth_Validate(t *testing.T, auth *official.OAuth) {
-	token := auth.RefreshToken("7_Ug1inUynfYtLPvPPRmlSlRGLhHq9Y1YyH0PO9dLjxTpnJl7XERCc6_qTmaaj5Y-_tPHI2ib8m8fB2Tq_Epjb7w")
-	rlt := auth.Validate(token)
+func testOAuth_Validate(t *testing.T, token *core.Token) {
+	oauth := official.NewOAuth(config)
+	rlt := oauth.Validate(token)
 	t.Log(rlt)
 }

@@ -111,14 +111,12 @@ func (q *QrCode) Create(action *QrCodeAction) core.Response {
 // 提醒：TICKET记得进行UrlEncode
 func (q *QrCode) ShowQrCode(ticket string) core.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
-	q.client.SetDomain(core.NewDomain("mp"))
+
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := q.client.HTTPGet(
-		q.client.Link(showQrcodeURLSuffix),
+	resp := q.client.Get(
+		core.Link(showQrcodeURLSuffix, "mp"),
 		util.Map{
-			net.RequestTypeQuery.String(): util.Map{
-				"ticket": url.QueryEscape(ticket),
-			},
+			"ticket": url.QueryEscape(ticket),
 		})
 	return resp
 }

@@ -6,46 +6,60 @@ import (
 	"github.com/godcong/wego/app/official"
 )
 
-var c = official.NewComment()
-
 func TestComment_Open(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.Open(0, 1)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_Close(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.Close(0, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_List(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.List(0, 0, 0, 0, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
-func TestComment_Markelect(t *testing.T) {
+func TestComment_Marketlect(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.Markelect(0, 1, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_Unmarkelect(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.Unmarkelect(0, 1, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_Delete(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.Delete(0, 1, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_ReplyAdd(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.ReplyAdd(0, 1, 0, "content na si")
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestComment_ReplyDelete(t *testing.T) {
+	c := official.NewComment(config)
 	resp := c.ReplyDelete(0, 1, 0)
-	t.Log(resp.ToString())
+	t.Log(string(resp.Bytes()))
+	t.Log(resp.Error())
 }
 
 func TestNewComment(t *testing.T) {

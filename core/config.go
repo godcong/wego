@@ -155,22 +155,54 @@ func (c *Config) Check(arr ...string) int {
 
 //GetStringArray return string array
 func (c *Config) GetStringArray(key string) []string {
-	v := c.GetTree(key)
-	v0, b := (v).([]string)
-	if !b {
-		return nil
+	arr := c.GetArray(key)
+	var strArr []string
+	if arr != nil {
+		for _, v := range arr {
+			if vv, b := v.(string); b {
+				strArr = append(strArr, vv)
+			}
+		}
+		return strArr
 	}
-	return v0
+
+	return nil
 }
 
 //GetStringArrayD return string array with default value
 func (c *Config) GetStringArrayD(key string, d []string) []string {
-	v := c.GetTree(key)
-	v0, b := (v).([]string)
-	if !b {
-		return d
+	arr := c.GetArray(key)
+	var strArr []string
+	if arr != nil {
+		for _, v := range arr {
+			if vv, b := v.(string); b {
+				strArr = append(strArr, vv)
+			}
+		}
+		return strArr
 	}
-	return v0
+
+	return d
+}
+
+//GetArray return array
+func (c *Config) GetArray(key string) []interface{} {
+	v := c.GetTree(key)
+	v0, b := (v).([]interface{})
+	if b {
+		return v0
+	}
+	return nil
+}
+
+//GetArrayD return array with default value
+func (c *Config) GetArrayD(key string, d []interface{}) []interface{} {
+	v := c.GetTree(key)
+	v0, b := (v).([]interface{})
+	if b {
+		return v0
+	}
+	return d
 }
 
 //cfg create a null config

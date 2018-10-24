@@ -43,15 +43,17 @@ func (a *AccessToken) sendRequest(s string) []byte {
 }
 
 func newAccessToken(config *Config, client *Client) *AccessToken {
+	//client := NewClient(config)
 	return &AccessToken{
-		config: config,
-		client: client,
+		config:      config,
+		client:      client,
+		credentials: util.Map{},
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(config *Config, client *Client) *AccessToken {
-	return newAccessToken(config, client)
+func NewAccessToken(config *Config) *AccessToken {
+	return newAccessToken(config, NewClient(config))
 }
 
 /*Refresh 刷新AccessToken */
@@ -113,7 +115,6 @@ func (a *AccessToken) RequestToken(credentials string) *Token {
 	if tokenByte == nil {
 		return nil
 	}
-	log.Println(string(tokenByte))
 	err := json.Unmarshal(tokenByte, &token)
 	if err != nil {
 		log.Error(err)

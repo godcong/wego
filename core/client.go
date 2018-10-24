@@ -200,7 +200,7 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	return request(c, url, method, ops)
 }
 
-func parseResponse(resp *http.Response) Response {
+func parseResponse(resp *http.Response, dt string) Response {
 	ct := resp.Header.Get("Content-Type")
 	body, err := ParseBody(resp)
 	if err != nil {
@@ -216,12 +216,18 @@ func parseResponse(resp *http.Response) Response {
 		} else if strings.Index(ct, "text/plain") != -1 ||
 			strings.Index(ct, "application/xml") != -1 ||
 			strings.Index(ct, "text/plain") != -1 {
-			return &responseXML{
-				Data: body,
+			if dt == DataTypeJSON {
+				return &responseJSON{
+					Data: body,
+				}
+			} else if dt == DataTypeJSON {
+				return &responseXML{
+					Data: body,
+				}
 			}
 		}
 	}
-	return Err(nil, errors.New("error with "+resp.Status))
+	return Err(body, errors.New("error with "+resp.Status))
 }
 
 /*RequestRaw raw请求 */
@@ -368,7 +374,7 @@ func request(client *Client, url string, method string, ops util.Map) Response {
 			//return Err(nil, err)
 		}
 	}
-	return parseResponse(response)
+	return parseResponse(response, client.requestType)
 }
 
 func requestData(dt string) func(string, string, interface{}) *http.Request {

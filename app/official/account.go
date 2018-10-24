@@ -19,7 +19,7 @@ func init() {
 
 func newAccount(config *core.Config) *Account {
 	client := core.NewClient(config)
-	token := core.NewAccessToken(config, client)
+	token := core.NewAccessToken(config)
 
 	account := &Account{
 		config: config,

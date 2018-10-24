@@ -33,9 +33,7 @@ func (b *Base) ClearQuota() core.Response {
 	params := util.Map{
 		"appid": b.config.Get("app_id"),
 	}
-	return b.client.PostJSON(Link(clearQuotaURLSuffix), params, util.Map{
-		core.DataTypeQuery: token.KeyMap(),
-	})
+	return b.client.PostJSON(Link(clearQuotaURLSuffix), token.KeyMap(), params)
 
 }
 
@@ -49,6 +47,5 @@ func (b *Base) ClearQuota() core.Response {
 */
 func (b *Base) GetCallbackIP() core.Response {
 	token := b.token.GetToken()
-	b.client.SetRequestType(core.DataTypeJSON)
-	return b.client.Get(core.APIWeixin+getCallbackIPURLSuffix, token.KeyMap())
+	return b.client.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
 }

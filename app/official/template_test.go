@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewTemplate(t *testing.T) {
-	t0 := official.NewTemplate()
+	t0 := official.NewTemplate(config)
 
 	//testTemplate_SetIndustry(t, t0)
 	//testTemplate_GetIndustry(t, t0)
@@ -17,36 +17,36 @@ func TestNewTemplate(t *testing.T) {
 }
 
 func testTemplate_SetIndustry(t *testing.T, template *official.Template) {
-	rlt := template.SetIndustry("1", "2")
-	t.Log(rlt.ToString())
+	resp := template.SetIndustry("1", "2")
+	t.Log(string(resp.Bytes()))
 }
 
 func testTemplate_GetIndustry(t *testing.T, template *official.Template) {
-	rlt := template.GetIndustry()
-	t.Log(rlt.ToString())
+	resp := template.GetIndustry()
+	t.Log(string(resp.Bytes()))
 }
 
 func testTemplate_Add(t *testing.T, template *official.Template) {
-	rlt := template.Add("TM00015")
-	t.Log(rlt.ToString())
+	resp := template.Add("TM00015")
+	t.Log(string(resp.Bytes()))
 }
 
 func testTemplate_DelAllPrivate(t *testing.T, template *official.Template) {
-	rlt := template.GetAllPrivate()
-	t.Log(rlt.ToString())
+	resp := template.GetAllPrivate()
+	t.Log(string(resp.Bytes()))
 }
 
 func testTemplate_GetAllPrivate(t *testing.T, template *official.Template) {
-	rlt := template.DelAllPrivate("vc2ekfQmEP9qE9eBW9gGWaUrsLvztC9XOeB-cftLroo")
-	t.Log(rlt.ToString())
+	resp := template.DelAllPrivate("vc2ekfQmEP9qE9eBW9gGWaUrsLvztC9XOeB-cftLroo")
+	t.Log(string(resp.Bytes()))
 }
 
 func testTemplate_Send(t *testing.T, template *official.Template) {
-	//rlt0 := template.GetAllPrivate()
-	//rlt1 := template.DelAllPrivate("vc2ekfQmEP9qE9eBW9gGWaUrsLvztC9XOeB-cftLroo")
-	//t.Log(rlt0.ToString())
-	//t.Log(rlt1.ToString())
-	rlt := template.Send(&message.Template{
+	//resp0 := template.GetAllPrivate()
+	//resp1 := template.DelAllPrivate("vc2ekfQmEP9qE9eBW9gGWaUrsLvztC9XOeB-cftLroo")
+	//t.Log(resp0.ToString())
+	//t.Log(resp1.ToString())
+	resp := template.Send(&message.Template{
 		ToUser:     "ogJPnwU54xYMetJLjCbh6ycRvJW4",
 		TemplateID: "tAsZKUQO0zNkrfvsTi2JexHJ9ZPudXuZSdcurGzE7Yo",
 		URL:        "http://baidu.com",
@@ -79,5 +79,5 @@ func testTemplate_Send(t *testing.T, template *official.Template) {
 			},
 		},
 	})
-	t.Log(rlt.ToString())
+	t.Log(string(resp.Bytes()))
 }
