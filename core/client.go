@@ -15,6 +15,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -200,34 +201,35 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 	return request(c, url, method, ops)
 }
 
-func parseResponse(resp *http.Response, dt string) Response {
+func castToResponse(resp *http.Response) Response {
 	ct := resp.Header.Get("Content-Type")
 	body, err := ParseBody(resp)
+	body = removeControlCharacters(body) //Learn From Easywechat
 	if err != nil {
 		return Err(body, err)
 	}
 
 	log.Println("header:", ct)
 	if resp.StatusCode == 200 {
-		if strings.Index(ct, "application/json") != -1 {
-			return &responseJSON{
+		if strings.Index(ct, "xml") != -1 ||
+			strings.Index(string(body), "<xml") != -1 {
+			return &responseXML{
 				Data: body,
 			}
-		} else if strings.Index(ct, "text/plain") != -1 ||
-			strings.Index(ct, "application/xml") != -1 ||
-			strings.Index(ct, "text/plain") != -1 {
-			if dt == DataTypeJSON {
-				return &responseJSON{
-					Data: body,
-				}
-			} else if dt == DataTypeJSON {
-				return &responseXML{
-					Data: body,
-				}
-			}
+		}
+		return &responseJSON{
+			Data: body,
 		}
 	}
+
 	return Err(body, errors.New("error with "+resp.Status))
+}
+
+func removeControlCharacters(body []byte) []byte {
+	pat := "/[\x00-\x1F\x80-\x9F]/u"
+	re, _ := regexp.Compile(pat)
+	//将匹配到的部分替换为"##.#"
+	return re.ReplaceAll(body, []byte(""))
 }
 
 /*RequestRaw raw请求 */
@@ -374,7 +376,7 @@ func request(client *Client, url string, method string, ops util.Map) Response {
 			//return Err(nil, err)
 		}
 	}
-	return parseResponse(response, client.requestType)
+	return castToResponse(response)
 }
 
 func requestData(dt string) func(string, string, interface{}) *http.Request {
