@@ -93,11 +93,12 @@ func (a *Application) Config() *core.Config {
 //	return core.NewAccessToken(a.Config(), a.Client())
 //}
 
-//Payment return a default payment
+//Payment return a default Payment
 func (a *Application) Payment(cfg string) *payment.Payment {
 	return payment.NewPayment(a.Config().GetSubConfig(cfg))
 }
 
+//OfficialAccount return a default OfficialAccount
 func (a *Application) OfficialAccount(cfg string) *official.Account {
 	return official.NewAccount(a.Config().GetSubConfig(cfg))
 }

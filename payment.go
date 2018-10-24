@@ -4,10 +4,12 @@ import (
 	"github.com/godcong/wego/app/payment"
 )
 
+//JSSDK result payment JSSDK
 func JSSDK() *payment.JSSDK {
 	return app.Payment("payment.default").JSSDK()
 }
 
+//RedPack result payment RedPack
 func RedPack() *payment.RedPack {
 	return app.Payment("payment.default").RedPack()
 }
@@ -41,6 +43,7 @@ func Reverse() *payment.Reverse {
 	return app.Payment("payment.default").Reverse()
 }
 
+//Transfer result payment Transfer
 func Transfer() *payment.Transfer {
 	return app.Payment("payment.default").Transfer()
 }

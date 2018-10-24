@@ -5,7 +5,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-/*Bill Bill */
+/*Bill 账单 */
 type Bill struct {
 	*Payment
 }
@@ -16,7 +16,7 @@ func newBill(p *Payment) *Bill {
 	}
 }
 
-/*NewBill NewBill */
+/*NewBill 账单 */
 func NewBill(config *core.Config) *Bill {
 	return newBill(NewPayment(config))
 }

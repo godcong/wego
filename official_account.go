@@ -28,7 +28,7 @@ import (
 //	Server() Server
 //}
 
-///*OfficialAccount 公众号*/
+//OfficialAccount 公众号*/
 func OfficialAccount() *official.Account {
 	return App().OfficialAccount("official_account.default")
 }
