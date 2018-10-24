@@ -7,10 +7,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
@@ -26,33 +25,28 @@ type CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValu
 /*OAuth OAuth */
 type OAuth struct {
 	*Account
-	Config
-	domain *core.Domain
 	//response    core.Response
 	callback    map[string]CallbackFunc
 	authorize   string
-	scopes      string
+	scopes      []string
 	redirectURI string
 }
 
-func newOAuth(officialAccount *Account) *OAuth {
-	log.Debug("newOAuth", officialAccount)
+func newOAuth(acc *Account) *OAuth {
 	oauth := &OAuth{
-		Account:  officialAccount,
+		Account:  acc,
 		callback: map[string]CallbackFunc{},
 	}
 
-	oauth.Config = config.GetConfig("official_account.oauth")
-	oauth.domain = core.DomainHost()
-	oauth.scopes = oauth.GetD("scopes", snsapiBase)
-	oauth.redirectURI = oauth.GetD("redirect_uri", defaultOauthRedirectURLSuffix)
-	oauth.authorize = oauth.GetD("authorize", oauth2AuthorizeURLSuffix)
+	oauth.scopes = oauth.config.GetStringArrayD("oauth.scopes", []string{snsapiBase})
+	oauth.redirectURI = oauth.config.GetStringD("oauth.redirect_uri", defaultOauthRedirectURLSuffix)
+	oauth.authorize = oauth.config.GetStringD("oauth.authorize", oauth2AuthorizeURLSuffix)
 	return oauth
 }
 
 /*NewOAuth NewOAuth*/
-func NewOAuth() *OAuth {
-	return newOAuth(account)
+func NewOAuth(config *core.Config) *OAuth {
+	return newOAuth(NewAccount(config))
 }
 
 /*RegisterCodeCallback RegisterCodeCallback*/
@@ -160,13 +154,13 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	buf.WriteString(o.authorize)
 	v := url.Values{
 		"response_type": {"code"},
-		"appid":         {o.Account.Get("app_id")},
+		"appid":         {o.config.GetString("app_id")},
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
-	if o.scopes != "" {
-		v.Set("scope", o.scopes)
+	if o.scopes != nil {
+		v["scope"] = o.scopes
 	}
 	if state != "" {
 		// TODO(light): Docs say never to omit state; don't allow empty.
@@ -190,23 +184,22 @@ func (o *OAuth) AuthCodeURL(state string) string {
 // 成功:
 // {"openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","access_token":"7_EVGE1V1XzagA0PXMPFUbLApiA4BCGO5oVSxkDRbZ-aiTfwpP32DSNxsdFBN0AuERGrEtCBuBfNzTpTv_mYi-NQ","expires_in":7200,"refresh_token":"7_XxwLIQsmfEHnuVsw91q8fK1WWRcq37z2-rTTlMjrouJussoQff77jE9043qtiIQMr8CJuBWc3hmMGONJbB_EQQ","scope":"snsapi_base,snsapi_userinfo,"}
 func (o *OAuth) RefreshToken(refresh string) *core.Token {
-	config := o.Account.Config
 	v := util.Map{
-		"appid":         config.Get("app_id"),
+		"appid":         o.config.Get("app_id"),
 		"grant_type":    "refresh_token",
 		"refresh_token": refresh,
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
-	response := o.client.HTTPPost(
-		o.client.Link(oauth2RefreshTokenURLSuffix),
+	response := o.client.Post(
+		core.Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
 	)
 	log.Debug("RefreshToken|response", response)
 	var token core.Token
-	e := json.Unmarshal(response.ToBytes(), &token)
+	e := json.Unmarshal(response.Bytes(), &token)
 	if e != nil {
 		log.Debug("RefreshToken|e", e)
 		return nil
@@ -216,24 +209,23 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 
 /*AccessToken AccessToken*/
 func (o *OAuth) AccessToken(code string) *core.Token {
-	config := o.Account.Config
 	v := util.Map{
-		"appid":      config.Get("app_id"),
-		"secret":     config.Get("secret"),
+		"appid":      o.config.Get("app_id"),
+		"secret":     o.config.Get("secret"),
 		"code":       code,
 		"grant_type": "authorization_code",
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", o.domain.Link(o.redirectURI))
+		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
-	response := o.client.HTTPPost(
-		o.client.Link(oauth2AccessTokenURLSuffix),
+	response := o.client.Post(
+		core.Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,
 	)
-	log.Debug("AccessToken|response", response.ToString())
+	log.Debug("AccessToken|response", string(response.Bytes()))
 	var token core.Token
-	e := json.Unmarshal(response.ToBytes(), &token)
+	e := json.Unmarshal(response.Bytes(), &token)
 	if e != nil {
 		log.Debug("AccessToken|e", e)
 		return nil
@@ -254,12 +246,12 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		"openid":       token.OpenID,
 		"lang":         "zh_CN",
 	}
-	response := o.client.HTTPGet(
-		o.client.Link(oauth2UserinfoURLSuffix),
+	response := o.client.Get(
+		core.Link(oauth2UserinfoURLSuffix),
 		p,
 	)
 	var info core.UserInfo
-	err := json.Unmarshal(response.ToBytes(), &info)
+	err := json.Unmarshal(response.Bytes(), &info)
 	if err != nil {
 		log.Debug(err)
 		return nil
@@ -277,12 +269,12 @@ func (o *OAuth) Validate(token *core.Token) bool {
 		"access_token": token.AccessToken,
 		"openid":       token.OpenID,
 	}
-	response := o.client.HTTPGet(
-		o.client.Link(oauth2AuthURLSuffix),
+	response := o.client.Get(
+		core.Link(oauth2AuthURLSuffix),
 		util.Map{
-			net.RequestTypeQuery.String(): p,
+			core.DataTypeQuery: p,
 		},
 	)
-	log.Debug(response.ToString())
+	log.Debug(response.Bytes())
 	return false
 }

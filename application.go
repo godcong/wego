@@ -3,10 +3,8 @@ package wego
 import (
 	"github.com/godcong/wego/app/official"
 	"github.com/godcong/wego/app/payment"
-	"github.com/godcong/wego/log"
-	"reflect"
-
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
 
@@ -96,12 +94,12 @@ func (a *Application) Config() *core.Config {
 //}
 
 //Payment return a default payment
-func (a *Application) Payment(arg string) *payment.Payment {
-	return payment.NewPayment(a.Config().GetSubConfig(arg))
+func (a *Application) Payment(cfg string) *payment.Payment {
+	return payment.NewPayment(a.Config().GetSubConfig(cfg))
 }
 
-func (a *Application) OfficialAccount(arg string) *official.Account {
-	return official.NewAccount(a.Config().GetSubConfig(arg))
+func (a *Application) OfficialAccount(cfg string) *official.Account {
+	return official.NewAccount(a.Config().GetSubConfig(cfg))
 }
 
 /*Get 获取注册的数据 */
@@ -110,14 +108,6 @@ func (a *Application) Get(name string) (interface{}, bool) {
 		return v, true
 	}
 	return nil, false
-}
-
-func reflectSet(tar, src interface{}) bool {
-	if src != nil && tar != nil {
-		reflect.ValueOf(tar).Elem().Set(reflect.ValueOf(src).Elem())
-		return true
-	}
-	return false
 }
 
 /*GetInterface 获取注册的interface */

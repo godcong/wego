@@ -102,6 +102,14 @@ func filterContent(content string) string {
 	return content
 }
 
+//Err return if response has error
+func Err(data []byte, err error) Response {
+	return &responseError{
+		Data: data,
+		Err:  err,
+	}
+}
+
 /*RespType RespType */
 //func RespType(reqType RequestType) ResponseType {
 //	log.Debug("reqType", reqType)

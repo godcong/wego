@@ -42,34 +42,35 @@ func LoadConfig(f string) (*Config, error) {
 		log.Println(e.Error())
 		return nil, e
 	}
+	log.Println(t.String())
 	return cfg(t), nil
 }
 
 /*GetSubConfig get sub config from current config */
-func (t *Config) GetSubConfig(s string) *Config {
-	if v, b := t.GetTree(s).(*toml.Tree); b {
+func (c *Config) GetSubConfig(s string) *Config {
+	if v, b := c.GetTree(s).(*toml.Tree); b {
 		return cfg(v)
 	}
 	return cfg(nil)
 }
 
 /*GetTree get config tree */
-func (t *Config) GetTree(s string) interface{} {
-	if t == nil {
+func (c *Config) GetTree(s string) interface{} {
+	if c == nil {
 		return nil
 	}
 
-	return t.Tree.Get(s)
+	return c.Tree.Get(s)
 }
 
 /*Get get an interface from config */
-func (t *Config) Get(s string) interface{} {
-	return t.GetTree(s)
+func (c *Config) Get(s string) interface{} {
+	return c.GetTree(s)
 }
 
 /*GetD get interface with default value */
-func (t *Config) GetD(s string, d interface{}) interface{} {
-	v := t.GetTree(s)
+func (c *Config) GetD(s string, d interface{}) interface{} {
+	v := c.GetTree(s)
 	if v == nil {
 		return d
 	}
@@ -77,8 +78,8 @@ func (t *Config) GetD(s string, d interface{}) interface{} {
 }
 
 /*GetString get string with out default value */
-func (t *Config) GetString(s string) string {
-	v := t.GetTree(s)
+func (c *Config) GetString(s string) string {
+	v := c.GetTree(s)
 	if v, b := v.(string); b {
 		return v
 	}
@@ -86,8 +87,8 @@ func (t *Config) GetString(s string) string {
 }
 
 /*GetStringD get string with default value */
-func (t *Config) GetStringD(s, d string) string {
-	v := t.GetTree(s)
+func (c *Config) GetStringD(s, d string) string {
+	v := c.GetTree(s)
 	if v, b := v.(string); b {
 		return v
 	}
@@ -95,14 +96,14 @@ func (t *Config) GetStringD(s, d string) string {
 }
 
 /*Set set value */
-func (t *Config) Set(k string, v interface{}) *Config {
-	t.Tree.Set(k, v)
-	return t
+func (c *Config) Set(k string, v interface{}) *Config {
+	c.Tree.Set(k, v)
+	return c
 }
 
 /*GetBool get bool value */
-func (t *Config) GetBool(s string) bool {
-	v := t.GetTree(s)
+func (c *Config) GetBool(s string) bool {
+	v := c.GetTree(s)
 	if v, b := v.(bool); b {
 		return v
 	}
@@ -111,8 +112,8 @@ func (t *Config) GetBool(s string) bool {
 }
 
 //GetBoolD get bool with default value
-func (t *Config) GetBoolD(s string, d bool) bool {
-	v := t.GetTree(s)
+func (c *Config) GetBoolD(s string, d bool) bool {
+	v := c.GetTree(s)
 	if v, b := v.(bool); b {
 		return v
 	}
@@ -121,8 +122,8 @@ func (t *Config) GetBoolD(s string, d bool) bool {
 }
 
 //GetInt get int value
-func (t *Config) GetInt(s string) int64 {
-	v := t.GetTree(s)
+func (c *Config) GetInt(s string) int64 {
+	v := c.GetTree(s)
 	v0, b := util.ParseInt(v)
 	if !b {
 		return 0
@@ -131,8 +132,8 @@ func (t *Config) GetInt(s string) int64 {
 }
 
 //GetIntD get int with default value
-func (t *Config) GetIntD(s string, d int64) int64 {
-	v := t.GetTree(s)
+func (c *Config) GetIntD(s string, d int64) int64 {
+	v := c.GetTree(s)
 	v0, b := util.ParseInt(v)
 	if !b {
 		return d
@@ -143,14 +144,34 @@ func (t *Config) GetIntD(s string, d int64) int64 {
 //Check check all input keys
 //return 0 if all is exist
 //return index when not found
-func (t *Config) Check(arr ...string) int {
+func (c *Config) Check(arr ...string) int {
 	for i, v := range arr {
-		if t.Has(v) {
+		if c.Has(v) {
 			continue
 		}
 		return i
 	}
 	return 0
+}
+
+//GetStringArray return string array
+func (c *Config) GetStringArray(key string) []string {
+	v := c.GetTree(key)
+	v0, b := (v).([]string)
+	if !b {
+		return nil
+	}
+	return v0
+}
+
+//GetStringArrayD return string array with default value
+func (c *Config) GetStringArrayD(key string, d []string) []string {
+	v := c.GetTree(key)
+	v0, b := (v).([]string)
+	if !b {
+		return d
+	}
+	return v0
 }
 
 //cfg create a null config

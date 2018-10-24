@@ -3,19 +3,20 @@ package core
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"os"
 	"strings"
-
-	"crypto/tls"
-	"crypto/x509"
-	"io/ioutil"
+	"time"
 
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
@@ -57,8 +58,8 @@ type Client struct {
 	requestType  string
 	responseData []byte
 	httpRequest  *http.Request
-	httpResponse *http.Response
-	httpClient   *http.Client
+	//httpResponse *http.Response
+	httpClient *http.Client
 	//app      *Application
 	//token    *AccessToken
 	//request  *net.Request
@@ -105,15 +106,15 @@ func (c *Client) SetHTTPClient(httpClient *http.Client) {
 	c.httpClient = httpClient
 }
 
-//HTTPResponse get client http Response
-func (c *Client) HTTPResponse() *http.Response {
-	return c.httpResponse
-}
-
-//SetHTTPResponse set client http Response
-func (c *Client) SetHTTPResponse(httpResponse *http.Response) {
-	c.httpResponse = httpResponse
-}
+////HTTPResponse get client http Response
+//func (c *Client) HTTPResponse() *http.Response {
+//	return c.httpResponse
+//}
+//
+////SetHTTPResponse set client http Response
+//func (c *Client) SetHTTPResponse(httpResponse *http.Response) {
+//	c.httpResponse = httpResponse
+//}
 
 //HTTPRequest get client http Request
 func (c *Client) HTTPRequest() *http.Request {
@@ -196,100 +197,54 @@ func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
 func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", c.httpClient)
 	c.httpClient = buildTransport(c.config)
-	response, err := request(c, url, method, ops)
-
-	log.Println(response.Header)
-	log.Println(response.ContentLength)
-	log.Println(response.Status)
-	log.Println(response.StatusCode)
-	if err != nil {
-		return parseResponse(nil, err.Error())
-	}
-	b, err := ParseBody(response)
-	if err != nil {
-		return parseResponse(nil, err.Error())
-	}
-	return parseResponse(b, c.requestType)
+	return request(c, url, method, ops)
 }
 
-func parseResponse(b []byte, t string) Response {
-	if t == DataTypeXML {
-		return &responseXML{
-			Data: b,
-		}
-	} else if t == DataTypeJSON {
-		return &responseJSON{
-			Data: b,
+func parseResponse(resp *http.Response) Response {
+	ct := resp.Header.Get("Content-Type")
+	body, err := ParseBody(resp)
+	if err != nil {
+		return Err(body, err)
+	}
+
+	log.Println("header:", ct)
+	if resp.StatusCode == 200 {
+		if strings.Index(ct, "application/json") != -1 {
+			return &responseJSON{
+				Data: body,
+			}
+		} else if strings.Index(ct, "text/plain") != -1 ||
+			strings.Index(ct, "application/xml") != -1 ||
+			strings.Index(ct, "text/plain") != -1 {
+			return &responseXML{
+				Data: body,
+			}
 		}
 	}
-	return &responseError{
-		Data: b,
-		Err:  errors.New(t),
-	}
+	return Err(nil, errors.New("error with "+resp.Status))
 }
 
 /*RequestRaw raw请求 */
 func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
 	log.Debug("Request|httpClient", c.httpClient)
 	c.httpClient = buildTransport(c.config)
-	response, err := request(c, url, method, ops)
-	if err != nil {
-		return nil
-	}
-	b, err := ParseBody(response)
-	if err != nil {
-		return nil
-	}
-	return b
+	return request(c, url, method, ops).Bytes()
 }
 
 /*SafeRequest 安全请求 */
 func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
 	c.httpClient = buildSafeTransport(c.config)
 	log.Debug("SafeRequest|httpClient", c.httpClient)
-	response, err := request(c, url, method, ops)
-	if err != nil {
-		return parseResponse(nil, err.Error())
-	}
-	b, err := ParseBody(response)
-	if err != nil {
-		return parseResponse(nil, err.Error())
-	}
-	return parseResponse(b, c.requestType)
+	return request(c, url, method, ops)
 }
 
 /*SafeRequestRaw 安全请求 */
 func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
 	c.httpClient = buildSafeTransport(c.config)
 	log.Debug("SafeRequest|httpClient", c.httpClient)
-	response, err := request(c, url, method, ops)
-	if err != nil {
-		return nil
-	}
-	b, err := ParseBody(response)
-	if err != nil {
-		return nil
-	}
-	return b
+	return request(c, url, method, ops).Bytes()
+
 }
-
-///*Link 拼接地址 */
-//func (c *Client) Link(uri string) string {
-//	if c.GetBool("sandbox") {
-//		return c.domain.URL() + sandboxURLSuffix + uri
-//	}
-//	return c.domain.Link(uri)
-//}
-
-/*GetRequest get net response */
-//func (c *Client) GetResponse() core.Response {
-//return c.response
-//}
-
-/*GetRequest get net request */
-//func (c *Client) GetRequest() *net.Request {
-//	return c.request
-//}
 
 /*NewClient 创建一个client */
 func NewClient(config *Config) *Client {
@@ -299,26 +254,40 @@ func NewClient(config *Config) *Client {
 		requestType:  DataTypeXML,
 		responseData: nil,
 		httpRequest:  nil,
-		httpResponse: nil,
-		httpClient:   nil,
+		//httpResponse: nil,
+		httpClient: nil,
 	}
 }
 
 func buildTransport(config *Config) *http.Client {
-	_ = config
+
+	timeOut := config.GetIntD("http.time_out", 30)
+	keepAlive := config.GetIntD("http.keep_alive", 30)
 	return &http.Client{
 		Transport: &http.Transport{
-			//Dial: (&net.Dialer{
-			//	Timeout:   30 * time.Second,
-			//	KeepAlive: 30 * time.Second,
-			//}).Dial,
+			Proxy: nil,
+			DialContext: (&net.Dialer{
+				Timeout:   time.Duration(timeOut) * time.Second,
+				KeepAlive: time.Duration(keepAlive) * time.Second,
+				//DualStack: true,
+			}).DialContext,
+			//Dial:        nil,
+			//DialTLS:     nil,
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
 			},
-			Proxy: nil,
-			//TLSHandshakeTimeout:   10 * time.Second,
-			//ResponseHeaderTimeout: 10 * time.Second,
-			//ExpectContinueTimeout: 1 * time.Second,
+			//TLSHandshakeTimeout:    0,
+			//DisableKeepAlives:      false,
+			//DisableCompression:     false,
+			//MaxIdleConns:           0,
+			//MaxIdleConnsPerHost:    0,
+			//MaxConnsPerHost:        0,
+			//IdleConnTimeout:        0,
+			//ResponseHeaderTimeout:  0,
+			//ExpectContinueTimeout:  0,
+			//TLSNextProto:           nil,
+			//ProxyConnectHeader:     nil,
+			//MaxResponseHeaderBytes: 0,
 		},
 		//CheckRedirect: nil,
 		//Jar:           nil,
@@ -349,12 +318,15 @@ func buildSafeTransport(config *Config) *http.Client {
 		InsecureSkipVerify: false,
 	}
 	tlsConfig.BuildNameToCertificate()
+	timeOut := config.GetIntD("http.time_out", 30)
+	keepAlive := config.GetIntD("http.keep_alive", 30)
 	return &http.Client{
 		Transport: &http.Transport{
-			//Dial: (&net.Dialer{
-			//	Timeout:   30 * time.Second,
-			//	KeepAlive: 30 * time.Second,
-			//}).Dial,
+			DialContext: (&net.Dialer{
+				Timeout:   time.Duration(timeOut) * time.Second,
+				KeepAlive: time.Duration(keepAlive) * time.Second,
+				//DualStack: true,
+			}).DialContext,
 			TLSClientConfig: tlsConfig,
 			Proxy:           nil,
 			//TLSHandshakeTimeout:   10 * time.Second,
@@ -364,7 +336,13 @@ func buildSafeTransport(config *Config) *http.Client {
 	}
 }
 
-func request(client *Client, url string, method string, ops util.Map) (*http.Response, error) {
+func (c *Client) clear() {
+	c.httpRequest = nil
+	c.httpClient = nil
+	//c.httpResponse = nil
+}
+
+func request(client *Client, url string, method string, ops util.Map) Response {
 	method = strings.ToUpper(method)
 	query := processQuery(ops.Get(DataTypeQuery))
 	url = parseQuery(url, query)
@@ -374,25 +352,23 @@ func request(client *Client, url string, method string, ops util.Map) (*http.Res
 		client.httpRequest = newRequest(method, url, ops.Get(client.requestType))
 	}
 
-	defer func() {
-		//clear request when done
-		client.httpRequest = nil
-	}()
+	defer client.clear()
 
 	log.Debug("client|request", client, url, method, ops)
-	response, err := http.DefaultClient.Do(client.httpRequest.WithContext(client.Context))
+	response, err := client.httpClient.Do(client.httpRequest.WithContext(client.Context))
 	if err != nil {
 		log.Error("Client|Do", err)
+		return Err(nil, err)
+	}
+	{
 		select {
 		case <-client.Context.Done():
-			return nil, err
+			return Err(nil, client.Context.Err())
 		default:
-			return nil, client.Context.Err()
+			//return Err(nil, err)
 		}
-
-		return nil, err
 	}
-	return response, err
+	return parseResponse(response)
 }
 
 func requestData(dt string) func(string, string, interface{}) *http.Request {

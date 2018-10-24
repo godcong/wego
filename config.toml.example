@@ -28,8 +28,6 @@
             url = 'https://api.weixin.qq.com'
 
 [official_account]
-#        [official.config]
-#            data_type = "json"
         [official_account.sandbox]
             app_id ='wx1ad61aeef1903b93'
             secret = 'c96956c2fd5ce7bfd7a0db1f7679ff6d'
@@ -44,8 +42,11 @@
              secret = 'c96956c2fd5ce7bfd7a0db1f7679ff6d'       #AppSecret
              token = 'godcong'                              #Token
              aes_key = 'O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ'      #EncodingAESKey
+        [official_account.default.http]
+            time_out = 5
+            keep_alive = 30
 
-        [official_account.oauth]
+        [official_account.default.oauth]
             scopes   = ['snsapi_userinfo']
             redirect_uri ="/oauth_callback"
 
@@ -77,7 +78,9 @@
             rootca_path = 'cert/rootca.pem'
             pubkey_path = "cert/publickey.pem"
             prikey_path = "cert/privatekey.pem"
-
+        [payment.default.http]
+            time_out = 5
+            keep_alive = 30
 [work]
         [work.default]
             corp_id = 'xxxxxxxxxxxxxxxxx'
