@@ -212,7 +212,7 @@ func castToResponse(resp *http.Response) Response {
 	log.Println("header:", ct)
 	if resp.StatusCode == 200 {
 		if strings.Index(ct, "xml") != -1 ||
-			strings.Index(string(body), "<xml") != -1 {
+			bytes.Index(body, []byte("<xml")) != -1 {
 			return &responseXML{
 				Data: body,
 			}
