@@ -4,7 +4,6 @@ import (
 	//"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/menu"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -18,17 +17,13 @@ type Menu struct {
 
 func newMenu(account *Account) *Menu {
 	return &Menu{
-		//config:  defaultConfig,
 		account: account,
-		client:  account.client,
-		token:   account.token,
-		//buttons: make(util.Map),
 	}
 }
 
 /*NewMenu NewMenu*/
-func NewMenu() *Menu {
-	return newMenu(account)
+func NewMenu(config *core.Config) *Menu {
+	return newMenu(NewAccount(config))
 }
 
 //func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
@@ -54,13 +49,13 @@ func (m *Menu) Create(buttons *menu.Button) core.Response {
 	token := m.token.GetToken().KeyMap()
 	if buttons.GetMatchRule() == nil {
 		resp := m.client.PostJSON(
-			m.client.Link(menuCreateURLSuffix),
+			Link(menuCreateURLSuffix),
 			token,
 			buttons)
 		return resp
 	}
 	resp := m.client.PostJSON(
-		m.client.Link(menuAddConditionalURLSuffix),
+		Link(menuAddConditionalURLSuffix),
 		token,
 		buttons)
 	return resp
@@ -74,7 +69,7 @@ https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014
 */
 func (m *Menu) List() core.Response {
-	resp := m.client.HTTPGet(m.client.Link(menuGetURLSuffix),
+	resp := m.client.Get(Link(menuGetURLSuffix),
 		m.token.GetToken().KeyMap(),
 	)
 	return resp
@@ -87,7 +82,7 @@ http请求方式: GET（请使用https协议）https://api.weixin.qq.com/cgi-bin
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695
 */
 func (m *Menu) Current() core.Response {
-	resp := m.client.HTTPGet(m.client.Link(getCurrentSelfMenuInfoURLSuffix),
+	resp := m.client.Get(Link(getCurrentSelfMenuInfoURLSuffix),
 		m.token.GetToken().KeyMap())
 	return resp
 }
@@ -123,7 +118,7 @@ user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
 }
 */
 func (m *Menu) TryMatch(userID string) core.Response {
-	resp := m.client.PostJSON(m.client.Link(menuTryMatchURLSuffix),
+	resp := m.client.PostJSON(Link(menuTryMatchURLSuffix),
 		m.token.GetToken().KeyMap(),
 		util.Map{"user_id": userID})
 	return resp
@@ -140,12 +135,12 @@ https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN
 func (m *Menu) Delete(menuid int) core.Response {
 	token := m.token.GetToken().KeyMap()
 	if menuid == 0 {
-		resp := m.client.HTTPGet(m.client.Link(menuDeleteURLSuffix),
+		resp := m.client.Get(Link(menuDeleteURLSuffix),
 			token)
 		return resp
 	}
 
-	resp := m.client.PostJSON(m.client.Link(menuDeleteConditionalURLSuffix),
+	resp := m.client.PostJSON(Link(menuDeleteConditionalURLSuffix),
 		util.Map{"menuid": menuid},
 		token)
 	return resp

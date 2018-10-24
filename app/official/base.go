@@ -33,7 +33,7 @@ func (b *Base) ClearQuota() core.Response {
 	params := util.Map{
 		"appid": b.config.Get("app_id"),
 	}
-	return b.client.PostJSON(core.Link(clearQuotaURLSuffix), params, util.Map{
+	return b.client.PostJSON(Link(clearQuotaURLSuffix), params, util.Map{
 		core.DataTypeQuery: token.KeyMap(),
 	})
 

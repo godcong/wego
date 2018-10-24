@@ -157,7 +157,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 		"appid":         {o.config.GetString("app_id")},
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", Link(o.redirectURI, "host"))
 	}
 	if o.scopes != nil {
 		v["scope"] = o.scopes
@@ -190,10 +190,10 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 		"refresh_token": refresh,
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", Link(o.redirectURI, "host"))
 	}
 	response := o.client.Post(
-		core.Link(oauth2RefreshTokenURLSuffix),
+		Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
 	)
@@ -216,10 +216,10 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 		"grant_type": "authorization_code",
 	}
 	if o.redirectURI != "" {
-		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
+		v.Set("redirect_uri", Link(o.redirectURI, "host"))
 	}
 	response := o.client.Post(
-		core.Link(oauth2AccessTokenURLSuffix),
+		Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,
 	)
@@ -247,7 +247,7 @@ func (o *OAuth) UserInfo(token *core.Token) *core.UserInfo {
 		"lang":         "zh_CN",
 	}
 	response := o.client.Get(
-		core.Link(oauth2UserinfoURLSuffix),
+		Link(oauth2UserinfoURLSuffix),
 		p,
 	)
 	var info core.UserInfo
@@ -270,7 +270,7 @@ func (o *OAuth) Validate(token *core.Token) bool {
 		"openid":       token.OpenID,
 	}
 	response := o.client.Get(
-		core.Link(oauth2AuthURLSuffix),
+		Link(oauth2AuthURLSuffix),
 		util.Map{
 			core.DataTypeQuery: p,
 		},

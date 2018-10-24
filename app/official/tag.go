@@ -1,28 +1,26 @@
 package official
 
 import (
-	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
 /*Tag Tag */
 type Tag struct {
-	Config
 	*Account
 }
 
-func newTag(account *Account) *Tag {
+func newTag(acc *Account) *Tag {
 	return &Tag{
-		Config:  defaultConfig,
-		Account: account,
+		Account: acc,
 	}
 }
 
 /*NewTag NewTag*/
-func NewTag() *Tag {
-	return newTag(account)
+func NewTag(config *core.Config) *Tag {
+	return newTag(NewAccount(config))
 }
 
 //Create 创建标签
@@ -34,12 +32,10 @@ func (t *Tag) Create(name string) core.Response {
 	log.Debug("Tag|Create", name)
 	p := t.token.GetToken().KeyMap()
 	resp := t.client.PostJSON(
-		t.client.Link(tagsCreateURLSuffix),
+		Link(tagsCreateURLSuffix),
+		p,
 		util.Map{
 			"tag": util.Map{"name": name},
-		},
-		util.Map{
-			net.RequestTypeQuery.String(): p,
 		})
 	return resp
 }

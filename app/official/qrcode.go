@@ -3,10 +3,8 @@ package official
 import (
 	"net/url"
 
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 
@@ -67,20 +65,18 @@ const (
 
 /*QrCode QrCode*/
 type QrCode struct {
-	Config
 	*Account
 }
 
-func newQrCode(officialAccount *Account) *QrCode {
+func newQrCode(acc *Account) *QrCode {
 	return &QrCode{
-		Config:  defaultConfig,
-		Account: officialAccount,
+		Account: acc,
 	}
 }
 
 /*NewQrCode NewQrCode*/
-func NewQrCode() *QrCode {
-	return newQrCode(account)
+func NewQrCode(config *core.Config) *QrCode {
+	return newQrCode(NewAccount(config))
 }
 
 //Create 创建二维码ticket
@@ -103,8 +99,7 @@ func NewQrCode() *QrCode {
 func (q *QrCode) Create(action *QrCodeAction) core.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.PostJSON(
-		q.client.Link(qrcodeCreateURLSuffix),
-
+		Link(qrcodeCreateURLSuffix),
 		q.token.GetToken().KeyMap(),
 		action,
 	)

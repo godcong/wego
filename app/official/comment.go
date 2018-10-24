@@ -35,7 +35,7 @@ Open 打开文章评论
 func (c *Comment) Open(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentOpenURLSuffix),
+		Link(commentOpenURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
@@ -58,7 +58,7 @@ Close 关闭评论
 func (c *Comment) Close(id, index int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentCloseURLSuffix),
+		Link(commentCloseURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
@@ -81,7 +81,7 @@ List 获取文章评论
 func (c *Comment) List(id, index, begin, count, typ int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentListURLSuffix),
+		Link(commentListURLSuffix),
 		util.Map{
 			"msg_data_id": id,
 			"index":       index,
@@ -109,7 +109,7 @@ Markelect  将评论标记精选
 func (c *Comment) Markelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentMarkelectURLSuffix),
+		Link(commentMarkelectURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
@@ -136,7 +136,7 @@ user_comment_id	是	int	用户评论id
 func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentUnmarkelectURLSuffix),
+		Link(commentUnmarkelectURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
@@ -159,7 +159,7 @@ user_comment_id	是	int	用户评论id
 func (c *Comment) Delete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentDeleteURLSuffix),
+		Link(commentDeleteURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
@@ -186,7 +186,7 @@ ReplyAdd 回复评论
 func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentReplyAddURLSuffix),
+		Link(commentReplyAddURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,
@@ -213,7 +213,7 @@ ReplyDelete 删除回复
 func (c *Comment) ReplyDelete(id, index, userCommentID int) core.Response {
 	p := c.token.GetToken().KeyMap()
 	resp := c.client.PostJSON(
-		core.Link(commentReplyDeleteURLSuffix),
+		Link(commentReplyDeleteURLSuffix),
 		util.Map{
 			"msg_data_id":     id,
 			"index":           index,

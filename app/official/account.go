@@ -67,34 +67,7 @@ func (m *Account) Menu() *Menu {
 	return obj.(*Menu)
 }
 
-//func (m *Account) Online() {
-//
-//}
-//
-//func (m *Account) Create(account, nickname string) {
-//
-//}
-//
-//func (m *Account) Update(account, nickname string) {
-//
-//}
-//
-//func (m *Account) Delete(account string) {
-//
-//}
-//
-//func (m *Account) Invite(account, wechatId string) {
-//
-//}
-//
-//func (m *Account) SetAvatar(account, path string) {
-//
-//}
-//
-//func (m *Account) Send(message util.Map) {
-//
-//}
-//
-//func (m *Account) Message(message util.Map) {
-//
-//}
+/*Link 拼接地址 */
+func Link(uri string) string {
+	return core.Link(uri, "official_account")
+}
