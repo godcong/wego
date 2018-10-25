@@ -24,6 +24,7 @@ func NewRefund(config *core.Config) *Refund {
 }
 
 func (r *Refund) refund(num string, total, refund int, options util.Map) core.Response {
+	options = util.MapNilMake(options)
 	options.NilSet("out_refund_no", num)
 	options.NilSet("total_fee", strconv.Itoa(total))
 	options.NilSet("refund_fee", strconv.Itoa(refund))
