@@ -11,8 +11,8 @@ func TestNewMenu(t *testing.T) {
 
 	menu := official.NewMenu(config)
 	t.Log(menu)
-	testMenu_List(t, menu)
-	//testMenu_AddButton(t, menu)
+	//testMenu_List(t, menu)
+	testMenu_AddButton(t, menu)
 	//testMenu_Create(t, menu)
 	//testMenu_TryMatch(t, menu)
 }
@@ -22,9 +22,10 @@ func testMenu_List(t *testing.T, m *official.Menu) {
 	t.Log(string(rlt.Bytes()))
 }
 
-// func testMenu_AddButton(t *testing.T, m *official_account.Menu) {
-// 	m.AddButton(menu.NewClickButton("click1", "fistkey"))
-// }
+func testMenu_AddButton(t *testing.T, m *official.Menu) {
+	resp := m.Create(menu.NewClickButton("click1", "fistkey"))
+	t.Log(string(resp.Bytes()))
+}
 
 func testMenu_Create(t *testing.T, m *official.Menu) {
 	button := menu.NewBaseButton()

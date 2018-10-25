@@ -1,14 +1,14 @@
 package menu
 
 import (
-	"strings"
-
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/util"
 )
 
 /*Button Button */
-type Button util.Map
+type Button struct {
+	util.Map
+}
 
 //{
 //	Type     string //是	菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
@@ -20,19 +20,15 @@ type Button util.Map
 //	Pagepath string //string miniprogram类型必须	小程序的页面路径
 //}
 
-func typeToString(eventType message.EventType) string {
-	return strings.ToLower(eventType.String())
-}
-
 /*NewClickButton NewClickButton*/
 func NewClickButton(name, key string) *Button {
-	return newButton(typeToString(message.EventTypeClick), util.Map{"name": name, "key": key})
+	return newButton(message.EventTypeClick, util.Map{"name": name, "key": key})
 
 }
 
 /*NewViewButton NewViewButton*/
 func NewViewButton(name, url string) *Button {
-	return newButton(typeToString(message.EventTypeView), util.Map{"name": name, "url": url})
+	return newButton(message.EventTypeView, util.Map{"name": name, "url": url})
 }
 
 //func NewScanCodeWaitMsgButton(name, key string) *Button {
@@ -72,38 +68,39 @@ func NewSubButton(name string, sub []*Button) *Button {
 	return newButton("", util.Map{"name": name, "key": "testkey", "sub_button": sub})
 }
 
-func newButton(typ string, val util.Map) *Button {
-	v := make(Button)
+func newButton(typ message.EventType, val util.Map) *Button {
+	button := NewBaseButton()
 	if typ != "" {
-		(*util.Map)(&v).Set("type", typ)
+		button.Set("type", typ)
 	}
-	(*util.Map)(&v).Join(val)
-	return &v
+	button.Join(val)
+	return button
 }
 
 /*SetSub SetSub*/
 func (b *Button) SetSub(name string, sub []*Button) *Button {
-	*b = make(Button)
-	(*util.Map)(b).Set("name", name)
-	(*util.Map)(b).Set("sub_button", sub)
+	b.Map = util.Map{}
+	b.Set("name", name)
+	b.Set("sub_button", sub)
 	return b
 }
 
 /*NewBaseButton NewBaseButton */
 func NewBaseButton() *Button {
-	button := make(Button)
-	return &button
+	return &Button{
+		Map: make(util.Map),
+	}
 }
 
 /*SetButtons SetButtons*/
 func (b *Button) SetButtons(buttons []*Button) *Button {
-	b.ToMap().Set("button", buttons)
+	b.Set("button", buttons)
 	return b
 }
 
 /*GetButtons GetButtons */
 func (b *Button) GetButtons() []*Button {
-	buttons := b.ToMap().Get("button")
+	buttons := b.Get("button")
 	if v0, b := buttons.([]*Button); b {
 		return v0
 	}
@@ -112,7 +109,7 @@ func (b *Button) GetButtons() []*Button {
 
 /*GetMatchRule GetMatchRule*/
 func (b *Button) GetMatchRule() *MatchRule {
-	if mr := b.ToMap().Get("matchrule"); mr != nil {
+	if mr := b.Get("matchrule"); mr != nil {
 		return mr.(*MatchRule)
 	}
 	return nil
@@ -120,21 +117,16 @@ func (b *Button) GetMatchRule() *MatchRule {
 
 /*SetMatchRule SetMatchRule*/
 func (b *Button) SetMatchRule(rule *MatchRule) *Button {
-	b.ToMap().Set("matchrule", rule)
+	b.Set("matchrule", rule)
 	return b
 }
 
-/*ToMap ToMap*/
-func (b *Button) ToMap() *util.Map {
-	return (*util.Map)(b)
-}
-
 func (b *Button) mapGet(name string) interface{} {
-	return (*util.Map)(b).Get(name)
+	return b.Get(name)
 }
 
 func (b *Button) mapSet(name string, v interface{}) *util.Map {
-	return (*util.Map)(b).Set(name, v)
+	return b.Set(name, v)
 }
 
 /*AddButton AddButton*/

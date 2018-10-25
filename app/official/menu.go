@@ -24,25 +24,9 @@ func NewMenu(config *core.Config) *Menu {
 	return newMenu(NewAccount(config))
 }
 
-//func (m *Menu) SetMatchRule(rule *menu.MatchRule) *Menu {
-//	m.buttons["matchrule"] = rule
-//	return m
-//}
-//
-//func (m *Menu) SetMenuId(id int) *Menu {
-//	m.menuid = id
-//	return m
-//}
-
 //Create 创建菜单
 //个性化创建
 //https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
-//成功:
-//{"errcode":0,"errmsg":"ok"}
-//自定义菜单
-//https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
-//成功:
-// {"menuid":429680901}]
 func (m *Menu) Create(buttons *menu.Button) core.Response {
 	token := m.token.GetToken().KeyMap()
 	if buttons.GetMatchRule() == nil {
