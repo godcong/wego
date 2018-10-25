@@ -11,10 +11,10 @@ func TestNewMenu(t *testing.T) {
 
 	menu := official.NewMenu(config)
 	t.Log(menu)
-	//testMenu_List(t, menu)
+	testMenu_List(t, menu)
 	//testMenu_AddButton(t, menu)
 	//testMenu_Create(t, menu)
-	testMenu_TryMatch(t, menu)
+	//testMenu_TryMatch(t, menu)
 }
 
 func testMenu_List(t *testing.T, m *official.Menu) {

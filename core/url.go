@@ -39,7 +39,7 @@ func NewURL(config *Config) *URL {
 	client := NewClient(config)
 	return &URL{
 		config: config,
-		token:  NewAccessToken(config, client),
+		token:  NewAccessToken(config),
 		client: client,
 	}
 }

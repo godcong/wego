@@ -15,7 +15,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
@@ -204,7 +203,6 @@ func (c *Client) Request(url string, method string, ops util.Map) Response {
 func castToResponse(resp *http.Response) Response {
 	ct := resp.Header.Get("Content-Type")
 	body, err := ParseBody(resp)
-	body = removeControlCharacters(body) //Learn From Easywechat
 	if err != nil {
 		return Err(body, err)
 	}
@@ -223,13 +221,6 @@ func castToResponse(resp *http.Response) Response {
 	}
 
 	return Err(body, errors.New("error with "+resp.Status))
-}
-
-func removeControlCharacters(body []byte) []byte {
-	pat := "/[\x00-\x1F\x80-\x9F]/u"
-	re, _ := regexp.Compile(pat)
-	//将匹配到的部分替换为"##.#"
-	return re.ReplaceAll(body, []byte(""))
 }
 
 /*RequestRaw raw请求 */
@@ -352,7 +343,7 @@ func (c *Client) clear() {
 
 func request(client *Client, url string, method string, ops util.Map) Response {
 	method = strings.ToUpper(method)
-	query := buildHttpQuery(ops.Get(DataTypeQuery))
+	query := buildHTTPQuery(ops.Get(DataTypeQuery))
 	url = parseQuery(url, query)
 
 	if client.httpRequest == nil {
@@ -494,7 +485,7 @@ func processJSON(method, url string, i interface{}) *http.Request {
 	return request
 }
 
-func buildHttpQuery(i interface{}) string {
+func buildHTTPQuery(i interface{}) string {
 	switch v := i.(type) {
 	case string:
 		return v

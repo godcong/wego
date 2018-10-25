@@ -194,8 +194,6 @@ func (t *Tag) GetBlackList(beginOpenid string) core.Response {
 //BatchBlackList 拉黑用户
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=ACCESS_TOKEN
-// 成功:
-// {"errcode":0,"errmsg":"ok"}
 func (t *Tag) BatchBlackList(openidList []string) core.Response {
 	log.Debug("Tag|BatchBlackList", openidList)
 	var params util.Map
@@ -214,8 +212,6 @@ func (t *Tag) BatchBlackList(openidList []string) core.Response {
 //BatchUnblackList 取消拉黑用户
 // http请求方式：POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN
-// 成功:
-// {"errcode":0,"errmsg":"ok"}
 func (t *Tag) BatchUnblackList(openidList []string) core.Response {
 	log.Debug("Tag|BatchUnblackList", openidList)
 	var params util.Map
@@ -224,9 +220,8 @@ func (t *Tag) BatchUnblackList(openidList []string) core.Response {
 	}
 
 	p := t.token.GetToken().KeyMap()
-	resp := t.client.PostJSON(
+	return t.client.PostJSON(
 		Link(tagsMembersBatchUnblackListURLSuffix),
 		p,
 		params)
-	return resp
 }
