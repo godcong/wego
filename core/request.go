@@ -109,7 +109,7 @@ import (
 //	return r.httpRequest
 //}
 
-func parseQuery(url, query string) string {
+func connectQuery(url, query string) string {
 	if query == "" {
 		return url
 	}

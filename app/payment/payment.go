@@ -6,6 +6,8 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+const domain = "https://api.mch.weixin.qq.com"
+
 /*Payment Payment */
 type Payment struct {
 	config *core.Config
@@ -58,7 +60,7 @@ func (p *Payment) Request(url string, params util.Map) core.Response {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.Request(core.Link(url), "post", m)
+	return p.client.Request(Link(url), "post", m)
 }
 
 /*RequestRaw raw请求*/
@@ -67,7 +69,7 @@ func (p *Payment) RequestRaw(url string, params util.Map) []byte {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.RequestRaw(core.Link(url), "post", m)
+	return p.client.RequestRaw(Link(url), "post", m)
 }
 
 /*SafeRequest 安全请求*/
@@ -76,7 +78,7 @@ func (p *Payment) SafeRequest(url string, params util.Map) core.Response {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.SafeRequest(core.Link(url), "post", m)
+	return p.client.SafeRequest(Link(url), "post", m)
 }
 
 /*Pay 支付
@@ -218,4 +220,8 @@ func (p *Payment) initRequest(params util.Map) util.Map {
 	}
 	log.Debug("initRequest", params)
 	return params
+}
+
+func Link(url string) string {
+	return core.DefaultConfig().GetStringD("domain.payment.url", url)
 }

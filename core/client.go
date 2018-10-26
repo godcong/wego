@@ -54,16 +54,7 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 /*Client Client */
 type Client struct {
 	context.Context
-	config       *Config
-	requestType  string
-	responseData []byte
-	httpRequest  *http.Request
-	//httpResponse *http.Response
-	httpClient *http.Client
-	//app      *Application
-	//token    *AccessToken
-	//request  *net.Request
-	//client *http.Client
+	config *Config
 }
 
 //Config get client config
@@ -76,59 +67,8 @@ func (c *Client) SetConfig(config *Config) {
 	c.config = config
 }
 
-//RequestType get client request type
-func (c *Client) RequestType() string {
-	return c.requestType
-}
-
-//SetRequestType set client request type
-func (c *Client) SetRequestType(requestType string) {
-	c.requestType = requestType
-}
-
-//ResponseData get client response data
-func (c *Client) ResponseData() []byte {
-	return c.responseData
-}
-
-//SetResponseData set client response data
-func (c *Client) SetResponseData(responseData []byte) {
-	c.responseData = responseData
-}
-
-//HTTPClient get client http Client
-func (c *Client) HTTPClient() *http.Client {
-	return c.httpClient
-}
-
-//SetHTTPClient set client http Client
-func (c *Client) SetHTTPClient(httpClient *http.Client) {
-	c.httpClient = httpClient
-}
-
-////HTTPResponse get client http Response
-//func (c *Client) HTTPResponse() *http.Response {
-//	return c.httpResponse
-//}
-//
-////SetHTTPResponse set client http Response
-//func (c *Client) SetHTTPResponse(httpResponse *http.Response) {
-//	c.httpResponse = httpResponse
-//}
-
-//HTTPRequest get client http Request
-func (c *Client) HTTPRequest() *http.Request {
-	return c.httpRequest
-}
-
-//SetHTTPRequest set client http Request
-func (c *Client) SetHTTPRequest(httpRequest *http.Request) {
-	c.httpRequest = httpRequest
-}
-
 /*PostJSON json post请求 */
 func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
-	c.requestType = DataTypeJSON
 	p := util.Map{
 		DataTypeJSON: json,
 	}
@@ -140,7 +80,6 @@ func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response
 
 /*PostXML xml post请求 */
 func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
-	c.requestType = DataTypeXML
 	p := util.Map{
 		DataTypeXML: xml,
 	}
@@ -152,7 +91,6 @@ func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
 
 /*Upload upload请求 */
 func (c *Client) Upload(url string, query, multi util.Map) Response {
-	c.requestType = DataTypeMultipart
 	p := util.Map{
 		DataTypeMultipart: multi,
 	}
@@ -195,9 +133,9 @@ func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
 
 /*Request 普通请求 */
 func (c *Client) Request(url string, method string, ops util.Map) Response {
-	log.Debug("Request|httpClient", c.httpClient)
-	c.httpClient = buildTransport(c.config)
-	return request(c, url, method, ops)
+	log.Debug("Request|httpClient", url, method, ops)
+	client := buildTransport(c.config)
+	return request(c.Context, client, url, method, ops)
 }
 
 func castToResponse(resp *http.Response) Response {
@@ -225,36 +163,36 @@ func castToResponse(resp *http.Response) Response {
 
 /*RequestRaw raw请求 */
 func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
-	log.Debug("Request|httpClient", c.httpClient)
-	c.httpClient = buildTransport(c.config)
-	return request(c, url, method, ops).Bytes()
+	log.Debug("Request|httpClient", url, method, ops)
+	client := buildTransport(c.config)
+	return request(c.Context, client, url, method, ops).Bytes()
 }
 
 /*SafeRequest 安全请求 */
 func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
-	c.httpClient = buildSafeTransport(c.config)
-	log.Debug("SafeRequest|httpClient", c.httpClient)
-	return request(c, url, method, ops)
+	log.Debug("SafeRequest|httpClient", url, method, ops)
+	client := buildSafeTransport(c.config)
+	return request(c.Context, client, url, method, ops)
 }
 
 /*SafeRequestRaw 安全请求 */
 func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
-	c.httpClient = buildSafeTransport(c.config)
-	log.Debug("SafeRequest|httpClient", c.httpClient)
-	return request(c, url, method, ops).Bytes()
+	log.Debug("SafeRequest|httpClient", url, method, ops)
+	client := buildSafeTransport(c.config)
+	return request(c.Context, client, url, method, ops).Bytes()
 
 }
 
 /*NewClient 创建一个client */
 func NewClient(config *Config) *Client {
 	return &Client{
-		Context:      context.Background(),
-		config:       config,
-		requestType:  DataTypeXML,
-		responseData: nil,
-		httpRequest:  nil,
+		Context: context.Background(),
+		config:  config,
+		//requestType:  DataTypeXML,
+		//responseData: nil,
+		//httpRequest:  nil,
 		//httpResponse: nil,
-		httpClient: nil,
+		//httpClient: nil,
 	}
 }
 
@@ -336,33 +274,28 @@ func buildSafeTransport(config *Config) *http.Client {
 }
 
 func (c *Client) clear() {
-	c.httpRequest = nil
-	c.httpClient = nil
+	//c.httpRequest = nil
+	//c.httpClient = nil
 	//c.httpResponse = nil
 }
 
-func request(client *Client, url string, method string, ops util.Map) Response {
+func request(context context.Context, client *http.Client, url string, method string, ops util.Map) Response {
 	method = strings.ToUpper(method)
 	query := buildHTTPQuery(ops.Get(DataTypeQuery))
-	url = parseQuery(url, query)
+	url = connectQuery(url, query)
 
-	if client.httpRequest == nil {
-		newRequest := requestData(client.requestType)
-		client.httpRequest = newRequest(method, url, ops.Get(client.requestType))
-	}
-
-	defer client.clear()
+	req := requestData(method, url, ops)
 
 	log.Debug("client|request", client, url, method, ops)
-	response, err := client.httpClient.Do(client.httpRequest.WithContext(client.Context))
+	response, err := client.Do(req.WithContext(context))
 	if err != nil {
 		log.Error("Client|Do", err)
 		return Err(nil, err)
 	}
 	{
 		select {
-		case <-client.Context.Done():
-			return Err(nil, client.Context.Err())
+		case <-context.Done():
+			return Err(nil, context.Err())
 		default:
 			//return Err(nil, err)
 		}
@@ -370,17 +303,24 @@ func request(client *Client, url string, method string, ops util.Map) Response {
 	return castToResponse(response)
 }
 
-func requestData(dt string) func(string, string, interface{}) *http.Request {
-	if dt == DataTypeJSON {
-		return processJSON
-	} else if dt == DataTypeXML {
-		return processXML
-	} else if dt == DataTypeMultipart {
-		return processMultipart
+func requestData(method, url string, m util.Map) *http.Request {
+	function := processNothing
+	var data interface{}
+
+	if m.Has(DataTypeJSON) {
+		function = processJSON
+		data = m.Get(DataTypeJSON)
+	} else if m.Has(DataTypeXML) {
+		function = processXML
+		data = m.Get(DataTypeXML)
+	} else if m.Has(DataTypeMultipart) {
+		function = processMultipart
+		data = m.Get(DataTypeMultipart)
 	} else {
 
 	}
-	return processNothing
+
+	return function(method, url, data)
 }
 
 func processNothing(method, url string, i interface{}) *http.Request {
