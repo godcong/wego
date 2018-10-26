@@ -6,13 +6,10 @@
     level = 'debug'
     file = 'logs/wechat.log'
 
-[route]
-        [route.open_platform]
-            uri=  '/server'
 
 [domain]
        [domain.host]
-            url = 'http://shop.commm.top'
+            url = 'https://mp.quick58.com'
         [domain.default]
 #https://apihk.mch.weixin.qq.com/pay/unifiedorder    （建议接入点：东南亚）
 #https://apius.mch.weixin.qq.com/pay/unifiedorder    （建议接入点：其它）
@@ -39,12 +36,15 @@
         [official_account.default]
 #            app_id ='wxbafed7010e0f4531'                    #AppID
 #            secret = '62dfc98746e2c4073ba4938574801097'     #AppSecret
-             app_id ='wx1ad61aeef1903b93'                      #AppID
-             secret = 'c96956c2fd5ce7bfd7a0db1f7679ff6d'       #AppSecret
-             token = 'godcong'                              #Token
-             aes_key = 'O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ'      #EncodingAESKey
+             app_id ='wx15810ca16324c225'                      #AppID
+             secret = '4f2601f6567ac4b5741aa2dc2e5eadfd'       #AppSecret
+             token = 'golang_develop_godcong'                              #Token
+             aes_key = 'DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC'      #EncodingAESKey
+        [official_account.default.http]
+            time_out = 5
+            keep_alive = 30
 
-        [official_account.oauth]
+        [official_account.default.oauth]
             scopes   = ['snsapi_userinfo']
             redirect_uri ="/oauth_callback"
 
@@ -76,6 +76,9 @@
             rootca_path = 'cert/rootca.pem'
             pubkey_path = "cert/publickey.pem"
             prikey_path = "cert/privatekey.pem"
+        [payment.default.http]
+            time_out = 5
+            keep_alive = 30
 
 [work]
         [work.default]

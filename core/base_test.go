@@ -12,10 +12,6 @@ func init() {
 	config = cfg.GetSubConfig("official_account.default")
 }
 
-func TestLink(t *testing.T) {
-	t.Log(core.Link("/cgi-bin/customservice/getonlinekflist"))
-}
-
 func TestBase_GetCallbackIP(t *testing.T) {
 	base := core.NewBase(config)
 	resp := base.GetCallbackIP()

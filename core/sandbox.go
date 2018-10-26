@@ -14,7 +14,7 @@ type Sandbox struct {
 func NewSandbox(config *Config) *Sandbox {
 	return &Sandbox{
 		config: config,
-		client: NewClient(config),
+		client: NewClient(),
 	}
 }
 
@@ -34,7 +34,7 @@ func (s *Sandbox) SandboxSignKey() []byte {
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := GenerateSignature(m, s.config.GetString("aes_key"), MakeSignMD5)
 	m.Set("sign", sign)
-	resp := s.client.RequestRaw(Link(sandboxSignKeyURLSuffix), "post", m)
+	resp := s.client.RequestRaw(Link(BaseDomain, sandboxSignKeyURLSuffix), "post", m)
 
 	return resp
 

@@ -12,7 +12,7 @@ type Base struct {
 }
 
 func newBase(config *Config) *Base {
-	client := NewClient(config)
+	client := NewClient()
 	return &Base{
 		config: config,
 		client: client,
@@ -45,6 +45,5 @@ func (b *Base) ClearQuota() Response {
 //http请求方式: GEThttps://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
 func (b *Base) GetCallbackIP() Response {
 	token := b.token.GetToken()
-	b.client.SetRequestType(DataTypeJSON)
 	return b.client.Get(APIWeixin+getCallbackIPURLSuffix, token.KeyMap())
 }

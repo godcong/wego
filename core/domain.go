@@ -2,261 +2,41 @@ package core
 
 import (
 	"strings"
-
-	"github.com/godcong/wego/log"
 )
 
-/*Domain Domain*/
-type Domain struct {
-	url string
-	//app *Application
-}
-
-/*URL domain当前url */
-func (d *Domain) URL() string {
-	if d.url == "" {
-		return BaseDomain
+func Link(uri string, host ...string) string {
+	domain := "default"
+	if host != nil {
+		domain = host[0]
 	}
-	return d.url
+	domainAddr := DomainHost(domain)
+	return Connect(domainAddr, uri)
 }
 
-/*Link 地址拼接 */
-func (d *Domain) Link(s string) string {
-	url := ""
+/*Connect 拼接地址 */
+func Connect(domain string, uri string) string {
 	switch {
-	case strings.Index(s, "/") == 0 && strings.LastIndex(d.URL(), "/") == (len(d.URL())-1):
-		url = d.URL() + s[1:]
-	case strings.Index(s, "/") == 0 && strings.LastIndex(d.URL(), "/") != (len(d.URL())-1):
-		url = d.URL() + s
-	case strings.Index(s, "/") != 0 && strings.LastIndex(d.URL(), "/") == (len(d.URL())-1):
-		url = d.URL() + s
-	case strings.Index(s, "/") != 0 && strings.LastIndex(d.URL(), "/") != (len(d.URL())-1):
-		url = d.URL() + "/" + s
+	case strings.Index(uri, "/") == 0 && strings.LastIndex(domain, "/") == (len(domain)-1):
+		domain = domain[:len(domain)-1]
+		//uri = uri[1:]
+	case strings.Index(uri, "/") == 0 && strings.LastIndex(domain, "/") != (len(domain)-1):
+		//uri = uri[1:]
+	case strings.Index(uri, "/") != 0 && strings.LastIndex(domain, "/") == (len(domain)-1):
+		domain = domain[:len(domain)-1]
+		uri = "/" + uri
+	case strings.Index(uri, "/") != 0 && strings.LastIndex(domain, "/") != (len(domain)-1):
+		uri = "/" + uri
 	}
-	log.Debug("Domain|Link", url)
-	return url
-}
-
-//func NewDomain(application Application) Domain {
-//	return &Domain{
-//		Config: application.Config(),
-//		app:    application,
-//	}
-//}
-
-/*DeployJoin 字符串拼接 */
-func DeployJoin(v ...string) string {
-	return strings.Join(v, ".")
-}
-
-func newDomain(s string) *Domain {
-	url := DefaultConfig().GetString("domain." + s + ".url")
-	if url == "" {
-		switch s {
-		case "host":
-			url = "localhost"
-		case "payment":
-			fallthrough
-		case "default":
-			url = BaseDomain
-		case "official_account", "mini_program":
-			url = APIWeixin
-		case "file":
-			url = FileAPIWeixin
-		case "mp":
-			url = MPDomain
-		default:
-			url = API2Domain
-		}
-	}
-	return &Domain{
-		url: url,
-	}
-}
-
-/*NewDomain NewDomain*/
-func NewDomain(prefix string) *Domain {
-	return newDomain(prefix)
-}
-
-/*DomainHost get host domain*/
-func DomainHost() *Domain {
-	return newDomain("host")
-}
-
-//
-//type DomainInfo struct {
-//	Domain        string //域名
-//	PrimaryDomain bool   //该域名是否为主域名。例如:api.mch.weixin.qq.com为主域名
-//
-//}
-//
-//func NewDomainInfo(Domain string, primary bool) *DomainInfo {
-//	return &DomainInfo{
-//		Domain:        Domain,
-//		PrimaryDomain: primary,
-//	}
-//}
-//
-//func (info *DomainInfo) String() string {
-//	return "DomainInfo{" + "Domain='" + info.Domain + "'" + ", primaryDomain=" + strconv.FormatBool(info.PrimaryDomain) + "}"
-//}
-//
-////func (info *DomainInfo) Report(string, int64, error) {
-////
-////}
-////func (info *DomainInfo) GetDomain(PayConfig) DomainInfo {
-////	return *info
-////}
-//var holder PayDomain
-//
-//func init() {
-//	holder = PayDomainSimpleInstance()
-//}
-//
-//type payDomainSimpleImpl struct {
-//	sync.Mutex
-//	domainData map[string]*DomainStatics
-//	domainTime int64
-//}
-//
-//const MIN_SWITCH_PRIMARY_MSEC = 3 * 60 * 1000
-//
-//var switchToAlternateDomainTime = 0
-//
-////var domainData = map[string]DomainStatics{}
-//
-//type DomainStatics struct {
-//	Domain              string
-//	succCount           int
-//	connectTimeoutCount int
-//	dnsErrorCount       int
-//	otherErrorCount     int
-//}
-//
-//func NewDomainStatics(Domain string) *DomainStatics {
-//	return &DomainStatics{
-//		Domain:              Domain,
-//		succCount:           0,
-//		connectTimeoutCount: 0,
-//		dnsErrorCount:       0,
-//		otherErrorCount:     0,
-//	}
-//}
-//
-//func (s *DomainStatics) resetCount() {
-//	s.succCount = 0
-//	s.connectTimeoutCount = 0
-//	s.dnsErrorCount = 0
-//	s.otherErrorCount = 0
-//}
-//
-//func (s *DomainStatics) isGood() bool {
-//	return s.connectTimeoutCount <= 2 && s.dnsErrorCount <= 2
-//}
-//
-//func (s *DomainStatics) badCount() int {
-//	return s.connectTimeoutCount + s.dnsErrorCount*5 + s.otherErrorCount/4
-//}
-//
-//func PayDomainSimpleInstance() PayDomain {
-//	if holder == nil {
-//		holder = NewPayDomainSimple()
-//	}
-//	return holder
-//}
-//
-//func NewPayDomainSimple() *payDomainSimpleImpl {
-//	return &payDomainSimpleImpl{
-//		domainData: make(map[string]*DomainStatics),
-//	}
-//}
-//
-//func (Domain *payDomainSimpleImpl) Report(d string, elapsed int64, err error) {
-//	Domain.Lock()
-//	defer Domain.Unlock()
-//	info, b := Domain.domainData[d]
-//	if !b {
-//		info = NewDomainStatics(d)
-//		Domain.domainData[d] = info
-//	}
-//
-//	if err == nil { //success
-//		if info.succCount >= 2 { //continue succ, clear error count
-//			info.connectTimeoutCount = 0
-//			info.dnsErrorCount = 0
-//			info.otherErrorCount = 0
-//		} else {
-//			info.succCount++
-//		}
-//	} else if err == ErrprConnectTimeout {
-//		info.succCount = 0
-//		info.dnsErrorCount = 0
-//		info.connectTimeoutCount++
-//	} else if err == ErrorUnknownHost {
-//		info.succCount = 0
-//		info.dnsErrorCount++
-//	} else {
-//		info.succCount = 0
-//		info.otherErrorCount++
-//	}
-//
-//}
-//func (Domain *payDomainSimpleImpl) GetDomainInfo() *DomainInfo {
-//	Domain.Lock()
-//	defer Domain.Unlock()
-//	if Domain == nil {
-//		return nil
-//	}
-//	primaryDomain, b := Domain.domainData[DOMAIN_API]
-//	if !b ||
-//		primaryDomain.isGood() {
-//		return NewDomainInfo(DOMAIN_API, true)
-//	}
-//
-//	now := tool.CurrentTimeStampMS()
-//	if Domain.domainTime == 0 { //first switch
-//		Domain.domainTime = now
-//		return NewDomainInfo(DOMAIN_API2, false)
-//	} else if now-Domain.domainTime < MIN_SWITCH_PRIMARY_MSEC {
-//		alternateDomain, b := Domain.domainData[DOMAIN_API2]
-//		if !b ||
-//			alternateDomain.isGood() ||
-//			alternateDomain.badCount() < primaryDomain.badCount() {
-//			return NewDomainInfo(DOMAIN_API2, false)
-//		} else {
-//			return NewDomainInfo(DOMAIN_API, true)
-//		}
-//	} else { //force switch back
-//		Domain.domainTime = 0
-//		primaryDomain.resetCount()
-//		alternateDomain, b := Domain.domainData[DOMAIN_API2]
-//		if !b {
-//			alternateDomain.resetCount()
-//		}
-//
-//		return NewDomainInfo(DOMAIN_API, true)
-//	}
-//
-//}
-
-/*Link 拼接地址 */
-func Link(uri string, suffix ...string) string {
-	url := "default"
-	if suffix != nil {
-		url = suffix[0]
-	}
-	url = domainURL(url)
 	if UseSandBox() {
-		return url + sandboxURLSuffix + uri
+		return domain + sandboxURLSuffix + uri
 	}
-	return url + uri
+	return domain + uri
 }
 
-func domainURL(suffix string) string {
-	url := DefaultConfig().GetString("domain." + suffix + ".url")
+func DomainHost(domain string) string {
+	url := DefaultConfig().GetString("domain." + domain + ".url")
 	if url == "" {
-		switch suffix {
+		switch domain {
 		case "host":
 			url = "http://localhost"
 		case "payment", "default":

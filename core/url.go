@@ -36,7 +36,7 @@ func (u *URL) ShortURL(url string) Response {
 
 /*NewURL NewURL*/
 func NewURL(config *Config) *URL {
-	client := NewClient(config)
+	client := NewClient()
 	return &URL{
 		config: config,
 		token:  NewAccessToken(config),

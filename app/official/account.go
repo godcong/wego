@@ -5,6 +5,8 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+const domain = "https://api.weixin.qq.com"
+
 /*Account Account*/
 type Account struct {
 	config *core.Config
@@ -18,17 +20,15 @@ func init() {
 }
 
 func newAccount(config *core.Config) *Account {
-	client := core.NewClient(config)
 	token := core.NewAccessToken(config)
 
 	account := &Account{
 		config: config,
-		client: client,
-		token:  token,
-		sub:    util.Map{},
+		//client: client,
+		token: token,
+		sub:   util.Map{},
 	}
 
-	client.SetRequestType(core.DataTypeJSON)
 	return account
 }
 
@@ -69,5 +69,7 @@ func (m *Account) Menu() *Menu {
 
 /*Link 拼接地址 */
 func Link(uri string) string {
-	return core.Link(uri, "official_account")
+	domain := core.DefaultConfig().GetStringD("domain.payment.url", domain)
+
+	return domain + uri
 }

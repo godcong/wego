@@ -37,7 +37,6 @@ func (a *AccessToken) sendRequest(s string) []byte {
 		"appid":      a.config.Get("app_id"),
 		"secret":     a.config.Get("secret"),
 	}
-	a.client.SetRequestType(DataTypeQuery)
 	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, m)
 	return resp
 }
@@ -52,8 +51,11 @@ func newAccessToken(config *Config, client *Client) *AccessToken {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(config *Config) *AccessToken {
-	return newAccessToken(config, NewClient(config))
+func NewAccessToken(config *Config, client ...*Client) *AccessToken {
+	if client == nil {
+		return newAccessToken(config, NewClient())
+	}
+	return newAccessToken(config, client[0])
 }
 
 /*Refresh 刷新AccessToken */

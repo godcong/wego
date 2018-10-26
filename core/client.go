@@ -184,10 +184,9 @@ func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte 
 }
 
 /*NewClient 创建一个client */
-func NewClient(config *Config) *Client {
+func NewClient() *Client {
 	return &Client{
 		Context: context.Background(),
-		config:  config,
 		//requestType:  DataTypeXML,
 		//responseData: nil,
 		//httpRequest:  nil,
@@ -197,7 +196,6 @@ func NewClient(config *Config) *Client {
 }
 
 func buildTransport(config *Config) *http.Client {
-
 	timeOut := config.GetIntD("http.time_out", 30)
 	keepAlive := config.GetIntD("http.keep_alive", 30)
 	return &http.Client{
@@ -234,6 +232,10 @@ func buildTransport(config *Config) *http.Client {
 }
 
 func buildSafeTransport(config *Config) *http.Client {
+	if config == nil {
+		panic("safe request must set config before use")
+	}
+
 	if idx := config.Check("cert_path", "key_path"); idx != 0 {
 		panic(fmt.Sprintf("the %d key was not found", idx))
 	}

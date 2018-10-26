@@ -84,9 +84,12 @@ func (a *Application) Config() *core.Config {
 }
 
 //Client get application client instance
-//func (a *Application) Client() *core.Client {
-//	return core.NewClient(a.Config())
-//}
+func (a *Application) Client() *core.Client {
+	if v, b := a.Get("client"); b {
+		return v.(*core.Client)
+	}
+	return core.NewClient()
+}
 
 //AccessToken get application access token instance
 //func (a *Application) AccessToken() *core.AccessToken {
