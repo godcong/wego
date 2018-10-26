@@ -1,15 +1,15 @@
 package payment_test
 
 import (
+	"github.com/godcong/wego/core"
 	"testing"
 
 	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/util"
 )
 
-var tran = payment.NewTransfer()
-
 func TestNewTransfer(t *testing.T) {
+	var tran = payment.NewTransfer(core.DefaultConfig().GetSubConfig("payment.default"))
 	m := util.Map{}
 	// 商户企业付款单号 partner_trade_no
 	// 收款方银行卡号 enc_bank_no
@@ -21,5 +21,5 @@ func TestNewTransfer(t *testing.T) {
 	m.Set("bank_code", "1003")
 	m.Set("amount", "1000")
 	m1 := tran.ToBankCard(m)
-	t.Log(m1.ToXML())
+	t.Log(m1.ToMap())
 }
