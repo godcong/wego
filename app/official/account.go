@@ -67,9 +67,7 @@ func (m *Account) Menu() *Menu {
 	return obj.(*Menu)
 }
 
-/*Link 拼接地址 */
-func Link(uri string) string {
-	domain := core.DefaultConfig().GetStringD("domain.payment.url", domain)
-
-	return domain + uri
+//Link 拼接地址
+func Link(url string) string {
+	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
 }

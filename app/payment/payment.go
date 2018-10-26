@@ -223,5 +223,5 @@ func (p *Payment) initRequest(params util.Map) util.Map {
 }
 
 func Link(url string) string {
-	return core.DefaultConfig().GetStringD("domain.payment.url", url)
+	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }
