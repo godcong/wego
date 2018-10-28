@@ -191,9 +191,9 @@ func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte 
 }
 
 /*NewClient 创建一个client */
-func NewClient() *Client {
+func NewClient(ctx context.Context) *Client {
 	return &Client{
-		Context: context.Background(),
+		Context: ctx,
 		//requestType:  DataTypeXML,
 		//responseData: nil,
 		//httpRequest:  nil,

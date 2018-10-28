@@ -205,15 +205,8 @@ type OneCard struct {
 
 /*
 CreateLandingPage 创建货架接口
-
  HTTP请求方式: POST
  URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
-
- 失败:
- {"errcode":48001,"errmsg":"api unauthorized hint: [9JA27a06332890]"}
-
- 成功:
- {"errcode":0,"errmsg":"ok","url":"https:\/\/open.weixin.qq.com\/connect\/oauth2\/authorize?appid=wx3be6367203f983ac&redirect_uri=https%3A%2F%2Fmp.weixin.qq.com%2Fbizmall%2Fcardlandingpage%3Fbiz%3DMzAwNjkzNzgzMA%3D%3D%26page_id%3D1%26scene%3D1&response_type=code&scope=snsapi_base#wechat_redirect","page_id":1}
 */
 func (c *Card) CreateLandingPage(page *CardLandingPage) core.Response {
 	resp := c.client.PostJSON(
