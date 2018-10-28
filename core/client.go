@@ -51,7 +51,9 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
-var client = NewClient()
+var client = &Client{
+	Context: context.Background(),
+}
 
 /*Client Client */
 type Client struct {
