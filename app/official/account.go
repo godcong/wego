@@ -67,6 +67,16 @@ func (m *Account) Menu() *Menu {
 	return obj.(*Menu)
 }
 
+/*OAuth OAuth*/
+func (m *Account) OAuth() *OAuth {
+	obj, b := m.sub["OAuth"]
+	if !b {
+		obj = newOAuth(m)
+		m.sub["OAuth"] = obj
+	}
+	return obj.(*OAuth)
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
