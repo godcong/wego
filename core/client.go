@@ -30,7 +30,7 @@ const (
 	DataTypeMultipart = "multipart"
 )
 
-var defaultCa = []byte(`
+const defaultCa = `
 -----BEGIN CERTIFICATE-----
 MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV
 UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy
@@ -49,22 +49,29 @@ MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA
 A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
------END CERTIFICATE-----`)
+-----END CERTIFICATE-----`
+
+var client = &Client{
+	Context: context.Background(),
+}
 
 /*Client Client */
 type Client struct {
 	context.Context
-	config *Config
+	security *Config
 }
 
-//Config get client config
-func (c *Client) Config() *Config {
-	return c.config
+func DefaultClient() *Client {
+	return client
 }
 
-//SetConfig set client config
-func (c *Client) SetConfig(config *Config) {
-	c.config = config
+func (c *Client) Security() *Config {
+	return c.security
+}
+
+func (c *Client) SetSecurity(config *Config) *Client {
+	c.security = config
+	return c
 }
 
 /*PostJSON json post请求 */
@@ -134,7 +141,7 @@ func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
 /*Request 普通请求 */
 func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", url, method, ops)
-	client := buildTransport(c.config)
+	client := buildTransport(c.security)
 	return request(c.Context, client, url, method, ops)
 }
 
@@ -164,29 +171,29 @@ func castToResponse(resp *http.Response) Response {
 /*RequestRaw raw请求 */
 func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
 	log.Debug("Request|httpClient", url, method, ops)
-	client := buildTransport(c.config)
+	client := buildTransport(c.security)
 	return request(c.Context, client, url, method, ops).Bytes()
 }
 
 /*SafeRequest 安全请求 */
 func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
 	log.Debug("SafeRequest|httpClient", url, method, ops)
-	client := buildSafeTransport(c.config)
+	client := buildSafeTransport(c.security)
 	return request(c.Context, client, url, method, ops)
 }
 
 /*SafeRequestRaw 安全请求 */
 func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
 	log.Debug("SafeRequest|httpClient", url, method, ops)
-	client := buildSafeTransport(c.config)
+	client := buildSafeTransport(c.security)
 	return request(c.Context, client, url, method, ops).Bytes()
 
 }
 
 /*NewClient 创建一个client */
-func NewClient() *Client {
+func NewClient(ctx context.Context) *Client {
 	return &Client{
-		Context: context.Background(),
+		Context: ctx,
 		//requestType:  DataTypeXML,
 		//responseData: nil,
 		//httpRequest:  nil,
@@ -247,7 +254,7 @@ func buildSafeTransport(config *Config) *http.Client {
 
 	caFile, err := ioutil.ReadFile(config.GetString("rootca_path"))
 	if err != nil {
-		caFile = defaultCa
+		caFile = []byte(defaultCa)
 	}
 	certPool := x509.NewCertPool()
 	certPool.AppendCertsFromPEM(caFile)

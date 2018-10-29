@@ -88,7 +88,9 @@ func (a *Application) Client() *core.Client {
 	if v, b := a.Get("client"); b {
 		return v.(*core.Client)
 	}
-	return core.NewClient()
+	client := core.DefaultClient()
+	a.Register("client", client)
+	return client
 }
 
 //AccessToken get application access token instance

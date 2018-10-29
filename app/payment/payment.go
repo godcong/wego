@@ -35,10 +35,9 @@ type Payment struct {
 //	}
 //}
 
-func newPayment(config *core.Config) *Payment {
-	client := core.NewClient(config)
-	client.SetRequestType(core.DataTypeXML)
-	token := core.NewAccessToken(config)
+func newPayment(config *core.Config, client *core.Client) *Payment {
+
+	token := core.NewAccessToken(config, client)
 	payment := &Payment{
 		config: config,
 		client: client,
@@ -50,8 +49,11 @@ func newPayment(config *core.Config) *Payment {
 }
 
 //NewPayment create an payment instance
-func NewPayment(config *core.Config) *Payment {
-	return newPayment(config)
+func NewPayment(config *core.Config, client ...*core.Client) *Payment {
+	if client == nil {
+		return newPayment(config, core.NewClient())
+	}
+	return newPayment(config, client[0])
 }
 
 /*Request 普通请求*/
