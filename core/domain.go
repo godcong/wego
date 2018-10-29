@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+//Link link domain address
 func Link(uri string, host ...string) string {
 	domain := "default"
 	if host != nil {
@@ -33,6 +34,7 @@ func Connect(domain string, uri string) string {
 	return domain + uri
 }
 
+//DomainHost get host domain
 func DomainHost(domain string) string {
 	url := DefaultConfig().GetString("domain." + domain + ".url")
 	if url == "" {

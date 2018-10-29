@@ -61,14 +61,17 @@ type Client struct {
 	security *Config
 }
 
+//DefaultClient result a client with default value
 func DefaultClient() *Client {
 	return client
 }
 
+//Security get client security config
 func (c *Client) Security() *Config {
 	return c.security
 }
 
+//SetSecurity set client security config
 func (c *Client) SetSecurity(config *Config) *Client {
 	c.security = config
 	return c
