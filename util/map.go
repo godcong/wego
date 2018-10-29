@@ -16,8 +16,8 @@ type StringAble interface {
 type String string
 
 /*String String */
-func (s *String) String() string {
-	return string(*s)
+func (s String) String() string {
+	return string(s)
 }
 
 /*ToString ToString */
@@ -29,7 +29,7 @@ func ToString(s string) String {
 type Map map[string]interface{}
 
 /*String transfer map to JSON string */
-func (m *Map) String() string {
+func (m Map) String() string {
 	return string(m.ToJSON())
 }
 
@@ -47,13 +47,13 @@ func ParseMap(p map[string]interface{}) Map {
 }
 
 /*Set set interface */
-func (m *Map) Set(s string, v interface{}) *Map {
-	(*m)[s] = v
+func (m Map) Set(s string, v interface{}) Map {
+	(m)[s] = v
 	return m
 }
 
 /*NilSet set interface if key is not exist */
-func (m *Map) NilSet(s string, v interface{}) *Map {
+func (m Map) NilSet(s string, v interface{}) Map {
 	if !m.Has(s) {
 		m.Set(s, v)
 	}
@@ -61,7 +61,7 @@ func (m *Map) NilSet(s string, v interface{}) *Map {
 }
 
 /*HasSet set interface if key is exist */
-func (m *Map) HasSet(s string, v interface{}) *Map {
+func (m Map) HasSet(s string, v interface{}) Map {
 	if m.Has(s) {
 		m.Set(s, v)
 	}
@@ -69,23 +69,23 @@ func (m *Map) HasSet(s string, v interface{}) *Map {
 }
 
 /*Get get interface from map with out default */
-func (m *Map) Get(s string) interface{} {
-	if v, b := (*m)[s]; b {
+func (m Map) Get(s string) interface{} {
+	if v, b := (m)[s]; b {
 		return v
 	}
 	return nil
 }
 
 /*GetD get interface from map with default */
-func (m *Map) GetD(s string, d interface{}) interface{} {
-	if v, b := (*m)[s]; b {
+func (m Map) GetD(s string, d interface{}) interface{} {
+	if v, b := (m)[s]; b {
 		return v
 	}
 	return d
 }
 
 /*GetMap get map from map with out default */
-func (m *Map) GetMap(s string) Map {
+func (m Map) GetMap(s string) Map {
 	if v, b := m.Get(s).(map[string]interface{}); b {
 		return v
 	}
@@ -97,7 +97,7 @@ func (m *Map) GetMap(s string) Map {
 }
 
 /*GetMapD get map from map with default */
-func (m *Map) GetMapD(s string, d Map) Map {
+func (m Map) GetMapD(s string, d Map) Map {
 	if v := m.GetMap(s); v != nil {
 		return v
 	}
@@ -105,12 +105,12 @@ func (m *Map) GetMapD(s string, d Map) Map {
 }
 
 /*GetBool get bool from map with out default */
-func (m *Map) GetBool(s string) bool {
+func (m Map) GetBool(s string) bool {
 	return m.GetBoolD(s, false)
 }
 
 /*GetBoolD get bool from map with default */
-func (m *Map) GetBoolD(s string, b bool) bool {
+func (m Map) GetBoolD(s string, b bool) bool {
 	if v, b := m.Get(s).(bool); b {
 		return v
 	}
@@ -118,12 +118,12 @@ func (m *Map) GetBoolD(s string, b bool) bool {
 }
 
 /*GetNumber get float64 from map with out default */
-func (m *Map) GetNumber(s string) float64 {
+func (m Map) GetNumber(s string) float64 {
 	return m.GetNumberD(s, 0)
 }
 
 /*GetNumberD get float64 from map with default */
-func (m *Map) GetNumberD(s string, i float64) float64 {
+func (m Map) GetNumberD(s string, i float64) float64 {
 	n, b := ParseNumber(m.Get(s))
 	if b {
 		return n
@@ -132,7 +132,7 @@ func (m *Map) GetNumberD(s string, i float64) float64 {
 }
 
 /*GetInt64 get int64 from map with out default */
-func (m *Map) GetInt64(s string) int64 {
+func (m Map) GetInt64(s string) int64 {
 	i, b := ParseInt(m.Get(s))
 	if b {
 		return i
@@ -141,7 +141,7 @@ func (m *Map) GetInt64(s string) int64 {
 }
 
 /*GetString get string from map with out default */
-func (m *Map) GetString(s string) string {
+func (m Map) GetString(s string) string {
 	if v, b := m.Get(s).(string); b {
 		return v
 	}
@@ -149,7 +149,7 @@ func (m *Map) GetString(s string) string {
 }
 
 /*GetBytes get bytes from map with default */
-func (m *Map) GetBytes(s string) []byte {
+func (m Map) GetBytes(s string) []byte {
 	if v, b := m.Get(s).([]byte); b {
 		return v
 	}
@@ -157,7 +157,7 @@ func (m *Map) GetBytes(s string) []byte {
 }
 
 /*GetStringD get string from map with default */
-func (m *Map) GetStringD(s string, d string) string {
+func (m Map) GetStringD(s string, d string) string {
 	if v, b := m.Get(s).(string); b {
 		return v
 	}
@@ -165,20 +165,20 @@ func (m *Map) GetStringD(s string, d string) string {
 }
 
 /*Delete delete if exist */
-func (m *Map) Delete(s string) {
+func (m Map) Delete(s string) {
 	delete(*m, s)
 }
 
 /*Has check if exist */
-func (m *Map) Has(s string) bool {
+func (m Map) Has(s string) bool {
 	_, b := (*m)[s]
 	return b
 }
 
 /*SortKeys 排列key */
-func (m *Map) SortKeys() []string {
+func (m Map) SortKeys() []string {
 	var keys sort.StringSlice
-	for k := range *m {
+	for k := range m {
 		keys = append(keys, k)
 	}
 	sort.Sort(keys)
@@ -186,8 +186,8 @@ func (m *Map) SortKeys() []string {
 }
 
 /*ToXML transfer map to XML */
-func (m *Map) ToXML() string {
-	if v, e := MapToXML(*m); e == nil {
+func (m Map) ToXML() string {
+	if v, e := MapToXML(m); e == nil {
 		return v
 	}
 	return ""
@@ -195,13 +195,13 @@ func (m *Map) ToXML() string {
 }
 
 /*ParseXML parse XML bytes to map */
-func (m *Map) ParseXML(b []byte) {
+func (m Map) ParseXML(b []byte) {
 	m.Join(XMLToMap(b))
 }
 
 /*ToJSON transfer map to JSON */
-func (m *Map) ToJSON() []byte {
-	v, e := json.Marshal(*m)
+func (m Map) ToJSON() []byte {
+	v, e := json.Marshal(m)
 	if e != nil {
 		return []byte(nil)
 	}
@@ -209,7 +209,7 @@ func (m *Map) ToJSON() []byte {
 }
 
 /*ParseJSON parse JSON bytes to map */
-func (m *Map) ParseJSON(b []byte) *Map {
+func (m Map) ParseJSON(b []byte) *Map {
 	tmp := Map{}
 	if e := json.Unmarshal(b, &tmp); e == nil {
 		m.Join(tmp)
@@ -218,15 +218,15 @@ func (m *Map) ParseJSON(b []byte) *Map {
 }
 
 /*URLEncode transfer map to url encode */
-func (m *Map) URLEncode() string {
+func (m Map) URLEncode() string {
 	var buf strings.Builder
-	keys := make([]string, 0, len(*m))
-	for k := range *m {
+	keys := make([]string, 0, len(m))
+	for k := range m {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
-		vs := (*m)[k]
+		vs := (m)[k]
 		keyEscaped := url.QueryEscape(k)
 		if v, b := vs.(string); b {
 			if buf.Len() > 0 {
@@ -241,48 +241,57 @@ func (m *Map) URLEncode() string {
 	return buf.String()
 }
 
-func (m *Map) join(source Map, replace bool) *Map {
+func (m Map) join(source Map, replace bool) *Map {
 	for k, v := range source {
-		if _, b := (*m)[k]; replace || !b {
-			(*m)[k] = v
+		if _, b := (m)[k]; replace || !b {
+			(m)[k] = v
 		}
 	}
 	return m
 }
 
 /*ReplaceJoin insert map s to m with replace */
-func (m *Map) ReplaceJoin(s Map) *Map {
+func (m Map) ReplaceJoin(s Map) *Map {
 	return m.join(s, true)
 }
 
 /*Join insert map s to m with out replace */
-func (m *Map) Join(s Map) *Map {
+func (m Map) Join(s Map) *Map {
 	return m.join(s, false)
 }
 
-//func (m *Map) SaveAs(p string, f string) {
+//func (m Map) SaveAs(p string, f string) {
 //
 //}
 
 /*Only get map with columns */
-func (m *Map) Only(columns []string) Map {
+func (m Map) Only(columns []string) Map {
 	p := Map{}
 	for _, v := range columns {
-		p[v] = (*m)[v]
+		p[v] = (m)[v]
 	}
 	return p
 }
 
 /*Clone copy a map */
-func (m *Map) Clone() Map {
+func (m Map) Clone() Map {
 	m0 := make(Map)
-	for k, v := range *m {
+	for k, v := range m {
 		m0[k] = v
 	}
 	return m0
 }
 
 /*URLToSHA1 make sha1 from map */
-func (m *Map) URLToSHA1() string {
-	return signatureSHA1(*m)
+func (m Map) URLToSHA1() string {
+	return signatureSHA1(m)
+}
+
+//Range range all maps
+func (m Map) Range(f func(key string, value interface{}) bool) {
+	for k, v := range m {
+		if !f(k, v) {
+			return
+		}
+	}
 }

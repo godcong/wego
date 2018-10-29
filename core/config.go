@@ -218,3 +218,12 @@ func NewConfig() *Config {
 		Tree: &toml.Tree{},
 	}
 }
+
+func C(p util.Map) *Config {
+	cfg := NewConfig()
+	p.Range(func(key string, value interface{}) bool {
+		cfg.Set(key, value)
+		return true
+	})
+	return cfg
+}

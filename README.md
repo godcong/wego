@@ -8,6 +8,8 @@
 
 ## 时尚，简单，卓越，高性能的微信支付接口
 
+开发前,请务必仔细阅读并看懂
+
 获取包：
 > go get github.com/godcong/wego
 
