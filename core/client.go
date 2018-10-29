@@ -193,16 +193,16 @@ func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte 
 
 }
 
-/*NewClient 创建一个client */
-func NewClient(ctx context.Context) *Client {
+func newClient(ctx context.Context) *Client {
 	return &Client{
-		Context: ctx,
-		//requestType:  DataTypeXML,
-		//responseData: nil,
-		//httpRequest:  nil,
-		//httpResponse: nil,
-		//httpClient: nil,
+		Context:  ctx,
+		security: nil,
 	}
+}
+
+/*NewClient 创建一个client */
+func NewClient() *Client {
+	return newClient(context.Background())
 }
 
 func buildTransport(config *Config) *http.Client {
