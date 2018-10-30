@@ -150,12 +150,12 @@ func (p *Payment) RedPack() *RedPack {
 
 /*Security get Security */
 func (p *Payment) Security() *Security {
-	obj, b := p.sub["Security"]
+	loaded, b := p.sub.Load("Security")
 	if !b {
-		obj = newSecurity(p)
-		p.sub["Security"] = obj
+		obj := newSecurity(p)
+		p.sub.Store("Security", obj)
 	}
-	return obj.(*Security)
+	return loaded.(*Security)
 }
 
 /*Refund get Refund*/
