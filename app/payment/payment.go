@@ -170,12 +170,12 @@ func (p *Payment) Refund() *Refund {
 
 /*Order get Order*/
 func (p *Payment) Order() *Order {
-	obj, b := p.sub["Order"]
+	loaded, b := p.sub.Load("Order")
 	if !b {
-		obj = newOrder(p)
-		p.sub["Order"] = obj
+		obj := newOrder(p)
+		p.sub.Store("Order", obj)
 	}
-	return obj.(*Order)
+	return loaded.(*Order)
 }
 
 /*Bill get Bill*/
