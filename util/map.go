@@ -41,8 +41,8 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
-/*ParseFromMap transfer to Map from map[string]interface{} */
-func ParseFromMap(p map[string]interface{}) Map {
+/*MapFromMap transfer to Map from map[string]interface{} */
+func MapFromMap(p map[string]interface{}) Map {
 	return Map(p)
 }
 
