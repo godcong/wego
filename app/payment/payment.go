@@ -10,18 +10,11 @@ const domain = "https://api.mch.weixin.qq.com"
 
 /*Payment Payment */
 type Payment struct {
-	config *core.Config
+	*core.Config
 	client *core.Client
 	token  *core.AccessToken
 
 	sub util.Map
-	//bill     *Bill
-	//redPack  *RedPack
-	//order    *Order
-	//refund   *Refund
-	//reverse  *Reverse
-	//security *Security
-	//jssdk    *JSSDK
 }
 
 //var sub util.Map
@@ -39,7 +32,7 @@ func newPayment(config *core.Config, client *core.Client) *Payment {
 
 	token := core.NewAccessToken(config, client)
 	payment := &Payment{
-		config: config,
+		config,
 		client: client,
 		token:  token,
 		sub:    util.Map{},
@@ -112,7 +105,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
 func (p *Payment) Pay(params util.Map) core.Response {
-	params.Set("appid", p.config.Get("app_id"))
+	params.Set("appid", p.Get("app_id"))
 	return p.Request(microPayURLSuffix, params)
 }
 
@@ -122,7 +115,7 @@ func (p *Payment) Pay(params util.Map) core.Response {
 */
 func (p *Payment) AuthCodeToOpenid(authCode string) core.Response {
 	m := make(util.Map)
-	m.Set("appid", p.config.Get("app_id"))
+	m.Set("appid", p.Get("app_id"))
 	m.Set("auth_code", authCode)
 	return p.Request(authCodeToOpenidURLSuffix, m)
 }
@@ -209,16 +202,16 @@ func (p *Payment) Transfer() *Transfer {
 
 func (p *Payment) initRequest(params util.Map) util.Map {
 	if params != nil {
-		params.Set("mch_id", p.config.GetString("mch_id"))
+		params.Set("mch_id", p.GetString("mch_id"))
 		params.Set("nonce_str", util.GenerateUUID())
-		if p.config.Has("sub_mch_id") {
-			params.Set("sub_mch_id", p.config.GetString("sub_mch_id"))
+		if p.Has("sub_mch_id") {
+			params.Set("sub_mch_id", p.GetString("sub_mch_id"))
 		}
-		if p.config.Has("sub_appid") {
-			params.Set("sub_appid", p.config.GetString("sub_appid"))
+		if p.Has("sub_appid") {
+			params.Set("sub_appid", p.GetString("sub_appid"))
 		}
 		params.Set("sign_type", core.SignTypeMd5.String())
-		params.Set("sign", core.GenerateSignature(params, p.config.GetString("key"), core.MakeSignMD5))
+		params.Set("sign", core.GenerateSignature(params, p.GetString("key"), core.MakeSignMD5))
 	}
 	log.Debug("initRequest", params)
 	return params

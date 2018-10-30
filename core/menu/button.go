@@ -125,7 +125,7 @@ func (b *Button) mapGet(name string) interface{} {
 	return b.Get(name)
 }
 
-func (b *Button) mapSet(name string, v interface{}) *util.Map {
+func (b *Button) mapSet(name string, v interface{}) util.Map {
 	return b.Set(name, v)
 }
 
