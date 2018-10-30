@@ -190,12 +190,12 @@ func (p *Payment) Bill() *Bill {
 
 /*Transfer get Transfer*/
 func (p *Payment) Transfer() *Transfer {
-	obj, b := p.sub["Transfer"]
+	loaded, b := p.sub.Load("Transfer")
 	if !b {
-		obj = newTransfer(p)
-		p.sub["Transfer"] = obj
+		obj := newTransfer(p)
+		p.sub.Store("Transfer", obj)
 	}
-	return obj.(*Transfer)
+	return loaded.(*Transfer)
 }
 
 func (p *Payment) initRequest(params util.Map) util.Map {
