@@ -198,8 +198,41 @@ func (m Map) GetStringD(s string, d string) string {
 }
 
 /*Delete delete if exist */
-func (m Map) Delete(s string) {
-	delete(m, s)
+func (m Map) Delete(key string) bool {
+	if key == "" {
+		return false
+	}
+	return m.DeletePath(strings.Split(key, "."))
+}
+
+func (m Map) DeletePath(keys []string) bool {
+	if len(keys) == 0 {
+		return false
+	}
+	subtree := m
+	for _, intermediateKey := range keys[:len(keys)-1] {
+		value, exists := subtree[intermediateKey]
+		if !exists {
+			return false
+		}
+		switch node := value.(type) {
+		case Map:
+			subtree = node
+		case []Map:
+			if len(node) == 0 {
+				return false
+			}
+			subtree = node[len(node)-1]
+		default:
+			return false // cannot navigate through other node types
+		}
+	}
+	// branch based on final node type
+	if _, b := subtree[keys[len(keys)-1]]; !b {
+		return false
+	}
+	delete(subtree, keys[len(keys)-1])
+	return true
 }
 
 /*Has check if key exist */
