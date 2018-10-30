@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/godcong/wego/log"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
 /*CustomHeader xml header*/
@@ -290,7 +290,7 @@ func signatureSHA1(m Map) string {
 		if v := strings.TrimSpace(m.GetString(k)); v != "" {
 			log.Debug(k, v)
 			sign = append(sign, strings.Join([]string{k, v}, "="))
-		} else if v := m.GetInt64(k); v != 0 {
+		} else if v, b := m.GetInt64(k); b {
 			log.Debug(k, v)
 			sign = append(sign, strings.Join([]string{k, strconv.FormatInt(v, 10)}, "="))
 		}

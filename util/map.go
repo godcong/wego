@@ -137,6 +137,30 @@ func (m Map) GetMapD(s string, d Map) Map {
 	return d
 }
 
+/*GetMapArray get map from map with out default */
+func (m Map) GetMapArray(s string) []Map {
+	switch v := m.Get(s).(type) {
+	case []Map:
+		return v
+	case []map[string]interface{}:
+		var sub []Map
+		for _, mp := range v {
+			sub = append(sub, (Map)(mp))
+		}
+		return sub
+	default:
+		return nil
+	}
+}
+
+/*GetMapArrayD get map from map with default */
+func (m Map) GetMapArrayD(s string, d []Map) []Map {
+	if v := m.GetMapArray(s); v != nil {
+		return v
+	}
+	return d
+}
+
 /*GetBool get bool from map with out default */
 func (m Map) GetBool(s string) bool {
 	return m.GetBoolD(s, false)
@@ -151,26 +175,31 @@ func (m Map) GetBoolD(s string, b bool) bool {
 }
 
 /*GetNumber get float64 from map with out default */
-func (m Map) GetNumber(s string) float64 {
-	return m.GetNumberD(s, 0)
+func (m Map) GetNumber(s string) (float64, bool) {
+	return ParseNumber(m.Get(s))
 }
 
 /*GetNumberD get float64 from map with default */
-func (m Map) GetNumberD(s string, i float64) float64 {
+func (m Map) GetNumberD(s string, d float64) float64 {
 	n, b := ParseNumber(m.Get(s))
 	if b {
 		return n
 	}
-	return i
+	return d
 }
 
 /*GetInt64 get int64 from map with out default */
-func (m Map) GetInt64(s string) int64 {
+func (m Map) GetInt64(s string) (int64, bool) {
+	return ParseInt(m.Get(s))
+}
+
+/*GetInt64D get int64 from map with default */
+func (m Map) GetInt64D(s string, d int64) int64 {
 	i, b := ParseInt(m.Get(s))
 	if b {
 		return i
 	}
-	return 0
+	return d
 }
 
 /*GetString get string from map with out default */
@@ -181,20 +210,20 @@ func (m Map) GetString(s string) string {
 	return ""
 }
 
-/*GetBytes get bytes from map with default */
-func (m Map) GetBytes(s string) []byte {
-	if v, b := m.Get(s).([]byte); b {
-		return v
-	}
-	return []byte(nil)
-}
-
 /*GetStringD get string from map with default */
 func (m Map) GetStringD(s string, d string) string {
 	if v, b := m.Get(s).(string); b {
 		return v
 	}
 	return d
+}
+
+/*GetBytes get bytes from map with default */
+func (m Map) GetBytes(s string) []byte {
+	if v, b := m.Get(s).([]byte); b {
+		return v
+	}
+	return []byte(nil)
 }
 
 /*Delete delete if exist */
@@ -366,22 +395,46 @@ func (m Map) Join(s Map) Map {
 //
 //}
 
-/*Only get map with columns */
-func (m Map) Only(columns []string) Map {
+/*Only get map with keys */
+func (m Map) Only(keys []string) Map {
 	p := Map{}
-	for _, v := range columns {
+	for _, v := range keys {
 		p[v] = (m)[v]
+	}
+	return p
+}
+
+/*Only get map with keys */
+func (m Map) Expect(keys []string) Map {
+	p := m.Clone()
+	for _, v := range keys {
+		p.Delete(v)
 	}
 	return p
 }
 
 /*Clone copy a map */
 func (m Map) Clone() Map {
-	m0 := make(Map)
-	for k, v := range m {
-		m0[k] = v
+	v := deepCopy(m)
+	return (v).(Map)
+}
+
+func deepCopy(value interface{}) interface{} {
+	if valueMap, ok := value.(Map); ok {
+		newMap := make(Map)
+		for k, v := range valueMap {
+			newMap[k] = deepCopy(v)
+		}
+		return newMap
+	} else if valueSlice, ok := value.([]Map); ok {
+		newSlice := make([]interface{}, len(valueSlice))
+		for k, v := range valueSlice {
+			newSlice[k] = deepCopy(v)
+		}
+		return newSlice
 	}
-	return m0
+
+	return value
 }
 
 /*URLToSHA1 make sha1 from map */
