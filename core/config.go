@@ -141,16 +141,15 @@ func (c *Config) GetIntD(s string, d int64) int64 {
 }
 
 //Check check all input keys
-//return 0 if all is exist
+//return -1 if all is exist
 //return index when not found
 func (c *Config) Check(arr ...string) int {
 	for i, v := range arr {
-		if c.Has(v) {
-			continue
+		if !c.Has(v) {
+			return i
 		}
-		return i
 	}
-	return 0
+	return -1
 }
 
 //GetStringArray return string array

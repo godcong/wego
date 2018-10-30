@@ -246,7 +246,7 @@ func buildSafeTransport(config *Config) *http.Client {
 		panic("safe request must set config before use")
 	}
 
-	if idx := config.Check("cert_path", "key_path"); idx != 0 {
+	if idx := config.Check("cert_path", "key_path"); idx != -1 {
 		panic(fmt.Sprintf("the %d key was not found", idx))
 	}
 

@@ -166,12 +166,12 @@ func (m Map) GetStringD(s string, d string) string {
 
 /*Delete delete if exist */
 func (m Map) Delete(s string) {
-	delete(*m, s)
+	delete(m, s)
 }
 
 /*Has check if exist */
 func (m Map) Has(s string) bool {
-	_, b := (*m)[s]
+	_, b := (m)[s]
 	return b
 }
 
@@ -209,7 +209,7 @@ func (m Map) ToJSON() []byte {
 }
 
 /*ParseJSON parse JSON bytes to map */
-func (m Map) ParseJSON(b []byte) *Map {
+func (m Map) ParseJSON(b []byte) Map {
 	tmp := Map{}
 	if e := json.Unmarshal(b, &tmp); e == nil {
 		m.Join(tmp)
@@ -241,7 +241,7 @@ func (m Map) URLEncode() string {
 	return buf.String()
 }
 
-func (m Map) join(source Map, replace bool) *Map {
+func (m Map) join(source Map, replace bool) Map {
 	for k, v := range source {
 		if _, b := (m)[k]; replace || !b {
 			(m)[k] = v
@@ -251,12 +251,12 @@ func (m Map) join(source Map, replace bool) *Map {
 }
 
 /*ReplaceJoin insert map s to m with replace */
-func (m Map) ReplaceJoin(s Map) *Map {
+func (m Map) ReplaceJoin(s Map) Map {
 	return m.join(s, true)
 }
 
 /*Join insert map s to m with out replace */
-func (m Map) Join(s Map) *Map {
+func (m Map) Join(s Map) Map {
 	return m.join(s, false)
 }
 
@@ -294,4 +294,18 @@ func (m Map) Range(f func(key string, value interface{}) bool) {
 			return
 		}
 	}
+}
+
+//Check check all input keys
+//return -1 if all is exist
+//return index when not found
+func (m Map) Check(s ...string) int {
+	if s != nil {
+		for idx, v := range s {
+			if !m.Has(v) {
+				return idx
+			}
+		}
+	}
+	return -1
 }

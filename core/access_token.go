@@ -13,7 +13,7 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	config      *Config
+	*Config
 	client      *Client
 	credentials util.Map
 }
@@ -34,8 +34,8 @@ func (a *AccessToken) getQuery() util.Map {
 func (a *AccessToken) sendRequest(s string) []byte {
 	m := util.Map{
 		"grant_type": "client_credential",
-		"appid":      a.config.Get("app_id"),
-		"secret":     a.config.Get("secret"),
+		"appid":      a.Get("app_id"),
+		"secret":     a.Get("secret"),
 	}
 	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, m)
 	return resp
@@ -44,7 +44,7 @@ func (a *AccessToken) sendRequest(s string) []byte {
 func newAccessToken(config *Config, client *Client) *AccessToken {
 	//client := NewClient(config)
 	return &AccessToken{
-		config:      config,
+		Config:      config,
 		client:      client,
 		credentials: util.Map{},
 	}
@@ -53,9 +53,17 @@ func newAccessToken(config *Config, client *Client) *AccessToken {
 /*NewAccessToken NewAccessToken*/
 func NewAccessToken(config *Config, client ...*Client) *AccessToken {
 	if client == nil {
-		return newAccessToken(config, NewClient())
+		return newAccessToken(config, DefaultClient())
 	}
 	return newAccessToken(config, client[0])
+}
+
+func (a *AccessToken) SetCredentials(p util.Map) error {
+	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
+		return fmt.Errorf("the %d key was not found", idx)
+	}
+	a.credentials = p
+	return nil
 }
 
 /*Refresh 刷新AccessToken */
