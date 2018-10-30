@@ -119,12 +119,13 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Response {
 
 //Reverse Reverse
 func (p *Payment) Reverse() *Reverse {
-	obj, b := p.sub["Reverse"]
+	loaded, b := p.sub.Load("Reverse")
 	if !b {
-		obj = newReverse(p)
-		p.sub["Reverse"] = obj
+		obj := newReverse(p)
+		p.sub.Store("Reverse", obj)
+		return obj
 	}
-	return obj.(*Reverse)
+	return loaded.(*Reverse)
 }
 
 //JSSDK JSSDK
