@@ -119,14 +119,14 @@ func (m Map) GetD(s string, d interface{}) interface{} {
 
 /*GetMap get map from map with out default */
 func (m Map) GetMap(s string) Map {
-	if v, b := m.Get(s).(map[string]interface{}); b {
+	switch v := m.Get(s).(type) {
+	case map[string]interface{}:
+		return (Map)(v)
+	case Map:
 		return v
+	default:
+		return nil
 	}
-
-	// if v, b := m.Get(s).(Map); b {
-	// 	return v
-	// }
-	return nil
 }
 
 /*GetMapD get map from map with default */
