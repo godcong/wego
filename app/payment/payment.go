@@ -4,6 +4,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"sync"
 )
 
 const domain = "https://api.mch.weixin.qq.com"
@@ -14,7 +15,7 @@ type Payment struct {
 	client *core.Client
 	token  *core.AccessToken
 
-	sub util.Map
+	sub sync.Map
 }
 
 //var sub util.Map
@@ -29,13 +30,9 @@ type Payment struct {
 //}
 
 func newPayment(config *core.Config, client *core.Client) *Payment {
-
-	token := core.NewAccessToken(config, client)
 	payment := &Payment{
-		config,
+		Config: config,
 		client: client,
-		token:  token,
-		sub:    util.Map{},
 	}
 
 	return payment
