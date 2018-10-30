@@ -160,12 +160,12 @@ func (p *Payment) Security() *Security {
 
 /*Refund get Refund*/
 func (p *Payment) Refund() *Refund {
-	obj, b := p.sub["Refund"]
+	loaded, b := p.sub.Load("Refund")
 	if !b {
-		obj = newRefund(p)
-		p.sub["Refund"] = obj
+		obj := newRefund(p)
+		p.sub.Store("Refund", obj)
 	}
-	return obj.(*Refund)
+	return loaded.(*Refund)
 }
 
 /*Order get Order*/
