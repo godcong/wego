@@ -140,12 +140,12 @@ func (p *Payment) JSSDK() *JSSDK {
 
 //RedPack get RedPack
 func (p *Payment) RedPack() *RedPack {
-	obj, b := p.sub["RedPack"]
+	loaded, b := p.sub.Load("RedPack")
 	if !b {
-		obj = newRedPack(p)
-		p.sub["RedPack"] = obj
+		obj := newRedPack(p)
+		p.sub.Store("RedPack", obj)
 	}
-	return obj.(*RedPack)
+	return loaded.(*RedPack)
 }
 
 /*Security get Security */
