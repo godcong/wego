@@ -180,12 +180,12 @@ func (p *Payment) Order() *Order {
 
 /*Bill get Bill*/
 func (p *Payment) Bill() *Bill {
-	obj, b := p.sub["Bill"]
+	loaded, b := p.sub.Load("Bill")
 	if !b {
-		obj = newBill(p)
-		p.sub["Bill"] = obj
+		obj := newBill(p)
+		p.sub.Store("Bill", obj)
 	}
-	return obj.(*Bill)
+	return loaded.(*Bill)
 }
 
 /*Transfer get Transfer*/
