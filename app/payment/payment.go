@@ -37,7 +37,7 @@ func (p *Payment) IsSandbox() bool {
 	return p.GetBool("sandbox")
 }
 
-func (p *Payment) GetKey(s string) string {
+func (p *Payment) GetKey() string {
 	key := p.GetString("key")
 	if p.IsSandbox() {
 		key = p.Sandbox().GetKey()
@@ -61,7 +61,7 @@ func (p *Payment) Scheme(pid string) string {
 	m.Set("time_stamp", util.Time())
 	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("product_id", pid)
-	m.Set("sign", core.GenerateSignature(m, p.GetString("aes_key"), core.MakeSignMD5))
+	m.Set("sign", GenerateSignature(m, p.GetKey(), MakeSignMD5))
 	return BizPayURL + m.URLEncode()
 }
 
@@ -206,8 +206,8 @@ func (p *Payment) initRequest(params util.Map) util.Map {
 		if p.Has("sub_appid") {
 			params.Set("sub_appid", p.GetString("sub_appid"))
 		}
-		params.Set("sign_type", core.SignTypeMd5.String())
-		params.Set("sign", core.GenerateSignature(params, p.GetString("key"), core.MakeSignMD5))
+		params.Set("sign_type", SignTypeMd5.String())
+		params.Set("sign", GenerateSignature(params, p.GetKey(), MakeSignMD5))
 	}
 	log.Debug("initRequest", params)
 	return params
