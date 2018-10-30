@@ -218,6 +218,7 @@ func NewConfig() *Config {
 	}
 }
 
+//C parse config from map
 func C(p util.Map) *Config {
 	cfg := NewConfig()
 	p.Range(func(key string, value interface{}) bool {

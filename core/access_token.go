@@ -41,23 +41,23 @@ func (a *AccessToken) sendRequest(s string) []byte {
 	return resp
 }
 
-func newAccessToken(config *Config, client *Client) *AccessToken {
+func newAccessToken(client *Client) *AccessToken {
 	//client := NewClient(config)
 	return &AccessToken{
-		Config:      config,
 		client:      client,
 		credentials: util.Map{},
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(config *Config, client ...*Client) *AccessToken {
+func NewAccessToken(client ...*Client) *AccessToken {
 	if client == nil {
-		return newAccessToken(config, DefaultClient())
+		return newAccessToken(DefaultClient())
 	}
-	return newAccessToken(config, client[0])
+	return newAccessToken(client[0])
 }
 
+//SetCredentials set request credential
 func (a *AccessToken) SetCredentials(p util.Map) error {
 	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
 		return fmt.Errorf("the %d key was not found", idx)
