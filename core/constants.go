@@ -12,18 +12,6 @@ const (
 	FileAPIWeixin = "http://file.api.weixin.qq.com"
 )
 
-/*HMACSHA256 定义:HMAC-SHA256 */
-const HMACSHA256 = "HMAC-SHA256"
-
-/*MD5 定义:MD5 */
-const MD5 = "MD5"
-
-/*FieldSign 定义:sign */
-const FieldSign = "sign"
-
-/*FieldSignType 定义:sign_type */
-const FieldSignType = "sign_type"
-
 //const SYSTEMERROR = "SYSTEMERROR"
 //const BANKERROR = "BANKERROR"
 //const USERPAYING = "USERPAYING"

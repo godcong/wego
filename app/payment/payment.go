@@ -65,6 +65,12 @@ func (p *Payment) Scheme(pid string) string {
 	return BizPayURL + m.URLEncode()
 }
 
+func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
+	p.Set("sub_mch_id", mchID)
+	p.Set("sub_appid", appID)
+	return p
+}
+
 /*Request 普通请求*/
 func (p *Payment) Request(url string, params util.Map) core.Response {
 	m := util.Map{
