@@ -5,6 +5,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+//Base base
 type Base struct {
 	*Payment
 }
@@ -15,6 +16,7 @@ func newBase(payment *Payment) *Base {
 	}
 }
 
+//NewBase new base
 func NewBase(config *core.Config) *Base {
 	return newBase(NewPayment(config))
 }
