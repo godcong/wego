@@ -1,7 +1,6 @@
 package mini
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/log"
@@ -10,7 +9,7 @@ import (
 
 /*Auth Auth */
 type Auth struct {
-	Config
+	*core.Config
 	*Program
 	dc *crypt.DataCrypt
 }

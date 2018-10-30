@@ -15,17 +15,21 @@ type Account struct {
 	sub    util.Map
 }
 
-func init() {
-
+func initAccessToken(config *core.Config) *core.AccessToken {
+	token := core.NewAccessToken()
+	return token.SetCredentials(util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	})
 }
 
 func newAccount(config *core.Config) *Account {
-	token := core.NewAccessToken(config)
 
 	account := &Account{
 		config: config,
 		//client: client,
-		token: token,
+		token: initAccessToken(config),
 		sub:   util.Map{},
 	}
 
@@ -68,7 +72,7 @@ func (m *Account) Menu() *Menu {
 }
 
 /*OAuth OAuth*/
-func (m *Account) OAuth() *OAuth {
+func (m *Account) Auth() *OAuth {
 	obj, b := m.sub["OAuth"]
 	if !b {
 		obj = newOAuth(m)

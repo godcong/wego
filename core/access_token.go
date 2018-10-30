@@ -13,7 +13,6 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	*Config
 	client      *Client
 	credentials util.Map
 }
@@ -32,12 +31,12 @@ func (a *AccessToken) getQuery() util.Map {
 }
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	m := util.Map{
-		"grant_type": "client_credential",
-		"appid":      a.Get("app_id"),
-		"secret":     a.Get("secret"),
-	}
-	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, m)
+	//m := util.Map{
+	//	"grant_type": "client_credential",
+	//	"appid":      a.Get("app_id"),
+	//	"secret":     a.Get("secret"),
+	//}
+	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, a.credentials)
 	return resp
 }
 
@@ -58,12 +57,12 @@ func NewAccessToken(client ...*Client) *AccessToken {
 }
 
 //SetCredentials set request credential
-func (a *AccessToken) SetCredentials(p util.Map) error {
+func (a *AccessToken) SetCredentials(p util.Map) *AccessToken {
 	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
-		return fmt.Errorf("the %d key was not found", idx)
+		log.Error(fmt.Errorf("the %d key was not found", idx))
 	}
 	a.credentials = p
-	return nil
+	return a
 }
 
 /*Refresh 刷新AccessToken */

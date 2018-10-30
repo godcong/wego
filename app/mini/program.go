@@ -1,17 +1,15 @@
 package mini
 
 import (
-	"github.com/godcong/wego"
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 /*Program Program */
 type Program struct {
-	Config
+	*core.Config
 	client   *core.Client
-	app      *core.Application
 	token    *core.AccessToken
 	auth     *Auth
 	appCode  *AppCode
@@ -19,27 +17,22 @@ type Program struct {
 	template *Template
 }
 
-var defaultConfig Config
-var program *Program
-
-func init() {
-	defaultConfig = config.GetConfig("mini_program.default")
-	app := core.App()
-	program = newMiniProgram(defaultConfig, app)
-	app.Register("mini_program", program)
-	//app.Register(newMiniProgram())
+func initAccessToken(config *core.Config) *core.AccessToken {
+	token := core.NewAccessToken()
+	return token.SetCredentials(util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	})
 }
 
-func newMiniProgram(config Config, application *core.Application) *Program {
-	mini0 := &Program{
+func newMiniProgram(config *core.Config) *Program {
+	mini := &Program{
 		Config: config,
-		app:    application,
-		client: core.NewClient(config),
+		token:  initAccessToken(config),
 	}
-	mini0.token = core.NewAccessToken()
-	mini0.client.SetDataType(core.DataTypeJSON)
-	mini0.client.SetDomain(core.NewDomain("mini"))
-	return mini0
+
+	return mini
 }
 
 /*SetClient SetClient */
@@ -54,7 +47,7 @@ func (m *Program) GetClient() *core.Client {
 }
 
 /*Auth Auth */
-func (m *Program) Auth() wego.Auth {
+func (m *Program) Auth() *Auth {
 	if m.auth == nil {
 		m.auth = &Auth{
 			Config:  m.Config,
@@ -65,7 +58,7 @@ func (m *Program) Auth() wego.Auth {
 }
 
 /*AppCode AppCode */
-func (m *Program) AppCode() wego.AppCode {
+func (m *Program) AppCode() *AppCode {
 	if m.appCode == nil {
 		m.appCode = &AppCode{
 			Config:  m.Config,
@@ -76,7 +69,7 @@ func (m *Program) AppCode() wego.AppCode {
 }
 
 /*DataCube DataCube */
-func (m *Program) DataCube() wego.DataCube {
+func (m *Program) DataCube() *DataCube {
 	if m.dataCube == nil {
 		m.dataCube = &DataCube{
 			Config:  m.Config,
