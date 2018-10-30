@@ -25,10 +25,10 @@ func NewRefund(config *core.Config) *Refund {
 
 func (r *Refund) refund(num string, total, refund int, options util.Map) core.Response {
 	options = util.MapNilMake(options)
-	options.NilSet("out_refund_no", num)
-	options.NilSet("total_fee", strconv.Itoa(total))
-	options.NilSet("refund_fee", strconv.Itoa(refund))
-	options.NilSet("appid", r.config.Get("app_id"))
+	options.SetNil("out_refund_no", num)
+	options.SetNil("total_fee", strconv.Itoa(total))
+	options.SetNil("refund_fee", strconv.Itoa(refund))
+	options.SetNil("appid", r.Get("app_id"))
 
 	return r.SafeRequest(refundURLSuffix, options)
 }
@@ -39,7 +39,7 @@ func (r *Refund) refund(num string, total, refund int, options util.Map) core.Re
 */
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) core.Response {
 	options = util.MapNilMake(options)
-	options.NilSet("out_trade_no", tradeNum)
+	options.SetNil("out_trade_no", tradeNum)
 	return r.refund(num, total, refund, options)
 }
 
@@ -49,12 +49,12 @@ func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, optio
 */
 func (r *Refund) ByTransactionID(tid, num string, total, refund int, options util.Map) core.Response {
 	options = util.MapNilMake(options)
-	options.NilSet("transaction_id", tid)
+	options.SetNil("transaction_id", tid)
 	return r.refund(num, total, refund, options)
 }
 
 func (r *Refund) query(m util.Map) core.Response {
-	m.Set("appid", r.config.Get("app_id"))
+	m.Set("appid", r.Get("app_id"))
 	return r.Request(refundQueryURLSuffix, m)
 }
 

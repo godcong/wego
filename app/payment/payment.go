@@ -77,7 +77,7 @@ func (p *Payment) Request(url string, params util.Map) core.Response {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.Request(Link(url), "post", m)
+	return p.client.Request(p.Link(url), "post", m)
 }
 
 /*RequestRaw raw请求*/
@@ -86,7 +86,7 @@ func (p *Payment) RequestRaw(url string, params util.Map) []byte {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.RequestRaw(Link(url), "post", m)
+	return p.client.RequestRaw(p.Link(url), "post", m)
 }
 
 /*SafeRequest 安全请求*/
@@ -95,7 +95,7 @@ func (p *Payment) SafeRequest(url string, params util.Map) core.Response {
 		core.DataTypeXML: p.initRequest(params),
 	}
 
-	return p.client.SafeRequest(Link(url), "post", m)
+	return p.client.SafeRequest(p.Link(url), "post", m)
 }
 
 func (p *Payment) Base() *Base {
@@ -213,9 +213,13 @@ func (p *Payment) initRequest(params util.Map) util.Map {
 	return params
 }
 
-func Link(url string, isSandbox ...bool) string {
-	if isSandbox != nil && isSandbox[0] == true {
-		core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain)+sandboxURLSuffix, url)
+func (p *Payment) Link(url string) string {
+	if p.IsSandbox() {
+		return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain)+sandboxURLSuffix, url)
 	}
+	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
+}
+
+func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }

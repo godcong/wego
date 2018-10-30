@@ -41,39 +41,72 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
-/*ParseMap transfer to Map from map[string]interface{} */
-func ParseMap(p map[string]interface{}) Map {
+/*ParseFromMap transfer to Map from map[string]interface{} */
+func ParseFromMap(p map[string]interface{}) Map {
 	return Map(p)
 }
 
 /*Set set interface */
-func (m Map) Set(s string, v interface{}) Map {
-	(m)[s] = v
+func (m Map) Set(key string, v interface{}) Map {
+	return m.SetPath(strings.Split(key, "."), v)
+}
+
+// SetPathWithComment is the same as SetPath, but allows you to provide comment
+// information to the key, that will be reused by Marshal().
+func (m Map) SetPath(keys []string, v interface{}) Map {
+	subtree := m
+	for _, intermediateKey := range keys[:len(keys)-1] {
+		nextTree, exists := subtree[intermediateKey]
+		if !exists {
+			nextTree = make(Map)
+			subtree[intermediateKey] = nextTree // add new element here
+		}
+		switch node := nextTree.(type) {
+		case Map:
+			subtree = node
+		case []Map:
+			// go to most recent element
+			if len(node) == 0 {
+				// create element if it does not exist
+				subtree[intermediateKey] = append(node, make(Map))
+			}
+			subtree = node[len(node)-1]
+		}
+	}
+	subtree[keys[len(keys)-1]] = v
 	return m
 }
 
-/*NilSet set interface if key is not exist */
-func (m Map) NilSet(s string, v interface{}) Map {
+/*SetNil set interface if key is not exist */
+func (m Map) SetNil(s string, v interface{}) Map {
 	if !m.Has(s) {
 		m.Set(s, v)
 	}
 	return m
 }
 
-/*HasSet set interface if key is exist */
-func (m Map) HasSet(s string, v interface{}) Map {
+/*SetHas set interface if key is exist */
+func (m Map) SetHas(s string, v interface{}) Map {
 	if m.Has(s) {
 		m.Set(s, v)
 	}
 	return m
 }
 
-/*Get get interface from map with out default */
-func (m Map) Get(s string) interface{} {
-	if v, b := (m)[s]; b {
-		return v
+/*SetGet set value from map if key is exist */
+func (m Map) SetGet(s string, v Map) Map {
+	if v.Has(s) {
+		m.Set(s, v[s])
 	}
-	return nil
+	return m
+}
+
+/*Get get interface from map with out default */
+func (m Map) Get(key string) interface{} {
+	if key == "" {
+		return m
+	}
+	return m.GetPath(strings.Split(key, "."))
 }
 
 /*GetD get interface from map with default */
@@ -169,10 +202,46 @@ func (m Map) Delete(s string) {
 	delete(m, s)
 }
 
-/*Has check if exist */
-func (m Map) Has(s string) bool {
-	_, b := (m)[s]
-	return b
+/*Has check if key exist */
+func (m Map) Has(key string) bool {
+	if key == "" {
+		return false
+	}
+	return m.HasPath(strings.Split(key, "."))
+
+}
+
+// HasPath returns true if the given path of keys exists, false otherwise.
+func (m Map) HasPath(keys []string) bool {
+	return m.GetPath(keys) != nil
+}
+
+// GetPath returns the element in the tree indicated by 'keys'.
+// If keys is of length zero, the current tree is returned.
+func (m Map) GetPath(keys []string) interface{} {
+	if len(keys) == 0 {
+		return m
+	}
+	subtree := m
+	for _, intermediateKey := range keys[:len(keys)-1] {
+		value, exists := subtree[intermediateKey]
+		if !exists {
+			return nil
+		}
+		switch node := value.(type) {
+		case Map:
+			subtree = node
+		case []Map:
+			if len(node) == 0 {
+				return nil
+			}
+			subtree = node[len(node)-1]
+		default:
+			return nil // cannot navigate through other node types
+		}
+	}
+	// branch based on final node type
+	return subtree[keys[len(keys)-1]]
 }
 
 /*SortKeys 排列key */
