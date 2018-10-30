@@ -4,7 +4,6 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"sync"
 )
 
 const domain = "https://api.mch.weixin.qq.com"
@@ -15,7 +14,7 @@ type Payment struct {
 	client *core.Client
 	token  *core.AccessToken
 
-	sub sync.Map
+	sub util.Map
 }
 
 //var sub util.Map
@@ -41,7 +40,7 @@ func newPayment(config *core.Config, client *core.Client) *Payment {
 //NewPayment create an payment instance
 func NewPayment(config *core.Config, client ...*core.Client) *Payment {
 	if client == nil {
-		return newPayment(config, core.NewClient())
+		return newPayment(config, core.DefaultClient())
 	}
 	return newPayment(config, client[0])
 }
@@ -119,83 +118,82 @@ func (p *Payment) AuthCodeToOpenid(authCode string) core.Response {
 
 //Reverse Reverse
 func (p *Payment) Reverse() *Reverse {
-	loaded, b := p.sub.Load("Reverse")
+	obj, b := p.sub["Reverse"]
 	if !b {
-		obj := newReverse(p)
-		p.sub.Store("Reverse", obj)
-		return obj
+		obj = newReverse(p)
+		p.sub["Reverse"] = obj
 	}
-	return loaded.(*Reverse)
+	return obj.(*Reverse)
 }
 
 //JSSDK JSSDK
 func (p *Payment) JSSDK() *JSSDK {
-	loaded, b := p.sub.Load("JSSDK")
+	obj, b := p.sub["JSSDK"]
 	if !b {
-		obj := newJSSDK(p)
-		p.sub.Store("JSSDK", obj)
+		obj = newJSSDK(p)
+		p.sub["JSSDK"] = obj
 	}
-	return loaded.(*JSSDK)
+	return obj.(*JSSDK)
 }
 
 //RedPack get RedPack
 func (p *Payment) RedPack() *RedPack {
-	loaded, b := p.sub.Load("RedPack")
+	obj, b := p.sub["RedPack"]
 	if !b {
-		obj := newRedPack(p)
-		p.sub.Store("RedPack", obj)
+		obj = newRedPack(p)
+		p.sub["RedPack"] = obj
 	}
-	return loaded.(*RedPack)
+	return obj.(*RedPack)
 }
 
 /*Security get Security */
 func (p *Payment) Security() *Security {
-	loaded, b := p.sub.Load("Security")
+	obj, b := p.sub["Security"]
 	if !b {
-		obj := newSecurity(p)
-		p.sub.Store("Security", obj)
+		obj = newSecurity(p)
+		p.sub["Security"] = obj
 	}
-	return loaded.(*Security)
+	return obj.(*Security)
 }
 
 /*Refund get Refund*/
 func (p *Payment) Refund() *Refund {
-	loaded, b := p.sub.Load("Refund")
+	obj, b := p.sub["Refund"]
 	if !b {
-		obj := newRefund(p)
-		p.sub.Store("Refund", obj)
+		obj = newRefund(p)
+		p.sub["Refund"] = obj
 	}
-	return loaded.(*Refund)
+	return obj.(*Refund)
 }
 
 /*Order get Order*/
 func (p *Payment) Order() *Order {
-	loaded, b := p.sub.Load("Order")
+	obj, b := p.sub["Order"]
 	if !b {
-		obj := newOrder(p)
-		p.sub.Store("Order", obj)
+		obj = newOrder(p)
+		p.sub["Order"] = obj
 	}
-	return loaded.(*Order)
+	return obj.(*Order)
 }
 
 /*Bill get Bill*/
 func (p *Payment) Bill() *Bill {
-	loaded, b := p.sub.Load("Bill")
+	obj, b := p.sub["Bill"]
 	if !b {
-		obj := newBill(p)
-		p.sub.Store("Bill", obj)
+		obj = newBill(p)
+		p.sub["Bill"] = obj
 	}
-	return loaded.(*Bill)
+	return obj.(*Bill)
 }
 
 /*Transfer get Transfer*/
 func (p *Payment) Transfer() *Transfer {
-	loaded, b := p.sub.Load("Transfer")
+	obj, b := p.sub["Transfer"]
 	if !b {
-		obj := newTransfer(p)
-		p.sub.Store("Transfer", obj)
+		obj = newTransfer(p)
+		p.sub["Transfer"] = obj
 	}
-	return loaded.(*Transfer)
+	return obj.(*Transfer)
 }
 
 func (p *Payment) initRequest(params util.Map) util.Map {

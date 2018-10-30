@@ -61,11 +61,6 @@ type Client struct {
 	security *Config
 }
 
-//DefaultClient result a client with default value
-func DefaultClient() *Client {
-	return client
-}
-
 //Security get client security config
 func (c *Client) Security() *Config {
 	return c.security
@@ -201,8 +196,13 @@ func newClient(ctx context.Context) *Client {
 }
 
 /*NewClient 创建一个client */
-func NewClient() *Client {
-	return newClient(context.Background())
+func NewClient(ctx context.Context) *Client {
+	return newClient(ctx)
+}
+
+//DefaultClient result a client with default value
+func DefaultClient() *Client {
+	return client
 }
 
 func buildTransport(config *Config) *http.Client {
