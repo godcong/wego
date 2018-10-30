@@ -130,12 +130,12 @@ func (p *Payment) Reverse() *Reverse {
 
 //JSSDK JSSDK
 func (p *Payment) JSSDK() *JSSDK {
-	obj, b := p.sub["JSSDK"]
+	loaded, b := p.sub.Load("JSSDK")
 	if !b {
-		obj = newJSSDK(p)
-		p.sub["JSSDK"] = obj
+		obj := newJSSDK(p)
+		p.sub.Store("JSSDK", obj)
 	}
-	return obj.(*JSSDK)
+	return loaded.(*JSSDK)
 }
 
 //RedPack get RedPack
