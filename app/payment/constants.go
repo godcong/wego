@@ -1,5 +1,7 @@
 package payment
 
+const domain = "https://api.mch.weixin.qq.com"
+
 const riskGetPublicKeyURLSuffix = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 const downloadBillURLSuffix = "/pay/downloadbill"
 const unifiedOrderURLSuffix = "/pay/unifiedorder"
@@ -17,3 +19,6 @@ const promotionTransfersURLSuffix = "/mmpaymkttransfers/promotion/transfers"
 const mmPaySpTransQueryBankURLSuffix = "/mmpaysptrans/query_bank"
 const mmPaySpTransPayBankURLSuffix = "/mmpaysptrans/pay_bank"
 const authCodeToOpenidURLSuffix = "/tool/authcodetoopenid"
+const BizPayURL = "weixin://wxpay/bizpayurl?"
+const sandboxURLSuffix = "/sandboxnew"
+const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"

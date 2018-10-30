@@ -20,19 +20,6 @@ package core
 //
 //}
 
-/*Scheme 获取微信Scheme */
-//func (a *Application) Scheme(id string) string {
-//	cfg := a.GetConfig().GetSubConfig("official_account.default") //TODO: get used config
-//	m := make(util.Map)
-//	m.Set("appid", cfg.Get("app_id"))
-//	m.Set("mch_id", cfg.Get("mch_id"))
-//	m.Set("time_stamp", util.Time())
-//	m.Set("nonce_str", util.GenerateNonceStr())
-//	m.Set("product_id", id)
-//	m.Set("sign", GenerateSignature(m, cfg.Get("aes_key"), MakeSignMD5))
-//	return BizPayURL + m.URLEncode()
-//}
-
 //func (a *Application) HandleNotify(typ string, f func(interface{})) {
 //
 //}

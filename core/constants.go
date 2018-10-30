@@ -2,13 +2,13 @@ package core
 
 /* domain defines */
 const (
-	MPDomain      = "https://mp.weixin.qq.com"
-	BaseDomain    = "https://api.mch.weixin.qq.com"
-	APIWeixin     = "https://api.weixin.qq.com"
-	API2Domain    = "https://api2.mch.weixin.qq.com"
-	HKDomain      = "https://apihk.mch.weixin.qq.com"
-	USDomain      = "https://apius.mch.weixin.qq.com"
-	BizPayURL     = "weixin://wxpay/bizpayurl?"
+	MPDomain   = "https://mp.weixin.qq.com"
+	BaseDomain = "https://api.mch.weixin.qq.com"
+	APIWeixin  = "https://api.weixin.qq.com"
+	API2Domain = "https://api2.mch.weixin.qq.com"
+	HKDomain   = "https://apihk.mch.weixin.qq.com"
+	USDomain   = "https://apius.mch.weixin.qq.com"
+
 	FileAPIWeixin = "http://file.api.weixin.qq.com"
 )
 
@@ -48,6 +48,3 @@ const msgrecordGetmsglistURLSuffix = "/customservice/msgrecord/getmsglist"
 
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
 const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
-
-const sandboxURLSuffix = "/sandboxnew"
-const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"

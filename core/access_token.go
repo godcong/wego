@@ -13,7 +13,10 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	client      *Client
+	client   *Client
+	Uri      string
+	TokenKey string
+
 	credentials util.Map
 }
 
@@ -31,11 +34,6 @@ func (a *AccessToken) getQuery() util.Map {
 }
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	//m := util.Map{
-	//	"grant_type": "client_credential",
-	//	"appid":      a.Get("app_id"),
-	//	"secret":     a.Get("secret"),
-	//}
 	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, a.credentials)
 	return resp
 }

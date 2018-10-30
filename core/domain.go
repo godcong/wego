@@ -28,9 +28,6 @@ func Connect(domain string, uri string) string {
 	case strings.Index(uri, "/") != 0 && strings.LastIndex(domain, "/") != (len(domain)-1):
 		uri = "/" + uri
 	}
-	if UseSandBox() {
-		return domain + sandboxURLSuffix + uri
-	}
 	return domain + uri
 }
 
