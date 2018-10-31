@@ -1,5 +1,10 @@
 package payment
 
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/util"
+)
+
 // Coupon ...
 type Coupon struct {
 	*Payment
@@ -9,4 +14,23 @@ func newCoupon(payment *Payment) *Coupon {
 	return &Coupon{
 		Payment: payment,
 	}
+}
+
+func (c *Coupon) Send(maps util.Map) core.Response {
+	maps = util.MapNilMake(maps)
+	maps.Set("appid", c.GetString("app_id"))
+	maps.Set("openid_count", 1)
+	return c.SafeRequest(c.Link(sendCouponURLSuffix), maps)
+}
+
+func (c *Coupon) QueryStock(maps util.Map) core.Response {
+	maps = util.MapNilMake(maps)
+	maps.Set("appid", c.GetString("app_id"))
+	return c.SafeRequest(c.Link(queryCouponStockURLSuffix), maps)
+}
+
+func (c *Coupon) QueryInfo(maps util.Map) core.Response {
+	maps = util.MapNilMake(maps)
+	maps.Set("appid", c.GetString("app_id"))
+	return c.SafeRequest(c.Link(queryCouponsInfoURLSuffix), maps)
 }

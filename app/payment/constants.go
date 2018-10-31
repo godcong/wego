@@ -18,6 +18,11 @@ const getTransferInfoURLSuffix = "/mmpaymkttransfers/gettransferinfo"
 const promotionTransfersURLSuffix = "/mmpaymkttransfers/promotion/transfers"
 const mmPaySpTransQueryBankURLSuffix = "/mmpaysptrans/query_bank"
 const mmPaySpTransPayBankURLSuffix = "/mmpaysptrans/pay_bank"
+
+const sendCouponURLSuffix = "/mmpaymkttransfers/send_coupon"
+const queryCouponStockURLSuffix = "/mmpaymkttransfers/query_coupon_stock"
+const queryCouponsInfoURLSuffix = "/mmpaymkttransfers/querycouponsinfo"
+
 const authCodeToOpenidURLSuffix = "/tool/authcodetoopenid"
 
 //bizPayURL biz pay url suffix
