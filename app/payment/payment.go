@@ -77,30 +77,26 @@ func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 }
 
 /*Request 普通请求*/
-func (p *Payment) Request(url string, maps util.Map) core.Response {
+func (p *Payment) Request(s string, maps util.Map) core.Response {
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
 	}
 
-	return p.client.Request(p.Link(url), "post", m)
+	return p.client.Request(p.Link(s), "post", m)
 }
 
 /*RequestRaw raw请求*/
 func (p *Payment) RequestRaw(s string, maps util.Map) []byte {
-	m := util.Map{
-		core.DataTypeXML: p.initRequest(maps),
-	}
-
-	return p.client.RequestRaw(p.Link(s), "post", m)
+	return p.Request(s, maps).Bytes()
 }
 
 /*SafeRequest 安全请求*/
 func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 	m := util.Map{
-		core.DataTypeXML: p.initRequest(maps),
+		core.DataTypeXML:      p.initRequest(maps),
+		core.DataTypeSecurity: p.Config,
 	}
-	p.client.SetSecurity(p.Config)
-	return p.client.SafeRequest(p.Link(s), "post", m)
+	return p.client.Request(p.Link(s), "post", m)
 }
 
 // Base ...

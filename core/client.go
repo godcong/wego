@@ -28,6 +28,7 @@ const (
 	DataTypeJSON      = "json"
 	DataTypeQuery     = "query"
 	DataTypeMultipart = "multipart"
+	DataTypeSecurity  = "security"
 )
 
 const defaultCa = `
@@ -58,40 +59,28 @@ var client = &Client{
 /*Client Client */
 type Client struct {
 	context.Context
-	security *Config
-}
-
-//Security get client security config
-func (c *Client) Security() *Config {
-	return c.security
-}
-
-//SetSecurity set client security config
-func (c *Client) SetSecurity(config *Config) *Client {
-	c.security = config
-	return c
 }
 
 /*PostJSON json post请求 */
 func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
-	p := util.Map{
+	maps := util.Map{
 		DataTypeJSON: json,
 	}
 	if query != nil {
-		p.Set(DataTypeQuery, query)
+		maps.Set(DataTypeQuery, query)
 	}
-	return c.Request(url, "post", p)
+	return c.Request(url, "post", maps)
 }
 
 /*PostXML xml post请求 */
 func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
-	p := util.Map{
+	maps := util.Map{
 		DataTypeXML: xml,
 	}
 	if query != nil {
-		p.Set(DataTypeQuery, query)
+		maps.Set(DataTypeQuery, query)
 	}
-	return c.Request(url, "post", p)
+	return c.Request(url, "post", maps)
 }
 
 /*Upload upload请求 */
@@ -125,13 +114,13 @@ func (c *Client) GetRaw(url string, query util.Map) []byte {
 }
 
 /*Post post请求 */
-func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
+func (c *Client) Post(url string, query util.Map, body util.Map) Response {
 	p := util.Map{}
 	if query != nil {
 		p.Set(DataTypeQuery, query)
 	}
-	if ops != nil {
-		p.ReplaceJoin(ops)
+	if body != nil {
+		p.ReplaceJoin(body)
 	}
 	return c.Request(url, "post", p)
 }
@@ -139,8 +128,7 @@ func (c *Client) Post(url string, query util.Map, ops util.Map) Response {
 /*Request 普通请求 */
 func (c *Client) Request(url string, method string, ops util.Map) Response {
 	log.Debug("Request|httpClient", url, method, ops)
-	client := buildTransport(c.security)
-	return request(c.Context, client, url, method, ops)
+	return request(c.Context, url, method, ops)
 }
 
 func castToResponse(resp *http.Response) Response {
@@ -169,29 +157,24 @@ func castToResponse(resp *http.Response) Response {
 /*RequestRaw raw请求 */
 func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
 	log.Debug("Request|httpClient", url, method, ops)
-	client := buildTransport(c.security)
-	return request(c.Context, client, url, method, ops).Bytes()
+	return request(c.Context, url, method, ops).Bytes()
 }
 
-/*SafeRequest 安全请求 */
-func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
-	log.Debug("SafeRequest|httpClient", url, method, ops)
-	client := buildSafeTransport(c.security)
-	return request(c.Context, client, url, method, ops)
-}
-
-/*SafeRequestRaw 安全请求 */
-func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
-	log.Debug("SafeRequest|httpClient", url, method, ops)
-	client := buildSafeTransport(c.security)
-	return request(c.Context, client, url, method, ops).Bytes()
-
-}
+///*SafeRequest 安全请求 */
+//func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
+//	log.Debug("SafeRequest|httpClient", url, method, ops)
+//	return request(c.Context, url, method, ops)
+//}
+//
+///*SafeRequestRaw 安全请求 */
+//func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
+//	log.Debug("SafeRequest|httpClient", url, method, ops)
+//	return request(c.Context, url, method, ops).Bytes()
+//}
 
 func newClient(ctx context.Context) *Client {
 	return &Client{
-		Context:  ctx,
-		security: nil,
+		Context: ctx,
 	}
 }
 
@@ -291,9 +274,10 @@ func (c *Client) clear() {
 	//c.httpResponse = nil
 }
 
-func request(context context.Context, client *http.Client, url string, method string, ops util.Map) Response {
+func request(context context.Context, url string, method string, ops util.Map) Response {
 	method = strings.ToUpper(method)
 	query := buildHTTPQuery(ops.Get(DataTypeQuery))
+	client := buildClient(ops)
 	url = connectQuery(url, query)
 
 	req := requestData(method, url, ops)
@@ -313,6 +297,19 @@ func request(context context.Context, client *http.Client, url string, method st
 		}
 	}
 	return castToResponse(response)
+}
+func buildClient(maps util.Map) *http.Client {
+	//检查是否包含security
+	if maps.Has(DataTypeSecurity) {
+		//判断是否创建safeclient
+		if v, b := maps.Get(DataTypeSecurity).(*Config); b {
+			if v.Check("cert_path", "key_path") != -1 {
+				return buildTransport(v)
+			}
+			return buildSafeTransport(v)
+		}
+	}
+	return buildTransport(NewConfig())
 }
 
 func requestData(method, url string, m util.Map) *http.Request {
