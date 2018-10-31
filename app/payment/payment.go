@@ -205,6 +205,15 @@ func (p *Payment) Sandbox() *Sandbox {
 	return obj.(*Sandbox)
 }
 
+func (p *Payment) Coupon() *Coupon {
+	obj, b := p.sub["Coupon"]
+	if !b {
+		obj = newCoupon(p)
+		p.sub["Coupon"] = obj
+	}
+	return obj.(*Coupon)
+}
+
 func (p *Payment) initRequest(params util.Map) util.Map {
 	if params != nil {
 		params.Set("mch_id", p.GetString("mch_id"))

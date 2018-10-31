@@ -16,6 +16,10 @@ func newCoupon(payment *Payment) *Coupon {
 	}
 }
 
+func NewCoupon(config *core.Config) *Coupon {
+	return newCoupon(NewPayment(config))
+}
+
 func (c *Coupon) Send(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
