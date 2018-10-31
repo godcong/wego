@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestOfficialAccount ...
 func TestOfficialAccount(t *testing.T) {
 	//wego.GetApp().Get()
 	//log.Println(o.GetCallbackIP())
@@ -41,97 +42,19 @@ var rltVideo = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUser
 var rltMusic = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[TITLE]]></Title><Description><![CDATA[DESCRIPTION]]></Description><MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl><HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl><ThumbMediaID><![CDATA[media_id]]></ThumbMediaID></Music></xml>`)
 var rltNews = []byte(`<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>12345678</CreateTime><MsgType><![CDATA[news]]></MsgType><ArticleCount>2</ArticleCount><Articles><item><Title><![CDATA[title1]]></Title><Description><![CDATA[description1]]></Description><PicURL><![CDATA[picurl]]></PicURL><URL><![CDATA[url]]></URL></item><item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description><PicURL><![CDATA[picurl]]></PicURL><URL><![CDATA[url]]></URL></item></Articles></xml>`)
 
+// TestGetApp ...
 func TestGetApp(t *testing.T) {
 
-	//server := wego.GetOfficialAccount().Server()
-	////s := official_account.NewServer()
-	//server.RegisterCallback(func(mess *core.Message) message.Messager {
-	//	//mess.LocationX = 123456789444
-	//	//v, _ := xml.Marshal(*mess)
-	//	//log.Info(string(v))
-	//	//if mess.Event.Compare(message.EventView) == 0 {
-	//	//	log.Info(message.EventView)
-	//	//}
-	//	return message.NewText(&mess.Message, "msg")
-	//})
-	//
-	//rlist := [][]byte{
-	//	//rltText,
-	//	//rltImage,
-	//	//rltVoice,
-	//	//rltVideo,
-	//	//rltMusic,
-	//	rltNews,
-	//}
-	//count := 0
-	//
-	//ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	//
-	//	if count >= len(rlist) {
-	//		count = 0
-	//	}
-	//
-	//	server.ServeHTTP(w, r)
-	//	//t.Log(string(body))
-	//	//var msg core.Message
-	//	//var msg core.Message
-	//	//e = xml.Unmarshal(body, &msg)
-	//
-	//	////xml.NewDecoder(bytes.NewReader(body)).
-	//	//if msg.GetType() == message.TypeText {
-	//	//	b, e := xml.Marshal(msg)
-	//	//	t.Log(string(b), e)
-	//	//	t.Log(m)
-	//	//}
-	//	count++
-	//}))
-	//defer ts.Close()
-	//
-	//list := [][]byte{
-	//	//msgText,
-	//	//msgImage,
-	//	//msgVoice,
-	//	//msgVoice2,
-	//	//msgVideo,
-	//	//msgShortVideo,
-	//	//msgLocaltion,
-	//	//msgLink,
-	//	//evtSubscribe,
-	//	//evtQRScene,
-	//	//evtScan,
-	//	//evtLocation,
-	//	//evtClick,
-	//	//evtView,
-	//	//evtView2,
-	//	//evtScancodePush,
-	//	//evtScancodeWaitmsg,
-	//	evtPicSysphoto,
-	//	evtPicPhotoOrAlbum,
-	//	//evtPicWeixin,
-	//	//evtLocationSelect,
-	//}
-	//
-	//for _, v := range list {
-	//	resp, e := http.Post(ts.URL+"/callback", "Content-Type:application/xml", bytes.NewReader(v))
-	//	msg := new(core.Message)
-	//	b, e := ioutil.ReadAll(resp.Body)
-	//
-	//	xml.Unmarshal(b, msg)
-	//	log.Info(msg, e)
-	//}
-
 }
 
+// TestCoreUrl ...
 func TestCoreUrl(t *testing.T) {
-	//conf := config.GetConfig("payment.default")
-	//url := core.NewURL(conf, core.NewClient(conf))
-	//l := url.ShortURL("https://y11e.com")
-	//log.Println(l)
+
 }
 
+// TestGetOfficialAccount ...
 func TestGetOfficialAccount(t *testing.T) {
-	acc := wego.OfficialAccount()
-	base := acc.Base()
+	base := wego.OfficialAccount().Base()
 	resp := base.GetCallbackIP()
 	t.Log(resp.ToMap())
 	//testBase(t, oa)

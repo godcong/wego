@@ -11,8 +11,8 @@ const accessTokenURLSuffix = "/cgi-bin/token"
 func newAccessToken(config *core.Config) *core.AccessToken {
 	//client := NewClient(config)
 	return &core.AccessToken{
-		URL:      accessTokenKey,
-		TokenKey: accessTokenURLSuffix,
+		URL:      accessTokenURLSuffix,
+		TokenKey: accessTokenKey,
 		Credentials: util.Map{
 			"grant_type": "client_credential",
 			"appid":      config.GetString("app_id"),

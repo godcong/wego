@@ -141,6 +141,7 @@ func castToResponse(resp *http.Response) Response {
 	ct := resp.Header.Get("Content-Type")
 	body, err := ParseBody(resp)
 	if err != nil {
+		log.Error(body, err)
 		return Err(body, err)
 	}
 
@@ -156,7 +157,7 @@ func castToResponse(resp *http.Response) Response {
 			Data: body,
 		}
 	}
-
+	log.Error(body, "error with "+resp.Status)
 	return Err(body, errors.New("error with "+resp.Status))
 }
 

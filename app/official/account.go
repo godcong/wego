@@ -19,9 +19,9 @@ func newAccount(config *core.Config) *Account {
 
 	account := &Account{
 		config: config,
-		//client: client,
-		token: newAccessToken(config),
-		sub:   util.Map{},
+		client: core.DefaultClient(),
+		token:  newAccessToken(config),
+		sub:    util.Map{},
 	}
 
 	return account
@@ -32,42 +32,48 @@ func NewAccount(config *core.Config) *Account {
 	return newAccount(config)
 }
 
+//SetClient set client replace the default client
+func (a *Account) SetClient(client *core.Client) *Account {
+	a.client = client
+	return a
+}
+
 /*Server Server*/
-func (m *Account) Server() *Server {
-	obj, b := m.sub["Server"]
+func (a *Account) Server() *Server {
+	obj, b := a.sub["Server"]
 	if !b {
-		obj = newServer(m)
-		m.sub["Server"] = obj
+		obj = newServer(a)
+		a.sub["Server"] = obj
 	}
 	return obj.(*Server)
 }
 
 /*Base Base*/
-func (m *Account) Base() *Base {
-	obj, b := m.sub["Base"]
+func (a *Account) Base() *Base {
+	obj, b := a.sub["Base"]
 	if !b {
-		obj = newBase(m)
-		m.sub["Base"] = obj
+		obj = newBase(a)
+		a.sub["Base"] = obj
 	}
 	return obj.(*Base)
 }
 
 /*Menu Menu*/
-func (m *Account) Menu() *Menu {
-	obj, b := m.sub["Menu"]
+func (a *Account) Menu() *Menu {
+	obj, b := a.sub["Menu"]
 	if !b {
-		obj = newMenu(m)
-		m.sub["Menu"] = obj
+		obj = newMenu(a)
+		a.sub["Menu"] = obj
 	}
 	return obj.(*Menu)
 }
 
 /*OAuth OAuth*/
-func (m *Account) OAuth() *OAuth {
-	obj, b := m.sub["OAuth"]
+func (a *Account) OAuth() *OAuth {
+	obj, b := a.sub["OAuth"]
 	if !b {
-		obj = newOAuth(m)
-		m.sub["OAuth"] = obj
+		obj = newOAuth(a)
+		a.sub["OAuth"] = obj
 	}
 	return obj.(*OAuth)
 }
