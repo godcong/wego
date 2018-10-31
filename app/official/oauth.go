@@ -266,7 +266,8 @@ func (o *OAuth) Validate(token *core.Token) bool {
 	log.Debug("Validate|response", string(response.Bytes()), response.Error())
 	if response.Error() == nil {
 		m := response.ToMap()
-		if m.GetInt64("errcode") == 0 &&
+		v, b := m.GetInt64("errcode")
+		if b && v == 0 &&
 			m.GetString("errmsg") == "ok" {
 			return true
 		}

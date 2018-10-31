@@ -19,6 +19,7 @@ func newPayment(config *core.Config) *Payment {
 	payment := &Payment{
 		Config: config,
 		client: core.DefaultClient(),
+		sub:    util.Map{},
 	}
 
 	return payment
