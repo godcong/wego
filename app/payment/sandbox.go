@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"time"
 )
 
 /*Sandbox 沙箱 */
@@ -27,29 +27,34 @@ func NewSandbox(config *core.Config) *Sandbox {
 
 /*GetKey 沙箱key(string类型) */
 func (s *Sandbox) GetKey() string {
-	//TODO
-	log.Debug("TODO")
-	key := cache.Get(s.cacheName())
+	key := cache.Get(s.getCacheKey())
 	if key != nil {
 		return key.(string)
 	}
 
-	return string(s.SandboxSignKey())
+	response := s.SandboxSignKey().ToMap()
+	if response.GetString("return_code") == "SUCCESS" {
+		key := response.GetString("sandbox_signkey")
+		ttl := time.Unix(24*3600, 0)
+		cache.SetWithTTL(s.getCacheKey(), key, &ttl)
+		return key
+	}
+	return ""
 }
 
-func (s *Sandbox) cacheName() string {
+func (s *Sandbox) getCacheKey() string {
 	name := s.GetString("app_id") + s.GetString("mch_id")
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
 /*SandboxSignKey 沙箱key */
-func (s *Sandbox) SandboxSignKey() []byte {
+func (s *Sandbox) SandboxSignKey() core.Response {
 	m := make(util.Map)
 	m.Set("mch_id", s.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := GenerateSignature(m, s.GetString("aes_key"), MakeSignMD5)
 	m.Set("sign", sign)
-	resp := s.client.RequestRaw(Link(sandboxSignKeyURLSuffix), "post", m)
+	resp := s.client.Request(Link(sandboxSignKeyURLSuffix), "post", m)
 
 	return resp
 
