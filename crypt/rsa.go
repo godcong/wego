@@ -66,8 +66,8 @@ func ParseRSAPublicKeyFromPEM(key []byte) (*rsa.PublicKey, error) {
 
 }
 
-/*Decrypt Decrypt */
-func Decrypt(pri string, text string) string {
+/*RSADecrypt RSADecrypt */
+func RSADecrypt(pri string, text string) string {
 	privateKey, e := ioutil.ReadFile(pri)
 	if e != nil {
 		return ""
@@ -90,8 +90,8 @@ func Decrypt(pri string, text string) string {
 	return string(b)
 }
 
-/*Encrypt Encrypt */
-func Encrypt(pub string, text string) string {
+/*RSAEncrypt RSAEncrypt */
+func RSAEncrypt(pub string, text string) string {
 	publicKey, e := ioutil.ReadFile(pub)
 	if e != nil {
 		log.Debug(e)

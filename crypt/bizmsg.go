@@ -35,7 +35,7 @@ const (
 
 /*ErrorCode ErrorCode */
 var ErrorCode = map[string]ErrorCodeType{
-	"OK": OK,
+	"OK":                     OK,
 	"ValidateSignatureError": ValidateSignatureError,
 	"ParseXMLError":          ParseXMLError,
 	"ComputeSignatureError":  ComputeSignatureError,
@@ -59,7 +59,7 @@ func NewBizMsg(token, key, id string) *BizMsg {
 	}
 }
 
-/*Encrypt Encrypt */
+/*RSAEncrypt RSAEncrypt */
 func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	prp := NewPrp(m.encodingAESKey)
 	b, err := prp.Encrypt(text, m.appID)
@@ -68,7 +68,7 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	}
 
 	p := util.Map{
-		"Encrypt":      string(b),
+		"RSAEncrypt":   string(b),
 		"MsgSignature": SHA1(m.token, timeStamp, nonce, string(b)),
 		"TimeStamp":    timeStamp,
 		"Nonce":        nonce,
@@ -76,10 +76,10 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	return p.ToXML(), nil
 }
 
-/*Decrypt Decrypt */
+/*RSADecrypt RSADecrypt */
 func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]byte, error) {
 	p := util.XMLToMap([]byte(text))
-	enpt := p.GetString("Encrypt")
+	enpt := p.GetString("RSAEncrypt")
 	tSign := SHA1(m.token, timeStamp, nonce, enpt)
 	if msgSignature != tSign {
 		return nil, errors.New("ValidateSignatureError")

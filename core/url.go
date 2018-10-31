@@ -23,7 +23,6 @@ URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid
 URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
 */
 func (u *URL) ShortURL(url string) Response {
-	//TODO:need fix
 	token := u.token.GetToken()
 	m := util.Map{
 		"action":   "long2short",
@@ -36,10 +35,15 @@ func (u *URL) ShortURL(url string) Response {
 
 /*NewURL NewURL*/
 func NewURL(config *Config) *URL {
-	client := NewClient()
+	token := NewAccessToken()
+	token.SetCredentials(util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	})
 	return &URL{
 		config: config,
-		token:  NewAccessToken(config),
-		client: client,
+		token:  token,
+		client: DefaultClient(),
 	}
 }

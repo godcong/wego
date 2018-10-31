@@ -14,6 +14,7 @@ import (
 	"mime/multipart"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -27,6 +28,7 @@ const (
 	DataTypeXML       = "xml"
 	DataTypeJSON      = "json"
 	DataTypeQuery     = "query"
+	DataTypeForm      = "form"
 	DataTypeMultipart = "multipart"
 	DataTypeSecurity  = "security"
 )
@@ -61,6 +63,17 @@ type Client struct {
 	context.Context
 }
 
+// PostForm post form request
+func (c *Client) PostForm(url string, query util.Map, form interface{}) Response {
+	maps := util.Map{
+		DataTypeForm: form,
+	}
+	if query != nil {
+		maps.Set(DataTypeQuery, query)
+	}
+	return c.Post(url, maps)
+}
+
 /*PostJSON json post请求 */
 func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
 	maps := util.Map{
@@ -69,7 +82,7 @@ func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response
 	if query != nil {
 		maps.Set(DataTypeQuery, query)
 	}
-	return c.Request(url, "post", maps)
+	return c.Post(url, maps)
 }
 
 /*PostXML xml post请求 */
@@ -80,6 +93,11 @@ func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
 	if query != nil {
 		maps.Set(DataTypeQuery, query)
 	}
+	return c.Post(url, maps)
+}
+
+/*Post post请求 */
+func (c *Client) Post(url string, maps util.Map) Response {
 	return c.Request(url, "post", maps)
 }
 
@@ -111,18 +129,6 @@ func (c *Client) GetRaw(url string, query util.Map) []byte {
 		p.Set(DataTypeQuery, query)
 	}
 	return c.RequestRaw(url, "get", p)
-}
-
-/*Post post请求 */
-func (c *Client) Post(url string, query util.Map, body util.Map) Response {
-	p := util.Map{}
-	if query != nil {
-		p.Set(DataTypeQuery, query)
-	}
-	if body != nil {
-		p.ReplaceJoin(body)
-	}
-	return c.Request(url, "post", p)
 }
 
 /*Request 普通请求 */
@@ -279,7 +285,6 @@ func request(context context.Context, url string, method string, ops util.Map) R
 	query := buildHTTPQuery(ops.Get(DataTypeQuery))
 	client := buildClient(ops)
 	url = connectQuery(url, query)
-
 	req := requestData(method, url, ops)
 
 	log.Debug("client|request", client, url, method, ops)
@@ -322,6 +327,9 @@ func requestData(method, url string, m util.Map) *http.Request {
 	} else if m.Has(DataTypeXML) {
 		function = processXML
 		data = m.Get(DataTypeXML)
+	} else if m.Has(DataTypeForm) {
+		function = processForm
+		data = m.Get(DataTypeForm)
 	} else if m.Has(DataTypeMultipart) {
 		function = processMultipart
 		data = m.Get(DataTypeMultipart)
@@ -378,27 +386,31 @@ func processMultipart(method, url string, i interface{}) *http.Request {
 	return request
 }
 
-func processXML(method, url string, i interface{}) *http.Request {
+func toXMLReader(v interface{}) io.Reader {
 	var reader io.Reader
-	switch v := i.(type) {
+	switch v := v.(type) {
 	case string:
-		log.Debug("processXML|string", v)
+		log.Debug("toXMLReader|string", v)
 		reader = strings.NewReader(v)
 	case []byte:
-		log.Debug("processXML|[]byte", v)
+		log.Debug("toXMLReader|[]byte", v)
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("processXML|util.Map", v.ToXML())
+		log.Debug("toXMLReader|util.Map", v.ToXML())
 		reader = strings.NewReader(v.ToXML())
 	default:
-		log.Debug("processXML|default", v)
+		log.Debug("toXMLReader|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
-			log.Debug("processXML|v0", v0, e)
+			log.Debug("toXMLReader|v0", v0, e)
 			reader = bytes.NewReader(v0)
 		}
 	}
+	return reader
+}
 
-	request, err := http.NewRequest(method, url, reader)
+func processXML(method, url string, i interface{}) *http.Request {
+
+	request, err := http.NewRequest(method, url, toXMLReader(i))
 	if err != nil {
 		return nil
 	}
@@ -406,31 +418,66 @@ func processXML(method, url string, i interface{}) *http.Request {
 	return request
 }
 
-func processJSON(method, url string, i interface{}) *http.Request {
+func toJSONReader(v interface{}) io.Reader {
 	var reader io.Reader
-	switch v := i.(type) {
+	switch v := v.(type) {
 	case string:
-		log.Debug("processJSON|string", v)
+		log.Debug("toJSONReader|string", v)
 		reader = strings.NewReader(v)
 	case []byte:
-		log.Debug("processJSON|[]byte", string(v))
+		log.Debug("toJSONReader|[]byte", string(v))
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("processJSON|util.Map", v.String())
+		log.Debug("toJSONReader|util.Map", v.String())
 		reader = bytes.NewReader(v.ToJSON())
 	default:
-		log.Debug("processJSON|default", v)
+		log.Debug("toJSONReader|default", v)
 		if v0, e := json.Marshal(v); e == nil {
-			log.Debug("processJSON|v0", string(v0), e)
+			log.Debug("toJSONReader|v0", string(v0), e)
 			reader = bytes.NewReader(v0)
 		}
 	}
+	return reader
+}
 
-	request, err := http.NewRequest(method, url, reader)
+func processJSON(method, url string, i interface{}) *http.Request {
+	request, err := http.NewRequest(method, url, toJSONReader(i))
 	if err != nil {
 		return nil
 	}
 	request.Header["Content-Type"] = []string{"application/json; charset=utf-8"}
+	return request
+}
+
+func toFormReader(v interface{}) io.Reader {
+	var reader io.Reader
+	switch v := v.(type) {
+	case string:
+		log.Debug("toFormReader|string", v)
+		reader = strings.NewReader(v)
+	case []byte:
+		log.Debug("toFormReader|[]byte", string(v))
+		reader = bytes.NewReader(v)
+	case util.Map:
+		log.Debug("toFormReader|util.Map", v.URLEncode())
+		reader = strings.NewReader(v.URLEncode())
+	case url.Values:
+		log.Debug("toFormReader|util.Map", v.Encode())
+		reader = strings.NewReader(v.Encode())
+	default:
+		//do nothing
+	}
+	return reader
+}
+
+func processForm(method, url string, i interface{}) *http.Request {
+
+	request, err := http.NewRequest(method, url, toFormReader(i))
+	if err != nil {
+		return nil
+	}
+
+	request.Header["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
 	return request
 }
 

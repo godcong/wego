@@ -26,6 +26,7 @@ func NewCard(config *core.Config) *Card {
 /*CardScene CardScene*/
 type CardScene string
 
+// CardSceneNearBy ...
 const (
 	//CardSceneNearBy 附近
 	CardSceneNearBy CardScene = "SCENE_NEAR_BY"
@@ -66,10 +67,12 @@ type CardLandingPage struct {
 /*CardType CardType*/
 type CardType string
 
+// String ...
 func (t CardType) String() string {
 	return string(t)
 }
 
+// CardTypeGroupon ...
 const (
 	//CardTypeGroupon GROUPON 团购券类型。
 	CardTypeGroupon = "GROUPON"
@@ -100,10 +103,12 @@ type CardSku struct {
 /*CardCodeType CardCodeType*/
 type CardCodeType string
 
+// String ...
 func (t CardCodeType) String() string {
 	return string(t)
 }
 
+// CardCodeTypeText ...
 const (
 	//CardCodeTypeText 文 本
 	CardCodeTypeText CardCodeType = "CODE_TYPE_TEXT"
@@ -248,7 +253,7 @@ GetDepositCount 查询导入code数目
  {"errcode":48001,"errmsg":"api unauthorized hint: [TQ2Iga07222944]"}
 */
 func (c *Card) GetDepositCount(cardID string) core.Response {
-	resp := c.client.Post(
+	resp := c.client.PostJSON(
 		Link(cardCodeGetDepositCountURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{
@@ -268,7 +273,7 @@ CheckCode 核查code接口
  {"errcode":48001,"errmsg":"api unauthorized hint: [xxvWsa08782921]"}
 */
 func (c *Card) CheckCode(cardID string, code []string) core.Response {
-	resp := c.client.Post(
+	resp := c.client.PostJSON(
 		Link(cardCodeCheckCodeURLSuffix),
 		c.token.GetToken().KeyMap(),
 		util.Map{

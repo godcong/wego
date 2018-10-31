@@ -20,7 +20,7 @@ const (
 //const SSLKEY_PATH = "./cert/apiclient_key.pem"
 
 const reportURLSuffix = "/payitil/report"
-const shortURLSuffix = "/tool/shorturl"
+const shortURLSuffix = "/cgi-bin/shorturl"
 
 //const CUSTOM_SEND_URL_SUFFIX = "/cgi-bin/message/custom/send"
 

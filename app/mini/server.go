@@ -39,6 +39,7 @@ func (s *Server) RegisterCallback(sc core.MessageCallback, types ...message.MsgT
 	}
 }
 
+// ServeHTTP ...
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var bodyBytes []byte
 	var rltXML []byte
@@ -88,7 +89,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//if encryptType == "aes" {
-	//	tmpStr, err := s.bizMsg.Encrypt(string(rltXML), ts, nonce)
+	//	tmpStr, err := s.bizMsg.RSAEncrypt(string(rltXML), ts, nonce)
 	//	if err != nil {
 	//		log.Error(err)
 	//		return

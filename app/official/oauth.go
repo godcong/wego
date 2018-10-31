@@ -175,11 +175,6 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	return buf.String()
 }
 
-/* */
-//func (o *OAuth) GetResponse() core.Response {
-//	return o.response
-//}
-
 //RefreshToken 刷新Token
 // https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
 // 成功:
@@ -193,7 +188,7 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	if o.redirectURI != "" {
 		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
-	response := o.client.Post(
+	response := o.client.PostJSON(
 		Link(oauth2RefreshTokenURLSuffix),
 		v,
 		nil,
@@ -217,7 +212,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 	if o.redirectURI != "" {
 		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 	}
-	response := o.client.Post(
+	response := o.client.PostJSON(
 		Link(oauth2AccessTokenURLSuffix),
 		v,
 		nil,

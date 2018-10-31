@@ -48,7 +48,7 @@ func (c *PrpCrypt) BytesLength(b []byte) uint32 {
 	return binary.BigEndian.Uint32(b)
 }
 
-/*Encrypt Encrypt */
+/*RSAEncrypt RSAEncrypt */
 func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
 	buf := bytes.Buffer{}
 
@@ -78,7 +78,7 @@ func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	return append(ciphertext, padtext...)
 }
 
-/*Decrypt Decrypt */
+/*RSADecrypt RSADecrypt */
 func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
 	if err != nil {

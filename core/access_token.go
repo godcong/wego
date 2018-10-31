@@ -39,7 +39,6 @@ func (a *AccessToken) sendRequest(s string) []byte {
 }
 
 func newAccessToken() *AccessToken {
-	//client := NewClient(config)
 	return &AccessToken{
 		URL:         accessTokenURLSuffix,
 		TokenKey:    accessTokenKey,

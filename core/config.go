@@ -55,7 +55,7 @@ func (c *Config) GetSubConfig(s string) *Config {
 
 /*GetTree get config tree */
 func (c *Config) GetTree(s string) interface{} {
-	if c == nil {
+	if c == nil || c.Tree == nil {
 		return nil
 	}
 
