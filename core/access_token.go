@@ -13,11 +13,10 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	client   *Client
-	Uri      string
-	TokenKey string
-
-	credentials util.Map
+	client      *Client
+	URI         string
+	TokenKey    string
+	Credentials util.Map
 }
 
 /*AccessTokenKey 键值 */
@@ -29,29 +28,25 @@ const AccessTokenExpiresIn = "expires_in"
 /*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500
 
-func (a *AccessToken) getQuery() util.Map {
-	panic("implement me")
-}
-
 func (a *AccessToken) sendRequest(s string) []byte {
-	resp := a.client.GetRaw(APIWeixin+tokenURLSuffix, a.credentials)
+	client := a.client
+	if client == nil {
+		client = DefaultClient()
+	}
+	resp := client.GetRaw(Connect(APIWeixin, tokenURLSuffix), a.Credentials)
 	return resp
 }
 
-func newAccessToken(client *Client) *AccessToken {
+func newAccessToken() *AccessToken {
 	//client := NewClient(config)
 	return &AccessToken{
-		client:      client,
-		credentials: util.Map{},
+		TokenKey: AccessTokenKey,
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(client ...*Client) *AccessToken {
-	if client == nil {
-		return newAccessToken(DefaultClient())
-	}
-	return newAccessToken(client[0])
+func NewAccessToken() *AccessToken {
+	return newAccessToken()
 }
 
 //SetCredentials set request credential
@@ -59,7 +54,7 @@ func (a *AccessToken) SetCredentials(p util.Map) *AccessToken {
 	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
 		log.Error(fmt.Errorf("the %d key was not found", idx))
 	}
-	a.credentials = p
+	a.Credentials = p
 	return a
 }
 
@@ -141,15 +136,16 @@ func (a *AccessToken) SetToken(token string) *AccessToken {
 }
 
 func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
+	life := time.Now().Add(time.Duration(lifeTime.Unix()) - AccessTokenSafeSeconds)
 	cache.SetWithTTL(a.getCacheKey(), &Token{
 		AccessToken: token,
-		ExpiresIn:   time.Now().Unix() + lifeTime.Unix(),
-	}, time.Now())
+		ExpiresIn:   lifeTime.Unix(),
+	}, &life)
 	return a
 }
 
 func (a *AccessToken) getCredentials() string {
-	c := md5.Sum(a.credentials.ToJSON())
+	c := md5.Sum(a.Credentials.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 
