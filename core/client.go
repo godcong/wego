@@ -63,6 +63,40 @@ type Client struct {
 	context.Context
 }
 
+type ClientSetter interface {
+	SetClient(*Client)
+}
+
+type ClientGetter interface {
+	GetClient() *Client
+}
+
+func ClientGet(v []interface{}) *Client {
+	for _, val := range v {
+		switch sv := val.(type) {
+		case *Client:
+			return sv
+		case Client:
+			return &sv
+		}
+	}
+	return DefaultClient()
+}
+
+func ClientSet(setter ClientSetter, v []interface{}) bool {
+	for _, val := range v {
+		switch sv := val.(type) {
+		case *Client:
+			setter.SetClient(sv)
+			return true
+		case Client:
+			setter.SetClient(&sv)
+			return true
+		}
+	}
+	return false
+}
+
 // PostForm post form request
 func (c *Client) PostForm(url string, query util.Map, form interface{}) Response {
 	maps := util.Map{

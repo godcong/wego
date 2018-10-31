@@ -30,16 +30,12 @@ const AccessTokenExpiresIn = "expires_in"
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	client := a.client
-	if client == nil {
-		client = DefaultClient()
-	}
-	resp := client.GetRaw(Connect(APIWeixin, a.URL), a.Credentials)
-	return resp
+	return a.client.GetRaw(Connect(APIWeixin, a.URL), a.Credentials)
 }
 
-func newAccessToken() *AccessToken {
+func newAccessToken(client *Client) *AccessToken {
 	return &AccessToken{
+		client:      client,
 		URL:         accessTokenURLSuffix,
 		TokenKey:    accessTokenKey,
 		Credentials: nil,
@@ -47,8 +43,8 @@ func newAccessToken() *AccessToken {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken() *AccessToken {
-	return newAccessToken()
+func NewAccessToken(v ...interface{}) *AccessToken {
+	return newAccessToken(ClientGet(v))
 }
 
 //SetCredentials set request credential

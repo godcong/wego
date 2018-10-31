@@ -20,25 +20,25 @@ type Payment struct {
 	sub util.Map
 }
 
-func newPayment(config *core.Config) *Payment {
+func newPayment(config *core.Config, client *core.Client, p util.Map) *Payment {
 	payment := &Payment{
 		Config: config,
-		client: core.DefaultClient(),
-		sub:    util.Map{},
+		client: client,
+		sub:    p,
 	}
 
 	return payment
 }
 
 //NewPayment create an payment instance
-func NewPayment(config *core.Config) *Payment {
-	return newPayment(config)
+func NewPayment(config *core.Config, v ...interface{}) *Payment {
+	payment := newPayment(config, core.ClientGet(v), util.Map{})
+	return payment
 }
 
 //SetClient set client replace the default client
-func (p *Payment) SetClient(client *core.Client) *Payment {
+func (p *Payment) SetClient(client *core.Client) {
 	p.client = client
-	return p
 }
 
 //IsSandbox check is use sandbox
