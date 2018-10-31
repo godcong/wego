@@ -62,6 +62,26 @@ func (c *Config) GetTree(s string) interface{} {
 	return c.Tree.Get(s)
 }
 
+/*DeepGet get an interface from config when was in values */
+func (c *Config) DeepGet(strings ...string) interface{} {
+	for _, s := range strings {
+		if c.Has(s) {
+			return c.Get(s)
+		}
+	}
+	return nil
+}
+
+/*DeepGetD get an interface from config when was in values */
+func (c *Config) DeepGetD(def string, strings ...string) interface{} {
+	for _, s := range strings {
+		if c.Has(s) {
+			return c.Get(s)
+		}
+	}
+	return def
+}
+
 /*Get get an interface from config */
 func (c *Config) Get(s string) interface{} {
 	return c.GetTree(s)

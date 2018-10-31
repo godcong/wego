@@ -29,13 +29,10 @@ func (j *JSSDK) getURL() string {
 
 /*BridgeConfig bridge 设置 */
 func (j *JSSDK) BridgeConfig(pid string) util.Map {
-	appid := j.Get("sub_appid")
-	if appid == "" {
-		appid = j.Get("app_id")
-	}
+	appID := j.DeepGet("sub_appid", "app_id")
 
 	m := util.Map{
-		"appId":     appid,
+		"appId":     appID,
 		"timeStamp": util.Time(),
 		"nonceStr":  util.GenerateNonceStr(),
 		"package":   strings.Join([]string{"prepay_id", pid}, "="),
@@ -72,16 +69,18 @@ func (j *JSSDK) AppConfig(pid string) util.Map {
 	return m
 }
 
-/*ShareAddressConfig 共享地址设置 */
-func (j *JSSDK) ShareAddressConfig(accessToken interface{}) util.Map {
+// ShareAddressConfig ...
+//参数：token
+//类型：string或*core.AccessToken
+func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	token := ""
-	switch v := accessToken.(type) {
-	case core.AccessToken:
-		token0 := v.GetToken()
-		token = token0.ToJSON()
+	switch vv := v.(type) {
+	case *core.AccessToken:
+		token = vv.GetToken().ToJSON()
 	case string:
-		token = accessToken.(string)
+		token = vv
 	}
+
 	m := util.Map{
 		"appId":     j.Get("app_id"),
 		"scope":     "jsapi_address",
