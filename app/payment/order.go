@@ -49,11 +49,11 @@ func (o *Order) Unify(m util.Map) core.Response {
 		}
 	}
 
-	m.Set("appid", o.config.GetString("app_id"))
+	m.Set("appid", o.GetString("app_id"))
 
 	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
 	if !m.Has("notify_url") {
-		m.Set("notify_url", o.config.GetString("notify_url"))
+		m.Set("notify_url", o.GetString("notify_url"))
 	}
 	return o.Request(unifiedOrderURLSuffix, m)
 }
@@ -64,7 +64,7 @@ func (o *Order) Unify(m util.Map) core.Response {
 */
 func (o *Order) Close(no string) core.Response {
 	m := make(util.Map)
-	m.Set("appid", o.config.Get("app_id"))
+	m.Set("appid", o.Get("app_id"))
 	m.Set("out_trade_no", no)
 	return o.Request(closeOrderURLSuffix, m)
 }
@@ -89,7 +89,7 @@ https://api.mch.weixin.qq.com/pay/orderquery        （建议接入点：中国�
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
 func (o *Order) query(m util.Map) core.Response {
-	m.Set("appid", o.config.Get("app_id"))
+	m.Set("appid", o.Get("app_id"))
 	return o.Request(orderQueryURLSuffix, m)
 }
 

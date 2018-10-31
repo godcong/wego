@@ -5,19 +5,19 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-type AccessToken struct {
-	*core.AccessToken
-}
+const accessTokenKey = "access_token"
+const accessTokenURLSuffix = "/cgi-bin/token"
 
 func newAccessToken(config *core.Config) *core.AccessToken {
-	token := core.AccessToken{
-		URI:         "",
-		TokenKey:    "",
-		Credentials: nil,
+	//client := NewClient(config)
+	return &core.AccessToken{
+		URL:      accessTokenKey,
+		TokenKey: accessTokenURLSuffix,
+		Credentials: util.Map{
+			"grant_type": "client_credential",
+			"appid":      config.GetString("app_id"),
+			"secret":     config.GetString("secret"),
+		},
 	}
-	return token.SetCredentials(util.Map{
-		"grant_type": "client_credential",
-		"appid":      config.GetString("app_id"),
-		"secret":     config.GetString("secret"),
-	})
+
 }

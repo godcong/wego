@@ -56,11 +56,19 @@ func (m *MapCache) SetWithTTL(key string, val interface{}, ttl *time.Time) Cache
 
 /*Has check exist */
 func (m *MapCache) Has(key string) bool {
-	_, b := m.Load(key)
-	return b
+	if v, b := m.Load(key); b {
+		switch vv := v.(type) {
+		case *mapCacheData:
+			if vv.life != nil && vv.life.Before(time.Now()) {
+				return false
+			}
+			return true
+		}
+	}
+	return false
 }
 
-/*Delete Delete one value */
+/*Delete one value */
 func (m *MapCache) Delete(key string) Cache {
 	m.Delete(key)
 	return m

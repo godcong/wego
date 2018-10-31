@@ -20,7 +20,7 @@ func newAccount(config *core.Config) *Account {
 	account := &Account{
 		config: config,
 		//client: client,
-		token: initAccessToken(config),
+		token: newAccessToken(config),
 		sub:   util.Map{},
 	}
 
@@ -63,7 +63,7 @@ func (m *Account) Menu() *Menu {
 }
 
 /*OAuth OAuth*/
-func (m *Account) Auth() *OAuth {
+func (m *Account) OAuth() *OAuth {
 	obj, b := m.sub["OAuth"]
 	if !b {
 		obj = newOAuth(m)

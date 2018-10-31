@@ -42,8 +42,21 @@ func MapNilMake(m Map) Map {
 }
 
 /*MapFromMap transfer to Map from map[string]interface{} */
-func MapFromMap(p map[string]interface{}) Map {
+func MapToMap(p map[string]interface{}) Map {
 	return Map(p)
+}
+
+//MapsToMap
+func MapsToMap(m []Map) Map {
+	mp := make(Map)
+	if m == nil {
+		return mp
+	}
+
+	for _, v := range m {
+		mp.join(v, true)
+	}
+	return mp
 }
 
 /*Set set interface */

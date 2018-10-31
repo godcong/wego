@@ -39,8 +39,8 @@ Appid	appid	是	wxe062425f740d30d8	String(32)	商户号的appid
 */
 func (t *Transfer) QueryBalanceOrder(s string) core.Response {
 	m := util.Map{
-		"appid":            t.config.Get("app_id"),
-		"mch_id":           t.config.Get("mch_id"),
+		"appid":            t.Get("app_id"),
+		"mch_id":           t.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(getTransferInfoURLSuffix, m)
@@ -71,8 +71,8 @@ Ip地址	spbill_create_ip	是	192.168.0.1	String(32)	该IP同在商户平台设�
 */
 func (t *Transfer) ToBalance(m util.Map) core.Response {
 	m.Delete("mch_id")
-	m.Set("mchid", t.config.Get("mch_id"))
-	m.Set("mch_appid", t.config.Get("app_id"))
+	m.Set("mchid", t.Get("mch_id"))
+	m.Set("mch_appid", t.Get("app_id"))
 
 	if !m.Has("spbill_create_ip") {
 		m.Set("spbill_create_ip", core.GetServerIP())
@@ -123,7 +123,7 @@ BANK_FAIL（银行退票，订单状态由付款成功流转至退票,退票时�
 */
 func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 	m := util.Map{
-		"mch_id":           t.config.Get("mch_id"),
+		"mch_id":           t.Get("mch_id"),
 		"partner_trade_no": s,
 	}
 	return t.SafeRequest(mmPaySpTransQueryBankURLSuffix, m)
@@ -187,12 +187,12 @@ func (t *Transfer) ToBankCard(m util.Map) core.Response {
 			return nil
 		}
 	}
-	m.Set("mch_id", t.config.Get("mch_id"))
+	m.Set("mch_id", t.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateUUID())
 
-	m.Set("enc_bank_no", crypt.Encrypt(t.config.GetString("pubkey_path"), m.GetString("enc_bank_no")))
-	m.Set("enc_true_name", crypt.Encrypt(t.config.GetString("pubkey_path"), m.GetString("enc_true_name")))
-	m.Set("sign", core.GenerateSignature(m, t.config.GetString("key"), core.MakeSignMD5))
+	m.Set("enc_bank_no", crypt.Encrypt(t.GetString("pubkey_path"), m.GetString("enc_bank_no")))
+	m.Set("enc_true_name", crypt.Encrypt(t.GetString("pubkey_path"), m.GetString("enc_true_name")))
+	m.Set("sign", GenerateSignature(m, t.GetString("key"), MakeSignMD5))
 	return t.client.SafeRequest(core.Link(mmPaySpTransPayBankURLSuffix), "post", util.Map{
 		core.DataTypeXML: m,
 	})

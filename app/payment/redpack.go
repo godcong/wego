@@ -80,7 +80,7 @@ NORMAL:普通红包
 接收时间	rcv_time	是	2015-04-21 20:00:00	String(32)	领取红包的时间
 */
 func (r *RedPack) Info(m util.Map) core.Response {
-	m.Set("appid", r.config.Get("app_id"))
+	m.Set("appid", r.Get("app_id"))
 	m.Set("bill_type", "MCHT")
 	return r.SafeRequest(getHBInfoURLSuffix, m)
 
@@ -153,7 +153,7 @@ urlencode(posttime=xx& mobile =xx&deviceid=xx)
 func (r *RedPack) SendNormal(m util.Map) core.Response {
 	m.Set("total_num", strconv.Itoa(1))
 	m.Set("client_ip", core.GetServerIP())
-	m.Set("wxappid", r.config.Get("app_id"))
+	m.Set("wxappid", r.Get("app_id"))
 	return r.SafeRequest(sendRedPackURLSuffix, m)
 }
 
@@ -219,6 +219,6 @@ urlencode(posttime=xx& mobile =xx&deviceid=xx)
 */
 func (r *RedPack) SendGroup(m util.Map) core.Response {
 	m.Set("amt_type", "ALL_RAND")
-	m.Set("wxappid", r.config.Get("app_id"))
+	m.Set("wxappid", r.Get("app_id"))
 	return r.SafeRequest(sendGroupRedPackURLSuffix, m)
 }

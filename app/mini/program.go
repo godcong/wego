@@ -46,7 +46,7 @@ func (m *Program) GetClient() *core.Client {
 	return m.client
 }
 
-/*Auth Auth */
+/*OAuth OAuth */
 func (m *Program) Auth() *Auth {
 	if m.auth == nil {
 		m.auth = &Auth{

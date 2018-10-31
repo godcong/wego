@@ -13,7 +13,7 @@ func TestGetMiniProgram(t *testing.T) {
 }
 
 func TestGetAuth(t *testing.T) {
-	//log.Println(wego.GetMiniProgram().Auth().Session("1234"))
+	//log.Println(wego.GetMiniProgram().OAuth().Session("1234"))
 }
 
 func TestNewAppCode(t *testing.T) {

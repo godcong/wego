@@ -7,7 +7,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-/*Auth Auth */
+/*OAuth OAuth */
 type Auth struct {
 	*core.Config
 	*Program

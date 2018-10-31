@@ -66,6 +66,6 @@ func (r *Reverse) ByTransactionID(id string) core.Response {
 }
 
 func (r *Reverse) reverse(m util.Map) core.Response {
-	m.Set("appid", r.config.Get("app_id"))
+	m.Set("appid", r.Get("app_id"))
 	return r.SafeRequest(reverseURLSuffix, m)
 }

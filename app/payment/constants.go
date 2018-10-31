@@ -19,7 +19,9 @@ const promotionTransfersURLSuffix = "/mmpaymkttransfers/promotion/transfers"
 const mmPaySpTransQueryBankURLSuffix = "/mmpaysptrans/query_bank"
 const mmPaySpTransPayBankURLSuffix = "/mmpaysptrans/pay_bank"
 const authCodeToOpenidURLSuffix = "/tool/authcodetoopenid"
-const BizPayURL = "weixin://wxpay/bizpayurl?"
+
+//bizPayURL biz pay url suffix
+const bizPayURL = "weixin://wxpay/bizpayurl?"
 const sandboxURLSuffix = "/sandboxnew"
 const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
 

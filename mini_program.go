@@ -1,7 +1,7 @@
 package wego
 
-///*Auth 授权登录*/
-//type Auth interface {
+///*OAuth 授权登录*/
+//type OAuth interface {
 //	Session(code string) util.Map
 //}
 //
@@ -28,7 +28,7 @@ package wego
 
 ///*MiniProgram 小程序*/
 //type MiniProgram interface {
-//	Auth() Auth
+//	OAuth() OAuth
 //	AppCode() AppCode
 //	//Client() core.Client
 //	DataCube() DataCube
@@ -42,8 +42,8 @@ package wego
 //	return obj
 //}
 
-// func GetAuth() Auth {
-// 	return GetMiniProgram().Auth()
+// func GetAuth() OAuth {
+// 	return GetMiniProgram().OAuth()
 // }
 
 // func GetAppCode() AppCode {

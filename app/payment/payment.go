@@ -11,32 +11,36 @@ import (
 type Payment struct {
 	*core.Config
 	client *core.Client
-	token  *core.AccessToken
 
 	sub util.Map
 }
 
-func newPayment(config *core.Config, client *core.Client) *Payment {
+func newPayment(config *core.Config) *Payment {
 	payment := &Payment{
 		Config: config,
-		client: client,
+		client: core.DefaultClient(),
 	}
 
 	return payment
 }
 
 //NewPayment create an payment instance
-func NewPayment(config *core.Config, client ...*core.Client) *Payment {
-	if client == nil {
-		return newPayment(config, core.DefaultClient())
-	}
-	return newPayment(config, client[0])
+func NewPayment(config *core.Config) *Payment {
+	return newPayment(config)
 }
 
+//SetClient set client replace the default client
+func (p *Payment) SetClient(client *core.Client) *Payment {
+	p.client = client
+	return p
+}
+
+//IsSandbox check is use sandbox
 func (p *Payment) IsSandbox() bool {
 	return p.GetBool("sandbox")
 }
 
+//GetKey get key
 func (p *Payment) GetKey() string {
 	key := p.GetString("key")
 	if p.IsSandbox() {
@@ -62,9 +66,10 @@ func (p *Payment) Scheme(pid string) string {
 	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("product_id", pid)
 	m.Set("sign", GenerateSignature(m, p.GetKey(), MakeSignMD5))
-	return BizPayURL + m.URLEncode()
+	return bizPayURL + m.URLEncode()
 }
 
+//SetSubMerchant set sub merchat
 func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 	p.Set("sub_mch_id", mchID)
 	p.Set("sub_appid", appID)
@@ -72,32 +77,33 @@ func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 }
 
 /*Request 普通请求*/
-func (p *Payment) Request(url string, params util.Map) core.Response {
+func (p *Payment) Request(url string, maps util.Map) core.Response {
 	m := util.Map{
-		core.DataTypeXML: p.initRequest(params),
+		core.DataTypeXML: p.initRequest(maps),
 	}
 
 	return p.client.Request(p.Link(url), "post", m)
 }
 
 /*RequestRaw raw请求*/
-func (p *Payment) RequestRaw(url string, params util.Map) []byte {
+func (p *Payment) RequestRaw(s string, maps util.Map) []byte {
 	m := util.Map{
-		core.DataTypeXML: p.initRequest(params),
+		core.DataTypeXML: p.initRequest(maps),
 	}
 
-	return p.client.RequestRaw(p.Link(url), "post", m)
+	return p.client.RequestRaw(p.Link(s), "post", m)
 }
 
 /*SafeRequest 安全请求*/
-func (p *Payment) SafeRequest(url string, params util.Map) core.Response {
+func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 	m := util.Map{
-		core.DataTypeXML: p.initRequest(params),
+		core.DataTypeXML: p.initRequest(maps),
 	}
-
-	return p.client.SafeRequest(p.Link(url), "post", m)
+	p.client.SetSecurity(p.Config)
+	return p.client.SafeRequest(p.Link(s), "post", m)
 }
 
+// Base ...
 func (p *Payment) Base() *Base {
 	obj, b := p.sub["Base"]
 	if !b {
@@ -107,7 +113,7 @@ func (p *Payment) Base() *Base {
 	return obj.(*Base)
 }
 
-//Reverse Reverse
+// Reverse ...
 func (p *Payment) Reverse() *Reverse {
 	obj, b := p.sub["Reverse"]
 	if !b {
@@ -117,7 +123,7 @@ func (p *Payment) Reverse() *Reverse {
 	return obj.(*Reverse)
 }
 
-//JSSDK JSSDK
+// JSSDK ...
 func (p *Payment) JSSDK() *JSSDK {
 	obj, b := p.sub["JSSDK"]
 	if !b {
@@ -127,7 +133,7 @@ func (p *Payment) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
-//RedPack get RedPack
+// RedPack ...
 func (p *Payment) RedPack() *RedPack {
 	obj, b := p.sub["RedPack"]
 	if !b {
@@ -137,7 +143,7 @@ func (p *Payment) RedPack() *RedPack {
 	return obj.(*RedPack)
 }
 
-/*Security get Security */
+// Security ...
 func (p *Payment) Security() *Security {
 	obj, b := p.sub["Security"]
 	if !b {
@@ -147,7 +153,7 @@ func (p *Payment) Security() *Security {
 	return obj.(*Security)
 }
 
-/*Refund get Refund*/
+// Refund ...
 func (p *Payment) Refund() *Refund {
 	obj, b := p.sub["Refund"]
 	if !b {
@@ -157,7 +163,7 @@ func (p *Payment) Refund() *Refund {
 	return obj.(*Refund)
 }
 
-/*Order get Order*/
+// Order ...
 func (p *Payment) Order() *Order {
 	obj, b := p.sub["Order"]
 	if !b {
@@ -167,7 +173,7 @@ func (p *Payment) Order() *Order {
 	return obj.(*Order)
 }
 
-/*Bill get Bill*/
+// Bill ...
 func (p *Payment) Bill() *Bill {
 	obj, b := p.sub["Bill"]
 	if !b {
@@ -177,7 +183,7 @@ func (p *Payment) Bill() *Bill {
 	return obj.(*Bill)
 }
 
-/*Transfer get Transfer*/
+// Transfer ...
 func (p *Payment) Transfer() *Transfer {
 	obj, b := p.sub["Transfer"]
 	if !b {
@@ -187,6 +193,7 @@ func (p *Payment) Transfer() *Transfer {
 	return obj.(*Transfer)
 }
 
+// Sandbox ...
 func (p *Payment) Sandbox() *Sandbox {
 	obj, b := p.sub["Sandbox"]
 	if !b {
@@ -213,6 +220,7 @@ func (p *Payment) initRequest(params util.Map) util.Map {
 	return params
 }
 
+// Link connect domain url and url suffix
 func (p *Payment) Link(url string) string {
 	if p.IsSandbox() {
 		return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain)+sandboxURLSuffix, url)
@@ -220,6 +228,7 @@ func (p *Payment) Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }
 
+//Link url
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }

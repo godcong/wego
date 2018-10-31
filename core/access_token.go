@@ -14,13 +14,14 @@ import (
 /*AccessToken AccessToken */
 type AccessToken struct {
 	client      *Client
-	URI         string
+	URL         string
 	TokenKey    string
 	Credentials util.Map
 }
 
-/*AccessTokenKey 键值 */
-const AccessTokenKey = "access_token"
+/*accessTokenKey 键值 */
+const accessTokenKey = "access_token"
+const accessTokenURLSuffix = "/cgi-bin/token"
 
 /*AccessTokenExpiresIn 过期 */
 const AccessTokenExpiresIn = "expires_in"
@@ -33,14 +34,16 @@ func (a *AccessToken) sendRequest(s string) []byte {
 	if client == nil {
 		client = DefaultClient()
 	}
-	resp := client.GetRaw(Connect(APIWeixin, tokenURLSuffix), a.Credentials)
+	resp := client.GetRaw(Connect(APIWeixin, a.URL), a.Credentials)
 	return resp
 }
 
 func newAccessToken() *AccessToken {
 	//client := NewClient(config)
 	return &AccessToken{
-		TokenKey: AccessTokenKey,
+		URL:         accessTokenURLSuffix,
+		TokenKey:    accessTokenKey,
+		Credentials: nil,
 	}
 }
 

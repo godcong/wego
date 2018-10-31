@@ -22,8 +22,6 @@ const (
 const reportURLSuffix = "/payitil/report"
 const shortURLSuffix = "/tool/shorturl"
 
-const tokenURLSuffix = "/cgi-bin/token"
-
 //const CUSTOM_SEND_URL_SUFFIX = "/cgi-bin/message/custom/send"
 
 const getonlinekflistURLSuffix = "/cgi-bin/customservice/getonlinekflist"

@@ -79,7 +79,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	m := util.XMLToMap(bodyBytes)
-	if validateCallback(m, s.config.GetString("key")) {
+	if validateCallback(m, s.GetString("key")) {
 		rlt = s.ProcessCallback(m)
 
 	}
@@ -114,12 +114,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func validateCallback(p util.Map, key string) bool {
 	st := p.GetString("sign_type")
-	ft := core.MakeSignHMACSHA256
+	ft := MakeSignHMACSHA256
 	if st == "MD5" {
-		ft = core.MakeSignMD5
+		ft = MakeSignMD5
 	}
 
-	sign := core.GenerateSignature(p, key, ft)
+	sign := GenerateSignature(p, key, ft)
 	if sign == p.GetString("sign") {
 		return true
 	}

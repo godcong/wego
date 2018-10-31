@@ -12,11 +12,10 @@ type Base struct {
 }
 
 func newBase(config *Config) *Base {
-	client := NewClient()
 	return &Base{
 		config: config,
-		client: client,
-		token:  NewAccessToken(config),
+		client: DefaultClient(),
+		token:  NewAccessToken(),
 	}
 }
 
@@ -26,6 +25,7 @@ func NewBase(config *Config) *Base {
 }
 
 //ClearQuota  公众号的所有api调用（包括第三方帮其调用）次数进行清零
+//Deprecated: ClearQuota
 //公众号调用或第三方平台帮公众号调用对公众号的所有api调用（包括第三方帮其调用）次数进行清零：
 //HTTP请求：POST HTTP调用： https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
 func (b *Base) ClearQuota() Response {
@@ -41,6 +41,7 @@ func (b *Base) ClearQuota() Response {
 }
 
 //GetCallbackIP 请求微信的服务器IP列表
+//Deprecated: GetCallbackIP
 //接口调用请求说明
 //http请求方式: GEThttps://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
 func (b *Base) GetCallbackIP() Response {
