@@ -22,10 +22,6 @@ type PrpCrypt struct {
 
 /*NewPrp NewPrp */
 func NewPrp(key []byte) *PrpCrypt {
-	//k, err := base64.RawStdEncoding.DecodeString(key)
-	//if err != nil {
-	//	return &PrpCrypt{}
-	//}
 	return &PrpCrypt{
 		key: key,
 	}
@@ -48,7 +44,7 @@ func (c *PrpCrypt) BytesLength(b []byte) uint32 {
 	return binary.BigEndian.Uint32(b)
 }
 
-/*RSAEncrypt RSAEncrypt */
+// Encrypt ...
 func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
 	buf := bytes.Buffer{}
 
@@ -78,7 +74,7 @@ func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	return append(ciphertext, padtext...)
 }
 
-/*RSADecrypt RSADecrypt */
+// Decrypt ...
 func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
 	if err != nil {

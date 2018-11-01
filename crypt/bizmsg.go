@@ -59,7 +59,7 @@ func NewBizMsg(token, key, id string) *BizMsg {
 	}
 }
 
-/*RSAEncrypt RSAEncrypt */
+// Encrypt ...
 func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	prp := NewPrp(m.encodingAESKey)
 	b, err := prp.Encrypt(text, m.appID)
@@ -76,7 +76,7 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 	return p.ToXML(), nil
 }
 
-/*RSADecrypt RSADecrypt */
+// Decrypt ...
 func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]byte, error) {
 	p := util.XMLToMap([]byte(text))
 	enpt := p.GetString("RSAEncrypt")

@@ -17,19 +17,19 @@ import (
 // an otherwise-circular dependency. Other internal packages
 // should convert this Token into an oauth2.Token before use.
 type Token struct {
-	// AccessToken is the token that authorizes and authenticates
+	// AccessToken is the accessToken that authorizes and authenticates
 	// the requests.
 	AccessToken string `json:"access_token"`
 
-	// RefreshToken is a token that's used by the application
-	// (as opposed to the user) to refresh the access token
+	// RefreshToken is a accessToken that's used by the application
+	// (as opposed to the user) to refresh the access accessToken
 	// if it expires.
 	RefreshToken string `json:"refresh_token"`
 
-	// Expiry is the optional expiration time of the access token.
+	// Expiry is the optional expiration time of the access accessToken.
 	//
 	// If zero, TokenSource implementations will reuse the same
-	// token forever and RefreshToken or equivalent
+	// accessToken forever and RefreshToken or equivalent
 	// mechanisms for that TokenSource will not be used.
 	ExpiresIn int64 `json:"expires_in"`
 
@@ -39,14 +39,14 @@ type Token struct {
 	// wechat scope
 	Scope string `json:"scope"`
 	// Raw optionally contains extra metadata from the server
-	// when updating a token.
+	// when updating a accessToken.
 	Raw interface{}
 }
 
-const accessTokenNil = "nil point access token"
-const tokenNil = "nil point token"
+const accessTokenNil = "nil point access accessToken"
+const tokenNil = "nil point accessToken"
 
-/*MustKeyMap get token's key,value with map when nil or error return nil map */
+/*MustKeyMap get accessToken's key,value with map when nil or error return nil map */
 func MustKeyMap(at *AccessToken) util.Map {
 	m := util.Map{}
 	if m, e := KeyMap(at); e != nil {
@@ -55,7 +55,7 @@ func MustKeyMap(at *AccessToken) util.Map {
 	return m
 }
 
-/*KeyMap get token's key,value with map */
+/*KeyMap get accessToken's key,value with map */
 func KeyMap(at *AccessToken) (util.Map, error) {
 	if at == nil {
 		return nil, errors.New(accessTokenNil)
@@ -66,7 +66,7 @@ func KeyMap(at *AccessToken) (util.Map, error) {
 	return nil, errors.New(tokenNil)
 }
 
-/*KeyMap get token's key,value with map */
+/*KeyMap get accessToken's key,value with map */
 func (t *Token) KeyMap() util.Map {
 	m := make(util.Map)
 	if t.AccessToken != "" {
@@ -86,7 +86,7 @@ func (t *Token) GetExpiresIn() time.Time {
 	return time.Unix(t.ExpiresIn, 0)
 }
 
-/*ToJSON transfer token to json*/
+/*ToJSON transfer accessToken to json*/
 func (t *Token) ToJSON() string {
 	v, e := json.Marshal(t)
 	if e != nil {
@@ -95,18 +95,18 @@ func (t *Token) ToJSON() string {
 	return string(v)
 }
 
-/*GetScopes get token scopes for get token*/
+/*GetScopes get accessToken scopes for get accessToken*/
 func (t *Token) GetScopes() []string {
 	return strings.Split(t.Scope, ",")
 }
 
-/*SetScopes set token scopes for get token*/
+/*SetScopes set accessToken scopes for get accessToken*/
 func (t *Token) SetScopes(s []string) *Token {
 	strings.Join(s, ",")
 	return t
 }
 
-/*ParseToken parse token from string*/
+/*ParseToken parse accessToken from string*/
 func ParseToken(j string) (*Token, error) {
 	t := new(Token)
 	e := json.Unmarshal([]byte(j), t)

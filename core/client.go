@@ -28,7 +28,8 @@ const (
 	DataTypeXML       = "xml"
 	DataTypeJSON      = "json"
 	DataTypeQuery     = "query"
-	DataTypeForm      = "form"
+	DataTypeForm      = "form_params"
+	DataTypeFile      = "file"
 	DataTypeMultipart = "multipart"
 	DataTypeSecurity  = "security"
 )
@@ -182,8 +183,7 @@ func castToResponse(resp *http.Response) Response {
 		log.Error(body, err)
 		return Err(body, err)
 	}
-
-	log.Println("header:", ct)
+	log.Debug("response:", string(body))
 	if resp.StatusCode == 200 {
 		if strings.Index(ct, "xml") != -1 ||
 			bytes.Index(body, []byte("<xml")) != -1 {

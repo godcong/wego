@@ -18,7 +18,7 @@ func NewDataCrypt(id string) *DataCrypt {
 	}
 }
 
-/*RSADecrypt RSADecrypt */
+// Decrypt ...
 func (c *DataCrypt) Decrypt(data, iv, key string) ([]byte, error) {
 	dKey, e := Base64Decode([]byte(key))
 	if e != nil {

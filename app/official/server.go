@@ -13,12 +13,18 @@ import (
 	"github.com/godcong/wego/log"
 )
 
+// SUCCESS ...
+const SUCCESS = "SUCCESS"
+
+// FAIL ...
+const FAIL = "FAIL"
+
 /*Server Server */
 type Server struct {
 	*Account
-	CryptResponse   bool
-	message         *core.Message
-	mType           string
+	CryptResponse bool
+	//message         *core.Message
+	msgType         string
 	bizMsg          *crypt.BizMsg
 	defaultCallback []core.MessageCallback
 	callback        map[message.MsgType][]core.MessageCallback
@@ -102,7 +108,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//	}
 	//	rltXML = []byte(tmpStr)
 	//}
-	if s.mType == "xml" {
+	if s.msgType == "xml" {
 		header := w.Header()
 		if val := header["Content-Type"]; len(val) == 0 {
 			header["Content-Type"] = []string{"application/xml; charset=utf-8"}
@@ -143,9 +149,8 @@ func newServer(account *Account) *Server {
 	id := account.GetString("app_id")
 
 	return &Server{
-		mType:           "xml",
+		msgType:         "xml",
 		bizMsg:          crypt.NewBizMsg(token, key, id),
-		message:         nil,
 		defaultCallback: []core.MessageCallback{},
 		callback:        map[message.MsgType][]core.MessageCallback{},
 	}

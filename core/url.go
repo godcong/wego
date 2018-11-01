@@ -7,9 +7,29 @@ import (
 
 /*URL URL */
 type URL struct {
-	config *Config
-	token  *AccessToken
-	client *Client
+	*Config
+	accessToken *AccessToken
+	client      *Client
+}
+
+// AccessToken ...
+func (url *URL) AccessToken() *AccessToken {
+	return url.accessToken
+}
+
+// SetAccessToken ...
+func (url *URL) SetAccessToken(accessToken *AccessToken) {
+	url.accessToken = accessToken
+}
+
+// Client ...
+func (url *URL) Client() *Client {
+	return url.client
+}
+
+// SetClient ...
+func (url *URL) SetClient(client *Client) {
+	url.client = client
 }
 
 /*ShortURL 转换短链接
@@ -22,28 +42,31 @@ URL链接	long_url	是	String(512、	weixin：//wxpay/bizpayurl?sign=XXXXX&appid
 返回状态码	return_code	是	String(16)	SUCCESS/FAIL
 URL链接	short_url	是	String(64)	weixin：//wxpay/s/XXXXXX	转换后的URL
 */
-func (u *URL) ShortURL(url string) Response {
-	token := u.token.GetToken()
+func (url *URL) ShortURL(long string) Response {
+	token := url.accessToken.GetToken()
 	m := util.Map{
 		"action":   "long2short",
-		"long_url": url,
+		"long_url": long,
 	}
-	resp := u.client.PostJSON(APIWeixin+shortURLSuffix, token.KeyMap(), m)
+	resp := url.client.PostJSON(APIWeixin+shortURLSuffix, token.KeyMap(), m)
 	log.Debug("URL|ShortURL", resp)
 	return resp
 }
 
-/*NewURL NewURL*/
-func NewURL(config *Config) *URL {
-	token := NewAccessToken()
-	token.SetCredentials(util.Map{
-		"grant_type": "client_credential",
-		"appid":      config.GetString("app_id"),
-		"secret":     config.GetString("secret"),
-	})
+func newURL(config *Config) *URL {
 	return &URL{
-		config: config,
-		token:  token,
-		client: DefaultClient(),
+		Config: config,
 	}
+}
+
+/*NewURL NewURL*/
+func NewURL(config *Config, v ...interface{}) *URL {
+	client := ClientGet(v)
+	accessToken := newAccessToken(ClientCredential(config))
+	accessToken.SetClient(client)
+	url := newURL(config)
+
+	url.SetAccessToken(accessToken)
+	url.SetClient(client)
+	return url
 }

@@ -84,6 +84,11 @@ func IsDebug() bool {
 	return debug
 }
 
+// Printf ...
+func Printf(format string, v ...interface{}) {
+	log.Printf(format, v)
+}
+
 /*Println output Println log */
 func Println(v ...interface{}) {
 	_, f, l, _ := runtime.Caller(1)

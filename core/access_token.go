@@ -45,6 +45,15 @@ func newAccessToken(p util.Map) *AccessToken {
 	}
 }
 
+// ClientCredential ...
+func ClientCredential(config *Config) util.Map {
+	return util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	}
+}
+
 // CredentialGet ...
 func CredentialGet(v []interface{}) util.Map {
 	for _, val := range v {
@@ -113,7 +122,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	key := a.getCacheKey()
 
 	if !refresh && cache.Has(key) {
-		log.Debug("cached token", key)
+		log.Debug("cached accessToken", key)
 		if v, b := cache.Get(key).(*Token); b {
 			if v.ExpiresIn > time.Now().Unix() {
 				return v
@@ -125,7 +134,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	if token == nil {
 		return nil
 	}
-	log.Debug("AccessToken|getToken", token)
+	log.Printf("AccessToken|getToken: %+v", *token)
 	if v := token.ExpiresIn; v != 0 {
 		a.SetTokenWithLife(token.AccessToken, time.Unix(v, 0))
 	} else {
@@ -151,12 +160,12 @@ func (a *AccessToken) RequestToken(credentials string) *Token {
 	return &token
 }
 
-/*SetTokenWithLife set string token with life time */
+/*SetTokenWithLife set string accessToken with life time */
 func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {
 	return a.setToken(token, lifeTime)
 }
 
-/*SetToken set string token */
+/*SetToken set string accessToken */
 func (a *AccessToken) SetToken(token string) *AccessToken {
 	return a.setToken(token, time.Unix(7200, 0))
 }
