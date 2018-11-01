@@ -33,6 +33,8 @@ func (s *Sandbox) GetKey() string {
 	}
 
 	response := s.SandboxSignKey().ToMap()
+
+
 	if response.GetString("return_code") == "SUCCESS" {
 		key := response.GetString("sandbox_signkey")
 		ttl := time.Unix(24*3600, 0)
@@ -52,9 +54,9 @@ func (s *Sandbox) SandboxSignKey() core.Response {
 	m := make(util.Map)
 	m.Set("mch_id", s.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := GenerateSignature(m, s.GetString("aes_key"), MakeSignMD5)
+	sign := GenerateSignature(m, s.GetString("key"), MakeSignMD5)
 	m.Set("sign", sign)
-	resp := s.client.Request(Link(sandboxSignKeyURLSuffix), "post", m)
+	resp := s.client.PostXML(Link(sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 

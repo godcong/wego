@@ -26,19 +26,19 @@ func (c *Coupon) Send(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
 	maps.Set("openid_count", 1)
-	return c.SafeRequest(c.Link(sendCouponURLSuffix), maps)
+	return c.SafeRequest(sendCouponURLSuffix, maps)
 }
 
 // QueryStock ...
 func (c *Coupon) QueryStock(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
-	return c.SafeRequest(c.Link(queryCouponStockURLSuffix), maps)
+	return c.SafeRequest(queryCouponStockURLSuffix, maps)
 }
 
 // QueryInfo ...
 func (c *Coupon) QueryInfo(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
-	return c.SafeRequest(c.Link(queryCouponsInfoURLSuffix), maps)
+	return c.SafeRequest(queryCouponsInfoURLSuffix, maps)
 }

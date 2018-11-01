@@ -21,7 +21,7 @@ func NewBill(config *core.Config) *Bill {
 	return newBill(NewPayment(config))
 }
 
-/*Get 下载对账单
+/*Download 下载对账单
 接口链接
 https://api.mch.weixin.qq.com/pay/downloadbill
 是否需要证书
@@ -30,7 +30,7 @@ https://api.mch.weixin.qq.com/pay/downloadbill
 字段名	变量名	必填	类型	示例值	描述
 对账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式:20140603
 */
-func (b *Bill) Get(bd string, op ...util.Map) core.Response {
+func (b *Bill) Download(bd string, op ...util.Map) core.Response {
 	m := util.MapsToMap(op)
 	m.Set("appid", b.Get("app_id"))
 	m.Set("bill_date", bd)

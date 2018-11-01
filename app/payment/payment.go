@@ -47,9 +47,11 @@ func (p *Payment) IsSandbox() bool {
 
 //GetKey get key
 func (p *Payment) GetKey() string {
+	log.Debug(p.String())
 	key := p.GetString("key")
 	if p.IsSandbox() {
 		key = p.Sandbox().GetKey()
+		log.Info("sandbox", key)
 	}
 
 	if 32 != len(key) {
@@ -64,14 +66,14 @@ func (p *Payment) GetKey() string {
 //参数: string product_id
 //返回: string
 func (p *Payment) Scheme(pid string) string {
-	m := make(util.Map)
-	m.Set("appid", p.Get("app_id"))
-	m.Set("mch_id", p.Get("mch_id"))
-	m.Set("time_stamp", util.Time())
-	m.Set("nonce_str", util.GenerateNonceStr())
-	m.Set("product_id", pid)
-	m.Set("sign", GenerateSignature(m, p.GetKey(), MakeSignMD5))
-	return bizPayURL + m.URLEncode()
+	maps := make(util.Map)
+	maps.Set("appid", p.Get("app_id"))
+	maps.Set("mch_id", p.Get("mch_id"))
+	maps.Set("time_stamp", util.Time())
+	maps.Set("nonce_str", util.GenerateNonceStr())
+	maps.Set("product_id", pid)
+	maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+	return bizPayURL + maps.URLEncode()
 }
 
 //SetSubMerchant set Sub merchat
@@ -86,7 +88,6 @@ func (p *Payment) Request(s string, maps util.Map) core.Response {
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
 	}
-
 	return p.client.Request(p.Link(s), "post", m)
 }
 
@@ -214,21 +215,23 @@ func (p *Payment) Coupon() *Coupon {
 	return obj.(*Coupon)
 }
 
-func (p *Payment) initRequest(params util.Map) util.Map {
-	if params != nil {
-		params.Set("mch_id", p.GetString("mch_id"))
-		params.Set("nonce_str", util.GenerateUUID())
+func (p *Payment) initRequest(maps util.Map) util.Map {
+	if maps != nil {
+
+		maps.Set("mch_id", p.GetString("mch_id"))
+		maps.Set("nonce_str", util.GenerateUUID())
 		if p.Has("sub_mch_id") {
-			params.Set("sub_mch_id", p.GetString("sub_mch_id"))
+			maps.Set("sub_mch_id", p.GetString("sub_mch_id"))
 		}
 		if p.Has("sub_appid") {
-			params.Set("sub_appid", p.GetString("sub_appid"))
+			maps.Set("sub_appid", p.GetString("sub_appid"))
 		}
-		params.Set("sign_type", SignTypeMd5.String())
-		params.Set("sign", GenerateSignature(params, p.GetKey(), MakeSignMD5))
+		maps.Set("sign_type", SignTypeMd5.String())
+		maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+		log.Debug("initRequest", maps)
 	}
-	log.Debug("initRequest", params)
-	return params
+
+	return maps
 }
 
 // Link connect domain url and url suffix

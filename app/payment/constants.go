@@ -23,7 +23,7 @@ const sendCouponURLSuffix = "/mmpaymkttransfers/send_coupon"
 const queryCouponStockURLSuffix = "/mmpaymkttransfers/query_coupon_stock"
 const queryCouponsInfoURLSuffix = "/mmpaymkttransfers/querycouponsinfo"
 
-const authCodeToOpenidURLSuffix = "/tool/authcodetoopenid"
+const authCodeToOpenidURLSuffix = "/tools/authcodetoopenid"
 
 //bizPayURL biz pay url suffix
 const bizPayURL = "weixin://wxpay/bizpayurl?"
