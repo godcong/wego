@@ -263,14 +263,9 @@ func (c *Card) GetDepositCount(cardID string) core.Response {
 	return resp
 }
 
-/*
-CheckCode 核查code接口
-
- HTTP请求方式: POST
- URL:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
-
- 失败:
- {"errcode":48001,"errmsg":"api unauthorized hint: [xxvWsa08782921]"}
+/*CheckCode 核查code接口
+HTTP请求方式: POST
+HTTP调用:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
 */
 func (c *Card) CheckCode(cardID string, code []string) core.Response {
 	resp := c.client.PostJSON(
@@ -284,17 +279,14 @@ func (c *Card) CheckCode(cardID string, code []string) core.Response {
 	return resp
 }
 
-/*
-GetCode 查询 Code 接口
-
-  HTTP请求方式: POST
-  URL:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
-
+/*GetCode 查询Code接口
+HTTP请求方式: POST
+HTTP调用:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
 参数说明:
- 参数名	必填	类型	示例值	描述
- code	是	string(20)	110201201245	单张卡券的唯一标准。
- card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
- check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
+参数名	必填	类型	示例值	描述
+code	是	string(20)	110201201245	单张卡券的唯一标准。
+card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
+check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
 */
 func (c *Card) GetCode(p util.Map) core.Response {
 	resp := c.client.PostJSON(

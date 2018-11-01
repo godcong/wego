@@ -31,7 +31,7 @@ func newPayment(config *core.Config, p util.Map) *Payment {
 //NewPayment create an payment instance
 func NewPayment(config *core.Config, v ...interface{}) *Payment {
 	payment := newPayment(config, util.Map{})
-	core.ClientSet(payment, v)
+	payment.SetClient(core.ClientGet(v))
 	return payment
 }
 

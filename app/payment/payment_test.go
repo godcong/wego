@@ -3,15 +3,17 @@ package payment_test
 import (
 	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"testing"
 )
 
+// TestNewPayment ...
 func TestNewPayment(t *testing.T) {
-	cfg := core.C(util.Map{
-		"app_id": "wx1ad61aeexxxxxxx",
-		"mch_id": "1498xxxxx32",                  //商户ID
-		"key":    "O9aVVkxxxxxxxxxxxxxxxbZ2NQSJ", //支付key
+	cfg, _ := core.C(util.Map{
+		"app_id": "wxxxxxxxxxxxxxxx",
+		"mch_id": "150000000000",                 //商户ID
+		"key":    "aTKnSUcTkbaaaaaaaaaaaaaaaaaa", //支付key
 
 		"notify_url": "https://host.address/uri", //支付回调地址
 
@@ -25,6 +27,16 @@ func TestNewPayment(t *testing.T) {
 		"prikey_path": "cert/privatekey.pem", //(可不填)部分支付使用（如：银行转账）
 	})
 
-	payment.NewPayment(cfg)
-
+	payment := payment.NewPayment(cfg)
+	m := make(util.Map)
+	m.Set("body", "腾讯充值中心-QQ会员充值")
+	m.Set("out_trade_no", "123456")
+	m.Set("total_fee", "1")
+	m.Set("trade_type", "NATIVE")
+	r := payment.Order().Unify(m)
+	if r.Error() != nil {
+		t.Log(r)
+	}
+	log.Println(string(r.Bytes()))
+	log.Println(r.ToMap())
 }

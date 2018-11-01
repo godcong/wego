@@ -4,6 +4,7 @@ import (
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
+	"testing"
 )
 
 var config = Config()
@@ -15,4 +16,9 @@ func Config() *core.Config {
 	config := cfg.GetSubConfig("official_account.default")
 	cache.Set("config", cfg)
 	return config
+}
+
+// TestNewAccount ...
+func TestNewAccount(t *testing.T) {
+
 }

@@ -232,18 +232,17 @@ func cfg(tree *toml.Tree) *Config {
 }
 
 //NewConfig create a new null config
-func NewConfig() *Config {
+func NewConfig(tree *toml.Tree) *Config {
 	return &Config{
-		Tree: &toml.Tree{},
+		Tree: tree,
 	}
 }
 
 //C parse config from map
-func C(p util.Map) *Config {
-	cfg := NewConfig()
-	p.Range(func(key string, value interface{}) bool {
-		cfg.Set(key, value)
-		return true
-	})
-	return cfg
+func C(p util.Map) (*Config, error) {
+	cfg, err := toml.TreeFromMap((map[string]interface{})(p))
+	if err == nil {
+		return NewConfig(cfg), nil
+	}
+	return nil, err
 }
