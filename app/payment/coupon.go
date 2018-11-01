@@ -16,10 +16,12 @@ func newCoupon(payment *Payment) *Coupon {
 	}
 }
 
+// NewCoupon ...
 func NewCoupon(config *core.Config) *Coupon {
 	return newCoupon(NewPayment(config))
 }
 
+// Send ...
 func (c *Coupon) Send(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
@@ -27,12 +29,14 @@ func (c *Coupon) Send(maps util.Map) core.Response {
 	return c.SafeRequest(c.Link(sendCouponURLSuffix), maps)
 }
 
+// QueryStock ...
 func (c *Coupon) QueryStock(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
 	return c.SafeRequest(c.Link(queryCouponStockURLSuffix), maps)
 }
 
+// QueryInfo ...
 func (c *Coupon) QueryInfo(maps util.Map) core.Response {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))

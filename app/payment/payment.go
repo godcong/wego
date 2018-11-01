@@ -205,6 +205,7 @@ func (p *Payment) Sandbox() *Sandbox {
 	return obj.(*Sandbox)
 }
 
+// Coupon ...
 func (p *Payment) Coupon() *Coupon {
 	obj, b := p.sub["Coupon"]
 	if !b {

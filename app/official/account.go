@@ -15,27 +15,25 @@ type Account struct {
 	sub    util.Map
 }
 
-func newAccount(config *core.Config) *Account {
-
-	account := &Account{
+func newAccount(config *core.Config, client *core.Client, token *core.AccessToken, p util.Map) *Account {
+	return &Account{
 		config: config,
-		client: core.DefaultClient(),
-		token:  newAccessToken(config),
-		sub:    util.Map{},
+		client: client,
+		token:  token,
+		sub:    p,
 	}
-
-	return account
 }
 
 //NewAccount return a official account
-func NewAccount(config *core.Config) *Account {
-	return newAccount(config)
+func NewAccount(config *core.Config, v ...interface{}) *Account {
+	token := newAccessToken(config)
+	acc := newAccount(config, core.ClientGet(v), token, util.Map{})
+	return acc
 }
 
 //SetClient set client replace the default client
-func (a *Account) SetClient(client *core.Client) *Account {
+func (a *Account) SetClient(client *core.Client) {
 	a.client = client
-	return a
 }
 
 /*Server Server*/

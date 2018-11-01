@@ -63,14 +63,17 @@ type Client struct {
 	context.Context
 }
 
+// ClientSetter ...
 type ClientSetter interface {
 	SetClient(*Client)
 }
 
+// ClientGetter ...
 type ClientGetter interface {
 	GetClient() *Client
 }
 
+// ClientGet ...
 func ClientGet(v []interface{}) *Client {
 	for _, val := range v {
 		switch sv := val.(type) {
@@ -83,6 +86,7 @@ func ClientGet(v []interface{}) *Client {
 	return DefaultClient()
 }
 
+// ClientSet ...
 func ClientSet(setter ClientSetter, v []interface{}) bool {
 	for _, val := range v {
 		switch sv := val.(type) {
