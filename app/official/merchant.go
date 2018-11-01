@@ -35,7 +35,7 @@ func (m *Merchant) Create() {
 	access_token	是	调用接口凭证
 	POST数据	是	商品库存信息
 	POST数据
-	数据示例：
+	数据示例:
 	{
 		"product_id": "pDF3iY5EYkMxs4-tF8xedyES5GQI",
 		"sku_info": "10000983:10000995;10001007:10001010",
@@ -46,7 +46,7 @@ func (m *Merchant) Create() {
 	sku_info	sku信息, 格式"id1:vid1;id2:vid2"
 	quantity	减少的库存数量
 	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 		"errmsg":"success"
@@ -71,7 +71,7 @@ func (m *Merchant) StockReduce() {
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	邮费信息
 	3.1.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"delivery_template": {
 			"Name": "testexpress",
@@ -154,9 +154,9 @@ func (m *Merchant) StockReduce() {
 			DestCountry	指定国家(详见《地区列表》说明)
 			DestProvince	指定省份(详见《地区列表》说明)
 			DestCity	指定城市(详见《地区列表》说明)
-	例子解析：Type为10000027的默认邮费计算，第1件邮费2分，每增加3件邮费增加3分。Type为10000027的指定地区邮费计算，寄送到中国/广东省/广州市的商品，第一件邮费1元，每增加1件邮费增加3分。
+	例子解析:Type为10000027的默认邮费计算，第1件邮费2分，每增加3件邮费增加3分。Type为10000027的指定地区邮费计算，寄送到中国/广东省/广州市的商品，第一件邮费1元，每增加1件邮费增加3分。
 	3.1.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 	"errmsg": "success"，
@@ -179,14 +179,14 @@ func (m *Merchant) StockReduce() {
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	邮费信息
 	3.2.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"template_id": 123456
 	}
 	字段	说明
 	template_id	邮费模板ID
 	3.2.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 	"errmsg": "success"
@@ -207,7 +207,7 @@ func (m *Merchant) StockReduce() {
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	邮费信息
 	3.3.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"template_id": 123456,
 		"delivery_template": ...
@@ -216,7 +216,7 @@ func (m *Merchant) StockReduce() {
 	template_id	邮费模板ID
 	delivery_template	邮费模板信息(字段说明详见增加邮费模板)
 	3.3.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 	"errmsg": "success"
@@ -237,14 +237,14 @@ func (m *Merchant) StockReduce() {
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	邮费信息
 	3.4.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"template_id": 123456
 	}
 	字段	说明
 	template_id	邮费模板ID
 	3.4.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 	  "errcode": 0,
 	  "errmsg": "success",
@@ -333,7 +333,7 @@ func (m *Merchant) StockReduce() {
 	参数	是否必须	说明
 	access_token	是	公众号的调用接口凭证
 	3.5.3	返回数据说明
-	数据示例：
+	数据示例:
 	{
 	  "errcode": 0,
 	  "errmsg": "success",
@@ -379,7 +379,7 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	商品分组信息
 	4.1.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"group_detail" : {
 			"group_name": "测试分组",
@@ -393,7 +393,7 @@ func (m *Merchant) StockReduce() {
 	group_name	分组名称
 	product_list	商品ID集合
 	4.1.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success",
@@ -417,14 +417,14 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	商品分组信息
 	4.2.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"group_id": 19
 	}
 	字段	说明
 	group_id	分组ID
 	4.2.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success"
@@ -446,13 +446,13 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	分组属性
 	4.3.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"group_id": 28,
 		"group_name":"特惠专场"
 	}
 	4.3.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success"
@@ -474,7 +474,7 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	分组商品信息
 	4.4.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"group_id": 28,
 		"product": [
@@ -494,7 +494,7 @@ func (m *Merchant) StockReduce() {
 		product_id	商品ID
 		mod_action	修改操作(0-删除, 1-增加)
 	4.4.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success"
@@ -514,7 +514,7 @@ func (m *Merchant) StockReduce() {
 	参数	是否必须	说明
 	access_token	是	调用接口凭证
 	4.5.3	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -549,14 +549,14 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	分组信息
 	4.6.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"group_id": 29
 	}
 	字段	说明
 	group_id	分组ID
 	4.6.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -806,7 +806,7 @@ func (m *Merchant) StockReduce() {
 		img	分组照片(图片需调用图片上传接口获得图片Url填写至此，否则添加货架失败，建议分辨率640*1008)
 	eid	控件5的ID
 	5.1.5	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success",
@@ -830,14 +830,14 @@ func (m *Merchant) StockReduce() {
 	access_token	是	调用接口凭证
 	POST数据	是	货架信息
 	5.2.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"shelf_id": 19
 	}
 	字段	说明
 	shelf_id	货架ID
 	5.2.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode":0,
 	"errmsg":"success"
@@ -859,7 +859,7 @@ POST数据格式	json
 access_token	是	调用接口凭证
 POST数据	是	货架详情信息
 5.3.3	POST数据
-数据示例：
+数据示例:
 {
 	"shelf_id": 12345,
 	"shelf_data": ...,
@@ -872,7 +872,7 @@ shelf_data	货架详情(字段说明详见增加货架)
 shelf_banner	货架banner(图片需调用图片上传接口获得图片Url填写至此，否则修改货架失败)
 shelf_name	货架名称
 5.3.4	返回数据说明
-数据示例：
+数据示例:
 {
     "errcode":0,
 "errmsg":"success"
@@ -892,7 +892,7 @@ errmsg	错误信息
 	参数	是否必须	说明
 	access_token	是	调用接口凭证
 	5.4.3	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -964,14 +964,14 @@ errmsg	错误信息
 	access_token	是	调用接口凭证
 	POST数据	是	货架信息
 	5.5.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"shelf_id": 19
 	}
 	字段	说明
 	shelf_id	货架ID
 	5.5.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -996,11 +996,11 @@ errmsg	错误信息
 5.6	开发者将自己的页面作为货架
 微信小店的货架支持开放给开发者使用，即开发者可以将自己的页面作为货架，通过JavaScript API来调起微信客户端原生的商品详情页。
 
-请注意：
+请注意:
 1、	开发者需要预先通过1.1中的增加商品API，预先上传商品，得到product_id后，才能在自己的页面通过JavaScript API来调起商品详情页
 2、	即使开发者将自己的页面作为货架，但由于商品存储仍在微信服务器，所以用户下单后，订单、库存管理等事务，开发者仍需要根据微信小店系列接口来完成。
 
-具体JavaScript API调用示例代码如下：
+具体JavaScript API调用示例代码如下:
 function openProductView(){
 if (typeof WeixinJSBridge == "undefined")
 return false;
@@ -1021,7 +1021,7 @@ alert(res.err_msg);
 }
 });
 }
-说明：
+说明:
 1、	变量pid即为在增加商品接口中获得的product_id。
 
 */
@@ -1031,7 +1031,7 @@ alert(res.err_msg);
 6.1	订单付款通知
 在用户在微信中付款成功后，微信服务器会将订单付款通知推送到开发者在公众平台网站中设置的回调URL（在开发模式中设置）中，如未设置回调URL，则获取不到该事件推送。
 
-事件推送的内容如下：
+事件推送的内容如下:
 <xml>
 <ToUserName><![CDATA[weixin_media1]]></ToUserName>
 <FromUserName><![CDATA[oDF3iYyVlek46AyTBbMRVV8VZVlI]]></FromUserName>
@@ -1058,14 +1058,14 @@ alert(res.err_msg);
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	商品订单信息
 	6.2.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"order_id": "7197417460812584720"
 	}
 	字段	说明
 	order_id	订单ID
 	6.2.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -1152,7 +1152,7 @@ alert(res.err_msg);
 	参数	是否必须	说明
 	access_token	是	公众号的调用接口凭证
 	6.3.3	POST数据
-	数据示例：
+	数据示例:
 	{
 	"status": 2,
 	"begintime": 1397130460,
@@ -1163,7 +1163,7 @@ alert(res.err_msg);
 	begintime	订单创建时间起始时间(不带该字段则不按照时间做筛选)
 	endtime	订单创建时间终止时间(不带该字段则不按照时间做筛选)
 	6.3.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success",
@@ -1257,7 +1257,7 @@ alert(res.err_msg);
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	商品物流信息
 	6.4.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"order_id": "7197417460812533543",
 		"delivery_company": "059Yunda",
@@ -1278,7 +1278,7 @@ alert(res.err_msg);
 	need_delivery	商品是否需要物流(0-不需要，1-需要，无该字段默认为需要物流)
 	is_others	是否为6.4.5表之外的其它物流公司(0-否，1-是，无该字段默认为不是其它物流公司)
 	6.4.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success"
@@ -1286,7 +1286,7 @@ alert(res.err_msg);
 	字段	说明
 	errcode	错误码
 	errmsg	错误信息
-	6.4.5	附：物流公司ID
+	6.4.5	附:物流公司ID
 	物流公司	ID
 	邮政EMS	Fsearch_code
 	申通快递	002shentong
@@ -1312,14 +1312,14 @@ alert(res.err_msg);
 	access_token	是	公众号的调用接口凭证
 	POST数据	是	商品订单信息
 	6.5.3	POST数据
-	数据示例：
+	数据示例:
 	{
 		"order_id": "7197417460812584720"
 	}
 	字段	说明
 	order_id	订单ID
 	6.5.4	返回数据说明
-	数据示例：
+	数据示例:
 	{
 		"errcode": 0,
 		"errmsg": "success"
@@ -1342,7 +1342,7 @@ access_token	是	调用接口凭证
 filename	是	图片文件名(带文件类型后缀)
 POST数据	是	图片数据
 7.1.3	返回数据说明
-数据示例：
+数据示例:
 {
     "errcode":0,
 "errmsg":"success",

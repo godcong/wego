@@ -70,8 +70,8 @@ func (j *JSSDK) AppConfig(pid string) util.Map {
 }
 
 // ShareAddressConfig ...
-//参数：token
-//类型：string或*core.AccessToken
+//参数:token
+//类型:string或*core.AccessToken
 func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	token := ""
 	switch vv := v.(type) {

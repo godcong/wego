@@ -80,10 +80,10 @@ func (o *OAuth) registerCallback(name string, callbackFunc CallbackFunc) *OAuth 
 }
 
 // ServeHTTP 监听授权服务
-// 失败：
+// 失败:
 // {"errcode":40163,"errmsg":"code been used, hints: [ req_id: OsIKda0848th19 ]"}
 // {"errcode":40029,"errmsg":"invalid code, hints: [ req_id: 5u8NWa0990th40 ]"}
-// 成功：
+// 成功:
 // {"access_token":"7_0MSpG_WEPVwQki6eFQSFQbRwkEkTEhkvBjkuKTODS7_xe6vBOEsc88kcCu_781YvXXP2FwWC4M5m-B9WXs51rA","expires_in":7200,"refresh_token":"7_51Axvh89ev5cGH-WR4qPKb-rcPf2VQrMg25MNDs1899cHYb5UomPi4fnc1NAks07Vw5Bb0pTFvvritU-aQtxFg","openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","scope":"snsapi_base"}]
 func (o *OAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	token := o.hookAccessToken(w, r)
@@ -226,7 +226,7 @@ func (o *OAuth) AccessToken(code string) *core.Token {
 }
 
 //UserInfo 用户信息
-// http：GET（请使用https协议） https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
+// http:GET（请使用https协议） https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 // lang: zh_CN 简体，zh_TW 繁体，en
 // 成功:
 // {"openid":"OPENID","nickname":NICKNAME,"sex":"1","province":"PROVINCE""city":"CITY","country":"COUNTRY","headimgurl":"http:thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/46","privilege":["PRIVILEGE1""PRIVILEGE2"],"unionid":"o6_bmasdasdsad6_2sgVt7hMZOPfL"}

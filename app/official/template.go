@@ -80,7 +80,7 @@ func (t *Template) SetIndustry(id1, id2 string) core.Response {
 }
 
 //GetIndustry 获取设置的行业信息
-// http请求方式：GET
+// http请求方式:GET
 // https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN
 func (t *Template) GetIndustry() core.Response {
 	resp := t.client.Get(
@@ -90,7 +90,7 @@ func (t *Template) GetIndustry() core.Response {
 }
 
 //Add 获得模板ID
-// 获取模板：https://mp.weixin.qq.com/advanced/tmplmsg?action=list&t=tmplmsg/list&token=93895307&lang=zh_CN
+// 获取模板:https://mp.weixin.qq.com/advanced/tmplmsg?action=list&t=tmplmsg/list&token=93895307&lang=zh_CN
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
 func (t *Template) Add(shortID string) core.Response {

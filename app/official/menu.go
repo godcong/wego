@@ -45,7 +45,7 @@ func (m *Menu) Create(buttons *menu.Button) core.Response {
 
 /*List 自定义菜单查询接口
 请求说明
-http请求方式：GET
+http请求方式:GET
 https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
 返回说明（无个性化菜单时）
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014
@@ -70,12 +70,12 @@ func (m *Menu) Current() core.Response {
 }
 
 /*TryMatch 测试个性化菜单匹配结果
-http请求方式：POST（请使用https协议）
+http请求方式:POST（请使用https协议）
 https://api.weixin.qq.com/cgi-bin/menu/trymatch?access_token=ACCESS_TOKEN
 请求示例
 {"user_id":"weixin"}
 user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
-返回结果 该接口将返回菜单配置，示例如下：
+返回结果 该接口将返回菜单配置，示例如下:
 {
     "button": [
         {
@@ -108,7 +108,7 @@ func (m *Menu) TryMatch(userID string) core.Response {
 
 /*Delete 自定义菜单删除接口
 请求说明
-http请求方式：GET
+http请求方式:GET
 https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN
 返回说明
 对应创建接口，正确的Json返回结果:

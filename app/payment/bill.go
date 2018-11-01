@@ -28,7 +28,7 @@ https://api.mch.weixin.qq.com/pay/downloadbill
 不需要。
 请求参数
 字段名	变量名	必填	类型	示例值	描述
-对账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式：20140603
+对账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式:20140603
 */
 func (b *Bill) Get(bd string, op ...util.Map) core.Response {
 	m := util.MapsToMap(op)

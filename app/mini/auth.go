@@ -29,11 +29,11 @@ func NewAuth() *Auth {
 
 /*Session 登录凭证校验
 临时登录凭证校验接口是一个 HTTPS 接口，开发者服务器使用 临时登录凭证code 获取 session_key 和 openid 等。
-注意：
+注意:
 会话密钥session_key 是对用户数据进行加密签名的密钥。为了应用自身的数据安全，开发者服务器不应该把会话密钥下发到小程序，也不应该对外提供这个密钥。
 UnionID 只在满足一定条件的情况下返回。具体参看UnionID机制说明
 临时登录凭证code只能使用一次
-接口地址：
+接口地址:
 https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
 请求参数
 参数	必填	说明

@@ -53,8 +53,8 @@ func NewBase(config *Config, v ...interface{}) *Base {
 
 //ClearQuota  公众号的所有api调用（包括第三方帮其调用）次数进行清零
 //Deprecated: ClearQuota is moved to official_account.Base
-//公众号调用或第三方平台帮公众号调用对公众号的所有api调用（包括第三方帮其调用）次数进行清零：
-//HTTP请求：POST HTTP调用： https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
+//公众号调用或第三方平台帮公众号调用对公众号的所有api调用（包括第三方帮其调用）次数进行清零:
+//HTTP请求:POST HTTP调用: https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
 func (b *Base) ClearQuota() Response {
 	token := b.accessToken.GetToken()
 

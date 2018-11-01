@@ -18,7 +18,6 @@ func TestBase_GetCallbackIP(t *testing.T) {
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
 	t.Log(string(resp.Bytes()))
-
 }
 
 // TestBase_ClearQuota ...

@@ -128,7 +128,7 @@ const (
 type CardBaseInfo struct {
 	LogoURL                   string       `json:"logo_url"`                                //	logo_url	是	strin g(128)	http://mmbiz.qpic.cn/	卡券的商户logo，建议像素为300*300。
 	BrandName                 string       `json:"brand_name"`                              //	brand_name	是	string（36）	海底捞	商户名字,字数上限为12个汉字。
-	CodeType                  CardCodeType `json:"code_type"`                               //	code_type	是	string(16)	CODE_TYPE_TEXT	码型： "CODE_TYPE_TEXT"文 本 ； "CODE_TYPE_BARCODE"一维码 "CODE_TYPE_QRCODE"二维码 "CODE_TYPE_ONLY_QRCODE",二维码无code显示； "CODE_TYPE_ONLY_BARCODE",一维码无code显示；CODE_TYPE_NONE， 不显示code和条形码类型
+	CodeType                  CardCodeType `json:"code_type"`                               //	code_type	是	string(16)	CODE_TYPE_TEXT	码型: "CODE_TYPE_TEXT"文 本 ； "CODE_TYPE_BARCODE"一维码 "CODE_TYPE_QRCODE"二维码 "CODE_TYPE_ONLY_QRCODE",二维码无code显示； "CODE_TYPE_ONLY_BARCODE",一维码无code显示；CODE_TYPE_NONE， 不显示code和条形码类型
 	Title                     string       `json:"title"`                                   //	title	是	string（27）	双人套餐100元兑换券	卡券名，字数上限为9个汉字。(建议涵盖卡券属性、服务及金额)。
 	Color                     string       `json:"color"`                                   //	color	是	string（16）	Color010	券颜色。按色彩规范标注填写Color010-Color100。
 	Notice                    string       `json:"notice"`                                  //	notice	是	string（48）	请出示二维码	卡券使用提醒，字数上限为16个汉字。
@@ -186,7 +186,7 @@ type CardTextImageList struct {
 
 /*CardTimeLimit CardTimeLimit*/
 type CardTimeLimit struct {
-	Type        string `json:"type,omitempty"`         //	type	否	string（24 ）	限制类型枚举值：支持填入 MONDAY 周一 TUESDAY 周二 WEDNESDAY 周三 THURSDAY 周四 FRIDAY 周五 SATURDAY 周六 SUNDAY 周日 此处只控制显示， 不控制实际使用逻辑，不填默认不显示
+	Type        string `json:"type,omitempty"`         //	type	否	string（24 ）	限制类型枚举值:支持填入 MONDAY 周一 TUESDAY 周二 WEDNESDAY 周三 THURSDAY 周四 FRIDAY 周五 SATURDAY 周六 SUNDAY 周日 此处只控制显示， 不控制实际使用逻辑，不填默认不显示
 	BeginHour   int    `json:"begin_hour,omitempty"`   //	begin_hour	否	int	当前type类型下的起始时间（小时） ，如当前结构体内填写了MONDAY， 此处填写了10，则此处表示周一 10:00可用
 	EndHour     int    `json:"end_hour,omitempty"`     //	end_hour	否	int	当前type类型下的结束时间（小时） ，如当前结构体内填写了MONDAY， 此处填写了20， 则此处表示周一 10:00-20:00可用
 	BeginMinute int    `json:"begin_minute,omitempty"` //	begin_minute	否	int	当前type类型下的起始时间（分钟） ，如当前结构体内填写了MONDAY， begin_hour填写10，此处填写了59， 则此处表示周一 10:59可用
@@ -195,11 +195,11 @@ type CardTimeLimit struct {
 
 /*CardAdvancedInfo CardAdvancedInfo*/
 type CardAdvancedInfo struct {
-	UseCondition    *CardUseCondition   `json:"use_condition,omitempty"`    //	use_condition	否	JSON结构	使用门槛（条件）字段，若不填写使用条件则在券面拼写 ：无最低消费限制，全场通用，不限品类；并在使用说明显示： 可与其他优惠共享
+	UseCondition    *CardUseCondition   `json:"use_condition,omitempty"`    //	use_condition	否	JSON结构	使用门槛（条件）字段，若不填写使用条件则在券面拼写 :无最低消费限制，全场通用，不限品类；并在使用说明显示: 可与其他优惠共享
 	Abstract        *CardAbstract       `json:"abstract,omitempty"`         //	abstract	否	JSON结构	封面摘要结构体名称
 	TextImageList   []CardTextImageList `json:"text_image_list,omitempty"`  //  text_image_list	否	JSON结构	图文列表，显示在详情内页 ，优惠券券开发者须至少传入 一组图文列表
 	TimeLimit       []CardTimeLimit     `json:"time_limit,omitempty"`       //	time_limit否JSON结构使用时段限制，包含以下字段
-	BusinessService []string            `json:"business_service,omitempty"` //	business_service	否	array	商家服务类型： BIZ_SERVICE_DELIVER 外卖服务； BIZ_SERVICE_FREE_PARK 停车位； BIZ_SERVICE_WITH_PET 可带宠物； BIZ_SERVICE_FREE_WIFI 免费wifi， 可多选
+	BusinessService []string            `json:"business_service,omitempty"` //	business_service	否	array	商家服务类型: BIZ_SERVICE_DELIVER 外卖服务； BIZ_SERVICE_FREE_PARK 停车位； BIZ_SERVICE_WITH_PET 可带宠物； BIZ_SERVICE_FREE_WIFI 免费wifi， 可多选
 }
 
 /*OneCard OneCard*/

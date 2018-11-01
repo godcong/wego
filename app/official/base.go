@@ -22,8 +22,8 @@ func NewBase(config *core.Config) *Base {
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零
-HTTP请求方式：POST
-HTTP调用： https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
+HTTP请求方式:POST
+HTTP调用: https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
 */
 func (b *Base) ClearQuota() core.Response {
 	token := b.accessToken.GetToken()
@@ -37,7 +37,7 @@ func (b *Base) ClearQuota() core.Response {
 
 /*GetCallbackIP 请求微信的服务器IP列表
 HTTP请求方式: GET
-HTTP调用：https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
+HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
 */
 func (b *Base) GetCallbackIP() core.Response {
 	token := b.accessToken.GetToken()

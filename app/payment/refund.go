@@ -35,7 +35,7 @@ func (r *Refund) refund(num string, total, refund int, options util.Map) core.Re
 
 /*ByOutTradeNumber 按照out_trade_no发起退款
 接口地址
-接口链接：https://api.mch.weixin.qq.com/secapi/pay/refund
+接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
 func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) core.Response {
 	options = util.MapNilMake(options)
@@ -45,7 +45,7 @@ func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, optio
 
 /*ByTransactionID 按照transaction_id发起退款
 接口地址
-接口链接：https://api.mch.weixin.qq.com/secapi/pay/refund
+接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
 func (r *Refund) ByTransactionID(tid, num string, total, refund int, options util.Map) core.Response {
 	options = util.MapNilMake(options)
@@ -60,7 +60,7 @@ func (r *Refund) query(m util.Map) core.Response {
 
 /*QueryByRefundID 按refund_id查找退款订单
 接口地址
-接口链接：https://api.mch.weixin.qq.com/pay/refundquery
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
 func (r *Refund) QueryByRefundID(id string) core.Response {
 	return r.query(util.Map{"refund_id": id})
@@ -68,7 +68,7 @@ func (r *Refund) QueryByRefundID(id string) core.Response {
 
 /*QueryByOutRefundNumber 按out_refund_no查找退款订单
 接口地址
-接口链接：https://api.mch.weixin.qq.com/pay/refundquery
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
 func (r *Refund) QueryByOutRefundNumber(id string) core.Response {
 	return r.query(util.Map{"out_refund_no": id})
@@ -76,7 +76,7 @@ func (r *Refund) QueryByOutRefundNumber(id string) core.Response {
 
 /*QueryByOutTradeNumber 按out_trade_no查找退款订单
 接口地址
-接口链接：https://api.mch.weixin.qq.com/pay/refundquery
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
 func (r *Refund) QueryByOutTradeNumber(id string) core.Response {
 	return r.query(util.Map{"out_trade_no": id})
@@ -84,7 +84,7 @@ func (r *Refund) QueryByOutTradeNumber(id string) core.Response {
 
 /*QueryByTransactionID 按transaction_id查找退款订单
 接口地址
-接口链接：https://api.mch.weixin.qq.com/pay/refundquery
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
 func (r *Refund) QueryByTransactionID(id string) core.Response {
 	return r.query(util.Map{"transaction_id": id})

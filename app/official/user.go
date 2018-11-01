@@ -28,8 +28,8 @@ func NewUser(config *core.Config) *User {
 //UpdateRemark 设置用户备注名
 // http请求方式: POST（请使用https协议）
 // https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN
-// POST数据格式：JSON
-// POST数据例子：
+// POST数据格式:JSON
+// POST数据例子:
 // {
 // "openid":"oDF3iY9ffA-hqb2vVvbr7qxf6A0Q",
 // "remark":"pangzi"

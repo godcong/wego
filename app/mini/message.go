@@ -33,7 +33,7 @@ func NewMessage() *Message {
 接口调用请求说明:
 http请求方式: POST
 https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN
-各消息类型所需的JSON数据包如下：
+各消息类型所需的JSON数据包如下:
 发送文本消息
 {
    "touser":"OPENID",

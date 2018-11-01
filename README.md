@@ -10,16 +10,16 @@
 
 开发前,请务必仔细阅读并看懂
 
-获取包：
+获取包:
 > go get github.com/godcong/wego
 
-建议使用golang/dep添加包：
+建议使用golang/dep添加包:
 > dep ensure --add github.com/godcong/wego
 
-或者vgo添加：
+或者vgo添加:
 > vgo get github.com/godcong/wego@v0.1.0 
 
-配置config.toml：
+配置config.toml:
 > 参考config.toml.example
 
 接口说明可以参考godoc

@@ -48,7 +48,7 @@ func (t *Transfer) QueryBalanceOrder(s string) core.Response {
 
 /*ToBalance 企业付款
 接口地址
-接口链接：https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers
+接口链接:https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers
 是否需要证书
 请求需要双向证书。 详见证书使用
 请求参数
@@ -61,8 +61,8 @@ func (t *Transfer) QueryBalanceOrder(s string) core.Response {
 商户订单号	partner_trade_no	是	10000098201411111234567890	String	商户订单号，需保持唯一性
 (只能是字母或者数字，不能包含有符号)
 用户openid	openid	是	oxTWIuGaIt6gTKsQRLau2M0yL16E	String	商户appid下，某用户的openid
-校验用户姓名选项	check_name	是	FORCE_CHECK	String	NO_CHECK：不校验真实姓名
-FORCE_CHECK：强校验真实姓名
+校验用户姓名选项	check_name	是	FORCE_CHECK	String	NO_CHECK:不校验真实姓名
+FORCE_CHECK:强校验真实姓名
 收款用户姓名	re_user_name	可选	王小王	String	收款用户真实姓名。
 如果check_name设置为FORCE_CHECK，则必填用户真实姓名
 金额	amount	是	10099	int	企业付款金额，单位为分
@@ -110,16 +110,16 @@ SUCCESS/FAIL
 微信企业付款单号	payment_no	是	string(64)	即为微信内部业务单号
 银行卡号	bank_no_md5	是	string(32)	收款用户银行卡号(MD5加密)
 用户真实姓名	true_name_md5	是	string(32)	收款人真实姓名（MD5加密）
-代付金额	amount	是	int	代付订单金额RMB：分
-代付单状态	status	是	string	代付订单状态：
+代付金额	amount	是	int	代付订单金额RMB:分
+代付单状态	status	是	string	代付订单状态:
 PROCESSING（处理中，如有明确失败，则返回额外失败原因；否则没有错误原因）
 SUCCESS（付款成功）
 FAILED（付款失败,需要替换付款单号重新发起付款）
 BANK_FAIL（银行退票，订单状态由付款成功流转至退票,退票时付款金额和手续费会自动退还）
-手续费金额	cmms_amt	是	int	手续费订单金额 RMB：分
+手续费金额	cmms_amt	是	int	手续费订单金额 RMB:分
 商户下单时间	create_time	是	String	微信侧订单创建时间
 成功付款时间	pay_succ_time	否	String	微信侧付款成功时间（但无法保证银行不会退票）
-失败原因	reason	否	String	订单失败原因（如：余额不足）
+失败原因	reason	否	String	订单失败原因（如:余额不足）
 */
 func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 	m := util.Map{
@@ -134,12 +134,12 @@ func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 业务流程	接口	简介
 付款	企业付款到银行卡	用于企业向微信用户银行卡付款
 目前支持接口API的方式向指定微信用户的银行卡付款。
-接口调用规则：
+接口调用规则:
 ◆ 单商户日限额——单日100w
 ◆ 单次限额——单次5w
 ◆ 单商户给同一银行卡单日限额——单日5w
 接口地址
-接口链接：https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank
+接口链接:https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank
 是否需要证书
 请求需要双向证书。 详见证书使用
 请求参数
@@ -151,8 +151,8 @@ func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 收款方银行卡号	enc_bank_no	是	8609cb22e1774a50a930e414cc71eca06121bcd266335cda230d24a7886a8d9f	string(64)	收款方银行卡号（采用标准RSA算法，公钥由微信侧提供）,详见获取RSA加密公钥API
 收款方用户名	enc_true_name	是	ca775af5f841bdf424b2e6eb86a6e21e	string(64)	收款方用户名（采用标准RSA算法，公钥由微信侧提供）详见获取RSA加密公钥API
 收款方开户行	bank_code	是	1001	string(64)	银行卡所在开户行编号,详见银行编号列表
-付款金额	amount	是	100000	int	付款金额：RMB分（支付总额，不含手续费）
-注：大于0的整数
+付款金额	amount	是	100000	int	付款金额:RMB分（支付总额，不含手续费）
+注:大于0的整数
 付款说明	desc	否	理财	string	企业付款到银行卡付款说明,即订单备注（UTF8编码，允许100个字符以内）
 返回参数
 字段名	变量名	必填	类型	描述
@@ -163,11 +163,11 @@ func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 参数格式校验错误
 以下字段在return_code为SUCCESS的时候有返回
 字段名	变量名	必填	类型	描述
-业务结果	result_code	是	string(32)	SUCCESS/FAIL，注意：当状态为FAIL时，存在业务结果未明确的情况，所以如果状态为FAIL，请务必通过查询接口确认此次付款的结果（关注错误码err_code字段）。如果要继续进行这笔付款，请务必用原商户订单号和原参数来重入此接口。
+业务结果	result_code	是	string(32)	SUCCESS/FAIL，注意:当状态为FAIL时，存在业务结果未明确的情况，所以如果状态为FAIL，请务必通过查询接口确认此次付款的结果（关注错误码err_code字段）。如果要继续进行这笔付款，请务必用原商户订单号和原参数来重入此接口。
 错误代码	err_code
 否
 string(32)
-错误码信息，注意：出现未明确的错误码时，如（SYSTEMERROR）等，请务必用原商户订单号重试，或通过查询接口确认此次付款的结果
+错误码信息，注意:出现未明确的错误码时，如（SYSTEMERROR）等，请务必用原商户订单号重试，或通过查询接口确认此次付款的结果
 错误代码描述	err_code_des	否	string(128)	错误信息描述
 商户号	mch_id	是	string(32)	微信支付分配的商户号
 商户企业付款单号	partner_trade_no	是	string(32)	商户订单号，需要保持唯一
@@ -177,7 +177,7 @@ string(32)
 以下字段在return_code 和result_code都为SUCCESS的时候有返回
 字段名	变量名	必填	类型	描述
 微信企业付款单号	payment_no	是	string(64)	代付成功后，返回的内部业务单号
-手续费金额	cmms_amt	是	int	手续费金额 RMB：分
+手续费金额	cmms_amt	是	int	手续费金额 RMB:分
 */
 func (t *Transfer) ToBankCard(maps util.Map) core.Response {
 	if v := maps.Check("bank_code", "partner_trade_no", "enc_bank_no", "enc_true_name", "amount"); v != -1 {

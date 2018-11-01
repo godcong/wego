@@ -21,7 +21,7 @@ type PoiBaseInfo struct {
 	Province     string        `json:"province"`               //"province":"不超过10个字",
 	City         string        `json:"city"`                   //"city":"不超过30个字",
 	District     string        `json:"district"`               //"district":"不超过10个字",
-	Address      string        `json:"address"`                //"address":"门店所在的详细街道地址（不要填写省市信息）：不超过80个字",
+	Address      string        `json:"address"`                //"address":"门店所在的详细街道地址（不要填写省市信息）:不超过80个字",
 	Telephone    string        `json:"telephone"`              //"telephone":"不超53个字符（不可以出现文字）",
 	Categories   []string      `json:"categories"`             //"categories":["美食,小吃快餐"],
 	OffsetType   int           `json:"offset_type"`            //"offset_type":1,
@@ -97,10 +97,10 @@ Update 修改门店服务信息
 http请求方式	POST/FROM
 请求Url	https://api.weixin.qq.com/cgi-bin/poi/updatepoi?access_token=TOKEN
 POST数据格式	buffer
-字段说明：
+字段说明:
 全部字段内容同前。
-特别注意：
-以上8个字段，若有填写内容则为覆盖更新，若无内容则视为不修改，维持原有内容。 photo_list 字段为全列表覆盖，若需要增加图片，需将之前图片同样放入list 中，在其后增加新增图片。如：已有A、B、C 三张图片，又要增加D、E 两张图，则需要调用该接口，photo_list 传入A、B、C、D、E 五张图片的链接。
+特别注意:
+以上8个字段，若有填写内容则为覆盖更新，若无内容则视为不修改，维持原有内容。 photo_list 字段为全列表覆盖，若需要增加图片，需将之前图片同样放入list 中，在其后增加新增图片。如:已有A、B、C 三张图片，又要增加D、E 两张图，则需要调用该接口，photo_list 传入A、B、C、D、E 五张图片的链接。
 成功返回:
 {
 "errcode":0,

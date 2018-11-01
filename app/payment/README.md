@@ -17,8 +17,8 @@
                             
                             //银行转账功能
                             rootca_path = 'cert/rootca.pem'     //(可不填)
-                            pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如：银行转账）
-                            prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如：银行转账）
+                            pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如:银行转账）
+                            prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如:银行转账）
             }
 
 
@@ -37,8 +37,8 @@
             
             //银行转账功能
             rootca_path = 'cert/rootca.pem'     //(可不填)
-            pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如：银行转账）
-            prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如：银行转账）
+            pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如:银行转账）
+            prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如:银行转账）
     
 
 
