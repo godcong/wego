@@ -97,6 +97,7 @@ func NewQrCode(config *core.Config) *QrCode {
 // 成功:
 // {"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
 func (q *QrCode) Create(action *QrCodeAction) core.Response {
+	//TODO: need fix
 	log.Debug("QrCode|Create", action)
 	resp := q.client.PostJSON(
 		Link(qrcodeCreateURLSuffix),
