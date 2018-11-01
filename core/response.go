@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 /*Response Response */
@@ -110,37 +111,6 @@ func Err(data []byte, err error) Response {
 	}
 }
 
-/*RespType RespType */
-//func RespType(reqType RequestType) ResponseType {
-//	log.Debug("reqType", reqType)
-//	switch reqType {
-//	//case CONTENT_TYPE_JSON:
-//	//	return RESPONSE_TYPE_JSON
-//	//case CONTENT_TYPE_HTML:
-//	//	return RESPONSE_TYPE_HTML
-//	//case CONTENT_TYPE_XML, CONTENT_TYPE_XML2:
-//	//	return RESPONSE_TYPE_XML
-//	//case CONTENT_TYPE_Plain:
-//	//case CONTENT_TYPE_POSTForm:
-//	//case CONTENT_TYPE_MultipartPOSTForm:
-//	//case CONTENT_TYPE_PROTOBUF:
-//	//case CONTENT_TYPE_MSGPACK:
-//	//case CONTENT_TYPE_MSGPACK2:
-//	case RequestTypeJSON:
-//		return ResponseTypeJSON
-//	case RequestTypeQuery:
-//	case RequestTypeXML:
-//		return ResponseTypeXML
-//	case RequestTypeFormParams:
-//	case RequestTypeFile:
-//	case RequestTypeMultipart:
-//	case RequestTypeString:
-//	case RequestTypeHeaders:
-//	case RequestTypeCustom:
-//	}
-//	return ResponseTypeJSON
-//}
-
 /*ParseBody get response data */
 func ParseBody(r *http.Response) ([]byte, error) {
 	return ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
@@ -158,55 +128,19 @@ func BodyToMap(b []byte, d string) util.Map {
 	return nil
 }
 
-///*ToXML transfer response data to xml */
-//func (r *Response) ToXML() []byte {
-//	if r.dataType == DataTypeXML {
-//		return r.data
-//	} else if r.dataType == DataTypeJSON {
-//		return []byte(util.XMLToMap(r.data).ToXML())
-//	}
-//	return nil
-//}
-//
-//func (r *Response) ToMap() util.Map {
-//	if r.dataType == DataTypeJSON {
-//		return util.JSONToMap(r.data)
-//	} else if r.dataType == DataTypeXML {
-//		return util.XMLToMap(r.data)
-//	} else {
-//
-//	}
-//
-//	return nil
-//}
-//
-///*ToJSON transfer response data to json */
-//func (r *Response) ToJSON() []byte {
-//	if r.dataType == DataTypeJSON {
-//		return r.data
-//	} else if
-//	return r.responseMap.ToJSON()
-//}
-
-/*ToBytes transfer response data to bytes */
-//func (r *Response) ToBytes() []byte {
-//	return r.responseData
-//}
-
-/*ToString transfer response data to string */
-//func (r *Response) ToString() string {
-//	return string(r.responseData)
-//}
-
-/*ToFile save response data to file with path */
-//func (r *Response) ToFile(path string) {
-//	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
-//	if e != nil {
-//		log.Debug("Response|ToFile", e)
-//		return
-//	}
-//	file.Write(r.ToBytes())
-//}
+// SaveTo ...
+func SaveTo(response Response, path string) error {
+	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
+	if e != nil {
+		log.Debug("Response|ToFile", e)
+		return e
+	}
+	_, e = file.Write(response.Bytes())
+	if e != nil {
+		return e
+	}
+	return nil
+}
 
 /*CheckError check wechat result error */
 //func (r *Response) CheckError() error {

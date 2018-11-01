@@ -1,11 +1,10 @@
 package official
 
 import (
-	"net/url"
-
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"net/url"
 )
 
 /*QrCodeScene QrCodeScene*/
