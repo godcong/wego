@@ -239,10 +239,11 @@ func NewConfig(tree *toml.Tree) *Config {
 }
 
 //C parse config from map
-func C(p util.Map) (*Config, error) {
+func C(p util.Map) *Config {
 	cfg, err := toml.TreeFromMap((map[string]interface{})(p))
 	if err == nil {
-		return NewConfig(cfg), nil
+		return NewConfig(cfg)
 	}
-	return nil, err
+	log.Error(err)
+	return nil
 }

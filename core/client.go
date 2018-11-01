@@ -353,7 +353,7 @@ func buildClient(maps util.Map) *http.Client {
 			return buildSafeTransport(v)
 		}
 	}
-	return buildTransport(NewConfig(nil))
+	return buildTransport(C(util.Map{}))
 }
 
 func requestData(method, url string, m util.Map) *http.Request {

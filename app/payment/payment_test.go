@@ -10,7 +10,7 @@ import (
 
 // TestNewPayment ...
 func TestNewPayment(t *testing.T) {
-	cfg, _ := core.C(util.Map{
+	cfg := core.C(util.Map{
 		"app_id": "wxxxxxxxxxxxxxxx",
 		"mch_id": "150000000000",                 //商户ID
 		"key":    "aTKnSUcTkbaaaaaaaaaaaaaaaaaa", //支付key
