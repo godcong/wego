@@ -33,7 +33,7 @@ Open 打开文章评论
   {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (c *Comment) Open(id, index int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentOpenURLSuffix),
 		p,
@@ -54,7 +54,7 @@ Close 关闭评论
  {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (c *Comment) Close(id, index int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentCloseURLSuffix),
 		p,
@@ -75,7 +75,7 @@ List 获取文章评论
  {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (c *Comment) List(id, index, begin, count, typ int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentListURLSuffix),
 		p,
@@ -101,7 +101,7 @@ Markelect  将评论标记精选
  user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Markelect(id, index, userCommentID int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentMarkelectURLSuffix),
 		p,
@@ -126,7 +126,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentUnmarkelectURLSuffix),
 		p,
@@ -147,7 +147,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Delete(id, index, userCommentID int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentDeleteURLSuffix),
 		p,
@@ -172,7 +172,7 @@ ReplyAdd 回复评论
  content	是	string	回复内容
 */
 func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentReplyAddURLSuffix),
 		p,
@@ -197,7 +197,7 @@ ReplyDelete 删除回复
  user_comment_id	是	int	评论id
 */
 func (c *Comment) ReplyDelete(id, index, userCommentID int) core.Response {
-	p := c.token.GetToken().KeyMap()
+	p := c.accessToken.GetToken().KeyMap()
 	resp := c.client.PostJSON(
 		Link(commentReplyDeleteURLSuffix),
 		p,

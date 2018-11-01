@@ -38,9 +38,9 @@ func newOAuth(acc *Account) *OAuth {
 		callback: map[string]CallbackFunc{},
 	}
 	//oauth.client.SetRequestType(core.DataTypeJSON)
-	oauth.scopes = oauth.config.GetStringArrayD("oauth.scopes", []string{snsapiBase})
-	oauth.redirectURI = oauth.config.GetStringD("oauth.redirect_uri", defaultOauthRedirectURLSuffix)
-	oauth.authorize = oauth.config.GetStringD("oauth.authorize", oauth2AuthorizeURLSuffix)
+	oauth.scopes = oauth.GetStringArrayD("oauth.scopes", []string{snsapiBase})
+	oauth.redirectURI = oauth.GetStringD("oauth.redirect_uri", defaultOauthRedirectURLSuffix)
+	oauth.authorize = oauth.GetStringD("oauth.authorize", oauth2AuthorizeURLSuffix)
 	return oauth
 }
 
@@ -154,7 +154,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	buf.WriteString(o.authorize)
 	v := url.Values{
 		"response_type": {"code"},
-		"appid":         {o.config.GetString("app_id")},
+		"appid":         {o.GetString("app_id")},
 	}
 	if o.redirectURI != "" {
 		log.Println(core.Link(o.redirectURI, "host"))
@@ -181,7 +181,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 // {"openid":"oLyBi0hSYhggnD-kOIms0IzZFqrc","access_token":"7_EVGE1V1XzagA0PXMPFUbLApiA4BCGO5oVSxkDRbZ-aiTfwpP32DSNxsdFBN0AuERGrEtCBuBfNzTpTv_mYi-NQ","expires_in":7200,"refresh_token":"7_XxwLIQsmfEHnuVsw91q8fK1WWRcq37z2-rTTlMjrouJussoQff77jE9043qtiIQMr8CJuBWc3hmMGONJbB_EQQ","scope":"snsapi_base,snsapi_userinfo,"}
 func (o *OAuth) RefreshToken(refresh string) *core.Token {
 	v := util.Map{
-		"appid":         o.config.Get("app_id"),
+		"appid":         o.Get("app_id"),
 		"grant_type":    "refresh_token",
 		"refresh_token": refresh,
 	}
@@ -204,8 +204,8 @@ func (o *OAuth) RefreshToken(refresh string) *core.Token {
 /*AccessToken AccessToken*/
 func (o *OAuth) AccessToken(code string) *core.Token {
 	v := util.Map{
-		"appid":      o.config.Get("app_id"),
-		"secret":     o.config.Get("secret"),
+		"appid":      o.Get("app_id"),
+		"secret":     o.Get("secret"),
 		"code":       code,
 		"grant_type": "authorization_code",
 	}

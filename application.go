@@ -12,7 +12,7 @@ import (
 const RegConfig = "config"
 
 //RegClient client
-//const RegClient = "client"
+const RegClient = "client"
 
 //RegAccessToken access token
 const RegAccessToken = "access_token"
@@ -43,7 +43,7 @@ func DefaultApplication() *Application {
 	return app
 }
 
-//NewApplication create an application instance
+//NewApplication create an application instance with config.toml path
 func NewApplication(path string) *Application {
 	config, err := core.LoadConfig(path)
 	if err != nil {
@@ -63,13 +63,6 @@ func newApplication(config *core.Config) *Application {
 	return app
 }
 
-//func initApp() *Application {
-//	if app == nil {
-//		app = newApplication(core.DefaultConfig())
-//	}
-//	return app
-//}
-
 func init() {
 	app = newApplication(core.DefaultConfig())
 }
@@ -85,18 +78,13 @@ func (a *Application) Config() *core.Config {
 
 //Client get application client instance
 func (a *Application) Client() *core.Client {
-	if v, b := a.Get("client"); b {
+	if v, b := a.Get(RegClient); b {
 		return v.(*core.Client)
 	}
 	client := core.DefaultClient()
 	a.Register("client", client)
 	return client
 }
-
-//AccessToken get application access token instance
-//func (a *Application) AccessToken() *core.AccessToken {
-//	return core.NewAccessToken(a.Config(), a.Client())
-//}
 
 //Payment return a default Payment
 func (a *Application) Payment(cfg string) *payment.Payment {
@@ -137,6 +125,9 @@ func (a *Application) New(name string, args ...interface{}) interface{} {
 /*App 获取App */
 func App() *Application {
 	log.Debug("app:", app)
+	if app != nil {
+		return app
+	}
 	return newApplication(core.DefaultConfig())
 }
 

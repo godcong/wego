@@ -38,7 +38,7 @@ media	是	form-data中媒体文件标识，有filename、filelength、content-ty
 */
 func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response {
 	log.Debug("Media|Upload", filePath, mediaType)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.Upload(
 		Link(mediaUploadURLSuffix),
@@ -89,7 +89,7 @@ curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKE
 */
 func (m *Media) Get(mediaID string) core.Response {
 	log.Debug("Media|Get", mediaID)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
 	resp := m.client.Get(
 		Link(mediaGetURLSuffix),
@@ -105,7 +105,7 @@ func (m *Media) Get(mediaID string) core.Response {
 // 失败:
 // {"errcode":40007,"errmsg":"invalid media_id"}
 func (m *Media) GetJssdk(mediaID string) core.Response {
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
 	resp := m.client.Get(
 		Link(mediaGetJssdkURLSuffix),
@@ -135,7 +135,7 @@ func (m *Media) UploadBufferImg(filePath string) core.Response {
 }
 
 func (m *Media) uploadImg(name string, filePath string) core.Response {
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.Upload(
 		Link(mediaUploadImgURLSuffix),
 		p,

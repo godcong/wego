@@ -28,7 +28,7 @@ func NewMaterial(config *core.Config) *Material {
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
 func (m *Material) AddNews(articles []*media.Article) core.Response {
 	log.Debug("Material|AddNews", articles)
-	key := m.token.GetToken().KeyMap()
+	key := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialAddNewsURLSuffix),
 		key,
@@ -48,7 +48,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.R
 		log.Error("please use Material.UploadVideo() function")
 	}
 
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
 	resp := m.client.Upload(
 		Link(materialAddMaterialURLSuffix),
@@ -66,7 +66,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.R
 // {"media_id":"HIWcj9t3AI_b8qCQSu8lrTBEyIAO-uPSQhTiI2uoENk"}
 func (m *Material) UploadVideo(filePath string, title, introduction string) core.Response {
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
 	resp := m.client.Upload(
 		Link(materialAddMaterialURLSuffix),
@@ -90,7 +90,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) core
 // {"title":"ceshi2","description":"only test","down_url":"http:\/\/203.205.158.71\/vweixinp.tc.qq.com\/1007_ad755ea12b3043e893e174d18de97f24.f10.mp4?vkey=22A7BCCDB429DF3613D50C1CAC510BDDCD12030895D782B3FAE00FB6989E4FFA640EB7EB8B498E560D08C84D808EF352BFFB0B15FA743556DB96BBF0239FC41F6DAFEEBA1024DBCA0954FBE09A66AA5381AB9CA50D1F8AE2&sha=0&save=1"}
 func (m *Material) Get(mediaID string) core.Response {
 	log.Debug("Material|Get", mediaID)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialGetMaterialURLSuffix),
 		p,
@@ -109,7 +109,7 @@ func (m *Material) Get(mediaID string) core.Response {
 // {"errcode":-1,"errmsg":"system error hint: [NX0zcA05993060]"}
 func (m *Material) Del(mediaID string) core.Response {
 	log.Debug("Material|Del", mediaID)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialDelMaterialURLSuffix),
 		p,
@@ -125,7 +125,7 @@ func (m *Material) Del(mediaID string) core.Response {
 // https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN
 func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) core.Response {
 	log.Debug("Material|UpdateNews", mediaID)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialUpdateNewsURLSuffix),
 		p,
@@ -143,7 +143,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 // https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=ACCESS_TOKEN
 func (m *Material) GetMaterialCount() core.Response {
 	log.Debug("Material|GetMaterialCount")
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.Get(
 		Link(materialGetMaterialcountURLSuffix),
 		p)
@@ -160,7 +160,7 @@ func (m *Material) GetMaterialCount() core.Response {
 //count	是	返回素材的数量，取值在1到20之间
 func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Response {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
-	p := m.token.GetToken().KeyMap()
+	p := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialBatchgetMaterialURLSuffix),
 		p,

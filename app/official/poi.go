@@ -65,7 +65,7 @@ func (p *Poi) Add(biz *PoiBaseInfo) core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
 		Link(poiAddPoiURLSuffix),
-		p.token.GetToken().KeyMap(),
+		p.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
 		})
@@ -84,7 +84,7 @@ func (p *Poi) Get(poiID string) core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
 		Link(poiGetPoiURLSuffix),
-		p.token.GetToken().KeyMap(),
+		p.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiID,
 		})
@@ -113,7 +113,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
 		Link(poiUpdatePoiURLSuffix),
-		p.token.GetToken().KeyMap(),
+		p.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"business": biz,
 		})
@@ -213,7 +213,7 @@ func (p *Poi) GetList(begin int, limit int) core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
 		Link(poiGetListPoiURLSuffix),
-		p.token.GetToken().KeyMap(),
+		p.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"begin": begin,
 			"limit": limit,
@@ -235,7 +235,7 @@ func (p *Poi) Del(poiID string) core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.PostJSON(
 		Link(poiDelPoiURLSuffix),
-		p.token.GetToken().KeyMap(),
+		p.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"poi_id": poiID,
 		})
@@ -258,6 +258,6 @@ func (p *Poi) GetCategory() core.Response {
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := p.client.Get(
 		Link(poiGetWXCategoryURLSuffix),
-		p.token.GetToken().KeyMap())
+		p.accessToken.GetToken().KeyMap())
 	return resp
 }

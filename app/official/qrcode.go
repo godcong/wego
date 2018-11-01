@@ -52,6 +52,7 @@ type QrCodeAction struct {
 /*QrCodeActionName QrCodeActionName*/
 type QrCodeActionName string
 
+// QrMultipleCard ...
 const (
 	//QrMultipleCard QrMultipleCard
 	QrMultipleCard QrCodeActionName = "QR_MULTIPLE_CARD"
@@ -100,7 +101,7 @@ func (q *QrCode) Create(action *QrCodeAction) core.Response {
 	log.Debug("QrCode|Create", action)
 	resp := q.client.PostJSON(
 		Link(qrcodeCreateURLSuffix),
-		q.token.GetToken().KeyMap(),
+		q.accessToken.GetToken().KeyMap(),
 		action,
 	)
 	return resp

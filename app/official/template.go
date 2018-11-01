@@ -72,7 +72,7 @@ func NewTemplate(config *core.Config) *Template {
 func (t *Template) SetIndustry(id1, id2 string) core.Response {
 	resp := t.client.PostJSON(
 		Link(templateAPISetIndustryURLSuffix),
-		t.token.GetToken().KeyMap(),
+		t.accessToken.GetToken().KeyMap(),
 		util.Map{"industry_id1": id1, "industry_id2": id2},
 	)
 	return resp
@@ -85,7 +85,7 @@ func (t *Template) SetIndustry(id1, id2 string) core.Response {
 func (t *Template) GetIndustry() core.Response {
 	resp := t.client.Get(
 		Link(templateGetIndustryURLSuffix),
-		t.token.GetToken().KeyMap())
+		t.accessToken.GetToken().KeyMap())
 	return resp
 }
 
@@ -96,7 +96,7 @@ func (t *Template) GetIndustry() core.Response {
 func (t *Template) Add(shortID string) core.Response {
 	resp := t.client.PostJSON(
 		Link(templateAPIAddTemplateURLSuffix),
-		t.token.GetToken().KeyMap(),
+		t.accessToken.GetToken().KeyMap(),
 		util.Map{"template_id_short": shortID})
 	return resp
 }
@@ -107,7 +107,7 @@ func (t *Template) Add(shortID string) core.Response {
 func (t *Template) Send(template *message.Template) core.Response {
 	resp := t.client.PostJSON(
 		Link(messageTemplateSendURLSuffix),
-		t.token.GetToken().KeyMap(),
+		t.accessToken.GetToken().KeyMap(),
 		template,
 	)
 	return resp
@@ -118,7 +118,7 @@ func (t *Template) Send(template *message.Template) core.Response {
 func (t *Template) GetAllPrivate() core.Response {
 	resp := t.client.Get(
 		Link(templateGetAllPrivateTemplateURLSuffix),
-		t.token.GetToken().KeyMap(),
+		t.accessToken.GetToken().KeyMap(),
 	)
 	return resp
 }
@@ -128,7 +128,7 @@ func (t *Template) GetAllPrivate() core.Response {
 func (t *Template) DelAllPrivate(templateID string) core.Response {
 	resp := t.client.PostJSON(
 		Link(templateDelPrivateTemplateURLSuffix),
-		t.token.GetToken().KeyMap(),
+		t.accessToken.GetToken().KeyMap(),
 		util.Map{"template_id": templateID},
 	)
 	return resp

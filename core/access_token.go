@@ -13,10 +13,14 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	client      *Client
 	URL         string
 	TokenKey    string
-	Credentials util.Map
+	client      *Client
+	credentials util.Map
+}
+
+// CredentialSetter ...
+type CredentialSetter interface {
 }
 
 /*accessTokenKey 键值 */
@@ -30,21 +34,45 @@ const AccessTokenExpiresIn = "expires_in"
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	return a.client.GetRaw(Connect(APIWeixin, a.URL), a.Credentials)
+	return a.client.GetRaw(Connect(APIWeixin, a.URL), a.credentials)
 }
 
-func newAccessToken(client *Client) *AccessToken {
+func newAccessToken(p util.Map) *AccessToken {
 	return &AccessToken{
-		client:      client,
 		URL:         accessTokenURLSuffix,
 		TokenKey:    accessTokenKey,
-		Credentials: nil,
+		credentials: p,
 	}
+}
+
+// CredentialGet ...
+func CredentialGet(v []interface{}) util.Map {
+	for _, val := range v {
+		switch vv := val.(type) {
+		case util.Map:
+			return vv
+		case map[string]interface{}:
+			return (util.Map)(vv)
+		}
+	}
+	return nil
 }
 
 /*NewAccessToken NewAccessToken*/
 func NewAccessToken(v ...interface{}) *AccessToken {
-	return newAccessToken(ClientGet(v))
+	accessToken := newAccessToken(CredentialGet(v))
+	accessToken.SetClient(ClientGet(v))
+	return accessToken
+}
+
+// SetClient ...
+func (a *AccessToken) SetClient(client *Client) {
+	a.client = client
+}
+
+// Credentials ...
+func (a *AccessToken) Credentials() util.Map {
+	return a.credentials
 }
 
 //SetCredentials set request credential
@@ -52,7 +80,7 @@ func (a *AccessToken) SetCredentials(p util.Map) *AccessToken {
 	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
 		log.Error(fmt.Errorf("the %d key was not found", idx))
 	}
-	a.Credentials = p
+	a.credentials = p
 	return a
 }
 
@@ -143,7 +171,7 @@ func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
 }
 
 func (a *AccessToken) getCredentials() string {
-	c := md5.Sum(a.Credentials.ToJSON())
+	c := md5.Sum(a.credentials.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 

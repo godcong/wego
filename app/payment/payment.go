@@ -16,15 +16,13 @@ import (
 type Payment struct {
 	*core.Config
 	client *core.Client
-
-	sub util.Map
+	Sub    util.Map
 }
 
-func newPayment(config *core.Config, client *core.Client, p util.Map) *Payment {
+func newPayment(config *core.Config, p util.Map) *Payment {
 	payment := &Payment{
 		Config: config,
-		client: client,
-		sub:    p,
+		Sub:    p,
 	}
 
 	return payment
@@ -32,7 +30,8 @@ func newPayment(config *core.Config, client *core.Client, p util.Map) *Payment {
 
 //NewPayment create an payment instance
 func NewPayment(config *core.Config, v ...interface{}) *Payment {
-	payment := newPayment(config, core.ClientGet(v), util.Map{})
+	payment := newPayment(config, util.Map{})
+	core.ClientSet(payment, v)
 	return payment
 }
 
@@ -75,7 +74,7 @@ func (p *Payment) Scheme(pid string) string {
 	return bizPayURL + m.URLEncode()
 }
 
-//SetSubMerchant set sub merchat
+//SetSubMerchant set Sub merchat
 func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 	p.Set("sub_mch_id", mchID)
 	p.Set("sub_appid", appID)
@@ -107,110 +106,110 @@ func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 
 // Base ...
 func (p *Payment) Base() *Base {
-	obj, b := p.sub["Base"]
+	obj, b := p.Sub["Base"]
 	if !b {
 		obj = newBase(p)
-		p.sub["Base"] = obj
+		p.Sub["Base"] = obj
 	}
 	return obj.(*Base)
 }
 
 // Reverse ...
 func (p *Payment) Reverse() *Reverse {
-	obj, b := p.sub["Reverse"]
+	obj, b := p.Sub["Reverse"]
 	if !b {
 		obj = newReverse(p)
-		p.sub["Reverse"] = obj
+		p.Sub["Reverse"] = obj
 	}
 	return obj.(*Reverse)
 }
 
 // JSSDK ...
 func (p *Payment) JSSDK() *JSSDK {
-	obj, b := p.sub["JSSDK"]
+	obj, b := p.Sub["JSSDK"]
 	if !b {
 		obj = newJSSDK(p)
-		p.sub["JSSDK"] = obj
+		p.Sub["JSSDK"] = obj
 	}
 	return obj.(*JSSDK)
 }
 
 // RedPack ...
 func (p *Payment) RedPack() *RedPack {
-	obj, b := p.sub["RedPack"]
+	obj, b := p.Sub["RedPack"]
 	if !b {
 		obj = newRedPack(p)
-		p.sub["RedPack"] = obj
+		p.Sub["RedPack"] = obj
 	}
 	return obj.(*RedPack)
 }
 
 // Security ...
 func (p *Payment) Security() *Security {
-	obj, b := p.sub["Security"]
+	obj, b := p.Sub["Security"]
 	if !b {
 		obj = newSecurity(p)
-		p.sub["Security"] = obj
+		p.Sub["Security"] = obj
 	}
 	return obj.(*Security)
 }
 
 // Refund ...
 func (p *Payment) Refund() *Refund {
-	obj, b := p.sub["Refund"]
+	obj, b := p.Sub["Refund"]
 	if !b {
 		obj = newRefund(p)
-		p.sub["Refund"] = obj
+		p.Sub["Refund"] = obj
 	}
 	return obj.(*Refund)
 }
 
 // Order ...
 func (p *Payment) Order() *Order {
-	obj, b := p.sub["Order"]
+	obj, b := p.Sub["Order"]
 	if !b {
 		obj = newOrder(p)
-		p.sub["Order"] = obj
+		p.Sub["Order"] = obj
 	}
 	return obj.(*Order)
 }
 
 // Bill ...
 func (p *Payment) Bill() *Bill {
-	obj, b := p.sub["Bill"]
+	obj, b := p.Sub["Bill"]
 	if !b {
 		obj = newBill(p)
-		p.sub["Bill"] = obj
+		p.Sub["Bill"] = obj
 	}
 	return obj.(*Bill)
 }
 
 // Transfer ...
 func (p *Payment) Transfer() *Transfer {
-	obj, b := p.sub["Transfer"]
+	obj, b := p.Sub["Transfer"]
 	if !b {
 		obj = newTransfer(p)
-		p.sub["Transfer"] = obj
+		p.Sub["Transfer"] = obj
 	}
 	return obj.(*Transfer)
 }
 
 // Sandbox ...
 func (p *Payment) Sandbox() *Sandbox {
-	obj, b := p.sub["Sandbox"]
+	obj, b := p.Sub["Sandbox"]
 	if !b {
 		obj = newSandbox(p)
-		p.sub["Sandbox"] = obj
+		p.Sub["Sandbox"] = obj
 	}
 	return obj.(*Sandbox)
 }
 
 // Coupon ...
 func (p *Payment) Coupon() *Coupon {
-	obj, b := p.sub["Coupon"]
+	obj, b := p.Sub["Coupon"]
 	if !b {
 		obj = newCoupon(p)
-		p.sub["Coupon"] = obj
+		p.Sub["Coupon"] = obj
 	}
 	return obj.(*Coupon)
 }

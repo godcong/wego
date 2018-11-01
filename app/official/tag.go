@@ -30,7 +30,7 @@ func NewTag(config *core.Config) *Tag {
 // {"tag":{"id":100,"name":"testtag"}}
 func (t *Tag) Create(name string) core.Response {
 	log.Debug("Tag|Create", name)
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsCreateURLSuffix),
 		p,
@@ -47,7 +47,7 @@ func (t *Tag) Create(name string) core.Response {
 // {"tags":[{"id":2,"name":"星标组","count":0},{"id":100,"name":"testtag","count":0}]}
 func (t *Tag) Get() core.Response {
 	log.Debug("Tag|Get")
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.Get(
 		Link(tagsGetURLSuffix),
 		p,
@@ -62,7 +62,7 @@ func (t *Tag) Get() core.Response {
 // {"errcode":0,"errmsg":"ok"}
 func (t *Tag) Update(id int, name string) core.Response {
 	log.Debug("Tag|Update", id, name)
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsUpdateURLSuffix),
 		p,
@@ -81,7 +81,7 @@ func (t *Tag) Update(id int, name string) core.Response {
 // {"errcode":45058,"errmsg":"can't modify sys tag hint: [eOA5oa07591527]"}
 func (t *Tag) Delete(id int) core.Response {
 	log.Debug("Tag|Update", id)
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsDeleteURLSuffix),
 		p,
@@ -104,7 +104,7 @@ func (t *Tag) UserTagGet(id int, nextOpenid string) core.Response {
 	if nextOpenid != "" {
 		params.Set("next_openid", nextOpenid)
 	}
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(userTagGetURLSuffix),
 		p,
@@ -125,7 +125,7 @@ func (t *Tag) MembersBatchTagging(id int, openids []string) core.Response {
 	if openids != nil {
 		params.Set("openid_list", openids)
 	}
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsMembersBatchTaggingURLSuffix),
 		p,
@@ -146,7 +146,7 @@ func (t *Tag) MembersBatchUntagging(id int, openids []string) core.Response {
 	if openids != nil {
 		params.Set("openid_list", openids)
 	}
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsMembersBatchUntaggingURLSuffix),
 		p,
@@ -165,7 +165,7 @@ func (t *Tag) GetIDList(openid string) core.Response {
 		"openid": openid,
 	}
 
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsGetIDListURLSuffix),
 		p,
@@ -183,7 +183,7 @@ func (t *Tag) GetBlackList(beginOpenid string) core.Response {
 		params = util.Map{"begin_openid": beginOpenid}
 	}
 
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsMembersGetBlackListURLSuffix),
 		p,
@@ -201,7 +201,7 @@ func (t *Tag) BatchBlackList(openidList []string) core.Response {
 		params = util.Map{"openid_list": openidList}
 	}
 
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	resp := t.client.PostJSON(
 		Link(tagsMembersBatchBlackListURLSuffix),
 		p,
@@ -219,7 +219,7 @@ func (t *Tag) BatchUnblackList(openidList []string) core.Response {
 		params = util.Map{"openid_list": openidList}
 	}
 
-	p := t.token.GetToken().KeyMap()
+	p := t.accessToken.GetToken().KeyMap()
 	return t.client.PostJSON(
 		Link(tagsMembersBatchUnblackListURLSuffix),
 		p,

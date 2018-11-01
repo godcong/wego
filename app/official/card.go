@@ -216,7 +216,7 @@ CreateLandingPage 创建货架接口
 func (c *Card) CreateLandingPage(page *CardLandingPage) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardLandingPageCreateURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		page,
 	)
 	return resp
@@ -234,7 +234,7 @@ Deposit 导入code接口
 func (c *Card) Deposit(cardID string, code []string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardCodeDepositURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardID,
 			"code":    code,
@@ -255,7 +255,7 @@ GetDepositCount 查询导入code数目
 func (c *Card) GetDepositCount(cardID string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardCodeGetDepositCountURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardID,
 		},
@@ -275,7 +275,7 @@ CheckCode 核查code接口
 func (c *Card) CheckCode(cardID string, code []string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardCodeCheckCodeURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cardID,
 			"code":    code,
@@ -299,7 +299,7 @@ GetCode 查询 Code 接口
 func (c *Card) GetCode(p util.Map) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardCodeGetURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		p,
 	)
 	return resp
@@ -313,7 +313,7 @@ URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
 func (c *Card) GetHTML(cid string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardMPNewsGetHTMLURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		util.Map{
 			"card_id": cid,
 		},
@@ -342,7 +342,7 @@ URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
 func (c *Card) SetTestWhiteList(typ string, list []string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardTestWhiteListSetURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		util.Map{
 			typ: list,
 		},
@@ -362,7 +362,7 @@ CreateQrCode 创建二维码
 func (c *Card) CreateQrCode(action *QrCodeAction) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardQrcodeCreateURLSuffix),
-		c.token.GetToken().KeyMap(),
+		c.accessToken.GetToken().KeyMap(),
 		action,
 	)
 	return resp
@@ -381,7 +381,7 @@ Create 创建卡券
  {"errcode":0,"errmsg":"ok","card_id":"p5jo6s-f42donkk9mmZ0VILQXOME"}
 */
 func (c *Card) Create(card *OneCard) core.Response {
-	key := c.token.GetToken().KeyMap()
+	key := c.accessToken.GetToken().KeyMap()
 	_, d := card.Get()
 	resp := c.client.PostJSON(
 		Link(cardCreateURLSuffix),

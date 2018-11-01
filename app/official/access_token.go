@@ -8,16 +8,12 @@ import (
 const accessTokenKey = "access_token"
 const accessTokenURLSuffix = "/cgi-bin/token"
 
-func newAccessToken(config *core.Config) *core.AccessToken {
-	//client := NewClient(config)
-	return &core.AccessToken{
+func newAccessToken(p util.Map) *core.AccessToken {
+	token := &core.AccessToken{
 		URL:      accessTokenURLSuffix,
 		TokenKey: accessTokenKey,
-		Credentials: util.Map{
-			"grant_type": "client_credential",
-			"appid":      config.GetString("app_id"),
-			"secret":     config.GetString("secret"),
-		},
 	}
+	token.SetCredentials(p)
 
+	return token
 }

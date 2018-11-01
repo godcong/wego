@@ -28,10 +28,10 @@ HTTP调用： https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_
 {"errcode":0,"errmsg":"ok"}
 */
 func (b *Base) ClearQuota() core.Response {
-	token := b.token.GetToken()
+	token := b.accessToken.GetToken()
 
 	params := util.Map{
-		"appid": b.config.Get("app_id"),
+		"appid": b.Get("app_id"),
 	}
 	return b.client.PostJSON(Link(clearQuotaURLSuffix), token.KeyMap(), params)
 
@@ -46,6 +46,6 @@ func (b *Base) ClearQuota() core.Response {
   {"errcode":40013,"errmsg":"invalid appid"}
 */
 func (b *Base) GetCallbackIP() core.Response {
-	token := b.token.GetToken()
+	token := b.accessToken.GetToken()
 	return b.client.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
 }

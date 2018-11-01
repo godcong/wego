@@ -138,9 +138,9 @@ func (s *Server) CallbackFunc(msg *core.Message) message.Messager {
 }
 
 func newServer(account *Account) *Server {
-	token := account.config.GetString("token")
-	key := account.config.GetString("aes_key")
-	id := account.config.GetString("app_id")
+	token := account.GetString("token")
+	key := account.GetString("aes_key")
+	id := account.GetString("app_id")
 
 	return &Server{
 		mType:           "xml",
@@ -153,5 +153,5 @@ func newServer(account *Account) *Server {
 
 /*NewServer NewServer*/
 func NewServer(config *core.Config) *Server {
-	return newServer(newAccount(config))
+	return newServer(NewAccount(config))
 }

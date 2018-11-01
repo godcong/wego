@@ -40,7 +40,7 @@ func NewUser(config *core.Config) *User {
 // {"errcode":40013,"errmsg":"invalid appid"}
 func (u *User) UpdateRemark(openid, remark string) core.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
-	p := u.token.GetToken().KeyMap()
+	p := u.accessToken.GetToken().KeyMap()
 	resp := u.client.PostJSON(
 		Link(userInfoUpdateRemarkURLSuffix),
 		p,
@@ -59,7 +59,7 @@ func (u *User) UpdateRemark(openid, remark string) core.Response {
 // {"subscribe":1,"openid":"o6_bmjrPTlm6_2sgVt7hMZOPfL2M","nickname":"Band","sex":1,"language":"zh_CN","city":"广州","province":"广东","country":"中国","headimgurl":"http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0","subscribe_time":1382694957,"unionid":"o6_bmasdasdsad6_2sgVt7hMZOPfL""remark":"","groupid":0,"tagid_list":[128,2],"subscribe_scene":"ADD_SCENE_QR_CODE","qr_scene":98765,"qr_scene_str":""}
 func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 	log.Debug("User|UpdateRemark", openid, lang)
-	p := u.token.GetToken().KeyMap()
+	p := u.accessToken.GetToken().KeyMap()
 	p.Set("openid", openid)
 	if lang != "" {
 		p.Set("lang", lang)
@@ -83,7 +83,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 // {"errcode":40013,"errmsg":"invalid appid"}
 func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 	log.Debug("User|BatchGet", openids, lang)
-	p := u.token.GetToken().KeyMap()
+	p := u.accessToken.GetToken().KeyMap()
 	var list []*core.UserID
 
 	for _, v := range openids {
@@ -121,7 +121,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 // https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
 func (u *User) Get(nextOpenid string) core.Response {
 	log.Debug("User|Get", nextOpenid)
-	query := u.token.GetToken().KeyMap()
+	query := u.accessToken.GetToken().KeyMap()
 	if nextOpenid != "" {
 		query.Set("next_openid", nextOpenid)
 	}

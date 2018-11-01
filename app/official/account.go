@@ -9,26 +9,48 @@ const domain = "https://api.weixin.qq.com"
 
 /*Account Account*/
 type Account struct {
-	config *core.Config
-	client *core.Client
-	token  *core.AccessToken
-	sub    util.Map
+	*core.Config
+	Sub         util.Map
+	client      *core.Client
+	accessToken *core.AccessToken
 }
 
-func newAccount(config *core.Config, client *core.Client, token *core.AccessToken, p util.Map) *Account {
+func newAccount(config *core.Config, p util.Map) *Account {
 	return &Account{
-		config: config,
-		client: client,
-		token:  token,
-		sub:    p,
+		Config: config,
+		Sub:    p,
 	}
 }
 
 //NewAccount return a official account
 func NewAccount(config *core.Config, v ...interface{}) *Account {
-	token := newAccessToken(config)
-	acc := newAccount(config, core.ClientGet(v), token, util.Map{})
-	return acc
+	client := core.ClientGet(v)
+	accessToken := newAccessToken(util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	})
+	accessToken.SetClient(client)
+
+	account := newAccount(config, util.Map{})
+	account.SetClient(client)
+	account.SetAccessToken(accessToken)
+	return account
+}
+
+// AccessToken ...
+func (a *Account) AccessToken() *core.AccessToken {
+	return a.accessToken
+}
+
+// SetAccessToken ...
+func (a *Account) SetAccessToken(accessToken *core.AccessToken) {
+	a.accessToken = accessToken
+}
+
+// Client ...
+func (a *Account) Client() *core.Client {
+	return a.client
 }
 
 //SetClient set client replace the default client
@@ -38,40 +60,40 @@ func (a *Account) SetClient(client *core.Client) {
 
 /*Server Server*/
 func (a *Account) Server() *Server {
-	obj, b := a.sub["Server"]
+	obj, b := a.Sub["Server"]
 	if !b {
 		obj = newServer(a)
-		a.sub["Server"] = obj
+		a.Sub["Server"] = obj
 	}
 	return obj.(*Server)
 }
 
 /*Base Base*/
 func (a *Account) Base() *Base {
-	obj, b := a.sub["Base"]
+	obj, b := a.Sub["Base"]
 	if !b {
 		obj = newBase(a)
-		a.sub["Base"] = obj
+		a.Sub["Base"] = obj
 	}
 	return obj.(*Base)
 }
 
 /*Menu Menu*/
 func (a *Account) Menu() *Menu {
-	obj, b := a.sub["Menu"]
+	obj, b := a.Sub["Menu"]
 	if !b {
 		obj = newMenu(a)
-		a.sub["Menu"] = obj
+		a.Sub["Menu"] = obj
 	}
 	return obj.(*Menu)
 }
 
 /*OAuth OAuth*/
 func (a *Account) OAuth() *OAuth {
-	obj, b := a.sub["OAuth"]
+	obj, b := a.Sub["OAuth"]
 	if !b {
 		obj = newOAuth(a)
-		a.sub["OAuth"] = obj
+		a.Sub["OAuth"] = obj
 	}
 	return obj.(*OAuth)
 }
