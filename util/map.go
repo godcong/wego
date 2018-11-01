@@ -41,12 +41,12 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
-/*MapFromMap transfer to Map from map[string]interface{} */
+/*MapToMap transfer to map[string]interface{} to Map  */
 func MapToMap(p map[string]interface{}) Map {
 	return Map(p)
 }
 
-//MapsToMap
+// MapsToMap ...
 func MapsToMap(m []Map) Map {
 	mp := make(Map)
 	if m == nil {
@@ -64,7 +64,7 @@ func (m Map) Set(key string, v interface{}) Map {
 	return m.SetPath(strings.Split(key, "."), v)
 }
 
-// SetPathWithComment is the same as SetPath, but allows you to provide comment
+// SetPath is the same as SetPath, but allows you to provide comment
 // information to the key, that will be reused by Marshal().
 func (m Map) SetPath(keys []string, v interface{}) Map {
 	subtree := m
@@ -247,6 +247,7 @@ func (m Map) Delete(key string) bool {
 	return m.DeletePath(strings.Split(key, "."))
 }
 
+// DeletePath ...
 func (m Map) DeletePath(keys []string) bool {
 	if len(keys) == 0 {
 		return false
@@ -404,10 +405,6 @@ func (m Map) Join(s Map) Map {
 	return m.join(s, false)
 }
 
-//func (m Map) SaveAs(p string, f string) {
-//
-//}
-
 /*Only get map with keys */
 func (m Map) Only(keys []string) Map {
 	p := Map{}
@@ -417,7 +414,7 @@ func (m Map) Only(keys []string) Map {
 	return p
 }
 
-/*Only get map with keys */
+/*Expect get map expect keys */
 func (m Map) Expect(keys []string) Map {
 	p := m.Clone()
 	for _, v := range keys {
@@ -476,4 +473,9 @@ func (m Map) Check(s ...string) int {
 		}
 	}
 	return -1
+}
+
+// Map trans Map to map[string]interface
+func (m Map) Map() map[string]interface{} {
+	return (map[string]interface{})(m)
 }

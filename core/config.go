@@ -240,7 +240,7 @@ func NewConfig(tree *toml.Tree) *Config {
 
 //C parse config from map
 func C(p util.Map) *Config {
-	cfg, err := toml.TreeFromMap((map[string]interface{})(p))
+	cfg, err := toml.TreeFromMap(p.Map())
 	if err == nil {
 		return NewConfig(cfg)
 	}
