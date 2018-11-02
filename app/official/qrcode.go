@@ -109,7 +109,7 @@ func (q *QrCode) Create(action *QrCodeAction) core.Response {
 
 //ShowQrCode 显示二维码
 // HTTP GET请求（请使用https协议）https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
-// 提醒:TICKET记得进行UrlEncode
+// 提醒:使用core.SaveTo保存文件
 func (q *QrCode) ShowQrCode(ticket string) core.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
 
