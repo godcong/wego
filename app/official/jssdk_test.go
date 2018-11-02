@@ -15,7 +15,5 @@ func TestJSSDK_BuildConfig(t *testing.T) {
 	js.SetURL("https://mp.quick58.com")
 
 	resp := js.BuildConfig([]string{"onMenuShareQQ", "onMenuShareWeibo"})
-	resp = js.BuildConfig([]string{"onMenuShareQQ", "onMenuShareWeibo"})
-	resp = js.BuildConfig([]string{"onMenuShareQQ", "onMenuShareWeibo"})
 	t.Log(resp)
 }
