@@ -83,6 +83,10 @@ func ParseInt(v interface{}) (int64, bool) {
 		return int64(v0), true
 	case uint64:
 		return int64(v0), true
+	case float64:
+		return int64(v0), true
+	case float32:
+		return int64(v0), true
 	default:
 	}
 	return 0, false

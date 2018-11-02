@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"time"
 )
@@ -55,8 +56,7 @@ func (J *JSSDK) BuildConfig(s []string, flags ...bool) util.Map {
 // GetTicket ...
 func (J *JSSDK) GetTicket() string {
 	if cache.Has(J.getCacheKey()) {
-		maps := cache.Get(J.getCacheKey()).(util.Map)
-		return maps.GetString("ticket")
+		return cache.Get(J.getCacheKey()).(string)
 	}
 
 	resp := J.Account.Ticket().Get("jsapi")
@@ -66,10 +66,12 @@ func (J *JSSDK) GetTicket() string {
 	m := resp.ToMap()
 	ticket := m.GetString("ticket")
 	expires, b := m.GetInt64("expires_in")
+
+	log.Println(expires, b)
 	if !b {
 		return ""
 	}
-	t := time.Unix(expires, 0)
+	t := time.Unix(time.Now().Unix()+expires-500, 0)
 	cache.SetWithTTL(J.getCacheKey(), ticket, &t)
 	return ticket
 
