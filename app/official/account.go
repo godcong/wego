@@ -96,6 +96,16 @@ func (a *Account) OAuth() *OAuth {
 	return obj.(*OAuth)
 }
 
+// Ticket ...
+func (a *Account) Ticket() *Ticket {
+	obj, b := a.Sub["Ticket"]
+	if !b {
+		obj = newTicket(a)
+		a.Sub["Ticket"] = obj
+	}
+	return obj.(*Ticket)
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
