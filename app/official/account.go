@@ -5,8 +5,6 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-const domain = "https://api.weixin.qq.com"
-
 /*Account Account*/
 type Account struct {
 	*core.Config
@@ -15,15 +13,15 @@ type Account struct {
 	accessToken *core.AccessToken
 }
 
-func newAccount(config *core.Config, p util.Map) *Account {
+func newOfficialAccount(config *core.Config, p util.Map) *Account {
 	return &Account{
 		Config: config,
 		Sub:    p,
 	}
 }
 
-//NewAccount return a official account
-func NewAccount(config *core.Config, v ...interface{}) *Account {
+//NewOfficialAccount return a official account
+func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
 	client := core.ClientGet(v)
 	accessToken := newAccessToken(util.Map{
 		"grant_type": "client_credential",
@@ -32,7 +30,7 @@ func NewAccount(config *core.Config, v ...interface{}) *Account {
 	})
 	accessToken.SetClient(client)
 
-	account := newAccount(config, util.Map{})
+	account := newOfficialAccount(config, util.Map{})
 	account.SetClient(client)
 	account.SetAccessToken(accessToken)
 	return account

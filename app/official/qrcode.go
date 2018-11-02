@@ -76,7 +76,7 @@ func newQrCode(acc *Account) *QrCode {
 
 /*NewQrCode NewQrCode*/
 func NewQrCode(config *core.Config) *QrCode {
-	return newQrCode(NewAccount(config))
+	return newQrCode(NewOfficialAccount(config))
 }
 
 //Create 创建二维码ticket

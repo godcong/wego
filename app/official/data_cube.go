@@ -23,7 +23,7 @@ func newDataCube(acc *Account) *DataCube {
 
 /*NewDataCube NewDataCube*/
 func NewDataCube(config *core.Config) *DataCube {
-	return newDataCube(NewAccount(config))
+	return newDataCube(NewOfficialAccount(config))
 }
 
 //GetUserSummary 获取用户增减数据（getusersummary）	7

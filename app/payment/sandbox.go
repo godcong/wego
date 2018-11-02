@@ -34,7 +34,6 @@ func (s *Sandbox) GetKey() string {
 
 	response := s.SandboxSignKey().ToMap()
 
-
 	if response.GetString("return_code") == "SUCCESS" {
 		key := response.GetString("sandbox_signkey")
 		ttl := time.Unix(24*3600, 0)

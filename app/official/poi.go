@@ -50,7 +50,7 @@ func newPoi(account *Account) *Poi {
 
 /*NewPoi NewPoi */
 func NewPoi(config *core.Config) *Poi {
-	return newPoi(NewAccount(config))
+	return newPoi(NewOfficialAccount(config))
 }
 
 /*

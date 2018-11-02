@@ -1,7 +1,6 @@
 package mini
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/util"
 )
 

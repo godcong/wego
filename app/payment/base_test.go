@@ -7,11 +7,12 @@ import (
 	"testing"
 )
 
+// TestBase_Pay ...
 func TestBase_Pay(t *testing.T) {
 	base := payment.NewBase(core.C(util.Map{
 		"sandbox": true,
-		"app_id": "wx3c69535993f4651d",
-		"secret": "f8c7a2cf0c6ed44e2c719964bbe13b1e",
+		"app_id":  "wx3c69535993f4651d",
+		"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
 		"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))
@@ -25,11 +26,12 @@ func TestBase_Pay(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestBase_AuthCodeToOpenid ...
 func TestBase_AuthCodeToOpenid(t *testing.T) {
 	base := payment.NewBase(core.C(util.Map{
-		"app_id":  "wx3c69535993f4651d",
-		"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
-		"mch_id":  "1516796851",
+		"app_id": "wx3c69535993f4651d",
+		"secret": "f8c7a2cf0c6ed44e2c719964bbe13b1e",
+		"mch_id": "1516796851",
 	}))
 	resp := base.AuthCodeToOpenid("1212121")
 	t.Log(resp.Error())

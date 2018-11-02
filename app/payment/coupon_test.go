@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// TestCoupon_Send ...
 func TestCoupon_Send(t *testing.T) {
 	coupon := payment.NewCoupon(core.C(util.Map{
 		"sandbox": false,
@@ -17,8 +18,8 @@ func TestCoupon_Send(t *testing.T) {
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))
 	resp := coupon.Send(util.Map{
-		"coupon_stock_id":"1",
-		"openid":"12341234",
+		"coupon_stock_id": "1",
+		"openid":          "12341234",
 	})
 
 	t.Log(resp.Error())

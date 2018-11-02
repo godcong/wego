@@ -130,7 +130,7 @@ func BodyToMap(b []byte, d string) util.Map {
 }
 
 // SaveTo ...
-func SaveTo(response Response, path string, t transform.Transformer) error {
+func SaveTo(response Response, path string) error {
 	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if e != nil {
 		log.Debug("Response|ToFile", e)
@@ -144,6 +144,7 @@ func SaveTo(response Response, path string, t transform.Transformer) error {
 	return nil
 }
 
+// SaveEncodingTo ...
 func SaveEncodingTo(response Response, path string, t transform.Transformer) error {
 	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if e != nil {

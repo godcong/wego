@@ -143,6 +143,6 @@ func newServer(token, key, id string) *Server {
 
 /*NewServer NewServer */
 func NewServer() *Server {
-	log.Debug(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
-	return newServer(defaultConfig.Get("token"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
+	log.Debug(defaultConfig.Get("accessToken"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
+	return newServer(defaultConfig.Get("accessToken"), defaultConfig.Get("aes_key"), defaultConfig.Get("app_id"))
 }

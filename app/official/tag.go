@@ -20,7 +20,7 @@ func newTag(acc *Account) *Tag {
 
 /*NewTag NewTag*/
 func NewTag(config *core.Config) *Tag {
-	return newTag(NewAccount(config))
+	return newTag(NewOfficialAccount(config))
 }
 
 //Create 创建标签

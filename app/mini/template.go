@@ -1,9 +1,8 @@
 package mini
 
 import (
-	"github.com/godcong/wego/config"
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
@@ -165,7 +164,7 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 45009	接口调用超过限额（目前默认每个帐号日调用限额为100万）
 */
 func (t *Template) Send(template *message.Template) core.Response {
-	token := t.token.GetToken()
+	token := t.accessToken.GetToken()
 	resp := t.client.PostJSON(
 		t.client.Link(templateSendURLSuffix),
 		token.KeyMap(),

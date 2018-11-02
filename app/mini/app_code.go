@@ -3,8 +3,6 @@ package mini
 import (
 	"log"
 
-	"github.com/godcong/wego/config"
-	"github.com/godcong/wego/net"
 	"github.com/godcong/wego/util"
 )
 

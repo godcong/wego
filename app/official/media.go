@@ -21,7 +21,7 @@ func newMedia(account *Account) *Media {
 
 /*NewMedia NewMedia*/
 func NewMedia(config *core.Config) *Media {
-	return newMedia(NewAccount(config))
+	return newMedia(NewOfficialAccount(config))
 }
 
 /*Upload 媒体文件上传接口

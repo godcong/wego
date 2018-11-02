@@ -21,7 +21,7 @@ func newTemplate(acc *Account) *Template {
 
 /*NewTemplate NewTemplate */
 func NewTemplate(config *core.Config) *Template {
-	return newTemplate(NewAccount(config))
+	return newTemplate(NewOfficialAccount(config))
 }
 
 //SetIndustry 设置所属行业

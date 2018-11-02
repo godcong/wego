@@ -21,7 +21,7 @@ func newMenu(account *Account) *Menu {
 
 /*NewMenu NewMenu*/
 func NewMenu(config *core.Config) *Menu {
-	return newMenu(NewAccount(config))
+	return newMenu(NewOfficialAccount(config))
 }
 
 //Create 创建菜单

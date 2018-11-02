@@ -1,5 +1,7 @@
 package official
 
+const domain = "https://api.weixin.qq.com"
+
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
 const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
 

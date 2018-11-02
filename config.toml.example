@@ -15,10 +15,10 @@
 #客户服务器域名，用于注册回调等服务时使用
             url = 'http://shop.commm.top'
         [domain.default]
-#https://apihk.mch.weixin.qq.com/pay/unifiedorder    （建议接入点：东南亚）
-#https://apius.mch.weixin.qq.com/pay/unifiedorder    （建议接入点：其它）
-#https://api.mch.weixin.qq.com/pay/unifiedorder        （建议接入点：中国国内）
-#注：商户可根据实际请求情况选择最优域名进行访问，建议在接入时做好兼容，当访问其中一个域名出现异常时，可自动切换为其他域名。
+#https://apihk.mch.weixin.qq.com/pay/unifiedorder    （建议接入点:东南亚）
+#https://apius.mch.weixin.qq.com/pay/unifiedorder    （建议接入点:其它）
+#https://api.mch.weixin.qq.com/pay/unifiedorder        （建议接入点:中国国内）
+#注:商户可根据实际请求情况选择最优域名进行访问，建议在接入时做好兼容，当访问其中一个域名出现异常时，可自动切换为其他域名。
             url = 'https://api.mch.weixin.qq.com'
         [domain.official_account]
 #通用域名(api.weixin.qq.com)，使用该域名将访问官方指定就近的接入点；

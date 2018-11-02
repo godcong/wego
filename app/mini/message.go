@@ -1,9 +1,9 @@
 package mini
 
 import (
-	"github.com/godcong/wego/config"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/net"
+
 	"github.com/godcong/wego/util"
 )
 
@@ -60,7 +60,7 @@ thumb_media_id	是	小程序消息卡片的封面， image类型的media_id，�
 func (m *Message) Send(msg util.Map) core.Response {
 	log.Debug("Message|Send", msg)
 
-	key := m.token.GetToken().KeyMap()
+	key := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		m.client.Link(customSendURLSuffix),
 		key,

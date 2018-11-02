@@ -93,7 +93,7 @@ func (a *Application) Payment(cfg string) *payment.Payment {
 
 //OfficialAccount return a default OfficialAccount
 func (a *Application) OfficialAccount(cfg string) *official.Account {
-	return official.NewAccount(a.Config().GetSubConfig(cfg))
+	return official.NewOfficialAccount(a.Config().GetSubConfig(cfg))
 }
 
 /*Get 获取注册的数据 */

@@ -18,7 +18,7 @@ func newTicket(acc *Account) *Ticket {
 
 /*NewTicket NewTicket */
 func NewTicket(config *core.Config) *Ticket {
-	return newTicket(NewAccount(config))
+	return newTicket(NewOfficialAccount(config))
 }
 
 //Get 获取api_ticket

@@ -1,5 +1,7 @@
 package mini
 
+const domain = "https://api.weixin.qq.com"
+
 const templateSendURLSuffix = "/cgi-bin/message/wxopen/template/send"
 const customSendURLSuffix = "/cgi-bin/message/custom/send"
 const datacubeVisitdistributionURLSuffix = "/datacube/getweanalysisappidvisitdistribution"

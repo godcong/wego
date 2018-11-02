@@ -22,7 +22,7 @@ func newUser(account *Account) *User {
 
 /*NewUser NewUser */
 func NewUser(config *core.Config) *User {
-	return newUser(NewAccount(config))
+	return newUser(NewOfficialAccount(config))
 }
 
 //UpdateRemark 设置用户备注名

@@ -18,7 +18,7 @@ func newBase(account *Account) *Base {
 
 // NewBase 基础库
 func NewBase(config *core.Config) *Base {
-	return newBase(NewAccount(config))
+	return newBase(NewOfficialAccount(config))
 }
 
 /*ClearQuota 公众号的所有api调用（包括第三方帮其调用）次数进行清零

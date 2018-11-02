@@ -20,7 +20,7 @@ func newComment(acc *Account) *Comment {
 NewComment 新建Comment
 */
 func NewComment(config *core.Config) *Comment {
-	return newComment(NewAccount(config))
+	return newComment(NewOfficialAccount(config))
 }
 
 /*

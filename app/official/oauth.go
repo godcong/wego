@@ -46,7 +46,7 @@ func newOAuth(acc *Account) *OAuth {
 
 /*NewOAuth NewOAuth*/
 func NewOAuth(config *core.Config) *OAuth {
-	return newOAuth(NewAccount(config))
+	return newOAuth(NewOfficialAccount(config))
 }
 
 /*RegisterCodeCallback RegisterCodeCallback*/

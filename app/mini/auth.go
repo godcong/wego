@@ -7,7 +7,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-/*OAuth OAuth */
+/*Auth Auth */
 type Auth struct {
 	*core.Config
 	*Program
@@ -63,9 +63,8 @@ func (a *Auth) Session(code string) util.Map {
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
-	a.client.SetDomain(core.NewDomain("mini"))
-	resp := a.client.HTTPGet(
-		a.client.Link(snsJscode2sessionURLSuffix),
+	resp := a.client.Get(
+		Link(snsJscode2sessionURLSuffix),
 		params,
 	)
 	return resp.ToMap()

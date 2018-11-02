@@ -7,11 +7,12 @@ import (
 	"testing"
 )
 
+// TestBill_Download ...
 func TestBill_Download(t *testing.T) {
 	bill := NewBill(core.C(util.Map{
 		"sandbox": true,
-		"app_id": "wx3c69535993f4651d",
-		"secret": "f8c7a2cf0c6ed44e2c719964bbe13b1e",
+		"app_id":  "wx3c69535993f4651d",
+		"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
 		"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))

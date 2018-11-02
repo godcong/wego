@@ -158,5 +158,5 @@ func newServer(account *Account) *Server {
 
 /*NewServer NewServer*/
 func NewServer(config *core.Config) *Server {
-	return newServer(NewAccount(config))
+	return newServer(NewOfficialAccount(config))
 }

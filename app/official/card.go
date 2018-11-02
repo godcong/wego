@@ -20,7 +20,7 @@ func newCard(officialAccount *Account) *Card {
 
 /*NewCard NewCard*/
 func NewCard(config *core.Config) *Card {
-	return newCard(NewAccount(config))
+	return newCard(NewOfficialAccount(config))
 }
 
 /*CardScene CardScene*/
