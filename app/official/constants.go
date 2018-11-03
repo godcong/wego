@@ -113,55 +113,62 @@ const snsapiBase = "snsapi_base"
 //snsapiUserinfo api address suffix
 const snsapiUserinfo = "snsapi_userinfo"
 
-//getTicketURLSuffix api address suffix
-const getTicketURLSuffix = "/cgi-bin/ticket/getticket"
+//ticketGetTicket api address suffix
+const ticketGetTicket = "/cgi-bin/ticket/getticket"
 
-//cardLandingPageCreateURLSuffix api address suffix
-const cardLandingPageCreateURLSuffix = "/card/landingpage/create"
+//cardLandingPageCreate api address suffix
+const cardLandingPageCreate = "/card/landingpage/create"
 
-//cardCodeDepositURLSuffix api address suffix
-const cardCodeDepositURLSuffix = "/card/code/deposit"
+//cardCodeDeposit api address suffix
+const cardCodeDeposit = "/card/code/deposit"
 
-//cardCodeGetDepositCountURLSuffix api address suffix
-const cardCodeGetDepositCountURLSuffix = "/card/code/getdepositcount"
+//cardCodeGetDepositCount api address suffix
+const cardCodeGetDepositCount = "/card/code/getdepositcount"
 
-//cardQrcodeCreateURLSuffix api address suffix
-const cardQrcodeCreateURLSuffix = "/card/qrcode/create"
+//cardQrcodeCreate api address suffix
+const cardQrcodeCreate = "/card/qrcode/create"
 
-//cardCodeCheckCodeURLSuffix api address suffix
-const cardCodeCheckCodeURLSuffix = "/card/code/checkcode"
+//cardCodeCheckCode api address suffix
+const cardCodeCheckCode = "/card/code/checkcode"
 
-//cardCodeGetURLSuffix api address suffix
-const cardCodeGetURLSuffix = "/card/code/get"
+//cardCodeGet api address suffix
+const cardCodeGet = "/card/code/get"
 
-//cardMPNewsGetHTMLURLSuffix api address suffix
-const cardMPNewsGetHTMLURLSuffix = "/card/mpnews/gethtml"
+//cardMPNewsGetHTML api address suffix
+const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
-//cardTestWhiteListSetURLSuffix api address suffix
-const cardTestWhiteListSetURLSuffix = "/card/testwhitelist/set"
+//cardTestWhiteListSet api address suffix
+const cardTestWhiteListSet = "/card/testwhitelist/set"
 
-//cardCreateURLSuffix api address suffix
-const cardCreateURLSuffix = "/card/create"
+//cardCreate api address suffix
+const cardCreate = "/card/create"
 
-//poiAddPoiURLSuffix api address suffix
-const poiAddPoiURLSuffix = "/cgi-bin/poi/addpoi"
-
-//poiGetPoiURLSuffix api address suffix
-const poiGetPoiURLSuffix = "/cgi-bin/poi/getpoi"
-
-//poiUpdatePoiURLSuffix api address suffix
-const poiUpdatePoiURLSuffix = "/cgi-bin/poi/updatepoi"
-
-//poiGetListPoiURLSuffix api address suffix
-const poiGetListPoiURLSuffix = "/cgi-bin/poi/getpoilist"
-
-//poiDelPoiURLSuffix api address suffix
-const poiDelPoiURLSuffix = "/cgi-bin/poi/delpoi"
-
-//poiGetWXCategoryURLSuffix api address suffix
-const poiGetWXCategoryURLSuffix = "/cgi-bin/poi/getwxcategory"
-
-const getCurrentAutoReplyInfo = "/cgi-bin/get_current_autoreply_info"
-const getCurrentSelfMenuInfo = "/cgi-bin/get_current_selfmenu_info"
+//cardGetApplyProtocol api address suffix
 const cardGetApplyProtocol = "/card/getapplyprotocol"
+
+//cardGetColors api address suffix
 const cardGetColors = "/card/getcolors"
+
+//poiAddPoi api address suffix
+const poiAddPoi = "/cgi-bin/poi/addpoi"
+
+//poiGetPoi api address suffix
+const poiGetPoi = "/cgi-bin/poi/getpoi"
+
+//poiUpdatePoi api address suffix
+const poiUpdatePoi = "/cgi-bin/poi/updatepoi"
+
+//poiGetListPoi api address suffix
+const poiGetListPoi = "/cgi-bin/poi/getpoilist"
+
+//poiDelPoi api address suffix
+const poiDelPoi = "/cgi-bin/poi/delpoi"
+
+//poiGetWXCategory api address suffix
+const poiGetWXCategory = "/cgi-bin/poi/getwxcategory"
+
+//getCurrentAutoReplyInfo api address suffix
+const getCurrentAutoReplyInfo = "/cgi-bin/get_current_autoreply_info"
+
+//getCurrentSelfMenuInfo api address suffix
+const getCurrentSelfMenuInfo = "/cgi-bin/get_current_selfmenu_info"

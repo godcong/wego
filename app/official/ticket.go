@@ -31,7 +31,7 @@ func (t *Ticket) Get(typ string) core.Response {
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)
 	resp := t.client.Get(
-		Link(getTicketURLSuffix),
+		Link(ticketGetTicket),
 		p)
 	return resp
 }
