@@ -160,3 +160,5 @@ const poiDelPoiURLSuffix = "/cgi-bin/poi/delpoi"
 
 //poiGetWXCategoryURLSuffix api address suffix
 const poiGetWXCategoryURLSuffix = "/cgi-bin/poi/getwxcategory"
+
+const getCurrentAutoreplyInfo = "/cgi-bin/get_current_autoreply_info"
