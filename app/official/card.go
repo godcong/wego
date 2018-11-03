@@ -391,6 +391,14 @@ func (c *Card) GetApplyProtocol() core.Response {
 	return c.client.Get(Link(cardGetApplyProtocol), token.KeyMap())
 }
 
+//GetApplyProtocol 卡券开放类目查询接口
+//HTTP请求方式: GET
+//URL:https://api.weixin.qq.com/card/getcolors?access_token=TOKEN
+func (c *Card) GetColors() core.Response {
+	token := c.accessToken.GetToken()
+	return c.client.Get(Link(cardGetColors), token.KeyMap())
+}
+
 /*
 NewOneCard 创建卡券信息
 参数:
