@@ -16,3 +16,13 @@ func TestCurrent_AutoReplyInfo(t *testing.T) {
 	t.Log(string(rlt.Bytes()))
 	t.Log(rlt.ToMap())
 }
+
+func TestCurrent_SelfMenuInfo(t *testing.T) {
+	current := official.NewCurrent(core.C(util.Map{
+		"app_id": "wx3c69535993f4651d",
+		"secret": "f8c7a2cf0c6ed44e2c719964bbe13b1e",
+	}))
+	rlt := current.SelfMenuInfo()
+	t.Log(string(rlt.Bytes()))
+	t.Log(rlt.ToMap())
+}
