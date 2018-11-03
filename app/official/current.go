@@ -24,7 +24,6 @@ func NewCurrent(config *core.Config) *Current {
 //https://api.weixin.qq.com/cgi-bin/get_current_autoreply_info?access_token=ACCESS_TOKEN
 func (c *Current) AutoReplyInfo() core.Response {
 	token := c.accessToken.GetToken()
-
 	return c.client.Get(Link(getCurrentAutoReplyInfo), token.KeyMap())
 }
 
@@ -33,6 +32,5 @@ func (c *Current) AutoReplyInfo() core.Response {
 //https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN
 func (c *Current) SelfMenuInfo() core.Response {
 	token := c.accessToken.GetToken()
-
 	return c.client.Get(Link(getCurrentSelfMenuInfo), token.KeyMap())
 }

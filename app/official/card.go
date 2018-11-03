@@ -383,6 +383,14 @@ func (c *Card) Create(card *OneCard) core.Response {
 	return resp
 }
 
+//GetApplyProtocol 卡券开放类目查询接口
+//HTTP请求方式: GET
+//URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
+func (c *Card) GetApplyProtocol() core.Response {
+	token := c.accessToken.GetToken()
+	return c.client.Get(Link(cardGetApplyProtocol), token.KeyMap())
+}
+
 /*
 NewOneCard 创建卡券信息
 参数:
