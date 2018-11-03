@@ -162,3 +162,4 @@ const poiDelPoiURLSuffix = "/cgi-bin/poi/delpoi"
 const poiGetWXCategoryURLSuffix = "/cgi-bin/poi/getwxcategory"
 
 const getCurrentAutoReplyInfo = "/cgi-bin/get_current_autoreply_info"
+const getCurrentSelfMenuInfo = "/cgi-bin/get_current_selfmenu_info"
