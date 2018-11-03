@@ -24,5 +24,5 @@ func NewCurrent(config *core.Config) *Current {
 func (c *Current) AutoReplyInfo() core.Response {
 	token := c.accessToken.GetToken()
 
-	return c.client.Get(Link(getCurrentAutoreplyInfo), token.KeyMap())
+	return c.client.Get(Link(getCurrentAutoReplyInfo), token.KeyMap())
 }
