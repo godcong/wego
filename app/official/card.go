@@ -323,14 +323,9 @@ func (c *Card) SetTestWhiteListByName(list []string) core.Response {
 	return c.SetTestWhiteList("username", list)
 }
 
-/*SetTestWhiteList 设置测试白名单
-
-HTTP请求方式: POST
-URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
-
-成功:
-{"errcode":0,"errmsg":"ok","white_list_size":1,"success_openid":["o5jo6s3RZ6rxuVAW33IpTjYWQOg4"],"success_username":[]}
-*/
+//SetTestWhiteList 设置测试白名单
+//HTTP请求方式: POST
+//URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
 func (c *Card) SetTestWhiteList(typ string, list []string) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardTestWhiteListSet),
@@ -342,15 +337,9 @@ func (c *Card) SetTestWhiteList(typ string, list []string) core.Response {
 	return resp
 }
 
-/*
-CreateQrCode 创建二维码
-
- HTTP请求方式: POST
- URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
-
- 成功:
- {"errcode":0,"errmsg":"ok","ticket":"gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA","expire_seconds":1800,"url":"http:\/\/weixin.qq.com\/q\/02ucSHcjCW8WP1_2v0Nq4g","show_qrcode_url":"https:\/\/mp.weixin.qq.com\/cgi-bin\/showqrcode?ticket=gQHz8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydWNTSGNqQ1c4V1AxXzJ2ME5xNGcAAgS62MBaAwQIBwAA"}
-*/
+//CreateQrCode 创建二维码
+// HTTP请求方式: POST
+// URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
 func (c *Card) CreateQrCode(action *QrCodeAction) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardQrcodeCreate),
@@ -360,18 +349,9 @@ func (c *Card) CreateQrCode(action *QrCodeAction) core.Response {
 	return resp
 }
 
-/*
-Create 创建卡券
-
- HTTP请求方式: POST
- URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
-
- 失败:
- {"errcode":48001,"errmsg":"api unauthorized hint: [wk0hOa0525e193]"}
-
- 成功:
- {"errcode":0,"errmsg":"ok","card_id":"p5jo6s-f42donkk9mmZ0VILQXOME"}
-*/
+//Create 创建卡券
+// HTTP请求方式: POST
+// URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
 func (c *Card) Create(card *OneCard) core.Response {
 	key := c.accessToken.GetToken().KeyMap()
 	_, d := card.Get()
