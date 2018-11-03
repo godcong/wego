@@ -1,6 +1,7 @@
 package wego
 
 import (
+	"github.com/godcong/wego/app/mini"
 	"github.com/godcong/wego/app/official"
 	"github.com/godcong/wego/app/payment"
 	"github.com/godcong/wego/core"
@@ -94,6 +95,11 @@ func (a *Application) Payment(cfg string) *payment.Payment {
 //OfficialAccount return a default OfficialAccount
 func (a *Application) OfficialAccount(cfg string) *official.Account {
 	return official.NewOfficialAccount(a.Config().GetSubConfig(cfg))
+}
+
+//MiniProgram return a default MiniProgram
+func (a *Application) MiniProgram(cfg string) *mini.Program {
+	return mini.NewMiniProgram(a.Config().GetSubConfig(cfg))
 }
 
 /*Get 获取注册的数据 */

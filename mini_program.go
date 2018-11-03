@@ -1,5 +1,9 @@
 package wego
 
+import (
+	"github.com/godcong/wego/app/mini"
+)
+
 ///*OAuth 授权登录*/
 //type OAuth interface {
 //	Session(code string) util.Map
@@ -53,3 +57,8 @@ package wego
 // func GetDataCube() DataCube {
 // 	return GetMiniProgram().DataCube()
 // }
+
+//OfficialAccount 小程序*/
+func MiniProgram() *mini.Program {
+	return App().MiniProgram("mini_program.default")
+}
