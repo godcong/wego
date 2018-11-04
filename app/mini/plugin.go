@@ -25,13 +25,15 @@ func NewPlugin(config *core.Config) *Plugin {
 }
 
 func (p *Plugin) Apply(appID string) core.Response {
-	return p.client.PostJSON(Link(wxaPlugin), nil, util.Map{
+	token := p.accessToken.GetToken()
+	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
 		"action":       "apply",
 		"plugin_appid": appID,
 	})
 }
 func (p *Plugin) List() core.Response {
-	return p.client.PostJSON(Link(wxaPlugin), nil, util.Map{
+	token := p.accessToken.GetToken()
+	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
 		"action": "list",
 	})
 }
