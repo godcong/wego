@@ -37,3 +37,11 @@ func (p *Plugin) List() core.Response {
 		"action": "list",
 	})
 }
+
+func (p *Plugin) Unbind(appID string) core.Response {
+	token := p.accessToken.GetToken()
+	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
+		"action":       "unbind",
+		"plugin_appid": appID,
+	})
+}
