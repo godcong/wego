@@ -60,6 +60,10 @@ PKCS#8 转 PKCS#1:
 openssl rsa -pubin -in <filename> -RSAPublicKey_out
 */
 func (s *Security) GetPublicKey() core.Response {
-	maps := util.Map{"sign_type": "MD5"}
-	return s.SafeRequest(riskGetPublicKeyURLSuffix, maps)
+	m := util.Map{"sign_type": "MD5"}
+	maps := util.Map{
+		core.DataTypeXML:      s.initRequest(m),
+		core.DataTypeSecurity: s.Config,
+	}
+	return s.client.Request(riskGetPublicKey, "post", maps)
 }

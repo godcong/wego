@@ -2,26 +2,30 @@ package payment
 
 const domain = "https://api.mch.weixin.qq.com"
 
-const riskGetPublicKeyURLSuffix = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
-const downloadBillURLSuffix = "/pay/downloadbill"
-const unifiedOrderURLSuffix = "/pay/unifiedorder"
-const orderQueryURLSuffix = "/pay/orderquery"
-const microPayURLSuffix = "/pay/micropay"
-const reverseURLSuffix = "/secapi/pay/reverse"
-const closeOrderURLSuffix = "/pay/closeorder"
-const refundURLSuffix = "/secapi/pay/refund"
-const refundQueryURLSuffix = "/pay/refundquery"
-const sendRedPackURLSuffix = "/mmpaymkttransfers/sendredpack"
-const getHBInfoURLSuffix = "/mmpaymkttransfers/gethbinfo"
-const sendGroupRedPackURLSuffix = "/mmpaymkttransfers/sendgroupredpack"
-const getTransferInfoURLSuffix = "/mmpaymkttransfers/gettransferinfo"
-const promotionTransfersURLSuffix = "/mmpaymkttransfers/promotion/transfers"
-const mmPaySpTransQueryBankURLSuffix = "/mmpaysptrans/query_bank"
-const mmPaySpTransPayBankURLSuffix = "/mmpaysptrans/pay_bank"
+const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 
-const sendCouponURLSuffix = "/mmpaymkttransfers/send_coupon"
-const queryCouponStockURLSuffix = "/mmpaymkttransfers/query_coupon_stock"
-const queryCouponsInfoURLSuffix = "/mmpaymkttransfers/querycouponsinfo"
+const payDownloadBill = "/pay/downloadbill"
+const payUnifiedOrder = "/pay/unifiedorder"
+const payOrderQuery = "/pay/orderquery"
+const payMicroPay = "/pay/micropay"
+const payCloseOrder = "/pay/closeorder"
+const payRefundQuery = "/pay/refundquery"
+
+const payReverse = "/secapi/pay/reverse"
+const payRefund = "/secapi/pay/refund"
+
+const mmpaymkttransfersSendRedPack = "/mmpaymkttransfers/sendredpack"
+const mmpaymkttransfersGetHbInfo = "/mmpaymkttransfers/gethbinfo"
+const mmpaymkttransfersSendGroupRedPack = "/mmpaymkttransfers/sendgroupredpack"
+const mmpaymkttransfersGetTransferInfo = "/mmpaymkttransfers/gettransferinfo"
+const mmpaymkttransfersPromotionTransfers = "/mmpaymkttransfers/promotion/transfers"
+
+const mmpaymkttransfersSendCoupon = "/mmpaymkttransfers/send_coupon"
+const mmpaymkttransfersQueryCouponStock = "/mmpaymkttransfers/query_coupon_stock"
+const mmpaymkttransfersQueryCouponsInfo = "/mmpaymkttransfers/querycouponsinfo"
+
+const mmpaysptransQueryBank = "/mmpaysptrans/query_bank"
+const mmpaysptransPayBank = "/mmpaysptrans/pay_bank"
 
 const authCodeToOpenidURLSuffix = "/tools/authcodetoopenid"
 

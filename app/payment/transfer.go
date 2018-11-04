@@ -43,7 +43,7 @@ func (t *Transfer) QueryBalanceOrder(s string) core.Response {
 		"mch_id":           t.Get("mch_id"),
 		"partner_trade_no": s,
 	}
-	return t.SafeRequest(getTransferInfoURLSuffix, m)
+	return t.SafeRequest(mmpaymkttransfersGetTransferInfo, m)
 }
 
 /*ToBalance 企业付款
@@ -77,7 +77,7 @@ func (t *Transfer) ToBalance(maps util.Map) core.Response {
 	if !maps.Has("spbill_create_ip") {
 		maps.Set("spbill_create_ip", core.GetServerIP())
 	}
-	return t.SafeRequest(promotionTransfersURLSuffix, maps)
+	return t.SafeRequest(mmpaymkttransfersPromotionTransfers, maps)
 }
 
 /*QueryBankCardOrder 查询企业付款银行卡API
@@ -126,7 +126,7 @@ func (t *Transfer) QueryBankCardOrder(s string) core.Response {
 		"mch_id":           t.Get("mch_id"),
 		"partner_trade_no": s,
 	}
-	return t.SafeRequest(mmPaySpTransQueryBankURLSuffix, m)
+	return t.SafeRequest(mmpaysptransQueryBank, m)
 }
 
 /*ToBankCard 转账至银行卡
@@ -191,5 +191,5 @@ func (t *Transfer) ToBankCard(maps util.Map) core.Response {
 	maps.Set("enc_bank_no", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_bank_no")))
 	maps.Set("enc_true_name", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_true_name")))
 	maps.Set("sign", GenerateSignature(maps, t.GetString("key"), MakeSignMD5))
-	return t.SafeRequest(core.Link(mmPaySpTransPayBankURLSuffix), maps)
+	return t.SafeRequest(core.Link(mmpaysptransPayBank), maps)
 }

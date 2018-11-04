@@ -82,7 +82,7 @@ NORMAL:普通红包
 func (r *RedPack) Info(m util.Map) core.Response {
 	m.Set("appid", r.Get("app_id"))
 	m.Set("bill_type", "MCHT")
-	return r.SafeRequest(getHBInfoURLSuffix, m)
+	return r.SafeRequest(mmpaymkttransfersGetHbInfo, m)
 
 }
 
@@ -154,7 +154,7 @@ func (r *RedPack) SendNormal(m util.Map) core.Response {
 	m.Set("total_num", strconv.Itoa(1))
 	m.Set("client_ip", core.GetServerIP())
 	m.Set("wxappid", r.Get("app_id"))
-	return r.SafeRequest(sendRedPackURLSuffix, m)
+	return r.SafeRequest(mmpaymkttransfersSendRedPack, m)
 }
 
 /*SendGroup 裂变红包
@@ -220,5 +220,5 @@ urlencode(posttime=xx& mobile =xx&deviceid=xx)
 func (r *RedPack) SendGroup(m util.Map) core.Response {
 	m.Set("amt_type", "ALL_RAND")
 	m.Set("wxappid", r.Get("app_id"))
-	return r.SafeRequest(sendGroupRedPackURLSuffix, m)
+	return r.SafeRequest(mmpaymkttransfersSendGroupRedPack, m)
 }

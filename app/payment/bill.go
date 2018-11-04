@@ -38,5 +38,5 @@ func (b *Bill) Download(bd string, op ...util.Map) core.Response {
 		m.Set("bill_type", "ALL")
 	}
 
-	return b.Request(downloadBillURLSuffix, m)
+	return b.Request(payDownloadBill, m)
 }

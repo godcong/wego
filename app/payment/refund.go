@@ -30,7 +30,7 @@ func (r *Refund) refund(num string, total, refund int, options util.Map) core.Re
 	options.SetNil("refund_fee", strconv.Itoa(refund))
 	options.SetNil("appid", r.Get("app_id"))
 
-	return r.SafeRequest(refundURLSuffix, options)
+	return r.SafeRequest(payRefund, options)
 }
 
 /*ByOutTradeNumber 按照out_trade_no发起退款
@@ -55,7 +55,7 @@ func (r *Refund) ByTransactionID(tid, num string, total, refund int, options uti
 
 func (r *Refund) query(m util.Map) core.Response {
 	m.Set("appid", r.Get("app_id"))
-	return r.Request(refundQueryURLSuffix, m)
+	return r.Request(payRefundQuery, m)
 }
 
 /*QueryByRefundID 按refund_id查找退款订单

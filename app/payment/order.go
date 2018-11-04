@@ -55,7 +55,7 @@ func (o *Order) Unify(m util.Map) core.Response {
 	if !m.Has("notify_url") {
 		m.Set("notify_url", o.GetString("notify_url"))
 	}
-	return o.Request(unifiedOrderURLSuffix, m)
+	return o.Request(payUnifiedOrder, m)
 }
 
 /*Close 关闭订单
@@ -66,7 +66,7 @@ func (o *Order) Close(no string) core.Response {
 	m := make(util.Map)
 	m.Set("appid", o.Get("app_id"))
 	m.Set("out_trade_no", no)
-	return o.Request(closeOrderURLSuffix, m)
+	return o.Request(payCloseOrder, m)
 }
 
 /** QueryOrder 查询订单
@@ -90,7 +90,7 @@ https://api.mch.weixin.qq.com/pay/orderquery        （建议接入点:中国国
 */
 func (o *Order) query(m util.Map) core.Response {
 	m.Set("appid", o.Get("app_id"))
-	return o.Request(orderQueryURLSuffix, m)
+	return o.Request(payOrderQuery, m)
 }
 
 /*QueryByTransactionID 通过transaction_id查询订单

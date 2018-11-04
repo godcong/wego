@@ -51,7 +51,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 */
 func (p *Base) Pay(params util.Map) core.Response {
 	params.Set("appid", p.Get("app_id"))
-	return p.Request(microPayURLSuffix, params)
+	return p.Request(payMicroPay, params)
 }
 
 /*AuthCodeToOpenid 通过授权码查询公众号Openid
