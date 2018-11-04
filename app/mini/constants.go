@@ -24,6 +24,7 @@ const templateLibraryGetURLSuffix = "/cgi-bin/wxopen/template/library/get"
 
 const snsJscode2sessionURLSuffix = "/sns/jscode2session"
 
-const getwxacodeURLSuffix = "/wxa/getwxacode"
 const createwxaqrcodeURLSuffix = "/cgi-bin/wxaapp/createwxaqrcode"
-const getwxacodeunlimitURLSuffix = "/wxa/getwxacodeunlimit"
+const wxaGetWXACodeUnlimit = "/wxa/getwxacodeunlimit"
+const wxaPlugin = "wxa/plugin"
+const wxaGetWXACode = "/wxa/getwxacode"

@@ -30,7 +30,7 @@ func (a *AppCode) Get(path string, optionals util.Map) util.Map {
 	params := util.Map{"path": path}
 	params.Join(optionals)
 
-	j := a.getStream(a.client.Link(getwxacodeURLSuffix), params)
+	j := a.getStream(a.client.Link(wxaGetWXACode), params)
 
 	return util.JSONToMap(j)
 }
@@ -73,7 +73,7 @@ func (a *AppCode) GetUnlimit(scene string, optionals util.Map) util.Map {
 	params := util.Map{"scene": scene}
 	params.Join(optionals)
 
-	j := a.getStream(a.client.Link(getwxacodeunlimitURLSuffix), params)
+	j := a.getStream(a.client.Link(wxaGetWXACodeUnlimit), params)
 	return util.JSONToMap(j)
 }
 
