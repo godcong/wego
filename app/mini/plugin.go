@@ -55,6 +55,13 @@ func (p *Plugin) DevApplyList(appID string, page, num int) core.Response {
 	})
 }
 
+func (p *Plugin) DevRefuse(reason string) core.Response {
+	return p.devAction(util.Map{
+		"action": "dev_refuse",
+		"reason": reason,
+	})
+}
+
 func (p *Plugin) DevAgree(appID string) core.Response {
 	return p.devAction(util.Map{
 		"action": "dev_agree",
