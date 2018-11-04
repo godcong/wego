@@ -54,6 +54,11 @@ func (p *Plugin) DevApplyList(appID string, page, num int) core.Response {
 		"num":    num,
 	})
 }
+func (p *Plugin) DevDelete() core.Response {
+	return p.devAction(util.Map{
+		"action": "dev_delete",
+	})
+}
 
 func (p *Plugin) DevRefuse(reason string) core.Response {
 	return p.devAction(util.Map{
