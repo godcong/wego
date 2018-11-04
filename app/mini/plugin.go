@@ -30,3 +30,8 @@ func (p *Plugin) Apply(appID string) core.Response {
 		"plugin_appid": appID,
 	})
 }
+func (p *Plugin) List() core.Response {
+	return p.client.PostJSON(Link(wxaPlugin), nil, util.Map{
+		"action": "list",
+	})
+}
