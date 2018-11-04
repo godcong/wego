@@ -9,22 +9,20 @@ import (
 
 /*Auth Auth */
 type Auth struct {
-	*core.Config
 	*Program
 	dc *crypt.DataCrypt
 }
 
 func newAuth(program *Program) *Auth {
 	return &Auth{
-		Config:  defaultConfig,
 		Program: program,
-		dc:      crypt.NewDataCrypt(defaultConfig.Get("app_id")),
+		dc:      crypt.NewDataCrypt(program.GetString("app_id")),
 	}
 }
 
 /*NewAuth NewAuth */
-func NewAuth() *Auth {
-	return newAuth(program)
+func NewAuth(config *core.Config) *Auth {
+	return newAuth(NewMiniProgram(config))
 }
 
 /*Session 登录凭证校验
