@@ -45,3 +45,24 @@ func (p *Plugin) Unbind(appID string) core.Response {
 		"plugin_appid": appID,
 	})
 }
+
+func (p *Plugin) DevApplyList(appID string, page, num int) core.Response {
+	token := p.accessToken.GetToken()
+	return p.client.PostJSON(Link(wxaDevPlugin), token.KeyMap(), util.Map{
+		"action": "dev_apply_list",
+		"page":   page,
+		"num":    num,
+	})
+}
+
+func (p *Plugin) DevAgree(appID string) core.Response {
+	return p.devAction(util.Map{
+		"action": "dev_agree",
+		"appid":  appID,
+	})
+}
+
+func (p *Plugin) devAction(maps util.Map) core.Response {
+	token := p.accessToken.GetToken()
+	return p.client.PostJSON(Link(wxaDevPlugin), token.KeyMap(), maps)
+}
