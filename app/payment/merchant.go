@@ -60,6 +60,10 @@ func (m *Merchant) AddRecommendConfByReceipt(appID string) core.Response {
 	return m.SafeRequest(mktAddrecommendconf, maps)
 }
 
+func (m *Merchant) mchAddSubDevConfig() {
+	//TODO
+}
+
 func (m *Merchant) manage(action string, maps util.Map) core.Response {
 
 	maps.Join(util.Map{
