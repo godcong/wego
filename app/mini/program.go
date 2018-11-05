@@ -57,6 +57,16 @@ func (p *Program) GetClient() *core.Client {
 	return p.client
 }
 
+// Auth ...
+func (p *Program) Auth() *Auth {
+	obj, b := p.Sub["Auth"]
+	if !b {
+		obj = newAuth(p)
+		p.Sub["Auth"] = obj
+	}
+	return obj.(*Auth)
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
