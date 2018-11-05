@@ -24,6 +24,11 @@ func NewMerchant(config *core.Config) *Merchant {
 func (m *Merchant) AddSubMerchant(maps util.Map) core.Response {
 	return m.manage("add", maps)
 }
+
+func (m *Merchant) QuerySubMerchantByMerchantId(id string) core.Response {
+	return m.manage("query", util.Map{"recipient_wechatid": id})
+}
+
 func (m *Merchant) manage(action string, maps util.Map) core.Response {
 
 	maps.Join(util.Map{
