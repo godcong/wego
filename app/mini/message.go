@@ -9,24 +9,18 @@ import (
 
 /*Message Message */
 type Message struct {
-	Config
 	*Program
-	//client *core.Client
 }
 
 func newMessage(program *Program) *Message {
 	Message := Message{
-		Config:  defaultConfig,
 		Program: program,
-		//client:      program.GetClient(),
 	}
-	//Message.client.SetDomain(core.NewDomain(""))
 	return &Message
 }
 
-/*NewMessage NewMessage */
-func NewMessage() *Message {
-	return newMessage(program)
+func NewMessage(config *core.Config) *Message {
+	return newMessage(NewMiniProgram(config))
 }
 
 /*Send 客服接口-发消息
@@ -62,7 +56,7 @@ func (m *Message) Send(msg util.Map) core.Response {
 
 	key := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
-		m.client.Link(customSend),
+		Link(customSend),
 		key,
 		msg)
 	return resp

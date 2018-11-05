@@ -84,8 +84,9 @@ func (a *AppCode) getStream(url string, m util.Map) []byte {
 
 	resp := a.GetClient().RequestRaw(
 		url,
+		"post",
 		util.Map{net.RequestTypeQuery.String(): token.URLEncode(),
-			net.RequestTypeJSON.String(): m}, "post")
+			net.RequestTypeJSON.String(): m})
 	panic(resp)
 	//TODO
 	return nil

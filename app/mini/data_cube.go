@@ -1,22 +1,22 @@
 package mini
 
 import (
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
 
 /*DataCube DataCube */
 type DataCube struct {
-	Config
 	*Program
 }
 
-func (d *DataCube) query(api, from, to string) []byte {
+func (d *DataCube) query(api, from, to string) core.Response {
+	token := d.accessToken.GetToken()
 	params := util.Map{
 		"begin_date": from,
 		"end_date":   to,
 	}
-	m := d.GetClient().PostJSON(api, params, nil)
-	return m.ToBytes()
+	return d.client.PostJSON(api, token.KeyMap(), params)
 }
 
 /*UserPortrait 用户画像
@@ -45,9 +45,8 @@ id	属性值id
 name	属性值名称，与id一一对应。如属性为province时，返回的属性值名称包括“广东”等
 value	属性值对应的指标值，如指标为visit_uv,属性为province,属性值为"广东省”，value对应广东地区的活跃用户数
 */
-func (d *DataCube) UserPortrait(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappiduserportrait), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) UserPortrait(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappiduserportrait), from, to)
 }
 
 /*SummaryTrend 概况趋势
@@ -64,9 +63,8 @@ visit_total	累计用户数
 share_pv	转发次数
 share_uv	转发人数
 */
-func (d *DataCube) SummaryTrend(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappiddailysummarytrend), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) SummaryTrend(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappiddailysummarytrend), from, to)
 }
 
 /*DailyVisitTrend 日趋势
@@ -87,9 +85,8 @@ stay_time_uv	人均停留时长 (浮点型，单位:秒)
 stay_time_session	次均停留时长 (浮点型，单位:秒)
 visit_depth	平均访问深度 (浮点型)
 */
-func (d *DataCube) DailyVisitTrend(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappiddailyvisittrend), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) DailyVisitTrend(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappiddailyvisittrend), from, to)
 }
 
 /*WeeklyVisitTrend 周趋势
@@ -111,9 +108,8 @@ stay_time_uv	人均停留时长 (浮点型，单位:秒)
 stay_time_session	次均停留时长 (浮点型，单位:秒)
 visit_depth	平均访问深度 (浮点型)
 */
-func (d *DataCube) WeeklyVisitTrend(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidweeklyvisittrend), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) WeeklyVisitTrend(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidweeklyvisittrend), from, to)
 }
 
 /*MonthlyVisitTrend 月趋势
@@ -135,9 +131,8 @@ stay_time_uv	人均停留时长 (浮点型，单位:秒)
 stay_time_session	次均停留时长 (浮点型，单位:秒)
 visit_depth	平均访问深度 (浮点型)
 */
-func (d *DataCube) MonthlyVisitTrend(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidmonthlyvisittrend), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) MonthlyVisitTrend(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidmonthlyvisittrend), from, to)
 }
 
 /*VisitDistribution 访问分布
@@ -216,9 +211,8 @@ key对应关系如下:
 6: 6-10页
 7: >10页
 */
-func (d *DataCube) VisitDistribution(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidvisitdistribution), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) VisitDistribution(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidvisitdistribution), from, to)
 }
 
 /*DailyRetainInfo 日留存
@@ -237,9 +231,8 @@ visit_uv、visit_uv_new 的每一项包括:
 key	标识，0开始，0表示当天，1表示1天后，依此类推，key取值分别是:0,1,2,3,4,5,6,7,14,30
 value	key对应日期的新增用户数/活跃用户数（key=0时）或留存用户数（k>0时）
 */
-func (d *DataCube) DailyRetainInfo(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappiddailyretaininfo), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) DailyRetainInfo(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappiddailyretaininfo), from, to)
 }
 
 /*WeeklyRetainInfo 周留存
@@ -260,9 +253,8 @@ visit_uv、visit_uv_new 的每一项包括:
 key	标识，0开始，0表示当周，1表示1周后，依此类推，key取值分别是:0,1,2,3,4
 value	key对应日期的新增用户数/活跃用户数（key=0时）或留存用户数（k>0时）
 */
-func (d *DataCube) WeeklyRetainInfo(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidweeklyretaininfo), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) WeeklyRetainInfo(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidweeklyretaininfo), from, to)
 }
 
 /*MonthlyRetainInfo 月留存
@@ -283,9 +275,8 @@ visit_uv、visit_uv_new 的每一项包括:
 key	标识，0开始，0表示当月，1表示1月后，key取值分别是:0,1
 value	key对应日期的新增用户数/活跃用户数（key=0时）或留存用户数（k>0时）
 */
-func (d *DataCube) MonthlyRetainInfo(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidmonthlyretaininfo), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) MonthlyRetainInfo(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidmonthlyretaininfo), from, to)
 }
 
 /*VisitPage 访问页面
@@ -306,7 +297,6 @@ exitpage_pv	退出页次数
 page_share_pv	转发次数
 page_share_uv	转发人数
 */
-func (d *DataCube) VisitPage(from, to string) util.Map {
-	json := d.query(d.client.Link(datacubeGetweanalysisappidvisitpage), from, to)
-	return util.JSONToMap(json)
+func (d *DataCube) VisitPage(from, to string) core.Response {
+	return d.query(Link(datacubeGetweanalysisappidvisitpage), from, to)
 }

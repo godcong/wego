@@ -13,6 +13,14 @@ type Program struct {
 	accessToken *core.AccessToken
 }
 
+func (p *Program) Client() *core.Client {
+	return p.client
+}
+
+func (p *Program) SetClient(client *core.Client) {
+	p.client = client
+}
+
 // AccessToken ...
 func (p *Program) AccessToken() *core.AccessToken {
 	return p.accessToken
@@ -44,17 +52,6 @@ func newMiniProgram(config *core.Config, p util.Map) *Program {
 		Config: config,
 		Sub:    p,
 	}
-}
-
-// SetClient SetClient
-func (p *Program) SetClient(c *core.Client) *Program {
-	p.client = c
-	return p
-}
-
-// GetClient GetClient
-func (p *Program) GetClient() *core.Client {
-	return p.client
 }
 
 // Auth ...
