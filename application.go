@@ -102,6 +102,10 @@ func (a *Application) MiniProgram(cfg string) *mini.Program {
 	return mini.NewMiniProgram(a.Config().GetSubConfig(cfg))
 }
 
+func Config() *core.Config {
+	return app.Config()
+}
+
 /*Get 获取注册的数据 */
 func (a *Application) Get(name string) (interface{}, bool) {
 	if v, b := a.objects[name]; b {
