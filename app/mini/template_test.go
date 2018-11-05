@@ -72,5 +72,5 @@ func testTemplate_Send(t *testing.T, template *mini.Template) {
 		FormID:          "1523991474645",
 		EmphasisKeyword: "keyword1.DATA",
 	})
-	t.Log(rlt.ToString())
+	t.Log(string(rlt.Bytes()))
 }
