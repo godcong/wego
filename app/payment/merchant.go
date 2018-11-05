@@ -41,6 +41,16 @@ func (m *Merchant) ModifyInfo(maps util.Map) core.Response {
 	return m.SafeRequest(mchModifymchinfo, maps)
 }
 
+func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
+	maps := util.Map{
+		"subscribe_appid": appID,
+		"mch_id":          m.GetString("mch_id"),
+		"sub_mch_id":      "",
+		"sub_appid":       "",
+	}
+	return m.SafeRequest(mktAddrecommendconf, maps)
+}
+
 func (m *Merchant) manage(action string, maps util.Map) core.Response {
 
 	maps.Join(util.Map{

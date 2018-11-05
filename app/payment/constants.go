@@ -15,6 +15,7 @@ const payReverse = "/secapi/pay/reverse"
 const payRefund = "/secapi/pay/refund"
 const mchSubmchmanage = "/secapi/mch/submchmanage"
 const mchModifymchinfo = "secapi/mch/modifymchinfo"
+const mktAddrecommendconf = "secapi/mkt/addrecommendconf"
 
 const mmpaymkttransfersSendRedPack = "/mmpaymkttransfers/sendredpack"
 const mmpaymkttransfersGetHbInfo = "/mmpaymkttransfers/gethbinfo"
