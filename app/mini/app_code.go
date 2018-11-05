@@ -1,6 +1,7 @@
 package mini
 
 import (
+	"github.com/godcong/wego/core"
 	"log"
 
 	"github.com/godcong/wego/util"
@@ -82,11 +83,11 @@ func (a *AppCode) getStream(url string, m util.Map) []byte {
 	token := token0.KeyMap()
 	//strings.Join([]string{"access_token", token0.GetKey()}, "=")
 
-	resp := a.GetClient().RequestRaw(
+	resp := a.client.RequestRaw(
 		url,
 		"post",
-		util.Map{net.RequestTypeQuery.String(): token.URLEncode(),
-			net.RequestTypeJSON.String(): m})
+		util.Map{core.DataTypeQuery: token.URLEncode(),
+			core.DataTypeJSON: m})
 	panic(resp)
 	//TODO
 	return nil

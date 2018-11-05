@@ -1,6 +1,7 @@
 package mini
 
 import (
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 
 	"github.com/godcong/wego/util"
@@ -8,24 +9,19 @@ import (
 
 /*Template Template */
 type Template struct {
-	Config
 	*Program
-	//client *core.Client
 }
 
 func newTemplate(program *Program) *Template {
 	template := Template{
-		Config:  defaultConfig,
 		Program: program,
-		//client:      program.GetClient(),
 	}
-	//template.client.SetDomain(core.NewDomain(""))
 	return &template
 }
 
 /*NewTemplate NewTemplate */
-func NewTemplate() *Template {
-	return newTemplate(program)
+func NewTemplate(config *core.Config) *Template {
+	return newTemplate(NewMiniProgram(config))
 }
 
 /*List 获取小程序模板库标题列表
@@ -47,8 +43,8 @@ title	模板标题内容
 total_count	模板库标题总数
 */
 func (t *Template) List(offset, count int) util.Map {
-	return t.GetClient().PostJSON(
-		t.client.Link(templateLibraryList), util.Map{"offset": offset, "count": count}, nil).ToMap()
+	return t.client.PostJSON(
+		Link(templateLibraryList), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
 /*Get 获取模板库某个模板标题下关键词库
@@ -69,9 +65,9 @@ keyword_id	关键词id，添加模板时需要
 name	关键词内容
 example	关键词内容对应的示例
 */
-func (t *Template) Get(id string) util.Map {
-	return t.GetClient().PostJSON(
-		t.client.Link(templateLibraryGet), util.Map{"id": id}, nil).ToMap()
+func (t *Template) Get(id string) core.Response {
+	token := t.accessToken.GetToken()
+	return t.client.PostJSON(Link(templateLibraryGet), token.KeyMap(), util.Map{"id": id})
 }
 
 /*Delete 删除帐号下的某个模板
@@ -87,9 +83,9 @@ template_id	是	要删除的模板id
 在调用模板消息接口后，会返回JSON数据包。
 正常时的返回JSON数据包示例:
 */
-func (t *Template) Delete(templateID string) util.Map {
-	return t.GetClient().PostJSON(
-		t.client.Link(templateDel), util.Map{"template_id": templateID}, nil).ToMap()
+func (t *Template) Delete(templateID string) core.Response {
+	token := t.accessToken.GetToken()
+	return t.client.PostJSON(Link(templateDel), token.KeyMap(), util.Map{"template_id": templateID})
 }
 
 /*GetTemplates 获取帐号下已存在的模板列表
@@ -113,9 +109,10 @@ title	模板标题
 content	模板内容
 example	模板内容示例
 */
-func (t *Template) GetTemplates(offset, count int) util.Map {
-	return t.GetClient().PostJSON(
-		t.client.Link(templateList), util.Map{"offset": offset, "count": count}, nil).ToMap()
+func (t *Template) GetTemplates(offset, count int) core.Response {
+	token := t.accessToken.GetToken()
+	return t.client.PostJSON(Link(templateList), token.KeyMap(), util.Map{"offset": offset, "count": count})
+
 }
 
 /*Add 组合模板并添加至帐号下的个人模板库
@@ -134,9 +131,9 @@ keyword_id_list	是	开发者自行组合好的模板关键词列表，关键词
 参数	说明
 template_id	添加至帐号下的模板id，发送小程序模板消息时所需
 */
-func (t *Template) Add(id string, keyword util.Map) util.Map {
-	return t.GetClient().PostJSON(
-		t.client.Link(templateAdd), util.Map{"id": id, "keyword_id_list": keyword}, nil).ToMap()
+func (t *Template) Add(id string, keyword util.Map) core.Response {
+	token := t.accessToken.GetToken()
+	return t.client.PostJSON(Link(templateAdd), token.KeyMap(), util.Map{"id": id, "keyword_id_list": keyword})
 }
 
 /*Send 发送模板消息
@@ -165,10 +162,6 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 */
 func (t *Template) Send(template *message.Template) core.Response {
 	token := t.accessToken.GetToken()
-	resp := t.client.PostJSON(
-		t.client.Link(templateSend),
-		token.KeyMap(),
-		template,
-	)
+	resp := t.client.PostJSON(Link(templateSend), token.KeyMap(), template)
 	return resp
 }
