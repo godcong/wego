@@ -63,6 +63,7 @@ func NewServer(config *core.Config) *Server {
 
 /*ServeHTTP 服务监听 */
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	//TODO  need fix
 	var bodyBytes []byte
 	var rlt message.Messager
 

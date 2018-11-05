@@ -42,9 +42,9 @@ func (m *Merchant) manage(action string, maps util.Map) core.Response {
 		"sub_appid":  "",
 	})
 	params := util.Map{
-		core.DataTypeQuery: util.Map{"action": action},
-		core.DataTypeXML:   maps,
+		core.DataTypeXML:      m.initRequest(maps),
+		core.DataTypeQuery:    util.Map{"action": action},
+		core.DataTypeSecurity: m.Config,
 	}
-
-	return m.SafeRequest(Link(mchSubmchmanage), params)
+	return m.client.Request(Link(mchSubmchmanage), "post", params)
 }
