@@ -50,6 +50,15 @@ func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
 	}
 	return m.SafeRequest(mktAddrecommendconf, maps)
 }
+func (m *Merchant) AddRecommendConfByReceipt(appID string) core.Response {
+	maps := util.Map{
+		"receipt_appid": appID,
+		"mch_id":        m.GetString("mch_id"),
+		"sub_mch_id":    "",
+		"sub_appid":     "",
+	}
+	return m.SafeRequest(mktAddrecommendconf, maps)
+}
 
 func (m *Merchant) manage(action string, maps util.Map) core.Response {
 
