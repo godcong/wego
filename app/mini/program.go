@@ -64,6 +64,24 @@ func (p *Program) Auth() *Auth {
 	return obj.(*Auth)
 }
 
+func (p *Program) Message() *Message {
+	obj, b := p.Sub["Message"]
+	if !b {
+		obj = newMessage(p)
+		p.Sub["Message"] = obj
+	}
+	return obj.(*Message)
+}
+
+func (p *Program) Template() *Template {
+	obj, b := p.Sub["Template"]
+	if !b {
+		obj = newTemplate(p)
+		p.Sub["Template"] = obj
+	}
+	return obj.(*Template)
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.mini_program.url", domain), url)
