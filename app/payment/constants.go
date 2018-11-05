@@ -13,6 +13,7 @@ const payRefundQuery = "/pay/refundquery"
 
 const payReverse = "/secapi/pay/reverse"
 const payRefund = "/secapi/pay/refund"
+const mchSubmchmanage = "/secapi/mch/submchmanage"
 
 const mmpaymkttransfersSendRedPack = "/mmpaymkttransfers/sendredpack"
 const mmpaymkttransfersGetHbInfo = "/mmpaymkttransfers/gethbinfo"
