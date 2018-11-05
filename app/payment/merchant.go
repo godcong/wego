@@ -34,7 +34,11 @@ func (m *Merchant) QuerySubMerchantByWeChatId(id string) core.Response {
 }
 
 func (m *Merchant) ModifyInfo(maps util.Map) {
-
+	maps.Join(util.Map{
+		"mch_id":     m.GetString("mch_id"),
+		"sub_mch_id": "",
+	})
+	m.SafeRequest(mchModifymchinfo, maps)
 }
 
 func (m *Merchant) manage(action string, maps util.Map) core.Response {
