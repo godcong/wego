@@ -62,7 +62,7 @@ func (a *Auth) Session(code string) util.Map {
 		"grant_type": "authorization_code",
 	}
 	resp := a.client.Get(
-		Link(snsJscode2sessionURLSuffix),
+		Link(snsJscode2session),
 		params,
 	)
 	return resp.ToMap()

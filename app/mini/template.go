@@ -48,7 +48,7 @@ total_count	模板库标题总数
 */
 func (t *Template) List(offset, count int) util.Map {
 	return t.GetClient().PostJSON(
-		t.client.Link(templateLibraryListURLSuffix), util.Map{"offset": offset, "count": count}, nil).ToMap()
+		t.client.Link(templateLibraryList), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
 /*Get 获取模板库某个模板标题下关键词库
@@ -71,7 +71,7 @@ example	关键词内容对应的示例
 */
 func (t *Template) Get(id string) util.Map {
 	return t.GetClient().PostJSON(
-		t.client.Link(templateLibraryGetURLSuffix), util.Map{"id": id}, nil).ToMap()
+		t.client.Link(templateLibraryGet), util.Map{"id": id}, nil).ToMap()
 }
 
 /*Delete 删除帐号下的某个模板
@@ -89,7 +89,7 @@ template_id	是	要删除的模板id
 */
 func (t *Template) Delete(templateID string) util.Map {
 	return t.GetClient().PostJSON(
-		t.client.Link(templateDelURLSuffix), util.Map{"template_id": templateID}, nil).ToMap()
+		t.client.Link(templateDel), util.Map{"template_id": templateID}, nil).ToMap()
 }
 
 /*GetTemplates 获取帐号下已存在的模板列表
@@ -115,7 +115,7 @@ example	模板内容示例
 */
 func (t *Template) GetTemplates(offset, count int) util.Map {
 	return t.GetClient().PostJSON(
-		t.client.Link(templateListURLSuffix), util.Map{"offset": offset, "count": count}, nil).ToMap()
+		t.client.Link(templateList), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
 /*Add 组合模板并添加至帐号下的个人模板库
@@ -136,7 +136,7 @@ template_id	添加至帐号下的模板id，发送小程序模板消息时所需
 */
 func (t *Template) Add(id string, keyword util.Map) util.Map {
 	return t.GetClient().PostJSON(
-		t.client.Link(templateAddURLSuffix), util.Map{"id": id, "keyword_id_list": keyword}, nil).ToMap()
+		t.client.Link(templateAdd), util.Map{"id": id, "keyword_id_list": keyword}, nil).ToMap()
 }
 
 /*Send 发送模板消息
@@ -166,7 +166,7 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 func (t *Template) Send(template *message.Template) core.Response {
 	token := t.accessToken.GetToken()
 	resp := t.client.PostJSON(
-		t.client.Link(templateSendURLSuffix),
+		t.client.Link(templateSend),
 		token.KeyMap(),
 		template,
 	)

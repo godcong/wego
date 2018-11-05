@@ -8,7 +8,6 @@ import (
 
 /*AppCode AppCode*/
 type AppCode struct {
-	Config
 	*Program
 }
 
@@ -30,7 +29,7 @@ func (a *AppCode) Get(path string, optionals util.Map) util.Map {
 	params := util.Map{"path": path}
 	params.Join(optionals)
 
-	j := a.getStream(a.client.Link(wxaGetWXACode), params)
+	j := a.getStream(Link(wxaGetWXACode), params)
 
 	return util.JSONToMap(j)
 }
@@ -49,7 +48,7 @@ width	Int	430	二维码的宽度
 func (a *AppCode) GetQrCode(path string, width int) util.Map {
 	params := util.Map{"path": path, "width": width}
 
-	j := a.getStream(a.client.Link(createwxaqrcodeURLSuffix), params)
+	j := a.getStream(Link(wxaappCreatewxaqrcode), params)
 	return util.JSONToMap(j)
 }
 
@@ -73,7 +72,7 @@ func (a *AppCode) GetUnlimit(scene string, optionals util.Map) util.Map {
 	params := util.Map{"scene": scene}
 	params.Join(optionals)
 
-	j := a.getStream(a.client.Link(wxaGetWXACodeUnlimit), params)
+	j := a.getStream(Link(wxaGetWXACodeUnlimit), params)
 	return util.JSONToMap(j)
 }
 
