@@ -26,5 +26,16 @@ func (m *Merchant) AddSubMerchant() {
 }
 func (m *Merchant) manage(action string, params util.Map) core.Response {
 
-	return m.SafeRequest(Link(mchSubmchmanage), params)
+	params.Join(util.Map{
+		"appid":      m.GetString("app_id"),
+		"nonce_str":  "",
+		"sub_mch_id": "",
+		"sub_appid":  "",
+	})
+	maps := util.Map{
+		core.DataTypeQuery: util.Map{"action": action},
+		core.DataTypeXML:   params,
+	}
+
+	return m.SafeRequest(Link(mchSubmchmanage), maps)
 }
