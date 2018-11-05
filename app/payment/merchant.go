@@ -21,21 +21,21 @@ func NewMerchant(config *core.Config) *Merchant {
 	return newMerchant(NewPayment(config))
 }
 
-func (m *Merchant) AddSubMerchant() {
-
+func (m *Merchant) AddSubMerchant(maps util.Map) core.Response {
+	return m.manage("add", maps)
 }
-func (m *Merchant) manage(action string, params util.Map) core.Response {
+func (m *Merchant) manage(action string, maps util.Map) core.Response {
 
-	params.Join(util.Map{
+	maps.Join(util.Map{
 		"appid":      m.GetString("app_id"),
 		"nonce_str":  "",
 		"sub_mch_id": "",
 		"sub_appid":  "",
 	})
-	maps := util.Map{
+	params := util.Map{
 		core.DataTypeQuery: util.Map{"action": action},
-		core.DataTypeXML:   params,
+		core.DataTypeXML:   maps,
 	}
 
-	return m.SafeRequest(Link(mchSubmchmanage), maps)
+	return m.SafeRequest(Link(mchSubmchmanage), params)
 }
