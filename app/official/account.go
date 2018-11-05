@@ -106,6 +106,15 @@ func (a *Account) Ticket() *Ticket {
 	return obj.(*Ticket)
 }
 
+func (a *Account) JSSDK() *JSSDK {
+	obj, b := a.Sub["JSSDK"]
+	if !b {
+		obj = newJSSDK(a)
+		a.Sub["JSSDK"] = obj
+	}
+	return obj.(*JSSDK)
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
