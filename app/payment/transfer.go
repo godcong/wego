@@ -13,7 +13,7 @@ type Transfer struct {
 	*Payment
 }
 
-func newTransfer(pay *Payment) *Transfer {
+func newTransfer(pay *Payment) interface{} {
 	return &Transfer{
 		Payment: pay,
 	}
@@ -21,7 +21,7 @@ func newTransfer(pay *Payment) *Transfer {
 
 /*NewTransfer NewTransfer */
 func NewTransfer(config *core.Config) *Transfer {
-	return newTransfer(NewPayment(config))
+	return newTransfer(NewPayment(config)).(*Transfer)
 }
 
 /*QueryBalanceOrder 查询企业付款

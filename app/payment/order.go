@@ -13,7 +13,7 @@ type Order struct {
 	request *http.Request
 }
 
-func newOrder(payment *Payment) *Order {
+func newOrder(payment *Payment) interface{} {
 	return &Order{
 		Payment: payment,
 	}
@@ -21,7 +21,7 @@ func newOrder(payment *Payment) *Order {
 
 /*NewOrder NewOrder */
 func NewOrder(config *core.Config) *Order {
-	return newOrder(NewPayment(config))
+	return newOrder(NewPayment(config)).(*Order)
 }
 
 //SetRequest to set a http request for Unify to get the client ip

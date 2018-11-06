@@ -10,7 +10,7 @@ type Reverse struct {
 	*Payment
 }
 
-func newReverse(p *Payment) *Reverse {
+func newReverse(p *Payment) interface{} {
 	return &Reverse{
 		Payment: p,
 	}
@@ -18,7 +18,7 @@ func newReverse(p *Payment) *Reverse {
 
 /*NewReverse NewReverse */
 func NewReverse(config *core.Config) *Reverse {
-	return newReverse(NewPayment(config))
+	return newReverse(NewPayment(config)).(*Reverse)
 }
 
 /*ByOutTradeNumber 通过out_trade_no撤销订单

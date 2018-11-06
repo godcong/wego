@@ -10,7 +10,7 @@ type Bill struct {
 	*Payment
 }
 
-func newBill(p *Payment) *Bill {
+func newBill(p *Payment) interface{} {
 	return &Bill{
 		Payment: p,
 	}
@@ -18,7 +18,7 @@ func newBill(p *Payment) *Bill {
 
 /*NewBill 账单 */
 func NewBill(config *core.Config) *Bill {
-	return newBill(NewPayment(config))
+	return newBill(NewPayment(config)).(*Bill)
 }
 
 /*Download 下载对账单

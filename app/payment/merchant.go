@@ -10,7 +10,7 @@ type Merchant struct {
 	*Payment
 }
 
-func newMerchant(p *Payment) *Merchant {
+func newMerchant(p *Payment) interface{} {
 	return &Merchant{
 		Payment: p,
 	}
@@ -18,7 +18,7 @@ func newMerchant(p *Payment) *Merchant {
 
 /*NewMerchant 账单 */
 func NewMerchant(config *core.Config) *Merchant {
-	return newMerchant(NewPayment(config))
+	return newMerchant(NewPayment(config)).(*Merchant)
 }
 
 // AddSubMerchant ...

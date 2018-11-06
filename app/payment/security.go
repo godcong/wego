@@ -10,7 +10,7 @@ type Security struct {
 	*Payment
 }
 
-func newSecurity(pay *Payment) *Security {
+func newSecurity(pay *Payment) interface{} {
 	return &Security{
 		Payment: pay,
 	}
@@ -18,7 +18,7 @@ func newSecurity(pay *Payment) *Security {
 
 /*NewSecurity NewSecurity */
 func NewSecurity(config *core.Config) *Security {
-	return newSecurity(NewPayment(config))
+	return newSecurity(NewPayment(config)).(*Security)
 }
 
 /*GetPublicKey 获取RSA加密公钥API

@@ -12,7 +12,7 @@ type JSSDK struct {
 	*Payment
 }
 
-func newJSSDK(p *Payment) *JSSDK {
+func newJSSDK(p *Payment) interface{} {
 	return &JSSDK{
 		Payment: p,
 	}
@@ -20,7 +20,7 @@ func newJSSDK(p *Payment) *JSSDK {
 
 /*NewJSSDK NewJSSDK */
 func NewJSSDK(config *core.Config) *JSSDK {
-	return newJSSDK(NewPayment(config))
+	return newJSSDK(NewPayment(config)).(*JSSDK)
 }
 
 func (j *JSSDK) getURL() string {

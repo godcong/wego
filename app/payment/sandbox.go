@@ -14,7 +14,7 @@ type Sandbox struct {
 	*Payment
 }
 
-func newSandbox(payment *Payment) *Sandbox {
+func newSandbox(payment *Payment) interface{} {
 	return &Sandbox{
 		Payment: payment,
 	}
@@ -22,7 +22,7 @@ func newSandbox(payment *Payment) *Sandbox {
 
 /*NewSandbox NewSandbox */
 func NewSandbox(config *core.Config) *Sandbox {
-	return newSandbox(NewPayment(config))
+	return newSandbox(NewPayment(config)).(*Sandbox)
 }
 
 /*GetKey 沙箱key(string类型) */

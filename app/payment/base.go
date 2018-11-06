@@ -10,7 +10,7 @@ type Base struct {
 	*Payment
 }
 
-func newBase(payment *Payment) *Base {
+func newBase(payment *Payment) interface{} {
 	return &Base{
 		Payment: payment,
 	}
@@ -18,7 +18,7 @@ func newBase(payment *Payment) *Base {
 
 //NewBase new base
 func NewBase(config *core.Config) *Base {
-	return newBase(NewPayment(config))
+	return newBase(NewPayment(config)).(*Base)
 }
 
 /*Pay 支付

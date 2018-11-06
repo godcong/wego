@@ -10,7 +10,7 @@ type Coupon struct {
 	*Payment
 }
 
-func newCoupon(payment *Payment) *Coupon {
+func newCoupon(payment *Payment) interface{} {
 	return &Coupon{
 		Payment: payment,
 	}
@@ -18,7 +18,7 @@ func newCoupon(payment *Payment) *Coupon {
 
 // NewCoupon ...
 func NewCoupon(config *core.Config) *Coupon {
-	return newCoupon(NewPayment(config))
+	return newCoupon(NewPayment(config)).(*Coupon)
 }
 
 // Send ...

@@ -12,7 +12,7 @@ type RedPack struct {
 	*Payment
 }
 
-func newRedPack(payment *Payment) *RedPack {
+func newRedPack(payment *Payment) interface{} {
 	return &RedPack{
 		Payment: payment,
 	}
@@ -20,7 +20,7 @@ func newRedPack(payment *Payment) *RedPack {
 
 //NewRedPack NewRedPack
 func NewRedPack(config *core.Config) *RedPack {
-	return newRedPack(NewPayment(config))
+	return newRedPack(NewPayment(config)).(*RedPack)
 }
 
 /*Info 查询红包记录

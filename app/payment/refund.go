@@ -12,7 +12,7 @@ type Refund struct {
 	*Payment
 }
 
-func newRefund(p *Payment) *Refund {
+func newRefund(p *Payment) interface{} {
 	return &Refund{
 		Payment: p,
 	}
@@ -20,7 +20,7 @@ func newRefund(p *Payment) *Refund {
 
 /*NewRefund NewRefund */
 func NewRefund(config *core.Config) *Refund {
-	return newRefund(NewPayment(config))
+	return newRefund(NewPayment(config)).(*Refund)
 }
 
 func (r *Refund) refund(num string, total, refund int, options util.Map) core.Response {
