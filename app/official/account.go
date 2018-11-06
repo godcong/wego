@@ -42,31 +42,25 @@ func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
 	return account
 }
 
-func (p *Account) SubInit() *Account {
-	for k, v := range subLists {
+func subInit(payment *Account, p util.Map) *Account {
+	for k, v := range p {
 		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
+			payment.Sub[k] = vv(payment)
 		}
 	}
-	return p
+	return payment
+}
+
+func (p *Account) SubInit() *Account {
+	return subInit(p, subLists)
 }
 
 func (p *Account) SubExpectInit(except ...string) *Account {
-	for k, v := range subLists.Expect(except) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Expect(except))
 }
 
 func (p *Account) SubOnlyInit(only ...string) *Account {
-	for k, v := range subLists.Only(only) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Only(only))
 }
 
 // AccessToken ...

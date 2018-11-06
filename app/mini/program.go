@@ -41,32 +41,25 @@ func NewMiniProgram(config *core.Config, v ...interface{}) *Program {
 	account.SetAccessToken(accessToken)
 	return account
 }
-
-func (p *Program) SubInit() *Program {
-	for k, v := range subLists {
+func subInit(payment *Program, p util.Map) *Program {
+	for k, v := range p {
 		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
+			payment.Sub[k] = vv(payment)
 		}
 	}
-	return p
+	return payment
+}
+
+func (p *Program) SubInit() *Program {
+	return subInit(p, subLists)
 }
 
 func (p *Program) SubExpectInit(except ...string) *Program {
-	for k, v := range subLists.Expect(except) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Expect(except))
 }
 
 func (p *Program) SubOnlyInit(only ...string) *Program {
-	for k, v := range subLists.Only(only) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Only(only))
 }
 
 // Client ...
