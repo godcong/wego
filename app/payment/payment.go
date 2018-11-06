@@ -41,6 +41,15 @@ func NewPayment(config *core.Config, v ...interface{}) *Payment {
 	return payment
 }
 
+func (p *Payment) SubInit() *Payment {
+	for k, v := range subLists {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
+}
+
 func (p *Payment) SubExpectInit(except ...string) *Payment {
 	for k, v := range subLists.Expect(except) {
 		if vv, b := v.(NewAble); b {
