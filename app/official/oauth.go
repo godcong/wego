@@ -158,7 +158,7 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	}
 	if o.redirectURI != "" {
 		log.Println(core.Link(o.redirectURI, "host"))
-		if strings.Index(o.redirectURI, "http") != -1 {
+		if strings.Index(o.redirectURI, "http") == 0 {
 			v.Set("redirect_uri", o.redirectURI)
 		}
 	}
