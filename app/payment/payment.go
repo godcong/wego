@@ -41,31 +41,25 @@ func NewPayment(config *core.Config, v ...interface{}) *Payment {
 	return payment
 }
 
-func (p *Payment) SubInit() *Payment {
-	for k, v := range subLists {
+func subInit(payment *Payment, p util.Map) *Payment {
+	for k, v := range p {
 		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
+			payment.Sub[k] = vv(payment)
 		}
 	}
-	return p
+	return payment
+}
+
+func (p *Payment) SubInit() *Payment {
+	return subInit(p, subLists)
 }
 
 func (p *Payment) SubExpectInit(except ...string) *Payment {
-	for k, v := range subLists.Expect(except) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Expect(except))
 }
 
 func (p *Payment) SubOnlyInit(only ...string) *Payment {
-	for k, v := range subLists.Only(only) {
-		if vv, b := v.(NewAble); b {
-			p.Sub[k] = vv(p)
-		}
-	}
-	return p
+	return subInit(p, subLists.Only(only))
 }
 
 //SetClient set client replace the default client
