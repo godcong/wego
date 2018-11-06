@@ -5,6 +5,12 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+type NewAble func(account *Account) interface{}
+
+var subLists = util.Map{
+	"Base": newBase,
+}
+
 /*Account Account*/
 type Account struct {
 	*core.Config
@@ -34,6 +40,33 @@ func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
 	account.SetClient(client)
 	account.SetAccessToken(accessToken)
 	return account
+}
+
+func (p *Account) SubInit() *Account {
+	for k, v := range subLists {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
+}
+
+func (p *Account) SubExpectInit(except ...string) *Account {
+	for k, v := range subLists.Expect(except) {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
+}
+
+func (p *Account) SubOnlyInit(only ...string) *Account {
+	for k, v := range subLists.Only(only) {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
 }
 
 // AccessToken ...
