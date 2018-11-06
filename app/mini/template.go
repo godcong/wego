@@ -12,16 +12,15 @@ type Template struct {
 	*Program
 }
 
-func newTemplate(program *Program) *Template {
-	template := Template{
+func newTemplate(program *Program) interface{} {
+	return &Template{
 		Program: program,
 	}
-	return &template
 }
 
 /*NewTemplate NewTemplate */
 func NewTemplate(config *core.Config) *Template {
-	return newTemplate(NewMiniProgram(config))
+	return newTemplate(NewMiniProgram(config)).(*Template)
 }
 
 /*List 获取小程序模板库标题列表

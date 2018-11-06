@@ -12,6 +12,16 @@ type AppCode struct {
 	*Program
 }
 
+func newAppcode(program *Program) interface{} {
+	return &AppCode{
+		Program: program,
+	}
+}
+
+func NewAppCode(config *core.Config) *AppCode {
+	return newAppcode(NewMiniProgram(config)).(*AppCode)
+}
+
 /*Get  获取小程序二维码
 我们推荐生成并使用小程序码，它具有更好的辨识度。目前有两个接口可以生成小程序码，开发者可以根据自己的需要选择合适的接口。
 接口A: 适用于需要的码数量较少的业务场景 接口地址:

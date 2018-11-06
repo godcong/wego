@@ -10,6 +10,16 @@ type DataCube struct {
 	*Program
 }
 
+func newDataCube(program *Program) interface{} {
+	return &DataCube{
+		Program: program,
+	}
+}
+
+func NewDataCube(config *core.Config) *DataCube {
+	return newAppcode(NewMiniProgram(config)).(*DataCube)
+}
+
 func (d *DataCube) query(api, from, to string) core.Response {
 	token := d.accessToken.GetToken()
 	params := util.Map{

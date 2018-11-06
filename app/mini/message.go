@@ -12,16 +12,15 @@ type Message struct {
 	*Program
 }
 
-func newMessage(program *Program) *Message {
-	Message := Message{
+func newMessage(program *Program) interface{} {
+	return &Message{
 		Program: program,
 	}
-	return &Message
 }
 
 // NewMessage ...
 func NewMessage(config *core.Config) *Message {
-	return newMessage(NewMiniProgram(config))
+	return newMessage(NewMiniProgram(config)).(*Message)
 }
 
 /*Send 客服接口-发消息
