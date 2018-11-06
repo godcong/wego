@@ -13,10 +13,12 @@ type Program struct {
 	accessToken *core.AccessToken
 }
 
+// Client ...
 func (p *Program) Client() *core.Client {
 	return p.client
 }
 
+// SetClient ...
 func (p *Program) SetClient(client *core.Client) {
 	p.client = client
 }
@@ -64,6 +66,7 @@ func (p *Program) Auth() *Auth {
 	return obj.(*Auth)
 }
 
+// Message ...
 func (p *Program) Message() *Message {
 	obj, b := p.Sub["Message"]
 	if !b {
@@ -73,6 +76,7 @@ func (p *Program) Message() *Message {
 	return obj.(*Message)
 }
 
+// Template ...
 func (p *Program) Template() *Template {
 	obj, b := p.Sub["Template"]
 	if !b {

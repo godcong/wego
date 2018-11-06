@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// TestMerchant_AddSubMerchant ...
 func TestMerchant_AddSubMerchant(t *testing.T) {
 	obj := payment.NewMerchant(core.C(util.Map{
 		//"sandbox": true,
@@ -24,6 +25,7 @@ func TestMerchant_AddSubMerchant(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestMerchant_QuerySubMerchantByMerchantId ...
 func TestMerchant_QuerySubMerchantByMerchantId(t *testing.T) {
 	obj := payment.NewMerchant(core.C(util.Map{
 		"sandbox": true,
@@ -38,6 +40,7 @@ func TestMerchant_QuerySubMerchantByMerchantId(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestMerchant_QuerySubMerchantByWeChatId ...
 func TestMerchant_QuerySubMerchantByWeChatId(t *testing.T) {
 	obj := payment.NewMerchant(core.C(util.Map{
 		"sandbox": true,

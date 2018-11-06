@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// TestCurrent_AutoReplyInfo ...
 func TestCurrent_AutoReplyInfo(t *testing.T) {
 	current := official.NewCurrent(core.C(util.Map{
 		"app_id": "wx3c69535993f4651d",
@@ -17,6 +18,7 @@ func TestCurrent_AutoReplyInfo(t *testing.T) {
 	t.Log(rlt.ToMap())
 }
 
+// TestCurrent_SelfMenuInfo ...
 func TestCurrent_SelfMenuInfo(t *testing.T) {
 	current := official.NewCurrent(core.C(util.Map{
 		"app_id": "wx3c69535993f4651d",

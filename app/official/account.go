@@ -106,6 +106,7 @@ func (a *Account) Ticket() *Ticket {
 	return obj.(*Ticket)
 }
 
+// JSSDK ...
 func (a *Account) JSSDK() *JSSDK {
 	obj, b := a.Sub["JSSDK"]
 	if !b {

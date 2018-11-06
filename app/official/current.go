@@ -4,6 +4,7 @@ import (
 	"github.com/godcong/wego/core"
 )
 
+// Current ...
 type Current struct {
 	*Account
 }

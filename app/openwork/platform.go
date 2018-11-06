@@ -13,18 +13,22 @@ type Platform struct {
 	accessToken *core.AccessToken
 }
 
+// AccessToken ...
 func (p *Platform) AccessToken() *core.AccessToken {
 	return p.accessToken
 }
 
+// SetAccessToken ...
 func (p *Platform) SetAccessToken(accessToken *core.AccessToken) {
 	p.accessToken = accessToken
 }
 
+// Client ...
 func (p *Platform) Client() *core.Client {
 	return p.client
 }
 
+// SetClient ...
 func (p *Platform) SetClient(client *core.Client) {
 	p.client = client
 }

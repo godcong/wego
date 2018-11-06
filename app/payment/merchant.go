@@ -21,18 +21,22 @@ func NewMerchant(config *core.Config) *Merchant {
 	return newMerchant(NewPayment(config))
 }
 
+// AddSubMerchant ...
 func (m *Merchant) AddSubMerchant(maps util.Map) core.Response {
 	return m.manage("add", maps)
 }
 
+// QuerySubMerchantByMerchantId ...
 func (m *Merchant) QuerySubMerchantByMerchantId(id string) core.Response {
 	return m.manage("query", util.Map{"micro_mch_id": id})
 }
 
+// QuerySubMerchantByWeChatId ...
 func (m *Merchant) QuerySubMerchantByWeChatId(id string) core.Response {
 	return m.manage("query", util.Map{"recipient_wechatid": id})
 }
 
+// ModifyInfo ...
 func (m *Merchant) ModifyInfo(maps util.Map) core.Response {
 	maps.Join(util.Map{
 		"mch_id":     m.GetString("mch_id"),
@@ -41,6 +45,7 @@ func (m *Merchant) ModifyInfo(maps util.Map) core.Response {
 	return m.SafeRequest(mchModifymchinfo, maps)
 }
 
+// AddRecommendConfBySubscribe ...
 func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
 	maps := util.Map{
 		"subscribe_appid": appID,
@@ -50,6 +55,8 @@ func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
 	}
 	return m.SafeRequest(mktAddrecommendconf, maps)
 }
+
+// AddRecommendConfByReceipt ...
 func (m *Merchant) AddRecommendConfByReceipt(appID string) core.Response {
 	maps := util.Map{
 		"receipt_appid": appID,

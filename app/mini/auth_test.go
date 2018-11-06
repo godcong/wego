@@ -8,6 +8,7 @@ import (
 	"github.com/godcong/wego/app/mini"
 )
 
+// TestAuth_Session ...
 func TestAuth_Session(t *testing.T) {
 	auth := mini.NewAuth(core.C(util.Map{
 		"app_id": "wx3c69535993f4651d",
@@ -17,6 +18,7 @@ func TestAuth_Session(t *testing.T) {
 	t.Log(resp.String())
 }
 
+// TestAuth_UserInfo ...
 func TestAuth_UserInfo(t *testing.T) {
 	auth := mini.NewAuth(core.C(util.Map{
 		"app_id": "wx3c69535993f4651d",

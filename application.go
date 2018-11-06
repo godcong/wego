@@ -102,6 +102,7 @@ func (a *Application) MiniProgram(cfg string) *mini.Program {
 	return mini.NewMiniProgram(a.Config().GetSubConfig(cfg))
 }
 
+// Config ...
 func Config() *core.Config {
 	return app.Config()
 }

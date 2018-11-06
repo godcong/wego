@@ -19,6 +19,7 @@ func newMessage(program *Program) *Message {
 	return &Message
 }
 
+// NewMessage ...
 func NewMessage(config *core.Config) *Message {
 	return newMessage(NewMiniProgram(config))
 }

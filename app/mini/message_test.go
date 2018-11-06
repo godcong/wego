@@ -41,6 +41,7 @@ var imageMessage = util.Map{
 	"image":   util.Map{"media_id": "LWOqgv64HBvdT_fjOzJLfsGydEGz6eRq2T6tZA2D2T2V9pGFOu8x_BF2xEXfWCmI"},
 }
 
+// TestMessage_Send ...
 func TestMessage_Send(t *testing.T) {
 	msg := mini.NewMessage(core.C(util.Map{
 		"app_id": "wx3c69535993f4651d",

@@ -24,6 +24,7 @@ func NewPlugin(config *core.Config) *Plugin {
 	return newPlugin(NewMiniProgram(config))
 }
 
+// Apply ...
 func (p *Plugin) Apply(appID string) core.Response {
 	token := p.accessToken.GetToken()
 	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
@@ -31,6 +32,8 @@ func (p *Plugin) Apply(appID string) core.Response {
 		"plugin_appid": appID,
 	})
 }
+
+// List ...
 func (p *Plugin) List() core.Response {
 	token := p.accessToken.GetToken()
 	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
@@ -38,6 +41,7 @@ func (p *Plugin) List() core.Response {
 	})
 }
 
+// Unbind ...
 func (p *Plugin) Unbind(appID string) core.Response {
 	token := p.accessToken.GetToken()
 	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
@@ -46,6 +50,7 @@ func (p *Plugin) Unbind(appID string) core.Response {
 	})
 }
 
+// DevApplyList ...
 func (p *Plugin) DevApplyList(appID string, page, num int) core.Response {
 	token := p.accessToken.GetToken()
 	return p.client.PostJSON(Link(wxaDevPlugin), token.KeyMap(), util.Map{
@@ -54,12 +59,15 @@ func (p *Plugin) DevApplyList(appID string, page, num int) core.Response {
 		"num":    num,
 	})
 }
+
+// DevDelete ...
 func (p *Plugin) DevDelete() core.Response {
 	return p.devAction(util.Map{
 		"action": "dev_delete",
 	})
 }
 
+// DevRefuse ...
 func (p *Plugin) DevRefuse(reason string) core.Response {
 	return p.devAction(util.Map{
 		"action": "dev_refuse",
@@ -67,6 +75,7 @@ func (p *Plugin) DevRefuse(reason string) core.Response {
 	})
 }
 
+// DevAgree ...
 func (p *Plugin) DevAgree(appID string) core.Response {
 	return p.devAction(util.Map{
 		"action": "dev_agree",
