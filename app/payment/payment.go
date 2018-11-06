@@ -145,7 +145,7 @@ func (p *Payment) JSSDK() *JSSDK {
 	obj, b := p.Sub["JSSDK"]
 	if !b {
 		obj = newJSSDK(p)
-		p.Sub["JSSDK"] = obj
+		//p.Sub["JSSDK"] = obj
 	}
 	return obj.(*JSSDK)
 }
@@ -155,7 +155,7 @@ func (p *Payment) RedPack() *RedPack {
 	obj, b := p.Sub["RedPack"]
 	if !b {
 		obj = newRedPack(p)
-		p.Sub["RedPack"] = obj
+		//p.Sub["RedPack"] = obj
 	}
 	return obj.(*RedPack)
 }
@@ -165,7 +165,7 @@ func (p *Payment) Security() *Security {
 	obj, b := p.Sub["Security"]
 	if !b {
 		obj = newSecurity(p)
-		p.Sub["Security"] = obj
+		//p.Sub["Security"] = obj
 	}
 	return obj.(*Security)
 }
@@ -175,7 +175,7 @@ func (p *Payment) Refund() *Refund {
 	obj, b := p.Sub["Refund"]
 	if !b {
 		obj = newRefund(p)
-		p.Sub["Refund"] = obj
+		//p.Sub["Refund"] = obj
 	}
 	return obj.(*Refund)
 }
@@ -185,7 +185,7 @@ func (p *Payment) Order() *Order {
 	obj, b := p.Sub["Order"]
 	if !b {
 		obj = newOrder(p)
-		p.Sub["Order"] = obj
+		//p.Sub["Order"] = obj
 	}
 	return obj.(*Order)
 }
@@ -195,7 +195,7 @@ func (p *Payment) Bill() *Bill {
 	obj, b := p.Sub["Bill"]
 	if !b {
 		obj = newBill(p)
-		p.Sub["Bill"] = obj
+		//p.Sub["Bill"] = obj
 	}
 	return obj.(*Bill)
 }
@@ -205,7 +205,7 @@ func (p *Payment) Transfer() *Transfer {
 	obj, b := p.Sub["Transfer"]
 	if !b {
 		obj = newTransfer(p)
-		p.Sub["Transfer"] = obj
+		//p.Sub["Transfer"] = obj
 	}
 	return obj.(*Transfer)
 }
@@ -215,7 +215,7 @@ func (p *Payment) Sandbox() *Sandbox {
 	obj, b := p.Sub["Sandbox"]
 	if !b {
 		obj = newSandbox(p)
-		p.Sub["Sandbox"] = obj
+		//p.Sub["Sandbox"] = obj
 	}
 	return obj.(*Sandbox)
 }
@@ -225,14 +225,13 @@ func (p *Payment) Coupon() *Coupon {
 	obj, b := p.Sub["Coupon"]
 	if !b {
 		obj = newCoupon(p)
-		p.Sub["Coupon"] = obj
+		//p.Sub["Coupon"] = obj
 	}
 	return obj.(*Coupon)
 }
 
 func (p *Payment) initRequest(maps util.Map) util.Map {
 	if maps != nil {
-
 		maps.Set("mch_id", p.GetString("mch_id"))
 		maps.Set("nonce_str", util.GenerateUUID())
 		if p.Has("sub_mch_id") {
