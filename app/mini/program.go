@@ -5,12 +5,68 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+type NewAble func(program *Program) interface{}
+
+var subLists = util.Map{
+	"AppCode": newAppcode,
+}
+
 /*Program Program */
 type Program struct {
 	*core.Config
 	Sub         util.Map
 	client      *core.Client
 	accessToken *core.AccessToken
+}
+
+func newMiniProgram(config *core.Config, p util.Map) *Program {
+	return &Program{
+		Config: config,
+		Sub:    p,
+	}
+}
+
+// NewMiniProgram ...
+func NewMiniProgram(config *core.Config, v ...interface{}) *Program {
+	client := core.ClientGet(v)
+	accessToken := newAccessToken(util.Map{
+		"grant_type": "client_credential",
+		"appid":      config.GetString("app_id"),
+		"secret":     config.GetString("secret"),
+	})
+	accessToken.SetClient(client)
+
+	account := newMiniProgram(config, util.Map{})
+	account.SetClient(client)
+	account.SetAccessToken(accessToken)
+	return account
+}
+
+func (p *Program) SubInit() *Program {
+	for k, v := range subLists {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
+}
+
+func (p *Program) SubExpectInit(except ...string) *Program {
+	for k, v := range subLists.Expect(except) {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
+}
+
+func (p *Program) SubOnlyInit(only ...string) *Program {
+	for k, v := range subLists.Only(only) {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
 }
 
 // Client ...
@@ -31,29 +87,6 @@ func (p *Program) AccessToken() *core.AccessToken {
 // SetAccessToken ...
 func (p *Program) SetAccessToken(accessToken *core.AccessToken) {
 	p.accessToken = accessToken
-}
-
-// NewMiniProgram ...
-func NewMiniProgram(config *core.Config, v ...interface{}) *Program {
-	client := core.ClientGet(v)
-	accessToken := newAccessToken(util.Map{
-		"grant_type": "client_credential",
-		"appid":      config.GetString("app_id"),
-		"secret":     config.GetString("secret"),
-	})
-	accessToken.SetClient(client)
-
-	account := newMiniProgram(config, util.Map{})
-	account.SetClient(client)
-	account.SetAccessToken(accessToken)
-	return account
-}
-
-func newMiniProgram(config *core.Config, p util.Map) *Program {
-	return &Program{
-		Config: config,
-		Sub:    p,
-	}
 }
 
 // Auth ...
