@@ -12,6 +12,12 @@ import (
 	"strings"
 )
 
+type NewAble func(payment *Payment) interface{}
+
+var subLists = util.Map{
+	"Bill": newBill,
+}
+
 /*Payment Payment */
 type Payment struct {
 	*core.Config
@@ -33,6 +39,15 @@ func NewPayment(config *core.Config, v ...interface{}) *Payment {
 	payment := newPayment(config, util.Map{})
 	payment.SetClient(core.ClientGet(v))
 	return payment
+}
+
+func (p *Payment) SubInit(except ...string) *Payment {
+	for k, v := range subLists.Expect(except) {
+		if vv, b := v.(NewAble); b {
+			p.Sub[k] = vv(p)
+		}
+	}
+	return p
 }
 
 //SetClient set client replace the default client
