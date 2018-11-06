@@ -157,9 +157,11 @@ func (o *OAuth) AuthCodeURL(state string) string {
 		"appid":         {o.GetString("app_id")},
 	}
 	if o.redirectURI != "" {
-		log.Println(core.Link(o.redirectURI, "host"))
+		log.Println(o.redirectURI)
 		if strings.Index(o.redirectURI, "http") == 0 {
 			v.Set("redirect_uri", o.redirectURI)
+		} else {
+			v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
 		}
 	}
 	if o.scopes != nil {
