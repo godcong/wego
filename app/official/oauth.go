@@ -158,7 +158,9 @@ func (o *OAuth) AuthCodeURL(state string) string {
 	}
 	if o.redirectURI != "" {
 		log.Println(core.Link(o.redirectURI, "host"))
-		v.Set("redirect_uri", core.Link(o.redirectURI, "host"))
+		if strings.Index(o.redirectURI, "http") != -1 {
+			v.Set("redirect_uri", o.redirectURI)
+		}
 	}
 	if o.scopes != nil {
 		v["scope"] = o.scopes

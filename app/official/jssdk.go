@@ -16,13 +16,13 @@ type JSSDK struct {
 }
 
 // URL ...
-func (J *JSSDK) URL() string {
-	return J.url
+func (j *JSSDK) URL() string {
+	return j.url
 }
 
 // SetURL ...
-func (J *JSSDK) SetURL(url string) {
-	J.url = url
+func (j *JSSDK) SetURL(url string) {
+	j.url = url
 }
 
 func newJSSDK(account *Account) *JSSDK {
@@ -37,29 +37,29 @@ func NewJSSDK(config *core.Config) *JSSDK {
 }
 
 // BuildConfig ...
-func (J *JSSDK) BuildConfig(s []string, flags ...bool) util.Map {
-	ticket := J.GetTicket()
+func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
+	ticket := j.GetTicket()
 	nonce := util.GenerateNonceStr()
 	ts := util.Time()
-	url := J.URL()
+	url := j.URL()
 	m := util.Map{
-		"appId":     J.Get("app_id"),
+		"appId":     j.Get("app_id"),
 		"nonceStr":  nonce,
 		"timestamp": ts,
 		"url":       url,
-		"jsApiList": s,
+		"jsApiList": maps.Get("jsapi"),
 		"signature": getTicketSignature(ticket, nonce, ts, url),
 	}
 	return m
 }
 
 // GetTicket ...
-func (J *JSSDK) GetTicket() string {
-	if cache.Has(J.getCacheKey()) {
-		return cache.Get(J.getCacheKey()).(string)
+func (j *JSSDK) GetTicket() string {
+	if cache.Has(j.getCacheKey()) {
+		return cache.Get(j.getCacheKey()).(string)
 	}
 
-	resp := J.Account.Ticket().Get("jsapi")
+	resp := j.Account.Ticket().Get("jsapi")
 	if resp.Error() != nil {
 		return ""
 	}
@@ -72,13 +72,13 @@ func (J *JSSDK) GetTicket() string {
 		return ""
 	}
 	t := time.Unix(time.Now().Unix()+expires-500, 0)
-	cache.SetWithTTL(J.getCacheKey(), ticket, &t)
+	cache.SetWithTTL(j.getCacheKey(), ticket, &t)
 	return ticket
 
 }
 
-func (J *JSSDK) getCacheKey() string {
-	return "godcong.wego.official.account.jssdk.ticket.jsapi" + J.GetString("app_id")
+func (j *JSSDK) getCacheKey() string {
+	return "godcong.wego.official.account.jssdk.ticket.jsapi" + j.GetString("app_id")
 }
 
 func getTicketSignature(ticket, nonce, ts, url string) string {
