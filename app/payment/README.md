@@ -19,7 +19,6 @@
                 "prikey_path":"cert/privatekey.pem", //(可不填)部分支付使用（如:银行转账）
             }
 
-
            通过配置config.toml文件
       
             //必要配置
@@ -42,6 +41,8 @@
 
 ## 创建支付对象
     obj:=wego.Payment()
+    或
+    obj:=payment.NewPaymen(cfg)
     
 ## 通过授权码查询公众号Openid 
     obj.AuthCodeToOpenid(#authCode#)
@@ -61,7 +62,7 @@
     或
     obj.Order().Unify(util.Map{#请求参数#})
 
-    resuilt:
+    result:
     {"appid":"wx426b3015555a46be","code_url":"weixin://wxpay/bizpayurl?pr=D3sNT8y","mch_id":"1900009851","nonce_str":"FRFByNNdrzRuEGkp","prepay_id":"wx20180220113507842dff20340601189342","result_code":"SUCCESS","return_code":"SUCCESS","return_msg":"OK","sign":"D398DA0644A14D0BC00A8B82D8D4ECDC","trade_type":"NATIVE"}
 
 ### 订单查询
@@ -100,15 +101,18 @@
     微信退款单号 
     obj.Refund().QueryByRefundId(#refundId#)
 
-f. 下载对账单 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6>
+### 下载对账单 
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
  
-g. 支付结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7>
+### 支付结果通知
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7
 
-h. 交易保障 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_8>
+### 交易保障 
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_8
 
-i. 退款结果通知 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=9>
+### 退款结果通知 
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=9
 
-j. 拉取订单评价数据 <https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10>
-
-none
+### 拉取订单评价数据 
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10
 
