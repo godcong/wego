@@ -345,7 +345,7 @@ func request(context context.Context, url string, method string, ops util.Map) R
 func buildClient(maps util.Map) *http.Client {
 	//检查是否包含security
 	if maps.Has(DataTypeSecurity) {
-		//判断是否创建safeclient
+		//判断能否创建safe client
 		if v, b := maps.Get(DataTypeSecurity).(*Config); b {
 			if v.Check("cert_path", "key_path") != -1 {
 				return buildTransport(v)
@@ -353,6 +353,8 @@ func buildClient(maps util.Map) *http.Client {
 			return buildSafeTransport(v)
 		}
 	}
+	//默认输出未配置client
+	log.Info("default client")
 	return buildTransport(C(util.Map{}))
 }
 

@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// NewAble ...
 type NewAble func(payment *Payment) interface{}
 
 var subLists = util.Map{
@@ -50,14 +51,17 @@ func subInit(payment *Payment, p util.Map) *Payment {
 	return payment
 }
 
+// SubInit ...
 func (p *Payment) SubInit() *Payment {
 	return subInit(p, subLists)
 }
 
+// SubExpectInit ...
 func (p *Payment) SubExpectInit(except ...string) *Payment {
 	return subInit(p, subLists.Expect(except))
 }
 
+// SubOnlyInit ...
 func (p *Payment) SubOnlyInit(only ...string) *Payment {
 	return subInit(p, subLists.Only(only))
 }

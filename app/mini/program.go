@@ -5,6 +5,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+// NewAble ...
 type NewAble func(program *Program) interface{}
 
 var subLists = util.Map{
@@ -50,14 +51,17 @@ func subInit(payment *Program, p util.Map) *Program {
 	return payment
 }
 
+// SubInit ...
 func (p *Program) SubInit() *Program {
 	return subInit(p, subLists)
 }
 
+// SubExpectInit ...
 func (p *Program) SubExpectInit(except ...string) *Program {
 	return subInit(p, subLists.Expect(except))
 }
 
+// SubOnlyInit ...
 func (p *Program) SubOnlyInit(only ...string) *Program {
 	return subInit(p, subLists.Only(only))
 }

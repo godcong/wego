@@ -18,6 +18,7 @@ func newAppcode(program *Program) interface{} {
 	}
 }
 
+// NewAppCode ...
 func NewAppCode(config *core.Config) *AppCode {
 	return newAppcode(NewMiniProgram(config)).(*AppCode)
 }

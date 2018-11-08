@@ -16,7 +16,7 @@ func newSecurity(pay *Payment) interface{} {
 	}
 }
 
-/*NewSecurity NewSecurity */
+// NewSecurity ...
 func NewSecurity(config *core.Config) *Security {
 	return newSecurity(NewPayment(config)).(*Security)
 }

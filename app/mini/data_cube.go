@@ -16,6 +16,7 @@ func newDataCube(program *Program) interface{} {
 	}
 }
 
+// NewDataCube ...
 func NewDataCube(config *core.Config) *DataCube {
 	return newAppcode(NewMiniProgram(config)).(*DataCube)
 }
