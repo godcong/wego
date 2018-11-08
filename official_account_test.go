@@ -148,7 +148,9 @@ func TestXml(t *testing.T) {
 }`
 	m := util.JSONToMap([]byte(json))
 	t.Log(m)
-	t.Log(string(m.ToXML()))
+	x := m.ToXML()
+	t.Log(string(x))
+	t.Log(util.XMLToMap(x))
 }
 
 //func testBase(t *testing.T, account wego.OfficialAccount) {
