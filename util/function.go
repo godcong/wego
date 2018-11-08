@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -22,7 +23,8 @@ const CustomHeader = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
 
 /*CDATA xml cdata defines */
 type CDATA struct {
-	Value string `xml:",cdata"`
+	XMLName xml.Name
+	Value   string `xml:",cdata"`
 }
 
 /* error types */
@@ -111,6 +113,41 @@ func MapToXML(m Map) (string, error) {
 	return mapToXML(m, false)
 }
 
+func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
+	if maps == nil {
+		return errors.New("nil map")
+	}
+	err := e.EncodeToken(start)
+	if err != nil {
+		return err
+	}
+	for k, v := range maps {
+		switch vv := v.(type) {
+		case string:
+			if _, err := strconv.ParseInt(vv, 10, 0); err != nil {
+				_ = e.EncodeElement(
+					CDATA{Value: vv}, xml.StartElement{Name: xml.Name{Local: k}})
+				continue
+			}
+			_ = e.EncodeElement(v, xml.StartElement{Name: xml.Name{Local: k}})
+		case float64:
+			if vv == float64(int64(vv)) {
+				_ = e.EncodeElement(int64(vv), xml.StartElement{Name: xml.Name{Local: k}})
+				continue
+			}
+			_ = e.EncodeElement(vv, xml.StartElement{Name: xml.Name{Local: k}})
+		case Map:
+			marshalXML(vv, e, xml.StartElement{Name: xml.Name{Local: k}})
+		case map[string]interface{}:
+			marshalXML(vv, e, xml.StartElement{Name: xml.Name{Local: k}})
+		default:
+			log.Error(reflect.TypeOf(v), vv)
+		}
+
+	}
+	return e.EncodeToken(start.End())
+}
+
 func mapToXML(m Map, needHeader bool) (string, error) {
 
 	buff := bytes.NewBuffer([]byte(CustomHeader))
@@ -144,8 +181,49 @@ func XMLToMap(contentXML []byte) Map {
 /*JSONToMap Convert JSON to MAP */
 func JSONToMap(content []byte) Map {
 	m := Map{}
-	_ = json.Unmarshal(content, &m)
+	err := json.Unmarshal(content, &m)
+	if err != nil {
+		log.Error(err)
+	}
 	return m
+}
+
+func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
+	ele, val := "", ""
+	for t, err := d.Token(); err == nil; t, err = d.Token() {
+		switch token := t.(type) {
+		// 处理元素开始（标签）
+		case xml.StartElement:
+			ele = token.Name.Local
+			// fmt.Printf("This is the sta: %s\n", ele)
+			if strings.ToLower(ele) == "xml" {
+				// xmlFlag = true
+				continue
+			}
+
+			// 处理元素结束（标签）
+		case xml.EndElement:
+			name := token.Name.Local
+			// fmt.Printf("This is the end: %s\n", name)
+			if strings.ToLower(name) == "xml" {
+				break
+			}
+			if ele == name && ele != "" {
+				maps.Set(ele, val)
+				ele = ""
+				val = ""
+			}
+			// 处理字符数据（这里就是元素的文本）
+		case xml.CharData:
+			// content := string(token)
+			// fmt.Printf("This is the content: %v\n", content)
+			val = string(token)
+			// 异常处理(Log输出）
+		default:
+			log.Println(token)
+		}
+
+	}
 }
 
 func xmlToMap(contentXML []byte, hasHeader bool) Map {

@@ -2,6 +2,8 @@ package util
 
 import (
 	"encoding/json"
+	"encoding/xml"
+	"github.com/godcong/wego/log"
 	"net/url"
 	"sort"
 	"strings"
@@ -331,12 +333,13 @@ func (m Map) SortKeys() []string {
 }
 
 /*ToXML transfer map to XML */
-func (m Map) ToXML() string {
-	if v, e := MapToXML(m); e == nil {
-		return v
+func (m Map) ToXML() []byte {
+	v, e := xml.Marshal(&m)
+	if e != nil {
+		log.Error(e)
+		return []byte(nil)
 	}
-	return ""
-
+	return v
 }
 
 /*ParseXML parse XML bytes to map */
@@ -348,6 +351,7 @@ func (m Map) ParseXML(b []byte) {
 func (m Map) ToJSON() []byte {
 	v, e := json.Marshal(m)
 	if e != nil {
+		log.Error(e)
 		return []byte(nil)
 	}
 	return v
@@ -479,3 +483,22 @@ func (m Map) Check(s ...string) int {
 func (m Map) Map() map[string]interface{} {
 	return (map[string]interface{})(m)
 }
+
+// MarshalXML ...
+func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(m) == 0 {
+		return nil
+	}
+	return marshalXML(m, e, xml.StartElement{Name: xml.Name{Local: "xml"}})
+}
+
+// UnmarshalXML ...
+func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}})
+}
+
+// UnmarshalJSON ...
+//func (m Map) UnmarshalJSON(b []byte) error {
+//	log.Println(string(b))
+//	return nil
+//}

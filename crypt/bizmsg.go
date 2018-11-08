@@ -73,7 +73,7 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 		"TimeStamp":    timeStamp,
 		"Nonce":        nonce,
 	}
-	return p.ToXML(), nil
+	return string(p.ToXML()), nil
 }
 
 // Decrypt ...

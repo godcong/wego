@@ -438,7 +438,7 @@ func toXMLReader(v interface{}) io.Reader {
 		reader = bytes.NewReader(v)
 	case util.Map:
 		log.Debug("toXMLReader|util.Map", v.ToXML())
-		reader = strings.NewReader(v.ToXML())
+		reader = bytes.NewReader(v.ToXML())
 	default:
 		log.Debug("toXMLReader|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
