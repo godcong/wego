@@ -101,6 +101,53 @@
     微信退款单号 
     obj.Refund().QueryByRefundId(#refundId#)
 
+### JSSDK
+    官方文档:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+    1.WeixinJSBridge:
+    obj.JSSDK().BridgeConfig(#prepay_id#) 返回util.Map,使用Map.ToJson()转成json
+
+    javascript:
+    WeixinJSBridge.invoke(
+           'getBrandWCPayRequest', <?= $json ?>,
+           function(res){
+               if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    // res.err_msg将在用户支付成功后返回
+                    // ok，但并不保证它绝对可靠。
+               }
+           }
+       );
+
+    2.JSSDK: 
+    obj.JSSDK().SdkConfig(#prepay_id#) 返回util.Map
+    
+    javascript:
+    wx.chooseWXPay({
+        timestamp: <?= $config['timestamp'] ?>,
+        nonceStr: '<?= $config['nonceStr'] ?>',
+        package: '<?= $config['package'] ?>',
+        signType: '<?= $config['signType'] ?>',
+        paySign: '<?= $config['paySign'] ?>', // 支付签名
+        success: function (res) {
+            // 支付成功后的回调函数
+        }
+    });
+    
+    3.小程序:
+     obj.JSSDK().SdkConfig(#prepay_id#) // 返回util.Map
+    
+    javascript:
+    wx.chooseWXPay({
+        timeStamp: <?= $config['timestamp'] ?>, //注意 timeStamp 的格式
+        nonceStr: '<?= $config['nonceStr'] ?>',
+        package: '<?= $config['package'] ?>',
+        signType: '<?= $config['signType'] ?>',
+        paySign: '<?= $config['paySign'] ?>', // 支付签名
+        success: function (res) {
+            // 支付成功后的回调函数
+        }
+    });
+
 ### 下载对账单 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
  
@@ -116,3 +163,5 @@
 ### 拉取订单评价数据 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10
 
+### 企业付款
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=4_3
