@@ -178,3 +178,15 @@
 ### 查询企业付款到零钱
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
     obj.Transfer().QueryBalanceOrder(#partnerTradeNo#) // 商户订单号
+    
+###  企业付款到银行卡	
+     官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_2
+     obj.Transfer().ToBankCard(util.Map{
+        "partner_trade_no" : "1229222022",
+        "enc_bank_no" : "6214830901234564", // 银行卡号
+        "enc_true_name" : "聪神",   // 银行卡对应的用户真实姓名
+        "bank_code" : "1001", // 银行编号
+        "amount" : "100",  // 单位：分
+        "desc" : "测试" // 商户订单号   
+     })
+   
