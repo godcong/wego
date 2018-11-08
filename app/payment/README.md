@@ -163,5 +163,18 @@
 ### 拉取订单评价数据 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10
 
-### 企业付款
+## 企业付款
+### 企业付款到零钱
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=4_3
+    obj.Transfer().ToBalance(util.Map{
+        "partner_trade_no" : "1233455", // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
+        "openid" : "oxTWIuGaIt6gTKsQRLau2M0yL16E",
+        "check_name" : "FORCE_CHECK", // NO_CHECK：不校验真实姓名, FORCE_CHECK：强校验真实姓名
+        "re_user_name" : "王小帅", // 如果 check_name 设置为FORCE_CHECK，则必填用户真实姓名
+        "amount" : 10000, // 企业付款金额，单位为分
+        "desc" : "理赔", // 企业付款操作说明信息。必填
+    }) // 返回core.Response
+    
+### 查询企业付款到零钱
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
+    obj.Transfer().QueryBalanceOrder(#partnerTradeNo#) // 商户订单号

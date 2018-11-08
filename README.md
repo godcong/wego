@@ -5,8 +5,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wego)](https://goreportcard.com/report/github.com/godcong/wego)
 
 ## a fashion fast wechat pay api for golang
-
 ## 时尚，简单，卓越，高性能的微信支付接口
+## WEGO借鉴了并参考了,当前许多流行的开源微信支付框架.并且为了使性能得到更大提高.全部使用golang进行重建架构开发
 
 开发前,请务必仔细阅读并看懂
 
