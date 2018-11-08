@@ -392,8 +392,19 @@ func (m Map) URLEncode() string {
 
 func (m Map) join(source Map, replace bool) Map {
 	for k, v := range source {
-		if _, b := (m)[k]; replace || !b {
-			(m)[k] = v
+		if !m.Has(k) || replace {
+			m.Set(k, v)
+		}
+	}
+	return m
+}
+
+func (m Map) Append(p Map) Map {
+	for k, v := range p {
+		if m.Has(k) {
+			m.Set(k, []interface{}{m.Get(k), v})
+		} else {
+			m.Set(k, v)
 		}
 	}
 	return m

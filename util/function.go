@@ -250,67 +250,88 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
 func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	m := make(Map)
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
-	val := ""
+	current := ""
 	count := 0
-	//pre := ""
+	pre := ""
+	charData := ""
 	var ele []string
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
 		switch token := t.(type) {
 		// 处理元素开始（标签）
 		case xml.StartElement:
-
 			if strings.ToLower(token.Name.Local) == "xml" {
 				continue
 			}
 			count++
 			ele = append(ele, token.Name.Local)
-			log.Println("StartElement", ele, count)
-			//pre = token.Name.Local
+			current = strings.Join(ele, ".")
+			log.Println("StartElement", ele, count, current)
+			if m.Has(current) {
+				log.Println("StartElement has", current)
+				t := m.Get(current)
+				switch tv := t.(type) {
+				case []interface{}:
+				//donothing
+				default:
+					m.Set(current, []interface{}{tv})
+				}
+			}
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
-
 			// fmt.Printf("This is the end: %s\n", name)
 			if strings.ToLower(name) == "xml" {
 				break
 			}
-			//count--
+			count--
 			if ele != nil {
-				if val != "" {
-					//ss := strings.Join(ele[:len(ele)-1], ".")
-					//if name == pre {
-					//	ss = strings.Join(ele, ".")
-					//}
-					//
-					//if m.Has(ss) {
-					//	m.Set(ss, val)
-					//} else {
-					//	s := m.Get(ss)
-					//	switch v := s.(type) {
-					//	case Map:
-					//		v.Set(ele[len(ele)], val)
-					//	case map[string]interface{}:
-					//		(Map)(v).Set(ele[len(ele)], val)
-					//	case []interface{}:
-					//		m.Set(ss, append(v, val))
-					//	default:
-					//		m.Set(ss, []interface{}{val, s})
-					//	}
-					//	//TODO:need fix
-					//}
-
+				t := m.Get(current)
+				log.Println(t)
+				switch tv := t.(type) {
+				case []interface{}:
+					if charData != "" {
+						tv = append(tv, charData)
+						m.Set(current, charData)
+					}
+				default:
+					if charData != "" {
+						m.Set(current, charData)
+					}
 				}
-				ele = ele[:len(ele)-1]
-				log.Println("EndElement", ele, count)
-				val = ""
-				//pre = ""
+				charData = ""
+
+				//ss := strings.Join(ele, ".")
+				//if name == pre {
+				//	ss = strings.Join(ele, ".")
+				//}
+				//
+				//if m.Has(ss) {
+
+				//} else {
+				//	s := m.Get(ss)
+				//	switch v := s.(type) {
+				//	case Map:
+				//		v.Set(ele[len(ele)], val)
+				//	case map[string]interface{}:
+				//		(Map)(v).Set(ele[len(ele)], val)
+				//	case []interface{}:
+				//		m.Set(ss, append(v, val))
+				//	default:
+				//		m.Set(ss, []interface{}{val, s})
+				//	}
+				//	//TODO:need fix
+				//}
+				//}
+				pre = ele[count]
+				ele = ele[:count]
+				current = ""
+				log.Println("EndElement", pre, ele)
 			}
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
-			// content := string(token)
+			charData = string(token)
 
-			val = string(token)
-			log.Println("CharData", val)
+			log.Println("CharData", charData)
 			// 异常处理(Log输出）
 		default:
 			log.Println(token)
