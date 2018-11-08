@@ -249,6 +249,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	val := ""
 	count := 0
+	pre := ""
 	var ele []string
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
 		switch token := t.(type) {
@@ -261,34 +262,45 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			count++
 			ele = append(ele, token.Name.Local)
 			log.Println("StartElement", ele, count)
+			pre = token.Name.Local
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
+
 			// fmt.Printf("This is the end: %s\n", name)
 			if strings.ToLower(name) == "xml" {
 				break
 			}
-			count--
+			//count--
 			if ele != nil {
 				if val != "" {
-					ss := strings.Join(ele, ".")
-					if !m.Has(ss) {
-						m.Set(ss, val)
-					} else {
-						s := m.Get(ss)
-						switch v := s.(type) {
-						case []interface{}:
-							m.Set(ss, append(v, val))
-						default:
-							m.Set(ss, []interface{}{val, s})
-						}
-						//TODO:need fix
-					}
+					//ss := strings.Join(ele[:len(ele)-1], ".")
+					//if name == pre {
+					//	ss = strings.Join(ele, ".")
+					//}
+					//
+					//if m.Has(ss) {
+					//	m.Set(ss, val)
+					//} else {
+					//	s := m.Get(ss)
+					//	switch v := s.(type) {
+					//	case Map:
+					//		v.Set(ele[len(ele)], val)
+					//	case map[string]interface{}:
+					//		(Map)(v).Set(ele[len(ele)], val)
+					//	case []interface{}:
+					//		m.Set(ss, append(v, val))
+					//	default:
+					//		m.Set(ss, []interface{}{val, s})
+					//	}
+					//	//TODO:need fix
+					//}
 
 				}
 				ele = ele[:len(ele)-1]
 				log.Println("EndElement", ele, count)
 				val = ""
+				pre = ""
 			}
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
