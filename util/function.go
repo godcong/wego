@@ -145,6 +145,9 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 		for _, v2 := range v1 {
 			convertXML(k, v2, e, xml.StartElement{Name: xml.Name{Local: k}})
 		}
+		if len(v1) == 1 {
+			convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
+		}
 
 	default:
 		//convertXML(k, v1, e, xml.StartElement{Name: xml.Name{Local: k}})
@@ -249,7 +252,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	val := ""
 	count := 0
-	pre := ""
+	//pre := ""
 	var ele []string
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
 		switch token := t.(type) {
@@ -262,7 +265,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			count++
 			ele = append(ele, token.Name.Local)
 			log.Println("StartElement", ele, count)
-			pre = token.Name.Local
+			//pre = token.Name.Local
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
@@ -300,7 +303,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 				ele = ele[:len(ele)-1]
 				log.Println("EndElement", ele, count)
 				val = ""
-				pre = ""
+				//pre = ""
 			}
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
