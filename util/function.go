@@ -112,26 +112,49 @@ func MapToXML(m Map) ([]byte, error) {
 	return mapToXML(m, false)
 }
 
-func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement) {
-	switch v4 := v.(type) {
+func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement) error {
+	//err := e.EncodeToken(start)
+	//if err != nil {
+	//	return err
+	//}
+	var err error
+	switch v1 := v.(type) {
+	case Map:
+		marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+	case map[string]interface{}:
+		marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
 	case string:
-		if _, err := strconv.ParseInt(v4, 10, 0); err != nil {
-			_ = e.EncodeElement(
-				CDATA{Value: v4}, xml.StartElement{Name: xml.Name{Local: k}})
-			return
+		if _, err := strconv.ParseInt(v1, 10, 0); err != nil {
+			err = e.EncodeElement(
+				CDATA{Value: v1}, xml.StartElement{Name: xml.Name{Local: k}})
+			return err
 		}
-		_ = e.EncodeElement(v4, xml.StartElement{Name: xml.Name{Local: k}})
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
 	case float64:
-		if v4 == float64(int64(v4)) {
-			_ = e.EncodeElement(int64(v4), xml.StartElement{Name: xml.Name{Local: k}})
-			return
+		if v1 == float64(int64(v1)) {
+			err = e.EncodeElement(int64(v1), xml.StartElement{Name: xml.Name{Local: k}})
+			return err
 		}
-		_ = e.EncodeElement(v4, xml.StartElement{Name: xml.Name{Local: k}})
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
 	case bool:
-		_ = e.EncodeElement(v4, xml.StartElement{Name: xml.Name{Local: k}})
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
+	case []interface{}:
+		for _, v2 := range v1 {
+			convertXML(k, v2, e, xml.StartElement{Name: xml.Name{Local: k}})
+		}
+
 	default:
-		log.Error(v4)
+		//convertXML(k, v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+		log.Error(v1)
 	}
+	//if len(v) == 1 {
+	//	convertXML(k, "dummy", e, xml.StartElement{Name: xml.Name{Local: k}})
+	//}
+	//return e.EncodeToken(start.End())
+	return nil
 }
 
 func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
@@ -143,27 +166,7 @@ func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	for k, v := range maps {
-		switch vv := v.(type) {
-		case []interface{}:
-			for _, v3 := range vv {
-				//_ = e.EncodeElement(vvv, xml.StartElement{Name: xml.Name{Local: k}})
-				switch v4 := v3.(type) {
-				case Map:
-					marshalXML(v4, e, xml.StartElement{Name: xml.Name{Local: k}})
-				case map[string]interface{}:
-					marshalXML(v4, e, xml.StartElement{Name: xml.Name{Local: k}})
-				default:
-					convertXML(k, v4, e, xml.StartElement{Name: xml.Name{Local: k}})
-				}
-			}
-		case Map:
-			marshalXML(vv, e, xml.StartElement{Name: xml.Name{Local: k}})
-		case map[string]interface{}:
-			marshalXML(vv, e, xml.StartElement{Name: xml.Name{Local: k}})
-		default:
-			convertXML(k, v, e, xml.StartElement{Name: xml.Name{Local: k}})
-		}
-
+		convertXML(k, v, e, xml.StartElement{Name: xml.Name{Local: k}})
 	}
 	return e.EncodeToken(start.End())
 }
@@ -245,17 +248,19 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	m := make(Map)
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	val := ""
+	count := 0
 	var ele []string
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
 		switch token := t.(type) {
 		// 处理元素开始（标签）
 		case xml.StartElement:
-			log.Println("StartElement", ele)
+
 			if strings.ToLower(token.Name.Local) == "xml" {
 				continue
 			}
+			count++
 			ele = append(ele, token.Name.Local)
-
+			log.Println("StartElement", ele, count)
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
@@ -263,18 +268,26 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			if strings.ToLower(name) == "xml" {
 				break
 			}
+			count--
 			if ele != nil {
 				if val != "" {
 					ss := strings.Join(ele, ".")
 					if !m.Has(ss) {
-						m.Set(strings.Join(ele, "."), val)
+						m.Set(ss, val)
 					} else {
-						//m.Get()
+						s := m.Get(ss)
+						switch v := s.(type) {
+						case []interface{}:
+							m.Set(ss, append(v, val))
+						default:
+							m.Set(ss, []interface{}{val, s})
+						}
+						//TODO:need fix
 					}
 
 				}
 				ele = ele[:len(ele)-1]
-				log.Println("EndElement", ele)
+				log.Println("EndElement", ele, count)
 				val = ""
 			}
 			// 处理字符数据（这里就是元素的文本）
