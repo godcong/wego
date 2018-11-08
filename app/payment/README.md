@@ -165,7 +165,7 @@
 
 ## 企业付款
 ### 企业付款到零钱
-    官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=4_3
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
     obj.Transfer().ToBalance(util.Map{
         "partner_trade_no" : "1233455", // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
         "openid" : "oxTWIuGaIt6gTKsQRLau2M0yL16E",
@@ -181,6 +181,11 @@
     
 ###  企业付款到银行卡	
      官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_2
+     
+      obj.Security().GetPublicKey()获取公钥保存,并转换成PKCS#8格式.
+      转换方法参考官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_7&index=4  
+      使用前,必须已配置config的pubkey_path
+   
      obj.Transfer().ToBankCard(util.Map{
         "partner_trade_no" : "1229222022",
         "enc_bank_no" : "6214830901234564", // 银行卡号
@@ -190,3 +195,7 @@
         "desc" : "测试" // 商户订单号   
      })
    
+###  查询企业付款到银行卡
+    官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_3
+    obj.Transfer().QueryBankCardOrder(#partnerTradeNo#)
+ 
