@@ -20,9 +20,6 @@
 或者vgo添加:
 > vgo get github.com/godcong/wego@v0.1.0 
 
-配置config.toml:
-> 参考config.toml.example
-
 接口说明可以参考godoc
 > godoc -http:6060
 
@@ -43,7 +40,7 @@
             "prikey_path":"cert/privatekey.pem", //(可不填)部分支付使用（如:银行转账）
         }
 
-       通过配置config.toml文件
+       通过配置config.toml文件，具体参考config.toml.example
 
         //必要配置
         app_id ='wx1ad61aeexxxxxxx'                //AppId
@@ -60,6 +57,9 @@
         rootca_path = 'cert/rootca.pem'     //(可不填)
         pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如:银行转账）
         prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如:银行转账）
+
+
+
 
 ## Readme
 
