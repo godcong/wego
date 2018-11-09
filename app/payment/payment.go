@@ -16,7 +16,18 @@ import (
 type NewAble func(payment *Payment) interface{}
 
 var subLists = util.Map{
-	"Bill": newBill,
+	"Bill":     newBill,
+	"Coupon":   newCoupon,
+	"JSSDK":    newJSSDK,
+	"Merchant": newMerchant,
+	"Notify":   newNotify,
+	"Order":    newOrder,
+	"RedPack":  newRedPack,
+	"Refund":   newRefund,
+	"Reverse":  newReverse,
+	"Sandbox":  newSandbox,
+	"Security": newSecurity,
+	"Transfer": newTransfer,
 }
 
 /*Payment Payment */
@@ -164,6 +175,15 @@ func (p *Payment) JSSDK() *JSSDK {
 		//p.Sub["JSSDK"] = obj
 	}
 	return obj.(*JSSDK)
+}
+
+func (p *Payment) Notify() *Notify {
+	obj, b := p.Sub["Notify"]
+	if !b {
+		obj = newNotify(p)
+		//p.Sub["JSSDK"] = obj
+	}
+	return obj.(*Notify)
 }
 
 // RedPack ...

@@ -50,7 +50,6 @@ var result = []byte(`<xml><return_code><![CDATA[FAIL]]></return_code><return_msg
 
 func newServer(p *Payment) *Server {
 	return &Server{
-		mType:    "xml",
 		Payment:  p,
 		callback: nil,
 	}
