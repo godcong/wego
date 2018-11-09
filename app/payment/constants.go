@@ -4,6 +4,7 @@ const domain = "https://api.mch.weixin.qq.com"
 
 const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 
+const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
 const payUnifiedOrder = "/pay/unifiedorder"
 const payOrderQuery = "/pay/orderquery"

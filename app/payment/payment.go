@@ -9,6 +9,7 @@ import (
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"io"
+	"net/http"
 	"strings"
 )
 
@@ -266,6 +267,10 @@ func (p *Payment) Coupon() *Coupon {
 	return obj.(*Coupon)
 }
 
+func (p *Payment) HandleRefunded(f func(w http.ResponseWriter, req *http.Request)) {
+	//p.Notify().Handle()
+}
+
 func (p *Payment) initRequest(maps util.Map) util.Map {
 	if maps != nil {
 		maps.Set("mch_id", p.GetString("mch_id"))
@@ -276,8 +281,20 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 		if p.Has("sub_appid") {
 			maps.Set("sub_appid", p.GetString("sub_appid"))
 		}
-		maps.Set("sign_type", SignTypeMd5.String())
-		maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+		if maps.Has("sign_type") {
+			switch maps.GetString("sign_type") {
+			case MD5:
+				maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+			case HMACSHA256:
+				maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignHMACSHA256))
+			default:
+				log.Error("wrong sign_type")
+			}
+		} else {
+			maps.Set("sign_type", MD5)
+			maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+		}
+
 		log.Debug("initRequest", maps)
 	}
 
