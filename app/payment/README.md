@@ -40,9 +40,9 @@
 
 
 ## 创建支付对象
-    obj:=wego.Payment()
+    obj:=wego.Payment() //使用config.toml配置文件
     或
-    obj:=payment.NewPaymen(cfg)
+    obj:=payment.NewPaymen(cfg) //使用自定义配置
     
 ## 通过授权码查询公众号Openid 
     obj.AuthCodeToOpenid(#authCode#)
