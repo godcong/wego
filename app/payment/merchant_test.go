@@ -34,7 +34,7 @@ func TestMerchant_QuerySubMerchantByMerchantId(t *testing.T) {
 		"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))
-	resp := obj.QuerySubMerchantByMerchantId("123")
+	resp := obj.QuerySubMerchantByMerchantID("123")
 
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
@@ -49,7 +49,7 @@ func TestMerchant_QuerySubMerchantByWeChatId(t *testing.T) {
 		"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))
-	resp := obj.QuerySubMerchantByWeChatId("123")
+	resp := obj.QuerySubMerchantByWeChatID("123")
 
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
