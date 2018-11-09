@@ -27,7 +27,7 @@
 > godoc -http:6060
 
 ## 配置
-  cfg := C(util.Map{
+        cfg := C(util.Map{
             "app_id":"wx1ad61aeexxxxxxx",                //AppId
             "mch_id":"1498xxxxx32",                        //商户ID
             "key":"O9aVVkxxxxxxxxxxxxxxxbZ2NQSJ",    //支付key
@@ -61,6 +61,7 @@
         pubkey_path = "cert/publickey.pem"  //(可不填)部分支付使用（如:银行转账）
         prikey_path = "cert/privatekey.pem" //(可不填)部分支付使用（如:银行转账）
 
+## Readme
 
 > [公众号](https://github.com/godcong/wego/blob/master/app/official/README.md)
 
