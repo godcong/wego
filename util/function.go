@@ -209,47 +209,7 @@ func JSONToMap(content []byte) Map {
 }
 
 func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
-	ele, val := "", ""
-	for t, err := d.Token(); err == nil; t, err = d.Token() {
-		switch token := t.(type) {
-		// 处理元素开始（标签）
-		case xml.StartElement:
-			ele = token.Name.Local
-			// fmt.Printf("This is the sta: %s\n", ele)
-			if strings.ToLower(ele) == "xml" {
-				// xmlFlag = true
-				continue
-			}
-
-			// 处理元素结束（标签）
-		case xml.EndElement:
-			name := token.Name.Local
-			// fmt.Printf("This is the end: %s\n", name)
-			if strings.ToLower(name) == "xml" {
-				break
-			}
-			if ele == name && ele != "" {
-				maps.Set(ele, val)
-				ele = ""
-				val = ""
-			}
-			// 处理字符数据（这里就是元素的文本）
-		case xml.CharData:
-			// content := string(token)
-			// fmt.Printf("This is the content: %v\n", content)
-			val = string(token)
-			// 异常处理(Log输出）
-		default:
-			log.Println(token)
-		}
-
-	}
-	return nil
-}
-
-func xmlToMap(contentXML []byte, hasHeader bool) Map {
-	m := make(Map)
-	dec := xml.NewDecoder(bytes.NewReader(contentXML))
+	//m := make(Map)
 	current := ""
 	var data interface{}
 	//var err error
@@ -258,7 +218,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	arrayTag := ""
 	var ele []string
 
-	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
+	for t, err := d.Token(); err == nil; t, err = d.Token() {
 		switch token := t.(type) {
 		// 处理元素开始（标签）
 		case xml.StartElement:
@@ -272,14 +232,14 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			log.Debug("EndElement", arrayTag)
 			if current == last {
 				arrayTag = current
-				tmp := m.Get(arrayTag)
+				tmp := maps.Get(arrayTag)
 				switch tmp.(type) {
 				case []interface{}:
 					arrayTmp.Set(arrayTag, tmp)
 				default:
 					arrayTmp.Set(arrayTag, []interface{}{tmp})
 				}
-				m.Delete(arrayTag)
+				maps.Delete(arrayTag)
 			}
 			log.Debug("StartElement", ele)
 			// 处理元素结束（标签）
@@ -295,7 +255,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 
 			if current == last {
 				if data != nil {
-					m.Set(current, data)
+					maps.Set(current, data)
 				} else {
 					//m.Set(current, nil)
 				}
@@ -304,14 +264,14 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			if last == arrayTag {
 				arr := arrayTmp.GetArray(arrayTag)
 				if arr != nil {
-					if v := m.Get(arrayTag); v != nil {
-						m.Set(arrayTag, append(arr, v))
+					if v := maps.Get(arrayTag); v != nil {
+						maps.Set(arrayTag, append(arr, v))
 					} else {
-						m.Set(arrayTag, arr)
+						maps.Set(arrayTag, arr)
 					}
 				} else {
 					//exception doing
-					m.Set(arrayTag, []interface{}{m.Get(arrayTag)})
+					maps.Set(arrayTag, []interface{}{maps.Get(arrayTag)})
 				}
 				arrayTmp.Delete(arrayTag)
 				arrayTag = ""
@@ -344,6 +304,13 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 
 	}
 
+	return nil
+}
+
+func xmlToMap(contentXML []byte, hasHeader bool) Map {
+	m := make(Map)
+	dec := xml.NewDecoder(bytes.NewReader(contentXML))
+	unmarshalXML(m, dec, xml.StartElement{Name: xml.Name{Local: "xml"}})
 	return m
 }
 

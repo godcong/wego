@@ -3,11 +3,14 @@ package util
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"github.com/godcong/wego/log"
 	"net/url"
 	"sort"
 	"strings"
 )
+
+var NilMapError = errors.New("nil map")
 
 /*StringAble StringAble */
 type StringAble interface {
@@ -516,18 +519,15 @@ func (m Map) Map() map[string]interface{} {
 // MarshalXML ...
 func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if len(m) == 0 {
-		return nil
+		return NilMapError
 	}
 	return marshalXML(m, e, xml.StartElement{Name: xml.Name{Local: "xml"}})
 }
 
 // UnmarshalXML ...
 func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if len(m) == 0 {
+		return NilMapError
+	}
 	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}})
 }
-
-// UnmarshalJSON ...
-//func (m Map) UnmarshalJSON(b []byte) error {
-//	log.Println(string(b))
-//	return nil
-//}
