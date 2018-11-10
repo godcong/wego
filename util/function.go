@@ -252,6 +252,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	current := ""
 	charData := ""
+	//preFlag := false
 	var ele []string
 
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {

@@ -119,7 +119,7 @@ func (p *Payment) Scheme(pid string) string {
 	return bizPayURL + maps.URLEncode()
 }
 
-//SetSubMerchant set Sub merchat
+//SetSubMerchant set Module merchat
 func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 	p.Set("sub_mch_id", mchID)
 	p.Set("sub_appid", appID)
@@ -173,7 +173,7 @@ func (p *Payment) JSSDK() *JSSDK {
 	obj, b := p.Sub["JSSDK"]
 	if !b {
 		obj = newJSSDK(p)
-		//p.Sub["JSSDK"] = obj
+		//p.Module["JSSDK"] = obj
 	}
 	return obj.(*JSSDK)
 }
@@ -182,7 +182,7 @@ func (p *Payment) Notify() *Notify {
 	obj, b := p.Sub["Notify"]
 	if !b {
 		obj = newNotify(p)
-		//p.Sub["JSSDK"] = obj
+		//p.Module["JSSDK"] = obj
 	}
 	return obj.(*Notify)
 }
@@ -192,7 +192,7 @@ func (p *Payment) RedPack() *RedPack {
 	obj, b := p.Sub["RedPack"]
 	if !b {
 		obj = newRedPack(p)
-		//p.Sub["RedPack"] = obj
+		//p.Module["RedPack"] = obj
 	}
 	return obj.(*RedPack)
 }
@@ -202,7 +202,7 @@ func (p *Payment) Security() *Security {
 	obj, b := p.Sub["Security"]
 	if !b {
 		obj = newSecurity(p)
-		//p.Sub["Security"] = obj
+		//p.Module["Security"] = obj
 	}
 	return obj.(*Security)
 }
@@ -212,7 +212,7 @@ func (p *Payment) Refund() *Refund {
 	obj, b := p.Sub["Refund"]
 	if !b {
 		obj = newRefund(p)
-		//p.Sub["Refund"] = obj
+		//p.Module["Refund"] = obj
 	}
 	return obj.(*Refund)
 }
@@ -222,7 +222,7 @@ func (p *Payment) Order() *Order {
 	obj, b := p.Sub["Order"]
 	if !b {
 		obj = newOrder(p)
-		//p.Sub["Order"] = obj
+		//p.Module["Order"] = obj
 	}
 	return obj.(*Order)
 }
@@ -232,7 +232,7 @@ func (p *Payment) Bill() *Bill {
 	obj, b := p.Sub["Bill"]
 	if !b {
 		obj = newBill(p)
-		//p.Sub["Bill"] = obj
+		//p.Module["Bill"] = obj
 	}
 	return obj.(*Bill)
 }
@@ -242,7 +242,7 @@ func (p *Payment) Transfer() *Transfer {
 	obj, b := p.Sub["Transfer"]
 	if !b {
 		obj = newTransfer(p)
-		//p.Sub["Transfer"] = obj
+		//p.Module["Transfer"] = obj
 	}
 	return obj.(*Transfer)
 }
@@ -252,7 +252,7 @@ func (p *Payment) Sandbox() *Sandbox {
 	obj, b := p.Sub["Sandbox"]
 	if !b {
 		obj = newSandbox(p)
-		//p.Sub["Sandbox"] = obj
+		//p.Module["Sandbox"] = obj
 	}
 	return obj.(*Sandbox)
 }
@@ -262,7 +262,7 @@ func (p *Payment) Coupon() *Coupon {
 	obj, b := p.Sub["Coupon"]
 	if !b {
 		obj = newCoupon(p)
-		//p.Sub["Coupon"] = obj
+		//p.Module["Coupon"] = obj
 	}
 	return obj.(*Coupon)
 }

@@ -8,7 +8,7 @@ import (
 // NewAble ...
 type NewAble func(account *Account) interface{}
 
-var subLists = util.Map{
+var moduleLists = util.Map{
 	"Base":   newBase,
 	"JSSDK":  newJSSDK,
 	"OAuth":  newOAuth,
@@ -19,7 +19,7 @@ var subLists = util.Map{
 /*Account Account*/
 type Account struct {
 	*core.Config
-	Sub         util.Map
+	Module      util.Map
 	client      *core.Client
 	accessToken *core.AccessToken
 }
@@ -27,7 +27,7 @@ type Account struct {
 func newOfficialAccount(config *core.Config, p util.Map) *Account {
 	return &Account{
 		Config: config,
-		Sub:    p,
+		Module: p,
 	}
 }
 
@@ -50,25 +50,25 @@ func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
 func subInit(payment *Account, p util.Map) *Account {
 	for k, v := range p {
 		if vv, b := v.(NewAble); b {
-			payment.Sub[k] = vv(payment)
+			payment.Module[k] = vv(payment)
 		}
 	}
 	return payment
 }
 
-// SubInit ...
-func (p *Account) SubInit() *Account {
-	return subInit(p, subLists)
+// InitModule ...
+func (p *Account) InitModule() *Account {
+	return subInit(p, moduleLists)
 }
 
-// SubExpectInit ...
-func (p *Account) SubExpectInit(except ...string) *Account {
-	return subInit(p, subLists.Expect(except))
+// InitModuleExpect ...
+func (p *Account) InitModuleExpect(except ...string) *Account {
+	return subInit(p, moduleLists.Expect(except))
 }
 
-// SubOnlyInit ...
-func (p *Account) SubOnlyInit(only ...string) *Account {
-	return subInit(p, subLists.Only(only))
+// InitModuleOnly ...
+func (p *Account) InitModuleOnly(only ...string) *Account {
+	return subInit(p, moduleLists.Only(only))
 }
 
 // AccessToken ...
@@ -93,60 +93,60 @@ func (a *Account) SetClient(client *core.Client) {
 
 /*Server Server*/
 func (a *Account) Server() *Server {
-	obj, b := a.Sub["Server"]
+	obj, b := a.Module["Server"]
 	if !b {
 		obj = newServer(a)
-		a.Sub["Server"] = obj
+		a.Module["Server"] = obj
 	}
 	return obj.(*Server)
 }
 
 /*Base Base*/
 func (a *Account) Base() *Base {
-	obj, b := a.Sub["Base"]
+	obj, b := a.Module["Base"]
 	if !b {
 		obj = newBase(a)
-		a.Sub["Base"] = obj
+		a.Module["Base"] = obj
 	}
 	return obj.(*Base)
 }
 
 /*Menu Menu*/
 func (a *Account) Menu() *Menu {
-	obj, b := a.Sub["Menu"]
+	obj, b := a.Module["Menu"]
 	if !b {
 		obj = newMenu(a)
-		a.Sub["Menu"] = obj
+		a.Module["Menu"] = obj
 	}
 	return obj.(*Menu)
 }
 
 /*OAuth OAuth*/
 func (a *Account) OAuth() *OAuth {
-	obj, b := a.Sub["OAuth"]
+	obj, b := a.Module["OAuth"]
 	if !b {
 		obj = newOAuth(a)
-		a.Sub["OAuth"] = obj
+		a.Module["OAuth"] = obj
 	}
 	return obj.(*OAuth)
 }
 
 // Ticket ...
 func (a *Account) Ticket() *Ticket {
-	obj, b := a.Sub["Ticket"]
+	obj, b := a.Module["Ticket"]
 	if !b {
 		obj = newTicket(a)
-		a.Sub["Ticket"] = obj
+		a.Module["Ticket"] = obj
 	}
 	return obj.(*Ticket)
 }
 
 // JSSDK ...
 func (a *Account) JSSDK() *JSSDK {
-	obj, b := a.Sub["JSSDK"]
+	obj, b := a.Module["JSSDK"]
 	if !b {
 		obj = newJSSDK(a)
-		a.Sub["JSSDK"] = obj
+		a.Module["JSSDK"] = obj
 	}
 	return obj.(*JSSDK)
 }
