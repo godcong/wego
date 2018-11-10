@@ -270,16 +270,24 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			if strings.ToLower(name) == "xml" {
 				break
 			}
+			//if charData != "" {
 			if current == strings.Join(ele, ".") {
-				arr := m.GetArray(current)
+				arr := m.Get(current)
 				if arr != nil {
-					m.Set(current, append(arr, charData))
+					switch arrTmp := arr.(type) {
+					case []interface{}:
+						m.Set(current, append(arrTmp, charData))
+					default:
+						m.Set(current, []interface{}{m.Get(current), charData})
+					}
 				} else {
 					m.Set(current, charData)
 				}
 
 				charData = ""
 			}
+			//}
+
 			ele = ele[:len(ele)-1]
 			log.Debug("EndElement", ele)
 			// 处理字符数据（这里就是元素的文本）

@@ -119,14 +119,14 @@ func (m Map) SetGet(s string, v Map) Map {
 /*Get get interface from map with out default */
 func (m Map) Get(key string) interface{} {
 	if key == "" {
-		return m
+		return nil
 	}
 	return m.GetPath(strings.Split(key, "."))
 }
 
 /*GetD get interface from map with default */
 func (m Map) GetD(s string, d interface{}) interface{} {
-	if v, b := (m)[s]; b {
+	if v := m.Get(s); v != nil {
 		return v
 	}
 	return d
