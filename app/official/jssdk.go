@@ -43,11 +43,11 @@ func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
 	ts := util.Time()
 	url := j.URL()
 	m := util.Map{
-		"appId":     j.Get("app_id"),
+		"appId":     j.Get("appId"),
 		"nonceStr":  nonce,
 		"timestamp": ts,
 		"url":       url,
-		"jsApiList": maps.Get("jsapi"),
+		"jsApiList": maps.Get("jsApiList"),
 		"signature": getTicketSignature(ticket, nonce, ts, url),
 	}
 	return m
