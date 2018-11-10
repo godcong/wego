@@ -163,7 +163,9 @@
 
 ### 拉取订单评价数据 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10
-
+     obj.Bill().BatchQueryComment(util.Map{})
+    
+    
 ## 企业付款
 ### 企业付款到零钱
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
