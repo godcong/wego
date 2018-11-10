@@ -16,7 +16,7 @@ import (
 // NewAble ...
 type NewAble func(payment *Payment) interface{}
 
-var subLists = util.Map{
+var moduleLists = util.Map{
 	"Bill":     newBill,
 	"Coupon":   newCoupon,
 	"JSSDK":    newJSSDK,
@@ -34,14 +34,14 @@ var subLists = util.Map{
 /*Payment Payment */
 type Payment struct {
 	*core.Config
+	Module util.Map
 	client *core.Client
-	Sub    util.Map
 }
 
 func newPayment(config *core.Config, p util.Map) *Payment {
 	payment := &Payment{
 		Config: config,
-		Sub:    p,
+		Module: p,
 	}
 
 	return payment
@@ -57,25 +57,25 @@ func NewPayment(config *core.Config, v ...interface{}) *Payment {
 func subInit(payment *Payment, p util.Map) *Payment {
 	for k, v := range p {
 		if vv, b := v.(NewAble); b {
-			payment.Sub[k] = vv(payment)
+			payment.Module[k] = vv(payment)
 		}
 	}
 	return payment
 }
 
-// SubInit ...
-func (p *Payment) SubInit() *Payment {
-	return subInit(p, subLists)
+// InitModule ...
+func (p *Payment) InitModule() *Payment {
+	return subInit(p, moduleLists)
 }
 
-// SubExpectInit ...
-func (p *Payment) SubExpectInit(except ...string) *Payment {
-	return subInit(p, subLists.Expect(except))
+// InitModuleExpect ...
+func (p *Payment) InitModuleExpect(except ...string) *Payment {
+	return subInit(p, moduleLists.Expect(except))
 }
 
-// SubOnlyInit ...
-func (p *Payment) SubOnlyInit(only ...string) *Payment {
-	return subInit(p, subLists.Only(only))
+// InitModuleOnly ...
+func (p *Payment) InitModuleOnly(only ...string) *Payment {
+	return subInit(p, moduleLists.Only(only))
 }
 
 //SetClient set client replace the default client
@@ -150,27 +150,27 @@ func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 
 // Base ...
 func (p *Payment) Base() *Base {
-	obj, b := p.Sub["Base"]
+	obj, b := p.Module["Base"]
 	if !b {
 		obj = newBase(p)
-		p.Sub["Base"] = obj
+		p.Module["Base"] = obj
 	}
 	return obj.(*Base)
 }
 
 // Reverse ...
 func (p *Payment) Reverse() *Reverse {
-	obj, b := p.Sub["Reverse"]
+	obj, b := p.Module["Reverse"]
 	if !b {
 		obj = newReverse(p)
-		p.Sub["Reverse"] = obj
+		p.Module["Reverse"] = obj
 	}
 	return obj.(*Reverse)
 }
 
 // JSSDK ...
 func (p *Payment) JSSDK() *JSSDK {
-	obj, b := p.Sub["JSSDK"]
+	obj, b := p.Module["JSSDK"]
 	if !b {
 		obj = newJSSDK(p)
 		//p.Module["JSSDK"] = obj
@@ -179,7 +179,7 @@ func (p *Payment) JSSDK() *JSSDK {
 }
 
 func (p *Payment) Notify() *Notify {
-	obj, b := p.Sub["Notify"]
+	obj, b := p.Module["Notify"]
 	if !b {
 		obj = newNotify(p)
 		//p.Module["JSSDK"] = obj
@@ -189,7 +189,7 @@ func (p *Payment) Notify() *Notify {
 
 // RedPack ...
 func (p *Payment) RedPack() *RedPack {
-	obj, b := p.Sub["RedPack"]
+	obj, b := p.Module["RedPack"]
 	if !b {
 		obj = newRedPack(p)
 		//p.Module["RedPack"] = obj
@@ -199,7 +199,7 @@ func (p *Payment) RedPack() *RedPack {
 
 // Security ...
 func (p *Payment) Security() *Security {
-	obj, b := p.Sub["Security"]
+	obj, b := p.Module["Security"]
 	if !b {
 		obj = newSecurity(p)
 		//p.Module["Security"] = obj
@@ -209,7 +209,7 @@ func (p *Payment) Security() *Security {
 
 // Refund ...
 func (p *Payment) Refund() *Refund {
-	obj, b := p.Sub["Refund"]
+	obj, b := p.Module["Refund"]
 	if !b {
 		obj = newRefund(p)
 		//p.Module["Refund"] = obj
@@ -219,7 +219,7 @@ func (p *Payment) Refund() *Refund {
 
 // Order ...
 func (p *Payment) Order() *Order {
-	obj, b := p.Sub["Order"]
+	obj, b := p.Module["Order"]
 	if !b {
 		obj = newOrder(p)
 		//p.Module["Order"] = obj
@@ -229,7 +229,7 @@ func (p *Payment) Order() *Order {
 
 // Bill ...
 func (p *Payment) Bill() *Bill {
-	obj, b := p.Sub["Bill"]
+	obj, b := p.Module["Bill"]
 	if !b {
 		obj = newBill(p)
 		//p.Module["Bill"] = obj
@@ -239,7 +239,7 @@ func (p *Payment) Bill() *Bill {
 
 // Transfer ...
 func (p *Payment) Transfer() *Transfer {
-	obj, b := p.Sub["Transfer"]
+	obj, b := p.Module["Transfer"]
 	if !b {
 		obj = newTransfer(p)
 		//p.Module["Transfer"] = obj
@@ -249,7 +249,7 @@ func (p *Payment) Transfer() *Transfer {
 
 // Sandbox ...
 func (p *Payment) Sandbox() *Sandbox {
-	obj, b := p.Sub["Sandbox"]
+	obj, b := p.Module["Sandbox"]
 	if !b {
 		obj = newSandbox(p)
 		//p.Module["Sandbox"] = obj
@@ -259,7 +259,7 @@ func (p *Payment) Sandbox() *Sandbox {
 
 // Coupon ...
 func (p *Payment) Coupon() *Coupon {
-	obj, b := p.Sub["Coupon"]
+	obj, b := p.Module["Coupon"]
 	if !b {
 		obj = newCoupon(p)
 		//p.Module["Coupon"] = obj
