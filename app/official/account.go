@@ -9,8 +9,11 @@ import (
 type NewAble func(account *Account) interface{}
 
 var subLists = util.Map{
-	"Base":  newBase,
-	"JSSDK": newJSSDK,
+	"Base":   newBase,
+	"JSSDK":  newJSSDK,
+	"OAuth":  newOAuth,
+	"Menu":   newMenu,
+	"Ticket": newTicket,
 }
 
 /*Account Account*/
