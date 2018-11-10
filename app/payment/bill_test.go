@@ -17,7 +17,7 @@ func TestBill_Download(t *testing.T) {
 		"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
 		"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 	}))
-	resp := bill.Download("20181103")
+	resp := bill.Download(util.Map{"bill_date": "20181103"})
 	_ = core.SaveEncodingTo(resp, "d:/test.csv", simplifiedchinese.GBK.NewEncoder())
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())

@@ -271,6 +271,14 @@ func (p *Payment) HandleRefunded(f func(w http.ResponseWriter, req *http.Request
 	//p.Notify().Handle()
 }
 
+func (p *Payment) HandlePaid(f func(w http.ResponseWriter, req *http.Request)) {
+
+}
+
+func (p *Payment) HandleScanned(f func(w http.ResponseWriter, req *http.Request)) {
+
+}
+
 func (p *Payment) initRequest(maps util.Map) util.Map {
 	if maps != nil {
 		maps.Set("mch_id", p.GetString("mch_id"))
@@ -295,7 +303,7 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 			maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
 		}
 
-		log.Debug("initRequest", maps)
+		log.Debug("initRequest end", maps)
 	}
 
 	return maps
@@ -316,23 +324,6 @@ func Link(url string) string {
 
 /*SignFunc sign函数定义 */
 type SignFunc func(data, key string) string
-
-/*SignType SignType */
-type SignType int
-
-/*sign types */
-const (
-	SignTypeMd5        SignType = iota
-	SignTypeHmacSha256 SignType = iota
-)
-
-// String ...
-func (t SignType) String() string {
-	if t == SignTypeHmacSha256 {
-		return HMACSHA256
-	}
-	return MD5
-}
 
 // MakeSignHMACSHA256 make sign with hmac-sha256
 func MakeSignHMACSHA256(data, key string) string {
