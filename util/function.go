@@ -250,10 +250,10 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
 func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	m := make(Map)
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
-
+	current := ""
 	charData := ""
+	var ele []string
 
-	//TODO
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
 		switch token := t.(type) {
 		// 处理元素开始（标签）
@@ -261,23 +261,34 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			if strings.ToLower(token.Name.Local) == "xml" {
 				continue
 			}
-
+			ele = append(ele, token.Name.Local)
+			current = strings.Join(ele, ".")
+			log.Debug("StartElement", ele)
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
-			// fmt.Printf("This is the end: %s\n", name)
 			if strings.ToLower(name) == "xml" {
 				break
 			}
+			if current == strings.Join(ele, ".") {
+				arr := m.GetArray(current)
+				if arr != nil {
+					m.Set(current, append(arr, charData))
+				} else {
+					m.Set(current, charData)
+				}
 
+				charData = ""
+			}
+			ele = ele[:len(ele)-1]
+			log.Debug("EndElement", ele)
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
 			charData = string(token)
-
-			log.Println("CharData", charData)
+			log.Debug("CharData", charData)
 			// 异常处理(Log输出）
 		default:
-			log.Println(token)
+			log.Debug(token)
 		}
 
 	}

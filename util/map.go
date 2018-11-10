@@ -176,6 +176,24 @@ func (m Map) GetMapArrayD(s string, d []Map) []Map {
 	return d
 }
 
+func (m Map) GetArray(s string) []interface{} {
+	switch v := m.Get(s).(type) {
+	case []interface{}:
+		return v
+	default:
+		return nil
+	}
+}
+
+func (m Map) GetArrayD(s string, d []interface{}) []interface{} {
+	switch v := m.Get(s).(type) {
+	case []interface{}:
+		return v
+	default:
+		return d
+	}
+}
+
 /*GetBool get bool from map with out default */
 func (m Map) GetBool(s string) bool {
 	return m.GetBoolD(s, false)
