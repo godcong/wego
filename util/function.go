@@ -251,8 +251,11 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 	m := make(Map)
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	current := ""
-	charData := ""
-	//preFlag := false
+	var data interface{}
+	//var err error
+	last := ""
+	arrayTmp := make(Map)
+	arrayTag := ""
 	var ele []string
 
 	for t, err := dec.Token(); err == nil; t, err = dec.Token() {
@@ -264,6 +267,20 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			}
 			ele = append(ele, token.Name.Local)
 			current = strings.Join(ele, ".")
+			log.Debug("EndElement", current)
+			log.Debug("EndElement", last)
+			log.Debug("EndElement", arrayTag)
+			if current == last {
+				arrayTag = current
+				tmp := m.Get(arrayTag)
+				switch tmp.(type) {
+				case []interface{}:
+					arrayTmp.Set(arrayTag, tmp)
+				default:
+					arrayTmp.Set(arrayTag, []interface{}{tmp})
+				}
+				m.Delete(arrayTag)
+			}
 			log.Debug("StartElement", ele)
 			// 处理元素结束（标签）
 		case xml.EndElement:
@@ -271,34 +288,55 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 			if strings.ToLower(name) == "xml" {
 				break
 			}
-			//if charData != "" {
-			if current == strings.Join(ele, ".") {
-				arr := m.Get(current)
+			last = strings.Join(ele, ".")
+			log.Debug("EndElement", current)
+			log.Debug("EndElement", last)
+			log.Debug("EndElement", arrayTag)
+
+			if current == last {
+				if data != nil {
+					m.Set(current, data)
+				} else {
+					//m.Set(current, nil)
+				}
+				data = nil
+			}
+			if last == arrayTag {
+				arr := arrayTmp.GetArray(arrayTag)
 				if arr != nil {
-					switch arrTmp := arr.(type) {
-					case []interface{}:
-						m.Set(current, append(arrTmp, charData))
-					default:
-						if charData != "" {
-							m.Set(current, []interface{}{m.Get(current), charData})
-						} else {
-							m.Set(current, []interface{}{m.Get(current)})
-						}
+					if v := m.Get(arrayTag); v != nil {
+						m.Set(arrayTag, append(arr, v))
+					} else {
+						m.Set(arrayTag, arr)
 					}
 				} else {
-					m.Set(current, charData)
+					//exception doing
+					m.Set(arrayTag, []interface{}{m.Get(arrayTag)})
 				}
-
-				charData = ""
+				arrayTmp.Delete(arrayTag)
+				arrayTag = ""
 			}
-			//}
 
 			ele = ele[:len(ele)-1]
 			log.Debug("EndElement", ele)
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
-			charData = string(token)
-			log.Debug("CharData", charData)
+			data, err = strconv.Atoi(string(token))
+			if err == nil {
+				continue
+			}
+
+			data, err = strconv.ParseFloat(string(token), 64)
+			if err == nil {
+				continue
+			}
+
+			data, err = strconv.ParseBool(string(token))
+			if err == nil {
+				continue
+			}
+			data = string(token)
+			log.Debug("CharData", data)
 			// 异常处理(Log输出）
 		default:
 			log.Debug(token)
