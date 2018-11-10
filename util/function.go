@@ -278,7 +278,11 @@ func xmlToMap(contentXML []byte, hasHeader bool) Map {
 					case []interface{}:
 						m.Set(current, append(arrTmp, charData))
 					default:
-						m.Set(current, []interface{}{m.Get(current), charData})
+						if charData != "" {
+							m.Set(current, []interface{}{m.Get(current), charData})
+						} else {
+							m.Set(current, []interface{}{m.Get(current)})
+						}
 					}
 				} else {
 					m.Set(current, charData)

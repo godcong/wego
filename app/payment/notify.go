@@ -21,14 +21,17 @@ func NewNotify(config *core.Config) *Notify {
 	return newNotify(NewPayment(config)).(*Notify)
 }
 
+//RefundedNotify ...
 func (n *Notify) RefundedNotify(p util.Map) {
 
 }
 
+//ScannedNotify ...
 func (n *Notify) ScannedNotify(p util.Map) {
 
 }
 
+//PaidNotify ...
 func (n *Notify) PaidNotify(p util.Map) {
 
 }

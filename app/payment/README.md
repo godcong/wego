@@ -150,6 +150,7 @@
 
 ### 下载对账单 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
+    obj.Bill().Download(util.Map{})
  
 ### 支付结果通知
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7
