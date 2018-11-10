@@ -167,6 +167,8 @@
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_17&index=10
      obj.Bill().BatchQueryComment(util.Map{})
     
+## 微信红包
+    obj.RedPack()
     
 ## 企业付款
 ### 企业付款到零钱
