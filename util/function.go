@@ -195,7 +195,11 @@ func mapToXML(maps Map, needHeader bool) ([]byte, error) {
 
 /*XMLToMap Convert XML to MAP */
 func XMLToMap(contentXML []byte) Map {
-	return xmlToMap(contentXML, false)
+	m, err := xmlToMap(contentXML, false)
+	if err != nil {
+		return nil
+	}
+	return m
 }
 
 /*JSONToMap Convert JSON to MAP */
@@ -208,7 +212,7 @@ func JSONToMap(content []byte) Map {
 	return m
 }
 
-func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
+func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast bool) error {
 	//m := make(Map)
 	current := ""
 	var data interface{}
@@ -282,20 +286,23 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
 			log.Debug("EndElement", ele)
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
-			data, err = strconv.Atoi(string(token))
-			if err == nil {
-				continue
+			if needCast {
+				data, err = strconv.Atoi(string(token))
+				if err == nil {
+					continue
+				}
+
+				data, err = strconv.ParseFloat(string(token), 64)
+				if err == nil {
+					continue
+				}
+
+				data, err = strconv.ParseBool(string(token))
+				if err == nil {
+					continue
+				}
 			}
 
-			data, err = strconv.ParseFloat(string(token), 64)
-			if err == nil {
-				continue
-			}
-
-			data, err = strconv.ParseBool(string(token))
-			if err == nil {
-				continue
-			}
 			data = string(token)
 			log.Debug("CharData", data)
 			// 异常处理(Log输出）
@@ -308,11 +315,15 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
 	return nil
 }
 
-func xmlToMap(contentXML []byte, hasHeader bool) Map {
+func xmlToMap(contentXML []byte, hasHeader bool) (Map, error) {
 	m := make(Map)
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
-	unmarshalXML(m, dec, xml.StartElement{Name: xml.Name{Local: "xml"}})
-	return m
+	err := unmarshalXML(m, dec, xml.StartElement{Name: xml.Name{Local: "xml"}}, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return m, nil
 }
 
 /*Time get time string */

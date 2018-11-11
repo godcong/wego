@@ -530,8 +530,5 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 // UnmarshalXML ...
 func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	if len(m) == 0 {
-		return ErrNilMap
-	}
-	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}})
+	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}}, false)
 }

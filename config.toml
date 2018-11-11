@@ -71,6 +71,7 @@
             mch_id = '1516796851'
             key = 'aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK'
             notify_url ='https://mp.quick58.com/charge/callback'
+            refund_url = 'https://mp.quick58.com/refund/callback'
             cert_path = 'cert/apiclient_cert.pem'
             key_path = 'cert/apiclient_key.pem'
             rootca_path = 'cert/rootca.pem'

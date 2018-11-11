@@ -24,33 +24,38 @@ func NewRefund(config *core.Config) *Refund {
 }
 
 func (r *Refund) refund(num string, total, refund int, options util.Map) core.Response {
-	options = util.MapNilMake(options)
-	options.SetNil("out_refund_no", num)
-	options.SetNil("total_fee", strconv.Itoa(total))
-	options.SetNil("refund_fee", strconv.Itoa(refund))
-	options.SetNil("appid", r.Get("app_id"))
+	m := util.MapNilMake(options)
+	m.SetNil("out_refund_no", num)
+	m.SetNil("total_fee", strconv.Itoa(total))
+	m.SetNil("refund_fee", strconv.Itoa(refund))
+	m.SetNil("appid", r.Get("app_id"))
 
-	return r.SafeRequest(payRefund, options)
+	//set notify callback
+	notify := r.Get("refund_url")
+	if !m.Has("notify_url") && notify != nil {
+		m.Set("notify_url", notify)
+	}
+	return r.SafeRequest(payRefund, m)
 }
 
 /*ByOutTradeNumber 按照out_trade_no发起退款
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options util.Map) core.Response {
-	options = util.MapNilMake(options)
-	options.SetNil("out_trade_no", tradeNum)
-	return r.refund(num, total, refund, options)
+func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options ...util.Map) core.Response {
+	m := util.MapsToMap(options)
+	m.SetNil("out_trade_no", tradeNum)
+	return r.refund(num, total, refund, m)
 }
 
 /*ByTransactionID 按照transaction_id发起退款
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByTransactionID(tid, num string, total, refund int, options util.Map) core.Response {
-	options = util.MapNilMake(options)
-	options.SetNil("transaction_id", tid)
-	return r.refund(num, total, refund, options)
+func (r *Refund) ByTransactionID(tid, num string, total, refund int, options ...util.Map) core.Response {
+	m := util.MapsToMap(options)
+	m.SetNil("transaction_id", tid)
+	return r.refund(num, total, refund, m)
 }
 
 func (r *Refund) query(m util.Map) core.Response {

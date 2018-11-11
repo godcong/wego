@@ -40,3 +40,15 @@ func TestNewPayment(t *testing.T) {
 	log.Println(string(r.Bytes()))
 	log.Println(r.ToMap())
 }
+
+// TestValidateSign ...
+func TestValidateSign(t *testing.T) {
+	data := `<xml><mch_id>1498009232</mch_id><transaction_id>4200000155201805096015992498</transaction_id><cash_fee>200</cash_fee><fee_type>CNY</fee_type><sign>BE9EA07614C09FA73A683071877D9DDB</sign><time_end>20180509175821</time_end><out_trade_no>8195400821515968</out_trade_no><result_code>SUCCESS</result_code><nonce_str>7cda1edf536f11e88cb200163e04155d</nonce_str><return_code>SUCCESS</return_code><total_fee>200</total_fee><appid>wx1ad61aeef1903b93</appid><bank_type>CMB_DEBIT</bank_type><trade_type>JSAPI</trade_type><is_subscribe>N</is_subscribe><openid>oE_gl0bQ7iJ2g3OBMQPWRiBSoiks</openid></xml>`
+	m := util.XMLToMap([]byte(data))
+	//m := make(util.Map)
+	//xml.Unmarshal([]byte(data), &m)
+	log.Debug(m)
+	t.Log(payment.ValidateSign(m, "O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ"))
+	rlt := payment.SUCCESS()
+	t.Log(string(rlt.ToXML()))
+}
