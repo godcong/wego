@@ -24,6 +24,7 @@ func TestBill_Download(t *testing.T) {
 
 }
 
+// TestBill_BatchQueryComment ...
 func TestBill_BatchQueryComment(t *testing.T) {
 	bill := NewBill(core.C(util.Map{
 		"sandbox": true,

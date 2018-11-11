@@ -245,6 +245,7 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement) error {
 			// 处理元素结束（标签）
 		case xml.EndElement:
 			name := token.Name.Local
+			// fmt.Printf("This is the end: %s\n", name)
 			if strings.ToLower(name) == "xml" {
 				break
 			}

@@ -178,6 +178,7 @@ func (p *Payment) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
+// Notify ...
 func (p *Payment) Notify() *Notify {
 	obj, b := p.Module["Notify"]
 	if !b {
@@ -267,14 +268,17 @@ func (p *Payment) Coupon() *Coupon {
 	return obj.(*Coupon)
 }
 
+// HandleRefunded ...
 func (p *Payment) HandleRefunded(f func(w http.ResponseWriter, req *http.Request)) {
-	//p.Notify().Handle()
+
 }
 
+// HandlePaid ...
 func (p *Payment) HandlePaid(f func(w http.ResponseWriter, req *http.Request)) {
 
 }
 
+// HandleScanned ...
 func (p *Payment) HandleScanned(f func(w http.ResponseWriter, req *http.Request)) {
 
 }

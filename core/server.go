@@ -19,9 +19,11 @@ type WriteAble interface {
 	ToBytes() []byte
 }
 
+// Server ...
 type Server struct {
 }
 
+// ServeHTTP ...
 func (s *Server) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
 	var respData []byte
 	var reqBody []byte

@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestMap_Set ...
 func TestMap_Set(t *testing.T) {
 	m := make(util.Map)
 	m.Set("one.two.three", "abc")
@@ -12,6 +13,7 @@ func TestMap_Set(t *testing.T) {
 	t.Log(m.Get("one.two.three") == "abc")
 }
 
+// TestMap_Delete ...
 func TestMap_Delete(t *testing.T) {
 	m := make(util.Map)
 	m.Set("one.two.three", "abc")
@@ -28,6 +30,7 @@ func TestMap_Delete(t *testing.T) {
 	}
 }
 
+// TestMap_Expect ...
 func TestMap_Expect(t *testing.T) {
 	m := make(util.Map)
 	m.Set("one.two.three", "abc")
@@ -38,6 +41,7 @@ func TestMap_Expect(t *testing.T) {
 
 }
 
+// TestMap_UnmarshalXML ...
 func TestMap_UnmarshalXML(t *testing.T) {
 	json := `{
 	"card": {

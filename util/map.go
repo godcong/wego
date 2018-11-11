@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// NilMapError ...
 var NilMapError = errors.New("nil map")
 
 /*StringAble StringAble */
@@ -179,6 +180,7 @@ func (m Map) GetMapArrayD(s string, d []Map) []Map {
 	return d
 }
 
+// GetArray ...
 func (m Map) GetArray(s string) []interface{} {
 	switch v := m.Get(s).(type) {
 	case []interface{}:
@@ -188,6 +190,7 @@ func (m Map) GetArray(s string) []interface{} {
 	}
 }
 
+// GetArrayD ...
 func (m Map) GetArrayD(s string, d []interface{}) []interface{} {
 	switch v := m.Get(s).(type) {
 	case []interface{}:
@@ -420,6 +423,7 @@ func (m Map) join(source Map, replace bool) Map {
 	return m
 }
 
+// Append ...
 func (m Map) Append(p Map) Map {
 	for k, v := range p {
 		if m.Has(k) {

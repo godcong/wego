@@ -57,18 +57,18 @@ func subInit(payment *Account, p util.Map) *Account {
 }
 
 // InitModule ...
-func (p *Account) InitModule() *Account {
-	return subInit(p, moduleLists)
+func (a *Account) InitModule() *Account {
+	return subInit(a, moduleLists)
 }
 
 // InitModuleExpect ...
-func (p *Account) InitModuleExpect(except ...string) *Account {
-	return subInit(p, moduleLists.Expect(except))
+func (a *Account) InitModuleExpect(except ...string) *Account {
+	return subInit(a, moduleLists.Expect(except))
 }
 
 // InitModuleOnly ...
-func (p *Account) InitModuleOnly(only ...string) *Account {
-	return subInit(p, moduleLists.Only(only))
+func (a *Account) InitModuleOnly(only ...string) *Account {
+	return subInit(a, moduleLists.Only(only))
 }
 
 // AccessToken ...
