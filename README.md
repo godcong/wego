@@ -4,10 +4,10 @@
 [![license](https://img.shields.io/github/license/godcong/wego.svg)](https://github.com/godcong/wego/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/godcong/wego)](https://goreportcard.com/report/github.com/godcong/wego)
 
-## a fashion fast wechat pay api for golang
-## 时尚，简单，卓越，高性能的微信支付接口
+## 世界上最好的Go微信开发SDK(时尚，简单，性能卓越)
+### a fashion fast wechat api for golang
+
 ### WEGO借鉴了并参考了,当前许多流行的开源微信支付框架.并且为了使性能得到更大提高.全部使用golang进行重建架构开发
-### 可以说是当前golang微信sdk最全的,最好用的开源框架
 
 开发前,请务必仔细阅读并看懂
 
