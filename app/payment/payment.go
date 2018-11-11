@@ -251,28 +251,40 @@ func (p *Payment) Coupon() *Coupon {
 	return obj.(*Coupon)
 }
 
-// HandleRefunded ...
-func (p *Payment) HandleRefunded(f NotifyFunc) Notify {
+func (p *Payment) HandleRefundedNotify(f NotifyCallback) Notify {
 	return &refundedNotify{
-		Payment:    p,
-		NotifyFunc: f,
+		Payment:        p,
+		NotifyCallback: f,
+	}
+}
+
+// HandleRefunded ...
+func (p *Payment) HandleRefunded(f NotifyCallback) NotifyFunc {
+	return p.HandleRefundedNotify(f).ServeHTTP
+}
+
+func (p *Payment) HandleScannedNotify(f NotifyCallback) Notify {
+	return &scannedNotify{
+		Payment:        p,
+		NotifyCallback: f,
 	}
 }
 
 // HandleScanned ...
-func (p *Payment) HandleScanned(f NotifyFunc) Notify {
-	return &scannedNotify{
-		Payment:    p,
-		NotifyFunc: f,
+func (p *Payment) HandleScanned(f NotifyCallback) NotifyFunc {
+	return p.HandleScannedNotify(f).ServeHTTP
+}
+
+func (p *Payment) HandlePaidNotify(f NotifyCallback) Notify {
+	return &paidNotify{
+		Payment:        p,
+		NotifyCallback: f,
 	}
 }
 
 // HandlePaid ...
-func (p *Payment) HandlePaid(f NotifyFunc) Notify {
-	return &paidNotify{
-		Payment:    p,
-		NotifyFunc: f,
-	}
+func (p *Payment) HandlePaid(f NotifyCallback) NotifyFunc {
+	return p.HandlePaidNotify(f).ServeHTTP
 }
 
 func (p *Payment) initRequest(maps util.Map) util.Map {

@@ -12,13 +12,14 @@ type Notify interface {
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
 }
 
-// NotifyFunc ...
-type NotifyFunc func(p util.Map) (util.Map, error)
+// NotifyCallback ...
+type NotifyCallback func(p util.Map) (util.Map, error)
+type NotifyFunc func(w http.ResponseWriter, req *http.Request)
 
 /*Notify 监听 */
 type refundedNotify struct {
 	*Payment
-	NotifyFunc
+	NotifyCallback
 }
 
 // ServeHTTP ...
@@ -33,7 +34,7 @@ func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		rlt = Fail(err.Error())
 	} else {
 		//TODO: decode req_info
-		_, err = n.NotifyFunc(maps)
+		_, err = n.NotifyCallback(maps)
 		if err != nil {
 			rlt = Fail(err.Error())
 		}
@@ -48,7 +49,7 @@ func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 /*Notify 监听 */
 type scannedNotify struct {
 	*Payment
-	NotifyFunc
+	NotifyCallback
 }
 
 // ServeHTTP ...
@@ -64,7 +65,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		rlt = FailDes(err.Error())
 	} else {
 		if ValidateSign(maps, n.GetKey()) {
-			p, err = n.NotifyFunc(maps)
+			p, err = n.NotifyCallback(maps)
 			if err != nil {
 				rlt = FailDes(err.Error())
 			}
@@ -104,7 +105,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 /*Notify 监听 */
 type paidNotify struct {
 	*Payment
-	NotifyFunc
+	NotifyCallback
 }
 
 // ServerHttp ...
@@ -119,7 +120,7 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		rlt = Fail(err.Error())
 	} else {
 		if ValidateSign(maps, n.GetKey()) {
-			_, err = n.NotifyFunc(maps)
+			_, err = n.NotifyCallback(maps)
 			if err != nil {
 				rlt = Fail(err.Error())
 			}

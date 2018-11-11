@@ -154,7 +154,28 @@
  
 ### 支付结果通知
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7
-    obj.Notify()
+    
+    支付结果通知
+    在用户成功支付后，微信服务器会向该订单中设置的回调URL发起一个 POST 请求  
+    而对于用户的退款操作，在退款成功之后也会有一个异步回调通知。
+    
+    本 SDK 内预置了相关方法，
+    只需要实现 NotifyCallback 方法，在其中对自己的业务进行处理
+    PaidCallbackFunction := func(p util.Map) (maps util.Map, e error) {
+    		return nil, nil
+    }
+    第一参数仅扫码支付中用到,返回参数:util.Map{"prepay_id":"wxxxxxxxxxx"}
+    第二返参异常结果为nil即可.
+    
+    获取监听函数
+    方式1:
+    serve1 := wego.Payment().HandlePaidNotify(PaidCallbackFunction).ServeHTTP
+    http.HandleFunc("/scanned/callback/address", serve1)
+    //方式2:
+    http.HandleFunc("/scanned/callback/address2", wego.Payment().HandlePaid(PaidCallbackFunction))
+    
+    设置监听
+    http.ListenAndServe(":8080", nil)
 
 ### 交易保障 
     官方文档:https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_8
