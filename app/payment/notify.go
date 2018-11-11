@@ -25,6 +25,7 @@ type refundedNotify struct {
 func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
+	defer NotifyResponseXML(w, rlt.ToXML())
 	maps, err := core.RequestToMap(req)
 	//wrong request will do nothing
 	if err != nil {
@@ -38,10 +39,10 @@ func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	err = NotifyResponseXML(w, rlt.ToXML())
-	if err != nil {
-		log.Error(err)
-	}
+	//err = NotifyResponseXML(w, rlt.ToXML())
+	//if err != nil {
+	//	log.Error(err)
+	//}
 }
 
 /*Notify 监听 */
@@ -54,6 +55,7 @@ type scannedNotify struct {
 func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
+	defer NotifyResponseXML(w, rlt.ToXML())
 	var p util.Map
 	maps, err := core.RequestToMap(req)
 
@@ -93,10 +95,10 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	err = NotifyResponseXML(w, rlt.ToXML())
-	if err != nil {
-		log.Error(err)
-	}
+	//err = NotifyResponseXML(w, rlt.ToXML())
+	//if err != nil {
+	//	log.Error(err)
+	//}
 }
 
 /*Notify 监听 */
@@ -109,6 +111,7 @@ type paidNotify struct {
 func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
+	defer NotifyResponseXML(w, rlt.ToXML())
 	maps, err := core.RequestToMap(req)
 
 	if err != nil {
@@ -123,20 +126,22 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	err = NotifyResponseXML(w, rlt.ToXML())
-	if err != nil {
-		log.Error(err)
-	}
+	//err = NotifyResponseXML(w, rlt.ToXML())
+	//if err != nil {
+	//	log.Error(err)
+	//}
 }
 
 // NotifyResponseXML ...
 func NotifyResponseXML(w http.ResponseWriter, data []byte) error {
+	w.WriteHeader(http.StatusOK)
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
 		header["Content-Type"] = []string{"application/json; charset=utf-8"}
 	}
 	_, err := w.Write(data)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	return nil
