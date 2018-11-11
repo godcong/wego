@@ -20,10 +20,10 @@ const RegAccessToken = "access_token"
 
 var app *Application
 
-func initSystem(cfg *core.Config) *System {
+func initSystem(config *core.Config) *System {
 	var system System
-	if cfg != nil {
-		err := cfg.Unmarshal(&system)
+	if !config.IsNil() {
+		err := config.Unmarshal(&system)
 		if err != nil {
 			return &system
 		}

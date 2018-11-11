@@ -45,6 +45,14 @@ func LoadConfig(f string) (*Config, error) {
 	return cfg(t), nil
 }
 
+//IsNil ...
+func (c *Config) IsNil() bool {
+	if c == nil || c.Tree == nil {
+		return true
+	}
+	return false
+}
+
 /*GetSubConfig get sub config from current config */
 func (c *Config) GetSubConfig(s string) *Config {
 	if v, b := c.GetTree(s).(*toml.Tree); b {
