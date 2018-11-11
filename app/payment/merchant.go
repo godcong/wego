@@ -28,12 +28,12 @@ func (m *Merchant) AddSubMerchant(maps util.Map) core.Response {
 
 // QuerySubMerchantByMerchantID ...
 func (m *Merchant) QuerySubMerchantByMerchantID(id string) core.Response {
-	return m.manage("query", util.Map{"micro_mch_id": id})
+	return m.manage("dummyQuery", util.Map{"micro_mch_id": id})
 }
 
 // QuerySubMerchantByWeChatID ...
 func (m *Merchant) QuerySubMerchantByWeChatID(id string) core.Response {
-	return m.manage("query", util.Map{"recipient_wechatid": id})
+	return m.manage("dummyQuery", util.Map{"recipient_wechatid": id})
 }
 
 // ModifyInfo ...
