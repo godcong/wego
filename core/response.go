@@ -1,13 +1,13 @@
 package core
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"golang.org/x/text/transform"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 /*Response Response */
@@ -51,7 +51,12 @@ func (r *responseMap) Error() error {
 
 //ToMap response to map
 func (r *responseJSON) ToMap() util.Map {
-	return util.JSONToMap(r.Data)
+	m := make(util.Map)
+	err := json.Unmarshal(r.Data, &m)
+	if err != nil {
+		return nil
+	}
+	return m
 }
 
 //Bytes response to bytes
@@ -81,7 +86,12 @@ func (r *responseError) Error() error {
 
 //ToMap response to map
 func (r *responseXML) ToMap() util.Map {
-	return util.XMLToMap(r.Data)
+	m := make(util.Map)
+	err := xml.Unmarshal(r.Data, &m)
+	if err != nil {
+		return nil
+	}
+	return m
 }
 
 //Bytes response to bytes
@@ -116,70 +126,3 @@ func Err(data []byte, err error) Response {
 func ParseBody(r *http.Response) ([]byte, error) {
 	return ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
 }
-
-/*BodyToMap transfer response body to map data */
-func BodyToMap(b []byte, d string) util.Map {
-	if d == DataTypeXML {
-		return util.XMLToMap(b)
-	} else if d == DataTypeJSON {
-		return util.JSONToMap(b)
-	} else {
-
-	}
-	return nil
-}
-
-// SaveTo ...
-func SaveTo(response Response, path string) error {
-	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
-	if e != nil {
-		log.Debug("Response|ToFile", e)
-		return e
-	}
-
-	_, e = file.Write(response.Bytes())
-	if e != nil {
-		return e
-	}
-	return nil
-}
-
-// SaveEncodingTo ...
-func SaveEncodingTo(response Response, path string, t transform.Transformer) error {
-	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
-	if e != nil {
-		log.Debug("Response|ToFile", e)
-		return e
-	}
-
-	writer := transform.NewWriter(file, t)
-	_, e = writer.Write(response.Bytes())
-	if e != nil {
-		return e
-	}
-	return nil
-}
-
-/*CheckError check wechat result error */
-//func (r *Response) CheckError() error {
-//	if r.error != nil {
-//		return r.error
-//	}
-//	m := r.ToMap()
-//	if m.GetNumber("errcode") != 0 {
-//		r.error = errors.New(m.GetString("errmsg"))
-//	}
-//	return r.error
-//}
-
-/*ErrorResponse return response with error */
-//func ErrorResponse(err error) *Response {
-//	log.Debug("ErrorResponse|err", err)
-//	return &Response{
-//		error: err,
-//	}
-//}
-
-//func (r ResponseType) String() string {
-//	return string(r)
-//}
