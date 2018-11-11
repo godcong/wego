@@ -29,10 +29,9 @@ func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//wrong request will do nothing
 	if err != nil {
 		log.Error(err)
-		return
-	}
-
-	if ValidateSign(maps, n.GetKey()) {
+		rlt = Fail(err.Error())
+	} else {
+		//TODO: decode req_info
 		err = n.NotifyFunc(maps)
 		if err != nil {
 			rlt = Fail(err.Error())
@@ -67,16 +66,16 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
 	maps, err := core.RequestToMap(req)
-	//wrong request will do nothing
+
 	if err != nil {
 		log.Error(err)
-		return
-	}
-
-	if ValidateSign(maps, n.GetKey()) {
-		err = n.NotifyFunc(maps)
-		if err != nil {
-			rlt = Fail(err.Error())
+		rlt = Fail(err.Error())
+	} else {
+		if ValidateSign(maps, n.GetKey()) {
+			err = n.NotifyFunc(maps)
+			if err != nil {
+				rlt = Fail(err.Error())
+			}
 		}
 	}
 

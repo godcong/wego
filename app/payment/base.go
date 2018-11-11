@@ -49,9 +49,16 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (p *Base) Pay(params util.Map) core.Response {
-	params.Set("appid", p.Get("app_id"))
-	return p.Request(payMicroPay, params)
+func (p *Base) Pay(maps util.Map) core.Response {
+	maps.Set("appid", p.Get("app_id"))
+
+	//set notify callback
+	notify := p.Get("notify_url")
+	if !maps.Has("notify_url") {
+		maps.Set("notify_url", notify)
+	}
+
+	return p.Request(payMicroPay, maps)
 }
 
 /*AuthCodeToOpenid 通过授权码查询公众号Openid
