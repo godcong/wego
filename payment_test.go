@@ -20,20 +20,20 @@ func TestOrder_Query(t *testing.T) {
 
 // TestOrder_Close ...
 func TestOrder_Close(t *testing.T) {
-	r := wego.Order().Close(out_trade_no + "5")
+	r := wego.PaymentOrder().Close(out_trade_no + "5")
 	log.Println(string(r.Bytes()))
 
 }
 
 // TestOrder_QueryByOutTradeNumber ...
 func TestOrder_QueryByOutTradeNumber(t *testing.T) {
-	r := wego.Order().QueryByOutTradeNumber(out_trade_no + "5")
+	r := wego.PaymentOrder().QueryByOutTradeNumber(out_trade_no + "5")
 	log.Println(string(r.Bytes()))
 }
 
 // TestOrder_QueryByTransactionId ...
 func TestOrder_QueryByTransactionId(t *testing.T) {
-	r := wego.Order().QueryByTransactionID(out_trade_no + "5")
+	r := wego.PaymentOrder().QueryByTransactionID(out_trade_no + "5")
 	log.Println(string(r.Bytes()))
 }
 
@@ -41,7 +41,7 @@ func TestOrder_QueryByTransactionId(t *testing.T) {
 func TestOrder_Unify(t *testing.T) {
 	m := make(util.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
-	m.Set("out_trade_no", out_trade_no+"5")
+	m.Set("out_trade_no", out_trade_no+"6")
 	//m.Set("device_info", "")
 	////m.Set("fee_type", "CNY")
 	m.Set("total_fee", "1")
