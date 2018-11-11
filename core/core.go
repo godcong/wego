@@ -13,7 +13,7 @@ func SaveTo(response Response, path string) error {
 		log.Debug("Response|ToFile", e)
 		return e
 	}
-
+	defer file.Close()
 	_, e = file.Write(response.Bytes())
 	if e != nil {
 		return e
@@ -28,11 +28,12 @@ func SaveEncodingTo(response Response, path string, t transform.Transformer) err
 		log.Debug("Response|ToFile", e)
 		return e
 	}
-
+	defer file.Close()
 	writer := transform.NewWriter(file, t)
 	_, e = writer.Write(response.Bytes())
 	if e != nil {
 		return e
 	}
+	defer writer.Close()
 	return nil
 }

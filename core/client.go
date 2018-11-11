@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -183,7 +182,8 @@ func castToResponse(resp *http.Response) Response {
 		log.Error(body, err)
 		return Err(body, err)
 	}
-	log.Debug("response:", string(body))
+
+	log.Debug("response:", string(body[:256])) //max 256 char
 	if resp.StatusCode == 200 {
 		if strings.Index(ct, "xml") != -1 ||
 			bytes.Index(body, []byte("<xml")) != -1 {
@@ -274,9 +274,9 @@ func buildSafeTransport(config *Config) *http.Client {
 		panic("safe request must set config before use")
 	}
 
-	if idx := config.Check("cert_path", "key_path"); idx != -1 {
-		panic(fmt.Sprintf("the %d key was not found", idx))
-	}
+	//if idx := config.Check("cert_path", "key_path"); idx != -1 {
+	//	panic(fmt.Sprintf("the %d key was not found", idx))
+	//}
 
 	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
 	if err != nil {
@@ -292,7 +292,7 @@ func buildSafeTransport(config *Config) *http.Client {
 	tlsConfig := &tls.Config{
 		Certificates:       []tls.Certificate{cert},
 		RootCAs:            certPool,
-		InsecureSkipVerify: false,
+		InsecureSkipVerify: true, //client端略过对证书的校验
 	}
 	tlsConfig.BuildNameToCertificate()
 	timeOut := config.GetIntD("http.time_out", 30)
@@ -344,17 +344,19 @@ func request(context context.Context, url string, method string, ops util.Map) R
 }
 func buildClient(maps util.Map) *http.Client {
 	//检查是否包含security
+
 	if maps.Has(DataTypeSecurity) {
 		//判断能否创建safe client
-		if v, b := maps.Get(DataTypeSecurity).(*Config); b {
-			if v.Check("cert_path", "key_path") != -1 {
-				return buildTransport(v)
-			}
+		v, b := maps.Get(DataTypeSecurity).(*Config)
+		log.Debug("build client \n", v)
+		if b && v.Check("cert_path", "key_path") == -1 {
 			return buildSafeTransport(v)
 		}
+		return buildTransport(v)
+
 	}
 	//默认输出未配置client
-	log.Info("default client")
+	log.Debug("default client")
 	return buildTransport(C(util.Map{}))
 }
 
@@ -437,7 +439,7 @@ func toXMLReader(v interface{}) io.Reader {
 		log.Debug("toXMLReader|[]byte", v)
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("toXMLReader|util.Map", v.ToXML())
+		log.Debug("toXMLReader|util.Map", string(v.ToXML()))
 		reader = bytes.NewReader(v.ToXML())
 	default:
 		log.Debug("toXMLReader|default", v)

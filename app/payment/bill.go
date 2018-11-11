@@ -3,6 +3,7 @@ package payment
 import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
+	"strconv"
 )
 
 /*Bill 账单 */
@@ -55,11 +56,12 @@ func (b *Bill) BatchQueryComment(beginTime, endTime string, offset int, maps ...
 	m := util.MapsToMap(maps)
 	m.Set("begin_time", beginTime)
 	m.Set("end_time", endTime)
-	m.Set("offset", offset)
+	m.Set("offset", strconv.Itoa(offset))
 	m.Set("appid", b.Get("app_id"))
 	m.Set("sign_type", HMACSHA256)
+	//m.Set("sign_type", MD5)
 	//if !m.Has("limit") {
 	//	m.Set("limit", 200)
 	//}
-	return b.Request(batchQueryComment, m)
+	return b.SafeRequest(batchQueryComment, m)
 }
