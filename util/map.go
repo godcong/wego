@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-// NilMapError ...
-var NilMapError = errors.New("nil map")
+// ErrNilMap ...
+var ErrNilMap = errors.New("nil map")
 
 /*StringAble StringAble */
 type StringAble interface {
@@ -523,7 +523,7 @@ func (m Map) Map() map[string]interface{} {
 // MarshalXML ...
 func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if len(m) == 0 {
-		return NilMapError
+		return ErrNilMap
 	}
 	return marshalXML(m, e, xml.StartElement{Name: xml.Name{Local: "xml"}})
 }
@@ -531,7 +531,7 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 // UnmarshalXML ...
 func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if len(m) == 0 {
-		return NilMapError
+		return ErrNilMap
 	}
 	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}})
 }
