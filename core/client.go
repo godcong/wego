@@ -20,7 +20,6 @@ import (
 
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"github.com/pelletier/go-toml"
 )
 
 /*data types*/
@@ -362,11 +361,8 @@ func buildClient(maps util.Map) *http.Client {
 	}
 	//默认输出未配置client
 	log.Debug("default client")
-	cfg, err := toml.TreeFromMap(util.Map{})
-	if err != nil {
-		log.Error()
-	}
-	return buildTransport(NewConfig(cfg))
+
+	return buildTransport(NilConfig())
 }
 
 func requestData(method, url string, m util.Map) *http.Request {
