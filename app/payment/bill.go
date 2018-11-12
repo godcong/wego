@@ -48,7 +48,8 @@ func (b *Bill) DownloadFundFlow(bd string, at string, maps ...util.Map) core.Res
 	m.Set("bill_date", bd)
 	m.Set("sign_type", HMACSHA256)
 	m.Set("account_type", at)
-	return b.Request(payDownloadfundflow, m)
+
+	return b.SafeRequest(payDownloadfundflow, m)
 }
 
 //BatchQueryComment 拉取订单评价数据

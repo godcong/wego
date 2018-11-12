@@ -352,7 +352,7 @@ func buildClient(maps util.Map) *http.Client {
 	if maps.Has(DataTypeSecurity) {
 		//判断能否创建safe client
 		v, b := maps.Get(DataTypeSecurity).(*Config)
-		log.Debug("build client \n", v)
+		//log.Debug("build client \n", v)
 		if b && v.Check("cert_path", "key_path") == -1 {
 			return buildSafeTransport(v)
 		}

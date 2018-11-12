@@ -191,5 +191,5 @@ func (t *Transfer) ToBankCard(maps util.Map) core.Response {
 	maps.Set("enc_bank_no", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_bank_no")))
 	maps.Set("enc_true_name", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_true_name")))
 	maps.Set("sign", GenerateSignature(maps, t.GetString("key"), MakeSignMD5))
-	return t.SafeRequest(core.Link(mmpaysptransPayBank), maps)
+	return t.SafeRequest(mmpaysptransPayBank, maps)
 }

@@ -15,6 +15,7 @@ var out_trade_no = "201813091059590000003433-asd003"
 var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 
 var cfg = core.C(util.Map{
+	//"sandbox":   true,
 	"sandbox": true,
 	"app_id":  "wx3c69535993f4651d",
 	"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
@@ -227,7 +228,7 @@ func TestBill_BatchQueryComment(t *testing.T) {
 // TestBill_DownloadFundFlow ...
 func TestBill_DownloadFundFlow(t *testing.T) {
 	bill := payment.NewBill(cfg)
-	resp := bill.DownloadFundFlow("20181109", "Operation")
+	resp := bill.DownloadFundFlow("20181109", "Basic")
 	_ = core.SaveEncodingTo(resp, "d:/test.csv", simplifiedchinese.GBK.NewEncoder())
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
