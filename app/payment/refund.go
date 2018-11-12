@@ -42,9 +42,8 @@ func (r *Refund) refund(num string, total, refund int, options util.Map) core.Re
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, options ...util.Map) core.Response {
-	m := util.MapsToMap(options)
-	m.SetNil("out_trade_no", tradeNum)
+func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, option ...util.Map) core.Response {
+	m := util.MapsToMap(util.Map{"out_trade_no": tradeNum}, option)
 	return r.refund(num, total, refund, m)
 }
 
@@ -52,9 +51,8 @@ func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, optio
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByTransactionID(tid, num string, total, refund int, options ...util.Map) core.Response {
-	m := util.MapsToMap(options)
-	m.SetNil("transaction_id", tid)
+func (r *Refund) ByTransactionID(tid, num string, total, refund int, option ...util.Map) core.Response {
+	m := util.MapsToMap(util.Map{"transaction_id": tid}, option)
 	return r.refund(num, total, refund, m)
 }
 

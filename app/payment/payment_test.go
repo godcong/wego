@@ -277,3 +277,30 @@ func TestSettlement_Query(t *testing.T) {
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
 }
+
+// TestExchange_QueryRate ...
+func TestExchange_QueryRate(t *testing.T) {
+	resp := payment.NewExchange(cfg).QueryRate("USD", "20181112")
+	t.Log(resp.Error())
+	t.Log(resp.ToMap())
+}
+
+// TestCoupon_Send ...
+func TestCoupon_Send(t *testing.T) {
+	resp := payment.NewCoupon(cfg).Send(util.Map{
+		"coupon_stock_id": "1",
+		"openid":          "12341234",
+	})
+
+	t.Log(resp.Error())
+	t.Log(resp.ToMap())
+
+}
+
+// TestCoupon_QueryInfo ...
+func TestCoupon_QueryInfo(t *testing.T) {
+	resp := payment.NewCoupon(cfg).QueryInfo(util.Map{})
+
+	t.Log(resp.Error())
+	t.Log(resp.ToMap())
+}

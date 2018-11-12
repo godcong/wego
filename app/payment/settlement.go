@@ -24,13 +24,13 @@ func NewSettlement(config *core.Config) *Settlement {
 
 // Query ...
 func (s *Settlement) Query(useTag, offset, limit int, dateStart, dateEnd string, option ...util.Map) core.Response {
-	m := util.MapsToMap(option)
-	m.Set("appid", s.Get("app_id"))
-	m.Set("date_end", dateEnd)
-	m.Set("date_start", dateStart)
-	m.Set("offset", strconv.Itoa(offset))
-	m.Set("limit", strconv.Itoa(limit))
-	m.Set("usetag", strconv.Itoa(useTag))
-
+	m := util.MapsToMap(util.Map{
+		"appid":      s.Get("app_id"),
+		"date_end":   dateEnd,
+		"date_start": dateStart,
+		"offset":     strconv.Itoa(offset),
+		"limit":      strconv.Itoa(limit),
+		"usetag":     strconv.Itoa(useTag),
+	}, option)
 	return s.Request(paySettlementquery, m)
 }

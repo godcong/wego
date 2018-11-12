@@ -53,16 +53,15 @@ func MapToMap(p map[string]interface{}) Map {
 }
 
 // MapsToMap ...
-func MapsToMap(m []Map) Map {
-	mp := make(Map)
+func MapsToMap(p Map, m []Map) Map {
 	if m == nil {
-		return mp
+		return p
 	}
 
 	for _, v := range m {
-		mp.join(v, true)
+		p.join(v, true)
 	}
-	return mp
+	return p
 }
 
 /*Set set interface */
