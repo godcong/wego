@@ -6,7 +6,8 @@ const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 
 const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
-const payDownloadfundflow = "pay/downloadfundflow"
+const payDownloadfundflow = "/pay/downloadfundflow"
+const paySettlementquery = "/pay/settlementquery"
 const payUnifiedOrder = "/pay/unifiedorder"
 const payOrderQuery = "/pay/orderquery"
 const payMicroPay = "/pay/micropay"
@@ -15,6 +16,7 @@ const payRefundQuery = "/pay/refundquery"
 
 const payReverse = "/secapi/pay/reverse"
 const payRefund = "/secapi/pay/refund"
+
 const mchSubmchmanage = "/secapi/mch/submchmanage"
 const mchModifymchinfo = "/secapi/mch/modifymchinfo"
 const mktAddrecommendconf = "/secapi/mkt/addrecommendconf"

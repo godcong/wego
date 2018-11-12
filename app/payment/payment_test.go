@@ -15,7 +15,6 @@ var out_trade_no = "201813091059590000003433-asd003"
 var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 
 var cfg = core.C(util.Map{
-	//"sandbox":   true,
 	"sandbox": true,
 	"app_id":  "wx3c69535993f4651d",
 	"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
@@ -25,9 +24,9 @@ var cfg = core.C(util.Map{
 
 // TestOrder_Close ...
 func TestOrder_Close(t *testing.T) {
-	r := wego.PaymentOrder().Close(out_trade_no + "5")
-	log.Println(string(r.Bytes()))
-
+	resp := payment.NewOrder(cfg).Close("7716030215925159")
+	t.Log(resp.Error())
+	t.Log(resp.ToMap())
 }
 
 // TestOrder_QueryByOutTradeNumber ...
@@ -270,4 +269,11 @@ func TestNewTransfer(t *testing.T) {
 	m.Set("amount", "1000")
 	m1 := tran.ToBankCard(m)
 	t.Log(m1.ToMap())
+}
+
+// TestSettlement_Query ...
+func TestSettlement_Query(t *testing.T) {
+	resp := payment.NewSettlement(cfg).Query(2, 0, 100, "20181101", "20181112")
+	t.Log(resp.Error())
+	t.Log(resp.ToMap())
 }
