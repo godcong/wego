@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"github.com/pelletier/go-toml"
 )
 
 //RegConfig config
@@ -208,3 +209,13 @@ type Application struct {
 //func GetApp() Application {
 //	return core.App()
 //}
+
+//C parse config from map
+func C(p util.Map) *core.Config {
+	cfg, err := toml.TreeFromMap(p.Map())
+	if err == nil {
+		return core.NewConfig(cfg)
+	}
+	log.Error(err)
+	return nil
+}
