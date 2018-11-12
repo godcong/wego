@@ -16,6 +16,7 @@ func dummySave(p util.Map) {
 
 }
 
+// TestScannedNotify_ServeHTTP ...
 func TestScannedNotify_ServeHTTP(t *testing.T) {
 	ScannedCallbackFunction := func(p util.Map) (maps util.Map, e error) {
 		// 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单

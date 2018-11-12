@@ -14,6 +14,8 @@ type Notify interface {
 
 // NotifyCallback ...
 type NotifyCallback func(p util.Map) (util.Map, error)
+
+// NotifyFunc ...
 type NotifyFunc func(w http.ResponseWriter, req *http.Request)
 
 /*Notify 监听 */
@@ -84,12 +86,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				rlt.Set("mch_id", n.Get("mch_id"))
 				rlt.Set("nonce_str", util.GenerateNonceStr())
 				rlt.Set("prepay_id", p.Get("prepay_id"))
-				switch maps.GetString("sign_type") {
-				case HMACSHA256:
-					rlt.Set("sign", GenerateSignature(maps, n.GetKey(), MakeSignHMACSHA256))
-				default:
-					rlt.Set("sign", GenerateSignature(maps, n.GetKey(), MakeSignMD5))
-				}
+				rlt.Set("sign", GenerateSignature2(maps, n.GetKey(), FieldSign))
 
 			}
 
@@ -127,10 +124,6 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	//err = NotifyResponseXML(w, rlt.ToXML())
-	//if err != nil {
-	//	log.Error(err)
-	//}
 }
 
 // NotifyResponseXML ...

@@ -82,11 +82,12 @@ func (m *MapCache) Clear() {
 /*GetMultiple get multiple values */
 func (m *MapCache) GetMultiple(keys []string) map[string]interface{} {
 	c := make(map[string]interface{})
-	for _, k := range keys {
-		if tmp := m.Get(k); tmp != nil {
-			c[k] = tmp
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		if tmp := m.Get(keys[i]); tmp != nil {
+			c[keys[i]] = tmp
 		}
-		c[k] = nil
+		//c[keys[i]] = nil
 	}
 
 	return c
@@ -102,8 +103,10 @@ func (m *MapCache) SetMultiple(values map[string]interface{}) Cache {
 
 /*DeleteMultiple delete multiple values */
 func (m *MapCache) DeleteMultiple(keys []string) Cache {
-	for _, k := range keys {
-		m.Delete(k)
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		m.Delete(keys[i])
 	}
+
 	return m
 }

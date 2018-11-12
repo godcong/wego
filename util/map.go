@@ -393,14 +393,11 @@ func (m Map) ParseJSON(b []byte) Map {
 /*URLEncode transfer map to url encode */
 func (m Map) URLEncode() string {
 	var buf strings.Builder
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, k := range keys {
-		vs := (m)[k]
-		keyEscaped := url.QueryEscape(k)
+	keys := m.SortKeys()
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		vs := m[keys[i]]
+		keyEscaped := url.QueryEscape(keys[i])
 		if v, b := vs.(string); b {
 			if buf.Len() > 0 {
 				buf.WriteByte('&')
@@ -409,8 +406,8 @@ func (m Map) URLEncode() string {
 			buf.WriteByte('=')
 			buf.WriteString(url.QueryEscape(v))
 		}
-
 	}
+
 	return buf.String()
 }
 
@@ -448,18 +445,22 @@ func (m Map) Join(s Map) Map {
 /*Only get map with keys */
 func (m Map) Only(keys []string) Map {
 	p := Map{}
-	for _, v := range keys {
-		p[v] = (m)[v]
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		p.Set(keys[i], m.Get(keys[i]))
 	}
+
 	return p
 }
 
 /*Expect get map expect keys */
 func (m Map) Expect(keys []string) Map {
 	p := m.Clone()
-	for _, v := range keys {
-		p.Delete(v)
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		p.Delete(keys[i])
 	}
+
 	return p
 }
 
@@ -505,13 +506,13 @@ func (m Map) Range(f func(key string, value interface{}) bool) {
 //return -1 if all is exist
 //return index when not found
 func (m Map) Check(s ...string) int {
-	if s != nil {
-		for idx, v := range s {
-			if !m.Has(v) {
-				return idx
-			}
+	size := len(s)
+	for i := 0; i < size; i++ {
+		if !m.Has(s[i]) {
+			return i
 		}
 	}
+
 	return -1
 }
 

@@ -29,20 +29,58 @@ func MakeSignMD5(data, key string) string {
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
+func signIgnore(current string, s []string) bool {
+	size := len(s)
+	for j := 0; j < size; j++ {
+		if current == s[j] {
+			return true
+		}
+	}
+	return false
+}
+
+// GenerateSignature2 ...
+func GenerateSignature2(p util.Map, key string, ignore ...string) string {
+	keys := p.SortKeys()
+	var sign []string
+	size := len(keys)
+
+	for i := 0; i < size; i++ {
+		if signIgnore(keys[i], ignore) {
+			continue
+		}
+		v := strings.TrimSpace(p.GetString(keys[i]))
+
+		if len(v) > 0 {
+			log.Debug(keys[i], v)
+			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
+		}
+	}
+
+	sign = append(sign, strings.Join([]string{"key", key}, "="))
+	sb := strings.Join(sign, "&")
+	fn := MakeSignMD5
+	if p.GetString("sign_type") == HMACSHA256 {
+		fn = MakeSignHMACSHA256
+	}
+
+	return fn(sb, key)
+}
+
 // GenerateSignature make sign from map data
 func GenerateSignature(m util.Map, key string, fn SignFunc) string {
 	keys := m.SortKeys()
 	var sign []string
-
-	for _, k := range keys {
-		if k == FieldSign {
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		if keys[i] == FieldSign {
 			continue
 		}
-		v := strings.TrimSpace(m.GetString(k))
+		v := strings.TrimSpace(m.GetString(keys[i]))
 
 		if len(v) > 0 {
-			log.Debug(k, v)
-			sign = append(sign, strings.Join([]string{k, v}, "="))
+			log.Debug(keys[i], v)
+			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
 	}
 

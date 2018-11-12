@@ -71,20 +71,22 @@ func (c *Config) GetTree(s string) interface{} {
 }
 
 /*DeepGet get an interface from config when was in values */
-func (c *Config) DeepGet(strings ...string) interface{} {
-	for _, s := range strings {
-		if c.Has(s) {
-			return c.Get(s)
+func (c *Config) DeepGet(s ...string) interface{} {
+	size := len(s)
+	for i := 0; i < size; i++ {
+		if c.Has(s[i]) {
+			return c.Get(s[i])
 		}
 	}
 	return nil
 }
 
 /*DeepGetD get an interface from config when was in values */
-func (c *Config) DeepGetD(def string, strings ...string) interface{} {
-	for _, s := range strings {
-		if c.Has(s) {
-			return c.Get(s)
+func (c *Config) DeepGetD(def string, s ...string) interface{} {
+	size := len(s)
+	for i := 0; i < size; i++ {
+		if c.Has(s[i]) {
+			return c.Get(s[i])
 		}
 	}
 	return def
@@ -171,9 +173,10 @@ func (c *Config) GetIntD(s string, d int64) int64 {
 //Check check all input keys
 //return -1 if all is exist
 //return index when not found
-func (c *Config) Check(arr ...string) int {
-	for i, v := range arr {
-		if !c.Has(v) {
+func (c *Config) Check(s ...string) int {
+	size := len(s)
+	for i := 0; i < size; i++ {
+		if !c.Has(s[i]) {
 			return i
 		}
 	}
@@ -184,9 +187,11 @@ func (c *Config) Check(arr ...string) int {
 func (c *Config) GetStringArray(key string) []string {
 	arr := c.GetArray(key)
 	var strArr []string
+
 	if arr != nil {
-		for _, v := range arr {
-			if vv, b := v.(string); b {
+		size := len(arr)
+		for i := 0; i < size; i++ {
+			if vv, b := arr[i].(string); b {
 				strArr = append(strArr, vv)
 			}
 		}
@@ -200,9 +205,11 @@ func (c *Config) GetStringArray(key string) []string {
 func (c *Config) GetStringArrayD(key string, d []string) []string {
 	arr := c.GetArray(key)
 	var strArr []string
+
 	if arr != nil {
-		for _, v := range arr {
-			if vv, b := v.(string); b {
+		size := len(arr)
+		for i := 0; i < size; i++ {
+			if vv, b := arr[i].(string); b {
 				strArr = append(strArr, vv)
 			}
 		}

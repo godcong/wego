@@ -251,6 +251,7 @@ func (p *Payment) Coupon() *Coupon {
 	return obj.(*Coupon)
 }
 
+// HandleRefundedNotify ...
 func (p *Payment) HandleRefundedNotify(f NotifyCallback) Notify {
 	return &refundedNotify{
 		Payment:        p,
@@ -263,6 +264,7 @@ func (p *Payment) HandleRefunded(f NotifyCallback) NotifyFunc {
 	return p.HandleRefundedNotify(f).ServeHTTP
 }
 
+// HandleScannedNotify ...
 func (p *Payment) HandleScannedNotify(f NotifyCallback) Notify {
 	return &scannedNotify{
 		Payment:        p,
@@ -275,6 +277,7 @@ func (p *Payment) HandleScanned(f NotifyCallback) NotifyFunc {
 	return p.HandleScannedNotify(f).ServeHTTP
 }
 
+// HandlePaidNotify ...
 func (p *Payment) HandlePaidNotify(f NotifyCallback) Notify {
 	return &paidNotify{
 		Payment:        p,
@@ -297,18 +300,9 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 		if p.Has("sub_appid") {
 			maps.Set("sub_appid", p.GetString("sub_appid"))
 		}
-		if maps.Has("sign_type") {
-			switch maps.GetString("sign_type") {
-			case MD5:
-				maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
-			case HMACSHA256:
-				maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignHMACSHA256))
-			default:
-				log.Error("wrong sign_type")
-			}
-		} else {
-			maps.Set("sign_type", MD5)
-			maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
+
+		if !maps.Has("sign") {
+			maps.Set("sign", GenerateSignature2(maps, p.GetKey(), FieldSign))
 		}
 
 		log.Debug("initRequest end", maps)

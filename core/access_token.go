@@ -56,14 +56,16 @@ func ClientCredential(config *Config) util.Map {
 
 // CredentialGet ...
 func CredentialGet(v []interface{}) util.Map {
-	for _, val := range v {
-		switch vv := val.(type) {
+	size := len(v)
+	for i := 0; i < size; i++ {
+		switch vv := v[i].(type) {
 		case util.Map:
 			return vv
 		case map[string]interface{}:
 			return (util.Map)(vv)
 		}
 	}
+
 	return nil
 }
 

@@ -41,6 +41,7 @@ func (b *Bill) Download(bd string, maps ...util.Map) core.Response {
 	return b.Request(payDownloadBill, m)
 }
 
+// DownloadFundFlow ...
 func (b *Bill) DownloadFundFlow() core.Response {
 	panic("//TODO")
 }
@@ -62,6 +63,6 @@ func (b *Bill) BatchQueryComment(beginTime, endTime string, offset int, maps ...
 	//m.Set("sign_type", MD5)
 	//if !m.Has("limit") {
 	//	m.Set("limit", 200)
-	//}
+
 	return b.SafeRequest(batchQueryComment, m)
 }

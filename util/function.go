@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -142,8 +141,9 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
 		return err
 	case []interface{}:
-		for _, v2 := range v1 {
-			convertXML(k, v2, e, xml.StartElement{Name: xml.Name{Local: k}})
+		size := len(v1)
+		for i := 0; i < size; i++ {
+			convertXML(k, v1[i], e, xml.StartElement{Name: xml.Name{Local: k}})
 		}
 		if len(v1) == 1 {
 			convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
@@ -349,33 +349,33 @@ func GenerateUUID() string {
 
 /*In check v is in source */
 func In(source []string, v string) bool {
-	for _, v0 := range source {
-		if v0 == v {
+	size := len(source)
+	for i := 0; i < size; i++ {
+		if source[i] == v {
 			return true
 		}
 	}
+
 	return false
 }
 
 /*MapToString MapToString */
 func MapToString(data Map, skip []string) string {
-	var keys sort.StringSlice
-	for k := range data {
-		keys = append(keys, k)
-	}
-	sort.Sort(keys)
 	var sign []string
+	keys := data.SortKeys()
+	size := len(keys)
 
-	for _, k := range keys {
-		if In(skip, k) {
+	for i := 0; i < size; i++ {
+		if In(skip, keys[i]) {
 			continue
 		}
 
-		v := strings.TrimSpace(data.GetString(k))
+		v := strings.TrimSpace(data.GetString(keys[i]))
 		if len(v) > 0 {
-			sign = append(sign, strings.Join([]string{k, v}, "="))
+			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
 	}
+
 	log.Debug(strings.Join(sign, "&"))
 	return strings.Join(sign, "&")
 }
@@ -384,16 +384,17 @@ func MapToString(data Map, skip []string) string {
 func ToURLParams(data Map, skip []string) string {
 	keys := data.SortKeys()
 	var sign []string
-
-	for _, k := range keys {
-		if In(skip, k) {
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		if In(skip, keys[i]) {
 			continue
 		}
-		v := strings.TrimSpace(data.GetString(k))
+		v := strings.TrimSpace(data.GetString(keys[i]))
 		if len(v) > 0 {
-			sign = append(sign, strings.Join([]string{k, v}, "="))
+			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
 	}
+
 	return strings.Join(sign, "&")
 }
 
@@ -425,15 +426,17 @@ func SHA1(s string) string {
 func signatureSHA1(m Map) string {
 	keys := m.SortKeys()
 	var sign []string
-	for _, k := range keys {
-		if v := strings.TrimSpace(m.GetString(k)); v != "" {
-			log.Debug(k, v)
-			sign = append(sign, strings.Join([]string{k, v}, "="))
-		} else if v, b := m.GetInt64(k); b {
-			log.Debug(k, v)
-			sign = append(sign, strings.Join([]string{k, strconv.FormatInt(v, 10)}, "="))
+	size := len(keys)
+	for i := 0; i < size; i++ {
+		if v := strings.TrimSpace(m.GetString(keys[i])); v != "" {
+			log.Debug(keys[i], v)
+			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
+		} else if v, b := m.GetInt64(keys[i]); b {
+			log.Debug(keys[i], v)
+			sign = append(sign, strings.Join([]string{keys[i], strconv.FormatInt(v, 10)}, "="))
 		}
 	}
+
 	sb := strings.Join(sign, "&")
 	return SHA1(sb)
 }

@@ -75,21 +75,24 @@ type ClientGetter interface {
 
 // ClientGet ...
 func ClientGet(v []interface{}) *Client {
-	for _, val := range v {
-		switch sv := val.(type) {
+	size := len(v)
+	for i := 0; i < size; i++ {
+		switch sv := v[i].(type) {
 		case *Client:
 			return sv
 		case Client:
 			return &sv
 		}
 	}
+
 	return DefaultClient()
 }
 
 // ClientSet ...
 func ClientSet(setter ClientSetter, v []interface{}) bool {
-	for _, val := range v {
-		switch sv := val.(type) {
+	size := len(v)
+	for i := 0; i < size; i++ {
+		switch sv := (v[i]).(type) {
 		case *Client:
 			setter.SetClient(sv)
 			return true
@@ -98,6 +101,7 @@ func ClientSet(setter ClientSetter, v []interface{}) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
