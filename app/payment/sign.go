@@ -39,8 +39,8 @@ func signIgnore(current string, s []string) bool {
 	return false
 }
 
-// GenerateSignature2 ...
-func GenerateSignature2(p util.Map, key string, ignore ...string) string {
+// GenerateSignatureWithIgnore ...
+func GenerateSignatureWithIgnore(p util.Map, key string, ignore []string) string {
 	keys := p.SortKeys()
 	var sign []string
 	size := len(keys)

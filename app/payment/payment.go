@@ -119,20 +119,21 @@ func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 	return p
 }
 
-/*Request 普通请求*/
+// Request 默认请求
 func (p *Payment) Request(s string, maps util.Map) core.Response {
+
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
 	}
 	return p.client.Request(p.Link(s), "post", m)
 }
 
-/*RequestRaw raw请求*/
+// RequestRaw Response转成[]byte
 func (p *Payment) RequestRaw(s string, maps util.Map) []byte {
 	return p.Request(s, maps).Bytes()
 }
 
-/*SafeRequest 安全请求*/
+// SafeRequest 安全请求
 func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 	m := util.Map{
 		core.DataTypeXML:      p.initRequest(maps),
@@ -290,24 +291,46 @@ func (p *Payment) HandlePaid(f NotifyCallback) NotifyFunc {
 	return p.HandlePaidNotify(f).ServeHTTP
 }
 
-func (p *Payment) initRequest(maps util.Map) util.Map {
-	if maps != nil {
-		maps.Set("mch_id", p.GetString("mch_id"))
-		maps.Set("nonce_str", util.GenerateUUID())
-		if p.Has("sub_mch_id") {
-			maps.Set("sub_mch_id", p.GetString("sub_mch_id"))
-		}
-		if p.Has("sub_appid") {
-			maps.Set("sub_appid", p.GetString("sub_appid"))
-		}
-
-		if !maps.Has("sign") {
-			maps.Set("sign", GenerateSignature2(maps, p.GetKey(), FieldSign))
-		}
-
-		log.Debug("initRequest end", maps)
+func (p *Payment) initRequestWithIgnore(maps util.Map, ignore ...string) util.Map {
+	if p == nil || maps == nil {
+		return nil
 	}
 
+	maps.Set("mch_id", p.GetString("mch_id"))
+	maps.Set("nonce_str", util.GenerateUUID())
+	if p.Has("sub_mch_id") {
+		maps.Set("sub_mch_id", p.GetString("sub_mch_id"))
+	}
+	if p.Has("sub_appid") {
+		maps.Set("sub_appid", p.GetString("sub_appid"))
+	}
+
+	if !maps.Has("sign") {
+		maps.Set("sign", GenerateSignatureWithIgnore(maps, p.GetKey(), ignore))
+	}
+
+	log.Debug("initRequest end", maps)
+	return maps
+}
+
+func (p *Payment) initRequest(maps util.Map) util.Map {
+	if p == nil || maps == nil {
+		return nil
+	}
+	maps.Set("mch_id", p.GetString("mch_id"))
+	maps.Set("nonce_str", util.GenerateUUID())
+	if p.Has("sub_mch_id") {
+		maps.Set("sub_mch_id", p.GetString("sub_mch_id"))
+	}
+	if p.Has("sub_appid") {
+		maps.Set("sub_appid", p.GetString("sub_appid"))
+	}
+
+	if !maps.Has("sign") {
+		maps.Set("sign", GenerateSignatureWithIgnore(maps, p.GetKey(), []string{FieldSign}))
+	}
+
+	log.Debug("initRequest end", maps)
 	return maps
 }
 

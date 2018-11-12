@@ -86,7 +86,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				rlt.Set("mch_id", n.Get("mch_id"))
 				rlt.Set("nonce_str", util.GenerateNonceStr())
 				rlt.Set("prepay_id", p.Get("prepay_id"))
-				rlt.Set("sign", GenerateSignature2(maps, n.GetKey(), FieldSign))
+				rlt.Set("sign", GenerateSignatureWithIgnore(maps, n.GetKey(), []string{FieldSign}))
 
 			}
 

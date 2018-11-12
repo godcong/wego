@@ -6,6 +6,7 @@ const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 
 const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
+const payDownloadfundflow = "pay/downloadfundflow"
 const payUnifiedOrder = "/pay/unifiedorder"
 const payOrderQuery = "/pay/orderquery"
 const payMicroPay = "/pay/micropay"
@@ -39,11 +40,14 @@ const bizPayURL = "weixin://wxpay/bizpayurl?"
 const sandboxURLSuffix = "/sandboxnew"
 const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
 
-/*FieldSign 定义:sign */
+// FieldSign ...
 const FieldSign = "sign"
 
-/*FieldSignType 定义:sign_type */
+// FieldSignType ...
 const FieldSignType = "sign_type"
+
+// FieldLimit ...
+const FieldLimit = "limit"
 
 /*HMACSHA256 定义:HMAC-SHA256 */
 const HMACSHA256 = "HMAC-SHA256"
