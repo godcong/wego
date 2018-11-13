@@ -41,16 +41,13 @@ func signIgnore(current string, s []string) bool {
 
 // GenerateSignatureWithIgnore ...
 func GenerateSignatureWithIgnore(p util.Map, key string, ignore []string) string {
-	keys := p.SortKeys()
+	m := p.Expect(ignore)
+	keys := m.SortKeys()
 	var sign []string
 	size := len(keys)
 
 	for i := 0; i < size; i++ {
-		if signIgnore(keys[i], ignore) {
-			continue
-		}
-		v := strings.TrimSpace(p.GetString(keys[i]))
-
+		v := strings.TrimSpace(m.GetString(keys[i]))
 		if len(v) > 0 {
 			log.Debug(keys[i], v)
 			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
@@ -68,14 +65,12 @@ func GenerateSignatureWithIgnore(p util.Map, key string, ignore []string) string
 }
 
 // GenerateSignature make sign from map data
-func GenerateSignature(m util.Map, key string, fn SignFunc) string {
+func GenerateSignature(p util.Map, key string, fn SignFunc) string {
+	m := p.Expect([]string{FieldSign})
 	keys := m.SortKeys()
 	var sign []string
 	size := len(keys)
 	for i := 0; i < size; i++ {
-		if keys[i] == FieldSign {
-			continue
-		}
 		v := strings.TrimSpace(m.GetString(keys[i]))
 
 		if len(v) > 0 {

@@ -360,17 +360,14 @@ func In(source []string, v string) bool {
 }
 
 /*MapToString MapToString */
-func MapToString(data Map, skip []string) string {
+func MapToString(data Map, ignore []string) string {
 	var sign []string
-	keys := data.SortKeys()
+	m := data.Expect(ignore)
+	keys := m.SortKeys()
 	size := len(keys)
 
 	for i := 0; i < size; i++ {
-		if In(skip, keys[i]) {
-			continue
-		}
-
-		v := strings.TrimSpace(data.GetString(keys[i]))
+		v := strings.TrimSpace(m.GetString(keys[i]))
 		if len(v) > 0 {
 			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
@@ -381,15 +378,13 @@ func MapToString(data Map, skip []string) string {
 }
 
 /*ToURLParams map to url params */
-func ToURLParams(data Map, skip []string) string {
-	keys := data.SortKeys()
+func ToURLParams(data Map, ignore []string) string {
 	var sign []string
+	m := data.Expect(ignore)
+	keys := m.SortKeys()
 	size := len(keys)
 	for i := 0; i < size; i++ {
-		if In(skip, keys[i]) {
-			continue
-		}
-		v := strings.TrimSpace(data.GetString(keys[i]))
+		v := strings.TrimSpace(m.GetString(keys[i]))
 		if len(v) > 0 {
 			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
