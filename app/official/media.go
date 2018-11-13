@@ -105,7 +105,6 @@ func (m *Media) GetJssdk(mediaID string) core.Response {
 // https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）:
 // curl -F media=@test.jpg "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN"
-// 返回正确的示例: {"url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0"}
 func (m *Media) UploadMediaImg(filePath string) core.Response {
 	return m.uploadImg("media", filePath)
 }
@@ -114,8 +113,6 @@ func (m *Media) UploadMediaImg(filePath string) core.Response {
 // HTTP请求方式: POST/FROM
 // URL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）:curl –Fbuffer=@test.jpg
-// 返回正确的示例:{"url":"http://mmbiz.qpic.cn/mmbiz/iaL1LJM1mF9aRKPZJkmG8xXhiaHqkKSVMMWeN3hLut7X7hicFNjakmxibMLGWpXrEXB33367o7zHN0CwngnQY7zb7g/0"}
-// 返回错误的示例:{"errcode":40009,"errmsg":"invalid image size"}
 func (m *Media) UploadBufferImg(filePath string) core.Response {
 	return m.uploadImg("buffer", filePath)
 }
