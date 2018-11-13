@@ -30,9 +30,6 @@ https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TY
 access_token	是	调用接口凭证
 type	是	媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
 media	是	form-data中媒体文件标识，有filename、filelength、content-type等信息
-返回正确的示例:{"type":"image","media_id":"w6fY9-444YS7Dmgt7_CaOApjbqBPyOSt-BbgQcbt0Pc_4t31u5JXQE8OGs6iqdqv","created_at":1521343152}
-{"type":"video","media_id":"9fCk1Any5VcwmbJPzGztWMq3a1PsWv11KpgLTdM_YXgIlwdAUosdeSI_M6M7Qtwb","created_at":1521346725}
-返回错误的示例:{"errcode":41005,"errmsg":"media data missing hint: [1HqFUa09681538]"}
 */
 func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response {
 	log.Debug("Media|Upload", filePath, mediaType)
