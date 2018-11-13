@@ -91,9 +91,6 @@ func (m *Media) Get(mediaID string) core.Response {
 // GetJssdk 高清语音素材获取接口
 // http请求方式: GET,https调用
 // https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
-// 请求示例（示例为通过curl命令获取多媒体文件）
-// curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
-// 返回错误的示例:{"errcode":40007,"errmsg":"invalid media_id"}
 func (m *Media) GetJssdk(mediaID string) core.Response {
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
