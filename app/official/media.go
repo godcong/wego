@@ -77,8 +77,6 @@ http请求方式: GET,https调用
 https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 请求示例（示例为通过curl命令获取多媒体文件）
 curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
-返回正确的示例:{"video_url":"http://203.205.158.73/vweixinp.tc.qq.com/1007_49fe0f8b21124a8a93339e23789356cc.f10.mp4?vkey=9966EBE6CA73990B37A5A8F05AB8FC9906A2A96CCA3D2F7730FFA56696A978B984C4DC5A7633D24F3A98A3C3CF91A2391CFBB0290410BC07DFDC84662BC2CD97256A6B988B0F56CDD95EAA617CE634B8E26ABAD5974025F4&sha=0&save=1"}
-返回错误的示例:{"errcode":40007,"errmsg":"invalid media_id"}
 */
 func (m *Media) Get(mediaID string) core.Response {
 	log.Debug("Media|Get", mediaID)
