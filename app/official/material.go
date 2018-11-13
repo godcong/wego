@@ -41,8 +41,6 @@ func (m *Material) AddNews(maps util.Map) core.Response {
 // http请求方式: POST，需使用https
 // https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
 // 调用示例（使用curl命令，用FORM表单方式新增一个其他类型的永久素材，curl命令的使用请自行查阅资料）
-// 成功:
-// {"media_id":"HIWcj9t3AI_b8qCQSu8lrY5DkGL1LMl8_eTrDv4aUo8","url":"http:\/\/mmbiz.qpic.cn\/mmbiz_jpg\/gJHMd2C74XpfUBCTPocUe1Dd8cXnAlDmRqdPoFWq1DvJZjdW5BCaYyu7NfHusicU50nRs8Vb1oiaNrwMbTtNcFtQ\/0?wx_fmt=jpeg"}
 func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.Response {
 	log.Debug("Material|AddMaterial", filePath, mediaType)
 	if mediaType == core.MediaTypeVideo {
