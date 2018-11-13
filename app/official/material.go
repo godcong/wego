@@ -26,13 +26,14 @@ func NewMaterial(config *core.Config) *Material {
 //AddNews 新增永久素材
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
-func (m *Material) AddNews(articles []*media.Article) core.Response {
-	log.Debug("Material|AddNews", articles)
+//func (m *Material) AddNews(articles []*media.Article) core.Response {
+func (m *Material) AddNews(maps util.Map) core.Response {
+	log.Debug("Material|AddNews", maps)
 	key := m.accessToken.GetToken().KeyMap()
 	resp := m.client.PostJSON(
 		Link(materialAddNewsURLSuffix),
 		key,
-		util.Map{"articles": articles})
+		maps)
 	return resp
 }
 
