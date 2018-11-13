@@ -64,6 +64,10 @@ func (p *Base) Pay(maps util.Map) core.Response {
 /*AuthCodeToOpenid 通过授权码查询公众号Openid
 接口链接: https://api.mch.weixin.qq.com/tools/authcodetoopenid
 通过授权码查询公众号Openid，调用查询后，该授权码只能由此商户号发起扣款，直至授权码更新。
+参数:
+authCode - 授权码
+返回:
+openid string
 */
 func (p *Base) AuthCodeToOpenid(authCode string) core.Response {
 	m := make(util.Map)
