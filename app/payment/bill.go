@@ -43,7 +43,7 @@ func (b *Bill) Download(bd string, option ...util.Map) core.Response {
 	return b.Request(payDownloadBill, m)
 }
 
-//DownloadFundFlow ...
+//DownloadFundFlow 下载资金账单
 //资金账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式：20140603
 //资金账户类型	account_type	是	String(8)	Basic
 //账单的资金来源账户：
