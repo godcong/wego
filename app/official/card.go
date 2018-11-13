@@ -213,11 +213,12 @@ type OneCard struct {
 //CreateLandingPage 创建货架接口
 // HTTP请求方式: POST
 // URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
-func (c *Card) CreateLandingPage(page *CardLandingPage) core.Response {
+//func (c *Card) CreateLandingPage(page *CardLandingPage) core.Response {
+func (c *Card) CreateLandingPage(maps util.Map) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardLandingPageCreate),
 		c.accessToken.GetToken().KeyMap(),
-		page,
+		maps,
 	)
 	return resp
 }
@@ -276,11 +277,11 @@ func (c *Card) CheckCode(cardID string, code []string) core.Response {
 //code	是	string(20)	110201201245	单张卡券的唯一标准。
 //card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
 //check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
-func (c *Card) GetCode(p util.Map) core.Response {
+func (c *Card) GetCode(maps util.Map) core.Response {
 	resp := c.client.PostJSON(
 		Link(cardCodeGet),
 		c.accessToken.GetToken().KeyMap(),
-		p,
+		maps,
 	)
 	return resp
 }
