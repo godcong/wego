@@ -15,8 +15,8 @@ type InstanceFunc func() Cipher
 // Cipher ...
 type Cipher interface {
 	Type() CryptType
-	Set(key, val string)
-	Get(key string) string
+	SetParameter(key string, val []byte)
+	GetParameter(key string) []byte
 	Encrypt([]byte) ([]byte, error)
 	Decrypt(data []byte) ([]byte, error)
 }

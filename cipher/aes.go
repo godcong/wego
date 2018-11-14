@@ -20,7 +20,7 @@ func NewDataCrypt(id string) *DataCrypt {
 
 // CryptAES128CBC ...
 type cryptAES128CBC struct {
-	Iv, Key string
+	Iv, Key []byte
 }
 
 // Type ...
@@ -29,16 +29,24 @@ func (c *cryptAES128CBC) Type() CryptType {
 }
 
 // Set ...
-func (c *cryptAES128CBC) Set(key, val string) {
+func (c *cryptAES128CBC) SetParameter(key string, val []byte) {
 	switch key {
 	case "key":
+		c.Key = val
 	case "iv":
+		c.Iv = val
 	}
 }
 
 // Get ...
-func (c *cryptAES128CBC) Get(key string) string {
-	panic("implement me")
+func (c *cryptAES128CBC) GetParameter(key string) []byte {
+	switch key {
+	case "key":
+		return c.Key
+	case "iv":
+		return c.Iv
+	}
+	return nil
 }
 
 // Encrypt ...
@@ -48,43 +56,39 @@ func (c *cryptAES128CBC) Encrypt([]byte) ([]byte, error) {
 
 // Decrypt ...
 func (c *cryptAES128CBC) Decrypt(data []byte) ([]byte, error) {
-	panic("implement me")
+	key, e := Base64Decode(c.Key)
+	if e != nil {
+		return nil, e
+	}
+
+	iv, e := Base64Decode(c.Iv)
+	if e != nil {
+		return nil, e
+	}
+
+	decodeData, e := Base64Decode([]byte(data))
+	if e != nil {
+		return nil, e
+	}
+
+	block, e := aes.NewCipher(key)
+	if e != nil {
+		return nil, e
+	}
+
+	mode := cipher.NewCBCDecrypter(block, iv)
+
+	mode.CryptBlocks(decodeData, decodeData)
+
+	//过滤所有 非正常字符结尾
+	idx := strings.LastIndex(string(decodeData), "}") + 1
+
+	return decodeData[:idx], nil
 }
 
 // CryptAES128CBC ...
 func CryptAES128CBC() Cipher {
-	panic("implement me")
-}
-
-// DecryptAES128CBC ...
-func decryptAES128CBC(data, iv, key string) ([]byte, error) {
-	dKey, e := Base64Decode([]byte(key))
-	if e != nil {
-		return nil, e
-	}
-	dData, e := Base64Decode([]byte(data))
-	if e != nil {
-		return nil, e
-	}
-
-	dIv, e := Base64Decode([]byte(iv))
-	if e != nil {
-		return nil, e
-	}
-
-	block, e := aes.NewCipher(dKey)
-	if e != nil {
-		return nil, e
-	}
-
-	mode := cipher.NewCBCDecrypter(block, dIv)
-
-	mode.CryptBlocks(dData, dData)
-
-	//过滤所有 非正常字符结尾
-	idx := strings.LastIndex(string(dData), "}") + 1
-
-	return dData[:idx], nil
+	return &cryptAES128CBC{}
 }
 
 // Decrypt ...
