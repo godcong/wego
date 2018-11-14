@@ -1,35 +1,36 @@
 package cipher
 
 // CryptType ...
-type CryptType string
+type CryptType int
 
 // AES128CBC ...
-const AES128CBC = "AES-128-CBC"
+const (
+	AES128CBC CryptType = iota
+	RSA                 = iota
+)
+
+// InstanceFunc ...
+type InstanceFunc func() Cipher
 
 // Cipher ...
 type Cipher interface {
 	Type() CryptType
-	SetParam(key, val string)
-	GetParam(key string) string
+	Set(key, val string)
+	Get(key string) string
 	Encrypt([]byte) ([]byte, error)
 	Decrypt(data []byte) ([]byte, error)
 }
 
-var cipherList []Cipher
+var cipherList []InstanceFunc
 
 func init() {
-	cipherList = []Cipher{
-		CryptAES128CBC(),
+	cipherList = []InstanceFunc{
+		CryptAES128CBC,
+		CryptRSA,
 	}
 }
 
-// NewCipher ...
-func NewCipher(cryptType CryptType) Cipher {
-
+// New ...
+func New(cryptType CryptType) Cipher {
+	return cipherList[cryptType]()
 }
-
-//
-//// Type ...
-//func (c *cipher) Type() CryptType {
-//	return c.cryptType
-//}

@@ -23,8 +23,37 @@ var (
 )
 
 type cryptRSA struct {
-	privateKey string
-	publicKey  string
+	key string
+}
+
+// Type ...
+func (c *cryptRSA) Type() CryptType {
+	panic("implement me")
+}
+
+// Set ...
+func (c *cryptRSA) Set(key, val string) {
+	panic("implement me")
+}
+
+// Get ...
+func (c *cryptRSA) Get(key string) string {
+	panic("implement me")
+}
+
+// Encrypt ...
+func (c *cryptRSA) Encrypt([]byte) ([]byte, error) {
+	panic("implement me")
+}
+
+// Decrypt ...
+func (c *cryptRSA) Decrypt(data []byte) ([]byte, error) {
+	panic("implement me")
+}
+
+// CryptRSA ...
+func CryptRSA() Cipher {
+	panic("implement me")
 }
 
 /*ParseRSAPrivateKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 private key */

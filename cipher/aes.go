@@ -20,26 +20,39 @@ func NewDataCrypt(id string) *DataCrypt {
 
 // CryptAES128CBC ...
 type cryptAES128CBC struct {
-	iv, Key string
+	Iv, Key string
 }
 
-// SetParam ...
-func (*cryptAES128CBC) SetParam(key, val string) {
+// Type ...
+func (c *cryptAES128CBC) Type() CryptType {
+	return AES128CBC
+}
+
+// Set ...
+func (c *cryptAES128CBC) Set(key, val string) {
+	switch key {
+	case "key":
+	case "iv":
+	}
+}
+
+// Get ...
+func (c *cryptAES128CBC) Get(key string) string {
 	panic("implement me")
 }
 
-// GetParam ...
-func (*cryptAES128CBC) GetParam(key string) string {
+// Encrypt ...
+func (c *cryptAES128CBC) Encrypt([]byte) ([]byte, error) {
+	panic("implement me")
+}
+
+// Decrypt ...
+func (c *cryptAES128CBC) Decrypt(data []byte) ([]byte, error) {
 	panic("implement me")
 }
 
 // CryptAES128CBC ...
 func CryptAES128CBC() Cipher {
-	panic("implement me")
-}
-
-// Type ...
-func (*cryptAES128CBC) Type() CryptType {
 	panic("implement me")
 }
 
