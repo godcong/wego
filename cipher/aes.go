@@ -43,7 +43,7 @@ func (c *DataCrypt) Decrypt(data, iv, key string) ([]byte, error) {
 
 	mode.CryptBlocks(dData, dData)
 
-	//过滤所有 结尾
+	//过滤所有 非正常字符结尾
 	idx := strings.LastIndex(string(dData), "}") + 1
 
 	return dData[:idx], nil
