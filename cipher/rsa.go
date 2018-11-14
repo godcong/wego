@@ -22,6 +22,11 @@ var (
 	ErrorNotRSAPublicKey     = errors.New("key is not a valid RSA public key")
 )
 
+type cryptRSA struct {
+	privateKey string
+	publicKey  string
+}
+
 /*ParseRSAPrivateKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 private key */
 func ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(key)

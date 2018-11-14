@@ -18,6 +18,31 @@ func NewDataCrypt(id string) *DataCrypt {
 	}
 }
 
+// CryptAES128CBC ...
+type cryptAES128CBC struct {
+	iv, Key string
+}
+
+// SetParam ...
+func (*cryptAES128CBC) SetParam(key, val string) {
+	panic("implement me")
+}
+
+// GetParam ...
+func (*cryptAES128CBC) GetParam(key string) string {
+	panic("implement me")
+}
+
+// CryptAES128CBC ...
+func CryptAES128CBC() Cipher {
+	panic("implement me")
+}
+
+// Type ...
+func (*cryptAES128CBC) Type() CryptType {
+	panic("implement me")
+}
+
 // DecryptAES128CBC ...
 func decryptAES128CBC(data, iv, key string) ([]byte, error) {
 	dKey, e := Base64Decode([]byte(key))
