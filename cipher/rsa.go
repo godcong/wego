@@ -23,37 +23,75 @@ var (
 )
 
 type cryptRSA struct {
-	key string
+	KeyPath []byte
 }
 
 // Type ...
-func (c *cryptRSA) Type() CryptType {
-	panic("implement me")
+func (*cryptRSA) Type() CryptType {
+	return RSA
 }
 
-// Set ...
-func (c *cryptRSA) Set(key, val string) {
-	panic("implement me")
+// SetParameter ...
+func (c *cryptRSA) SetParameter(key string, val []byte) {
+	c.KeyPath = val
 }
 
-// Get ...
-func (c *cryptRSA) Get(key string) string {
-	panic("implement me")
+// GetParameter ...
+func (c *cryptRSA) GetParameter(key string) []byte {
+	return c.KeyPath
 }
 
 // Encrypt ...
-func (c *cryptRSA) Encrypt([]byte) ([]byte, error) {
-	panic("implement me")
+func (c *cryptRSA) Encrypt(data []byte) ([]byte, error) {
+
+	publicKey, err := ioutil.ReadFile(string(c.KeyPath))
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+	key, err := ParseRSAPublicKeyFromPEM(publicKey)
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+	part, err := rsa.EncryptOAEP(sha1.New(), rand.Reader, key, []byte(data), nil)
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+
+	buf := make([]byte, base64.StdEncoding.EncodedLen(len(part)))
+	base64.StdEncoding.Encode(buf, part)
+	return buf, nil
 }
 
 // Decrypt ...
 func (c *cryptRSA) Decrypt(data []byte) ([]byte, error) {
-	panic("implement me")
+	privateKey, err := ioutil.ReadFile(string(c.KeyPath))
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := ParseRSAPrivateKeyFromPEM(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := Base64Decode(data)
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := rsa.DecryptOAEP(sha1.New(), rand.Reader, key, t, nil)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
 
 // CryptRSA ...
 func CryptRSA() Cipher {
-	panic("implement me")
+	return &cryptRSA{}
 }
 
 /*ParseRSAPrivateKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 private key */
