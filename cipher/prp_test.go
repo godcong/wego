@@ -1,10 +1,11 @@
-package crypt
+package cipher
 
 import (
 	"encoding/base64"
 	"testing"
 )
 
+// TestPrpCrypt_Encrypt ...
 func TestPrpCrypt_Encrypt(t *testing.T) {
 	k, _ := base64.RawStdEncoding.DecodeString(encodingAesKey)
 	prp := NewPrp([]byte(k))

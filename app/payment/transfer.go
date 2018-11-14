@@ -2,8 +2,8 @@ package payment
 
 import (
 	"fmt"
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
@@ -188,8 +188,8 @@ func (t *Transfer) ToBankCard(maps util.Map) core.Response {
 	maps.Set("mch_id", t.Get("mch_id"))
 	maps.Set("nonce_str", util.GenerateUUID())
 
-	maps.Set("enc_bank_no", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_bank_no")))
-	maps.Set("enc_true_name", crypt.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_true_name")))
+	maps.Set("enc_bank_no", cipher.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_bank_no")))
+	maps.Set("enc_true_name", cipher.RSAEncrypt(t.GetString("pubkey_path"), maps.GetString("enc_true_name")))
 	maps.Set("sign", GenerateSignature(maps, t.GetString("key"), MakeSignMD5))
 	return t.SafeRequest(mmpaysptransPayBank, maps)
 }

@@ -1,21 +1,21 @@
 package mini
 
 import (
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/util"
 )
 
 /*Plugin Plugin */
 type Plugin struct {
 	*Program
-	dc *crypt.DataCrypt
+	dc *cipher.DataCrypt
 }
 
 func newPlugin(program *Program) *Plugin {
 	return &Plugin{
 		Program: program,
-		dc:      crypt.NewDataCrypt(program.GetString("app_id")),
+		dc:      cipher.NewDataCrypt(program.GetString("app_id")),
 	}
 }
 
