@@ -319,7 +319,7 @@ func dummySave(p util.Map) {
 func TestScannedNotify_ServeHTTP(t *testing.T) {
 	ScannedCallbackFunction := func(p util.Map) (maps util.Map, e error) {
 		// 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单
-		order := dummyQuery(p.GetString("out_trade_no")) //通过out_trade_no查询订单,dummyQuery为查询订单函数
+		order := dummyQuery(p.GetString("out_trade_no"))         //通过out_trade_no查询订单,dummyQuery为查询订单函数
 		if order != nil || order.GetString("status") != "paid" { // 如果订单不存在 或者 订单已经支付过了
 			return nil, nil // 告诉微信，我已经处理完了，订单没找到，别再通知我了
 		}
