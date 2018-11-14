@@ -30,7 +30,7 @@ func init() {
 	}
 }
 
-// New ...
+// New create a new cipher
 func New(cryptType CryptType) Cipher {
 	return cipherList[cryptType]()
 }
