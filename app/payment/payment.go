@@ -5,6 +5,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"strconv"
 )
 
 // NewAble ...
@@ -332,6 +333,19 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 
 	log.Debug("initRequest end", maps)
 	return maps
+}
+
+// SettlementQuery ...
+func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd string, option ...util.Map) core.Response {
+	m := util.MapsToMap(util.Map{
+		"appid":      p.Get("app_id"),
+		"date_end":   dateEnd,
+		"date_start": dateStart,
+		"offset":     strconv.Itoa(offset),
+		"limit":      strconv.Itoa(limit),
+		"usetag":     strconv.Itoa(useTag),
+	}, option)
+	return p.Request(paySettlementquery, m)
 }
 
 // Link connect domain url and url suffix
