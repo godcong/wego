@@ -29,7 +29,7 @@ var moduleLists = util.Map{
 type Payment struct {
 	*core.Config
 	Module util.Map
-	client *core.Client
+	//client *core.Client
 }
 
 func newPayment(config *core.Config, p util.Map) *Payment {
@@ -44,7 +44,6 @@ func newPayment(config *core.Config, p util.Map) *Payment {
 //NewPayment create an payment instance
 func NewPayment(config *core.Config, v ...interface{}) *Payment {
 	payment := newPayment(config, util.Map{})
-	payment.SetClient(core.ClientGet(v))
 	return payment
 }
 
@@ -70,11 +69,6 @@ func (p *Payment) InitModuleExpect(except ...string) *Payment {
 // InitModuleOnly ...
 func (p *Payment) InitModuleOnly(only ...string) *Payment {
 	return subInit(p, moduleLists.Only(only))
-}
-
-//SetClient set client replace the default client
-func (p *Payment) SetClient(client *core.Client) {
-	p.client = client
 }
 
 //IsSandbox check is use sandbox
@@ -126,7 +120,7 @@ func (p *Payment) Request(s string, maps util.Map) core.Response {
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
 	}
-	return p.client.Request(p.Link(s), "post", m)
+	return core.Request(p.Link(s), "post", m)
 }
 
 // RequestRaw Response转成[]byte
@@ -140,7 +134,7 @@ func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
 		core.DataTypeXML:      p.initRequest(maps),
 		core.DataTypeSecurity: p.Config,
 	}
-	return p.client.Request(p.Link(s), "post", m)
+	return core.Request(p.Link(s), "post", m)
 }
 
 // Base ...
@@ -350,7 +344,6 @@ func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd 
 
 // QueryExchangeRate ...
 func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) core.Response {
-
 	m := util.MapsToMap(util.Map{
 		"appid":    p.Get("app_id"),
 		"fee_type": feeType,
@@ -359,7 +352,7 @@ func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) co
 	}, option)
 
 	m.Set("sign", GenerateSignatureWithIgnore(m, p.GetKey(), nil))
-	return p.client.Request(p.Link(payQueryexchagerate), "post", util.Map{
+	return core.Request(p.Link(payQueryexchagerate), "post", util.Map{
 		core.DataTypeXML: m,
 	})
 }

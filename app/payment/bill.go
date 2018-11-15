@@ -78,7 +78,7 @@ func (b *Bill) BatchQueryComment(beginTime, endTime string, offset int, option .
 		"sign_type":  HMACSHA256,
 	}, option)
 
-	return b.client.Request(b.Link(batchQueryComment), "post", util.Map{
+	return core.Request(b.Link(batchQueryComment), "post", util.Map{
 		core.DataTypeXML:      b.initRequestWithIgnore(m, FieldSign, FieldSignType, FieldLimit),
 		core.DataTypeSecurity: b.Config,
 	})

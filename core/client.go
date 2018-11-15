@@ -96,12 +96,19 @@ func ClientSet(setter ClientSetter, v []interface{}) bool {
 	return false
 }
 
+func PostForm(url string, query util.Map, form interface{}) Response {
+	return client.PostForm(url, query, form)
+}
+
 // PostForm post form request
 func (c *Client) PostForm(url string, query util.Map, form interface{}) Response {
 	url = url + "?" + query.URLEncode()
 	request := processForm(POST, url, form)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
+}
+func PostJSON(url string, query util.Map, json interface{}) Response {
+	return client.PostJSON(url, query, json)
 }
 
 /*PostJSON json post请求 */
@@ -110,6 +117,10 @@ func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response
 	request := processJSON(POST, url, json)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
+}
+
+func PostXML(url string, query util.Map, xml interface{}) Response {
+	return client.PostXML(url, query, xml)
 }
 
 /*PostXML xml post请求 */

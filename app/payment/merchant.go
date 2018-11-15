@@ -84,5 +84,5 @@ func (m *Merchant) manage(action string, maps util.Map) core.Response {
 		core.DataTypeQuery:    util.Map{"action": action},
 		core.DataTypeSecurity: m.Config,
 	}
-	return m.client.Request(Link(mchSubmchmanage), "post", params)
+	return core.Request(Link(mchSubmchmanage), "post", params)
 }
