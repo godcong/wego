@@ -94,7 +94,7 @@ func (a *AppCode) getStream(url string, m util.Map) []byte {
 	token := token0.KeyMap()
 	//strings.Join([]string{"access_token", token0.GetKey()}, "=")
 
-	resp := a.client.RequestRaw(
+	resp := core.RequestRaw(
 		url,
 		"post",
 		util.Map{core.DataTypeQuery: token.URLEncode(),

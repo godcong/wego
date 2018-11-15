@@ -56,7 +56,7 @@ func (t *Ticket) Get(typ string, refresh bool) Responder {
 	log.Debug("Ticket|Get", typ)
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)
-	resp := t.client.Get(
+	resp := Get(
 		Connect(APIWeixin, ticketGetTicket),
 		p)
 	return resp

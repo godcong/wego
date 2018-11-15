@@ -27,7 +27,7 @@ func NewPlugin(config *core.Config) *Plugin {
 // Apply ...
 func (p *Plugin) Apply(appID string) core.Responder {
 	token := p.accessToken.GetToken()
-	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
+	return core.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
 		"action":       "apply",
 		"plugin_appid": appID,
 	})
@@ -36,7 +36,7 @@ func (p *Plugin) Apply(appID string) core.Responder {
 // List ...
 func (p *Plugin) List() core.Responder {
 	token := p.accessToken.GetToken()
-	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
+	return core.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
 		"action": "list",
 	})
 }
@@ -44,7 +44,7 @@ func (p *Plugin) List() core.Responder {
 // Unbind ...
 func (p *Plugin) Unbind(appID string) core.Responder {
 	token := p.accessToken.GetToken()
-	return p.client.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
+	return core.PostJSON(Link(wxaPlugin), token.KeyMap(), util.Map{
 		"action":       "unbind",
 		"plugin_appid": appID,
 	})
@@ -53,7 +53,7 @@ func (p *Plugin) Unbind(appID string) core.Responder {
 // DevApplyList ...
 func (p *Plugin) DevApplyList(appID string, page, num int) core.Responder {
 	token := p.accessToken.GetToken()
-	return p.client.PostJSON(Link(wxaDevPlugin), token.KeyMap(), util.Map{
+	return core.PostJSON(Link(wxaDevPlugin), token.KeyMap(), util.Map{
 		"action": "dev_apply_list",
 		"page":   page,
 		"num":    num,
@@ -85,5 +85,5 @@ func (p *Plugin) DevAgree(appID string) core.Responder {
 
 func (p *Plugin) devAction(maps util.Map) core.Responder {
 	token := p.accessToken.GetToken()
-	return p.client.PostJSON(Link(wxaDevPlugin), token.KeyMap(), maps)
+	return core.PostJSON(Link(wxaDevPlugin), token.KeyMap(), maps)
 }

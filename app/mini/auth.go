@@ -61,7 +61,7 @@ func (a *Auth) Session(code string) util.Map {
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
-	resp := a.client.Get(
+	resp := core.Get(
 		Link(snsJscode2session),
 		params,
 	)

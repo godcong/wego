@@ -37,7 +37,7 @@ func newOAuth(acc *Account) *OAuth {
 		Account:  acc,
 		callback: map[string]CallbackFunc{},
 	}
-	//oauth.client.SetRequestType(core.DataTypeJSON)
+	//oautcore.SetRequestType(core.DataTypeJSON)
 	oauth.scopes = oauth.GetStringArrayD("oauth.scopes", []string{snsapiBase})
 	oauth.redirectURI = oauth.GetStringD("oauth.redirect_uri", defaultOauthRedirectURLSuffix)
 	oauth.authorize = oauth.GetStringD("oauth.authorize", oauth2AuthorizeURLSuffix)

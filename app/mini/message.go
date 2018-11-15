@@ -55,7 +55,7 @@ func (m *Message) Send(msg util.Map) core.Responder {
 	log.Debug("Message|Send", msg)
 
 	key := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(customSend),
 		key,
 		msg)

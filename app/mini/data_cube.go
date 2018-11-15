@@ -27,7 +27,7 @@ func (d *DataCube) query(api, from, to string) core.Responder {
 		"begin_date": from,
 		"end_date":   to,
 	}
-	return d.client.PostJSON(api, token.KeyMap(), params)
+	return core.PostJSON(api, token.KeyMap(), params)
 }
 
 /*UserPortrait 用户画像

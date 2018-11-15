@@ -42,7 +42,7 @@ title	模板标题内容
 total_count	模板库标题总数
 */
 func (t *Template) List(offset, count int) util.Map {
-	return t.client.PostJSON(
+	return core.PostJSON(
 		Link(templateLibraryList), util.Map{"offset": offset, "count": count}, nil).ToMap()
 }
 
@@ -66,7 +66,7 @@ example	关键词内容对应的示例
 */
 func (t *Template) Get(id string) core.Responder {
 	token := t.accessToken.GetToken()
-	return t.client.PostJSON(Link(templateLibraryGet), token.KeyMap(), util.Map{"id": id})
+	return core.PostJSON(Link(templateLibraryGet), token.KeyMap(), util.Map{"id": id})
 }
 
 /*Delete 删除帐号下的某个模板
@@ -84,7 +84,7 @@ template_id	是	要删除的模板id
 */
 func (t *Template) Delete(templateID string) core.Responder {
 	token := t.accessToken.GetToken()
-	return t.client.PostJSON(Link(templateDel), token.KeyMap(), util.Map{"template_id": templateID})
+	return core.PostJSON(Link(templateDel), token.KeyMap(), util.Map{"template_id": templateID})
 }
 
 /*GetTemplates 获取帐号下已存在的模板列表
@@ -110,7 +110,7 @@ example	模板内容示例
 */
 func (t *Template) GetTemplates(offset, count int) core.Responder {
 	token := t.accessToken.GetToken()
-	return t.client.PostJSON(Link(templateList), token.KeyMap(), util.Map{"offset": offset, "count": count})
+	return core.PostJSON(Link(templateList), token.KeyMap(), util.Map{"offset": offset, "count": count})
 
 }
 
@@ -132,7 +132,7 @@ template_id	添加至帐号下的模板id，发送小程序模板消息时所需
 */
 func (t *Template) Add(id string, keyword util.Map) core.Responder {
 	token := t.accessToken.GetToken()
-	return t.client.PostJSON(Link(templateAdd), token.KeyMap(), util.Map{"id": id, "keyword_id_list": keyword})
+	return core.PostJSON(Link(templateAdd), token.KeyMap(), util.Map{"id": id, "keyword_id_list": keyword})
 }
 
 /*Send 发送模板消息
@@ -161,6 +161,5 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 */
 func (t *Template) Send(template *message.Template) core.Responder {
 	token := t.accessToken.GetToken()
-	resp := t.client.PostJSON(Link(templateSend), token.KeyMap(), template)
-	return resp
+	return core.PostJSON(Link(templateSend), token.KeyMap(), template)
 }
