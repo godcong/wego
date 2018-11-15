@@ -19,16 +19,9 @@ type AccessToken struct {
 	credentials util.Map
 }
 
-// CredentialSetter ...
-type CredentialSetter interface {
-}
-
 /*accessTokenKey 键值 */
 const accessTokenKey = "access_token"
 const accessTokenURLSuffix = "/cgi-bin/token"
-
-/*AccessTokenExpiresIn 过期 */
-const AccessTokenExpiresIn = "expires_in"
 
 /*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500

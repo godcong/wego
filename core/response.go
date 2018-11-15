@@ -1,13 +1,16 @@
 package core
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /*Response Response */
@@ -122,7 +125,32 @@ func Err(data []byte, err error) Response {
 	}
 }
 
-/*ParseBody get response data */
-func ParseBody(r *http.Response) ([]byte, error) {
+/*ParseResponse get response data */
+func ParseResponse(r *http.Response) ([]byte, error) {
 	return ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
+}
+
+// CastToResponse ...
+func CastToResponse(resp *http.Response) Response {
+	ct := resp.Header.Get("Content-Type")
+	body, err := ParseResponse(resp)
+	if err != nil {
+		log.Error(body, err)
+		return Err(body, err)
+	}
+
+	log.Debug("response:", string(body[:256])) //max 256 char
+	if resp.StatusCode == 200 {
+		if strings.Index(ct, "xml") != -1 ||
+			bytes.Index(body, []byte("<xml")) != -1 {
+			return &responseXML{
+				Data: body,
+			}
+		}
+		return &responseJSON{
+			Data: body,
+		}
+	}
+	log.Error(body, "error with "+resp.Status)
+	return Err(body, errors.New("error with "+resp.Status))
 }

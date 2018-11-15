@@ -1,21 +1,12 @@
 package core
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
-	"encoding/xml"
-	"errors"
-	"io"
 	"io/ioutil"
-	"mime/multipart"
 	"net"
 	"net/http"
-	"net/url"
-	"os"
-	"strings"
 	"time"
 
 	"github.com/godcong/wego/log"
@@ -107,119 +98,89 @@ func ClientSet(setter ClientSetter, v []interface{}) bool {
 
 // PostForm post form request
 func (c *Client) PostForm(url string, query util.Map, form interface{}) Response {
-	maps := util.Map{
-		DataTypeForm: form,
-	}
-	if query != nil {
-		maps.Set(DataTypeQuery, query)
-	}
-	return c.Post(url, maps)
+	url = url + "?" + query.URLEncode()
+	request := processForm(POST, url, form)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request)
 }
 
 /*PostJSON json post请求 */
 func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
-	maps := util.Map{
-		DataTypeJSON: json,
-	}
-	if query != nil {
-		maps.Set(DataTypeQuery, query)
-	}
-	return c.Post(url, maps)
+	url = url + "?" + query.URLEncode()
+	request := processJSON(POST, url, json)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request)
 }
 
 /*PostXML xml post请求 */
 func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
-	maps := util.Map{
-		DataTypeXML: xml,
-	}
-	if query != nil {
-		maps.Set(DataTypeQuery, query)
-	}
-	return c.Post(url, maps)
-}
-
-/*Post post请求 */
-func (c *Client) Post(url string, maps util.Map) Response {
-	return c.Request(url, "post", maps)
+	url = url + "?" + query.URLEncode()
+	request := processXML(POST, url, xml)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request)
 }
 
 /*Upload upload请求 */
 func (c *Client) Upload(url string, query, multi util.Map) Response {
-	p := util.Map{
-		DataTypeMultipart: multi,
-	}
-	if query != nil {
-		p.Set(DataTypeQuery, query)
-	}
+	url = url + "?" + query.URLEncode()
+	request := processMultipart(POST, url, multi)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request)
+}
 
-	return c.Request(url, "post", p)
+/*Post post请求 */
+func (c *Client) Post(url string, maps util.Map) Response {
+	client := buildClient(maps)
+	url = buildRequestURL(url, maps)
+	req := buildRequest(POST, url, maps)
+	return do(c.Context, client, req)
 }
 
 /*Get get请求 */
 func (c *Client) Get(url string, query util.Map) Response {
-	p := util.Map{}
-	if query != nil {
-		p.Set(DataTypeQuery, query)
-	}
-	return c.Request(url, "get", p)
+	url = url + "?" + query.URLEncode()
+	request := processNothing(GET, url, nil)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request)
 }
 
 //GetRaw get request result raw data
 func (c *Client) GetRaw(url string, query util.Map) []byte {
-	p := util.Map{}
-	if query != nil {
-		p.Set(DataTypeQuery, query)
-	}
-	return c.RequestRaw(url, "get", p)
+	url = url + "?" + query.URLEncode()
+	request := processNothing(GET, url, nil)
+	client := buildTransport(NilConfig())
+	return do(c.Context, client, request).Bytes()
+}
+
+// Request ...
+func Request(url string, method string, option util.Map) Response {
+	log.Debug("Request|httpClient", url, method, option)
+	return request(context.Background(), url, method, option)
+}
+
+// RequestWithContext ...
+func RequestWithContext(ctx context.Context, url string, method string, option util.Map) Response {
+	log.Debug("RequestWithContext|httpClient", url, method, option)
+	return request(ctx, url, method, option)
+}
+
+// RequestRaw ...
+func RequestRaw(url string, method string, option util.Map) []byte {
+	log.Debug("RequestRaw|httpClient", url, method, option)
+	return request(context.Background(), url, method, option).Bytes()
 }
 
 /*Request 普通请求 */
-func (c *Client) Request(url string, method string, ops util.Map) Response {
-	log.Debug("Request|httpClient", url, method, ops)
-	return request(c.Context, url, method, ops)
-}
-
-func castToResponse(resp *http.Response) Response {
-	ct := resp.Header.Get("Content-Type")
-	body, err := ParseBody(resp)
-	if err != nil {
-		log.Error(body, err)
-		return Err(body, err)
-	}
-
-	log.Debug("response:", string(body[:256])) //max 256 char
-	if resp.StatusCode == 200 {
-		if strings.Index(ct, "xml") != -1 ||
-			bytes.Index(body, []byte("<xml")) != -1 {
-			return &responseXML{
-				Data: body,
-			}
-		}
-		return &responseJSON{
-			Data: body,
-		}
-	}
-	log.Error(body, "error with "+resp.Status)
-	return Err(body, errors.New("error with "+resp.Status))
+func (c *Client) Request(url string, method string, option util.Map) Response {
+	log.Debug("ClientRequest|httpClient", url, method, option)
+	return request(c.Context, url, method, option)
 }
 
 /*RequestRaw raw请求 */
-func (c *Client) RequestRaw(url string, method string, ops util.Map) []byte {
-	log.Debug("Request|httpClient", url, method, ops)
-	return request(c.Context, url, method, ops).Bytes()
+func (c *Client) RequestRaw(url string, method string, option util.Map) []byte {
+	log.Debug("ClientRequest|httpClient", url, method, option)
+	return request(c.Context, url, method, option).Bytes()
 }
-
-///*SafeRequest 安全请求 */
-//func (c *Client) SafeRequest(url string, method string, ops util.Map) Response {
-//	log.Debug("SafeRequest|httpClient", url, method, ops)
-//	return request(c.Context, url, method, ops)
-//}
-//
-///*SafeRequestRaw 安全请求 */
-//func (c *Client) SafeRequestRaw(url string, method string, ops util.Map) []byte {
-//	log.Debug("SafeRequest|httpClient", url, method, ops)
-//	return request(c.Context, url, method, ops).Bytes()
-//}
 
 func newClient(ctx context.Context) *Client {
 	return &Client{
@@ -317,35 +278,6 @@ func buildSafeTransport(config *Config) *http.Client {
 	}
 }
 
-func (c *Client) clear() {
-	//c.httpRequest = nil
-	//c.httpClient = nil
-	//c.httpResponse = nil
-}
-
-func request(context context.Context, url string, method string, ops util.Map) Response {
-	method = strings.ToUpper(method)
-	query := buildHTTPQuery(ops.Get(DataTypeQuery))
-	client := buildClient(ops)
-	url = connectQuery(url, query)
-	req := requestData(method, url, ops)
-
-	log.Debug("client|request", client, url, method, ops)
-	response, err := client.Do(req.WithContext(context))
-	if err != nil {
-		log.Error("Client|Do", err)
-		return Err(nil, err)
-	}
-	{
-		select {
-		case <-context.Done():
-			return Err(nil, context.Err())
-		default:
-			//return Err(nil, err)
-		}
-	}
-	return castToResponse(response)
-}
 func buildClient(maps util.Map) *http.Client {
 	//检查是否包含security
 
@@ -365,176 +297,20 @@ func buildClient(maps util.Map) *http.Client {
 	return buildTransport(NilConfig())
 }
 
-func requestData(method, url string, m util.Map) *http.Request {
-	function := processNothing
-	var data interface{}
-
-	if m.Has(DataTypeJSON) {
-		function = processJSON
-		data = m.Get(DataTypeJSON)
-	} else if m.Has(DataTypeXML) {
-		function = processXML
-		data = m.Get(DataTypeXML)
-	} else if m.Has(DataTypeForm) {
-		function = processForm
-		data = m.Get(DataTypeForm)
-	} else if m.Has(DataTypeMultipart) {
-		function = processMultipart
-		data = m.Get(DataTypeMultipart)
-	} else {
-
-	}
-
-	return function(method, url, data)
-}
-
-func processNothing(method, url string, i interface{}) *http.Request {
-	request, err := http.NewRequest(method, url, nil)
+func do(ctx context.Context, c *http.Client, r *http.Request) Response {
+	response, err := c.Do(r.WithContext(ctx))
 	if err != nil {
-		return nil
+		log.Error("Client|Do", err)
+		return Err(nil, err)
 	}
-	return request
-}
-
-func processMultipart(method, url string, i interface{}) *http.Request {
-	buf := bytes.Buffer{}
-	writer := multipart.NewWriter(&buf)
-	defer writer.Close()
-	log.Debug("processMultipart|i", i)
-	switch v := i.(type) {
-	case util.Map:
-		path := v.GetString("media")
-		fh, e := os.Open(path)
-		if e != nil {
-			log.Debug("processMultipart|e", e)
-			return nil
-		}
-		defer fh.Close()
-
-		fw, e := writer.CreateFormFile("media", path)
-		if e != nil {
-			log.Debug("processMultipart|e", e)
-			return nil
-		}
-
-		if _, e = io.Copy(fw, fh); e != nil {
-			log.Debug("processMultipart|e", e)
-			return nil
-		}
-		des := v.GetMap("description")
-		if des != nil {
-			writer.WriteField("description", string(des.ToJSON()))
+	{
+		select {
+		case <-ctx.Done():
+			return Err(nil, ctx.Err())
+		default:
+			//return Err(nil, err)
 		}
 	}
-	request, err := http.NewRequest(method, url, &buf)
-	if err != nil {
-		return nil
-	}
-	request.Header.Set("Content-Type", writer.FormDataContentType())
-	return request
-}
 
-func toXMLReader(v interface{}) io.Reader {
-	var reader io.Reader
-	switch v := v.(type) {
-	case string:
-		log.Debug("toXMLReader|string", v)
-		reader = strings.NewReader(v)
-	case []byte:
-		log.Debug("toXMLReader|[]byte", v)
-		reader = bytes.NewReader(v)
-	case util.Map:
-		log.Debug("toXMLReader|util.Map", string(v.ToXML()))
-		reader = bytes.NewReader(v.ToXML())
-	default:
-		log.Debug("toXMLReader|default", v)
-		if v0, e := xml.Marshal(v); e == nil {
-			log.Debug("toXMLReader|v0", v0, e)
-			reader = bytes.NewReader(v0)
-		}
-	}
-	return reader
-}
-
-func processXML(method, url string, i interface{}) *http.Request {
-
-	request, err := http.NewRequest(method, url, toXMLReader(i))
-	if err != nil {
-		return nil
-	}
-	request.Header["Content-Type"] = []string{"application/xml; charset=utf-8"}
-	return request
-}
-
-func toJSONReader(v interface{}) io.Reader {
-	var reader io.Reader
-	switch v := v.(type) {
-	case string:
-		log.Debug("toJSONReader|string", v)
-		reader = strings.NewReader(v)
-	case []byte:
-		log.Debug("toJSONReader|[]byte", string(v))
-		reader = bytes.NewReader(v)
-	case util.Map:
-		log.Debug("toJSONReader|util.Map", v.String())
-		reader = bytes.NewReader(v.ToJSON())
-	default:
-		log.Debug("toJSONReader|default", v)
-		if v0, e := json.Marshal(v); e == nil {
-			log.Debug("toJSONReader|v0", string(v0), e)
-			reader = bytes.NewReader(v0)
-		}
-	}
-	return reader
-}
-
-func processJSON(method, url string, i interface{}) *http.Request {
-	request, err := http.NewRequest(method, url, toJSONReader(i))
-	if err != nil {
-		return nil
-	}
-	request.Header["Content-Type"] = []string{"application/json; charset=utf-8"}
-	return request
-}
-
-func toFormReader(v interface{}) io.Reader {
-	var reader io.Reader
-	switch v := v.(type) {
-	case string:
-		log.Debug("toFormReader|string", v)
-		reader = strings.NewReader(v)
-	case []byte:
-		log.Debug("toFormReader|[]byte", string(v))
-		reader = bytes.NewReader(v)
-	case util.Map:
-		log.Debug("toFormReader|util.Map", v.URLEncode())
-		reader = strings.NewReader(v.URLEncode())
-	case url.Values:
-		log.Debug("toFormReader|util.Map", v.Encode())
-		reader = strings.NewReader(v.Encode())
-	default:
-		//do nothing
-	}
-	return reader
-}
-
-func processForm(method, url string, i interface{}) *http.Request {
-
-	request, err := http.NewRequest(method, url, toFormReader(i))
-	if err != nil {
-		return nil
-	}
-
-	request.Header["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
-	return request
-}
-
-func buildHTTPQuery(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case util.Map:
-		return v.URLEncode()
-	}
-	return ""
+	return CastToResponse(response)
 }
