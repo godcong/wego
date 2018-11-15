@@ -25,7 +25,7 @@ type CallbackFunc func(w http.ResponseWriter, r *http.Request, val *CallbackValu
 /*OAuth OAuth */
 type OAuth struct {
 	*Account
-	//response    core.Response
+	//response    core.Responder
 	callback    map[string]CallbackFunc
 	authorize   string
 	scopes      []string

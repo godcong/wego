@@ -22,7 +22,7 @@ func NewCoupon(config *core.Config) *Coupon {
 }
 
 // Send ...
-func (c *Coupon) Send(maps util.Map) core.Response {
+func (c *Coupon) Send(maps util.Map) core.Responder {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
 	maps.Set("openid_count", 1)
@@ -30,14 +30,14 @@ func (c *Coupon) Send(maps util.Map) core.Response {
 }
 
 // QueryStock ...
-func (c *Coupon) QueryStock(maps util.Map) core.Response {
+func (c *Coupon) QueryStock(maps util.Map) core.Responder {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
 	return c.SafeRequest(mmpaymkttransfersQueryCouponStock, maps)
 }
 
 // QueryInfo ...
-func (c *Coupon) QueryInfo(maps util.Map) core.Response {
+func (c *Coupon) QueryInfo(maps util.Map) core.Responder {
 	maps = util.MapNilMake(maps)
 	maps.Set("appid", c.GetString("app_id"))
 	return c.SafeRequest(mmpaymkttransfersQueryCouponsInfo, maps)

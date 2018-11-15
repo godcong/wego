@@ -31,7 +31,7 @@ access_token	是	调用接口凭证
 type	是	媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
 media	是	form-data中媒体文件标识，有filename、filelength、content-type等信息
 */
-func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response {
+func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Responder {
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
@@ -47,28 +47,28 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response 
 /*UploadThumb UploadVoice
 see Upload
 */
-func (m *Media) UploadThumb(filePath string) core.Response {
+func (m *Media) UploadThumb(filePath string) core.Responder {
 	return m.Upload(filePath, core.MediaTypeThumb)
 }
 
 /*UploadVoice UploadVoice
 see Upload
 */
-func (m *Media) UploadVoice(filePath string) core.Response {
+func (m *Media) UploadVoice(filePath string) core.Responder {
 	return m.Upload(filePath, core.MediaTypeVoice)
 }
 
 /*UploadVideo UploadVideo
 see Upload
 */
-func (m *Media) UploadVideo(filePath string) core.Response {
+func (m *Media) UploadVideo(filePath string) core.Responder {
 	return m.Upload(filePath, core.MediaTypeVideo)
 }
 
 /*UploadImage UploadImage
 see Upload
 */
-func (m *Media) UploadImage(filePath string) core.Response {
+func (m *Media) UploadImage(filePath string) core.Responder {
 	return m.Upload(filePath, core.MediaTypeImage)
 }
 
@@ -78,7 +78,7 @@ https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=M
 请求示例（示例为通过curl命令获取多媒体文件）
 curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
 */
-func (m *Media) Get(mediaID string) core.Response {
+func (m *Media) Get(mediaID string) core.Responder {
 	log.Debug("Media|Get", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
@@ -91,7 +91,7 @@ func (m *Media) Get(mediaID string) core.Response {
 // GetJssdk 高清语音素材获取接口
 // http请求方式: GET,https调用
 // https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
-func (m *Media) GetJssdk(mediaID string) core.Response {
+func (m *Media) GetJssdk(mediaID string) core.Responder {
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
 	resp := core.Get(
@@ -105,7 +105,7 @@ func (m *Media) GetJssdk(mediaID string) core.Response {
 // https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）:
 // curl -F media=@test.jpg "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN"
-func (m *Media) UploadMediaImg(filePath string) core.Response {
+func (m *Media) UploadMediaImg(filePath string) core.Responder {
 	return m.uploadImg("media", filePath)
 }
 
@@ -113,11 +113,11 @@ func (m *Media) UploadMediaImg(filePath string) core.Response {
 // HTTP请求方式: POST/FROM
 // URL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
 // 调用示例（使用curl命令，用FORM表单方式上传一个图片）:curl –Fbuffer=@test.jpg
-func (m *Media) UploadBufferImg(filePath string) core.Response {
+func (m *Media) UploadBufferImg(filePath string) core.Responder {
 	return m.uploadImg("buffer", filePath)
 }
 
-func (m *Media) uploadImg(name string, filePath string) core.Response {
+func (m *Media) uploadImg(name string, filePath string) core.Responder {
 	token := m.accessToken.GetToken()
 	resp := core.Upload(
 		Link(mediaUploadImgURLSuffix),

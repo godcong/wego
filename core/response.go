@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-/*Response Response */
-type Response interface {
+/*Responder Responder */
+type Responder interface {
 	ToMap() util.Map
 	Bytes() []byte
 	Error() error
@@ -26,10 +26,12 @@ type responseMap struct {
 
 type responseJSON struct {
 	Data []byte
+	Err  error
 }
 
 type responseXML struct {
 	Data []byte
+	Err  error
 }
 
 type responseError struct {
@@ -57,6 +59,7 @@ func (r *responseJSON) ToMap() util.Map {
 	m := make(util.Map)
 	err := json.Unmarshal(r.Data, &m)
 	if err != nil {
+		r.Err = err
 		return nil
 	}
 	return m
@@ -92,6 +95,7 @@ func (r *responseXML) ToMap() util.Map {
 	m := make(util.Map)
 	err := xml.Unmarshal(r.Data, &m)
 	if err != nil {
+		r.Err = err
 		return nil
 	}
 	return m
@@ -118,7 +122,7 @@ func filterContent(content string) string {
 }
 
 //Err return if response has error
-func Err(data []byte, err error) Response {
+func Err(data []byte, err error) Responder {
 	return &responseError{
 		Data: data,
 		Err:  err,
@@ -131,7 +135,7 @@ func ParseResponse(r *http.Response) ([]byte, error) {
 }
 
 // CastToResponse ...
-func CastToResponse(resp *http.Response) Response {
+func CastToResponse(resp *http.Response) Responder {
 	ct := resp.Header.Get("Content-Type")
 	body, err := ParseResponse(resp)
 	if err != nil {

@@ -69,7 +69,7 @@ func NewTemplate(config *core.Config) *Template {
 //文体娱乐	娱乐休闲	39
 //印刷	印刷	40
 //其它	其它	41
-func (t *Template) SetIndustry(id1, id2 string) core.Response {
+func (t *Template) SetIndustry(id1, id2 string) core.Responder {
 	resp := core.PostJSON(
 		Link(templateAPISetIndustryURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
@@ -82,7 +82,7 @@ func (t *Template) SetIndustry(id1, id2 string) core.Response {
 //GetIndustry 获取设置的行业信息
 // http请求方式:GET
 // https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN
-func (t *Template) GetIndustry() core.Response {
+func (t *Template) GetIndustry() core.Responder {
 	resp := core.Get(
 		Link(templateGetIndustryURLSuffix),
 		t.accessToken.GetToken().KeyMap())
@@ -93,7 +93,7 @@ func (t *Template) GetIndustry() core.Response {
 // 获取模板:https://mp.weixin.qq.com/advanced/tmplmsg?action=list&t=tmplmsg/list&token=93895307&lang=zh_CN
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
-func (t *Template) Add(shortID string) core.Response {
+func (t *Template) Add(shortID string) core.Responder {
 	resp := core.PostJSON(
 		Link(templateAPIAddTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
@@ -104,7 +104,7 @@ func (t *Template) Add(shortID string) core.Response {
 //Send 发送模板消息
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
-func (t *Template) Send(template *message.Template) core.Response {
+func (t *Template) Send(template *message.Template) core.Responder {
 	resp := core.PostJSON(
 		Link(messageTemplateSendURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
@@ -115,7 +115,7 @@ func (t *Template) Send(template *message.Template) core.Response {
 
 //GetAllPrivate 获取模板列表
 // url:https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN
-func (t *Template) GetAllPrivate() core.Response {
+func (t *Template) GetAllPrivate() core.Responder {
 	resp := core.Get(
 		Link(templateGetAllPrivateTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
@@ -125,7 +125,7 @@ func (t *Template) GetAllPrivate() core.Response {
 
 //DelAllPrivate 删除模板
 // url:https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN
-func (t *Template) DelAllPrivate(templateID string) core.Response {
+func (t *Template) DelAllPrivate(templateID string) core.Responder {
 	resp := core.PostJSON(
 		Link(templateDelPrivateTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),

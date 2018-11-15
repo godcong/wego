@@ -7,10 +7,10 @@ import (
 )
 
 // SaveTo ...
-func SaveTo(response Response, path string) error {
+func SaveTo(response Responder, path string) error {
 	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if e != nil {
-		log.Debug("Response|ToFile", e)
+		log.Debug("Responder|ToFile", e)
 		return e
 	}
 	defer file.Close()
@@ -22,10 +22,10 @@ func SaveTo(response Response, path string) error {
 }
 
 // SaveEncodingTo ...
-func SaveEncodingTo(response Response, path string, t transform.Transformer) error {
+func SaveEncodingTo(response Responder, path string, t transform.Transformer) error {
 	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if e != nil {
-		log.Debug("Response|ToFile", e)
+		log.Debug("Responder|ToFile", e)
 		return e
 	}
 	defer file.Close()

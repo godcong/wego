@@ -41,7 +41,6 @@ func newTicket(config *Config) *Ticket {
 func NewTicket(config *Config, v ...interface{}) *Ticket {
 	client := ClientGet(v)
 	accessToken := newAccessToken(ClientCredential(config))
-	accessToken.SetClient(client)
 
 	ticket := newTicket(config)
 	ticket.SetClient(client)
@@ -53,7 +52,7 @@ func NewTicket(config *Config, v ...interface{}) *Ticket {
 //Get 获取api_ticket
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=wx_card
-func (t *Ticket) Get(typ string, refresh bool) Response {
+func (t *Ticket) Get(typ string, refresh bool) Responder {
 	log.Debug("Ticket|Get", typ)
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)

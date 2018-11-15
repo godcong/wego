@@ -115,7 +115,7 @@ func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 }
 
 // Request 默认请求
-func (p *Payment) Request(s string, maps util.Map) core.Response {
+func (p *Payment) Request(s string, maps util.Map) core.Responder {
 
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
@@ -129,7 +129,7 @@ func (p *Payment) RequestRaw(s string, maps util.Map) []byte {
 }
 
 // SafeRequest 安全请求
-func (p *Payment) SafeRequest(s string, maps util.Map) core.Response {
+func (p *Payment) SafeRequest(s string, maps util.Map) core.Responder {
 	m := util.Map{
 		core.DataTypeXML:      p.initRequest(maps),
 		core.DataTypeSecurity: p.Config,
@@ -330,7 +330,7 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 }
 
 // SettlementQuery ...
-func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd string, option ...util.Map) core.Response {
+func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd string, option ...util.Map) core.Responder {
 	m := util.MapsToMap(util.Map{
 		"appid":      p.Get("app_id"),
 		"date_end":   dateEnd,
@@ -343,7 +343,7 @@ func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd 
 }
 
 // QueryExchangeRate ...
-func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) core.Response {
+func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) core.Responder {
 	m := util.MapsToMap(util.Map{
 		"appid":    p.Get("app_id"),
 		"fee_type": feeType,

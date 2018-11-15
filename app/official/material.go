@@ -26,8 +26,8 @@ func NewMaterial(config *core.Config) *Material {
 //AddNews 新增永久素材
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
-//func (m *Material) AddNews(articles []*media.Article) core.Response {
-func (m *Material) AddNews(maps util.Map) core.Response {
+//func (m *Material) AddNews(articles []*media.Article) core.Responder {
+func (m *Material) AddNews(maps util.Map) core.Responder {
 	log.Debug("Material|AddNews", maps)
 	key := m.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
@@ -40,7 +40,7 @@ func (m *Material) AddNews(maps util.Map) core.Response {
 //AddMaterial 新增其他类型永久素材
 // http请求方式: POST，需使用https
 // https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
-func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.Response {
+func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.Responder {
 	log.Debug("Material|AddMaterial", filePath, mediaType)
 	if mediaType == core.MediaTypeVideo {
 		log.Error("please use Material.UploadVideo() function")
@@ -60,7 +60,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.R
 //UploadVideo 新增其他类型永久素材
 // http请求方式: POST，需使用https
 // https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
-func (m *Material) UploadVideo(filePath string, title, introduction string) core.Response {
+func (m *Material) UploadVideo(filePath string, title, introduction string) core.Responder {
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
@@ -80,7 +80,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) core
 //Get 获取永久素材
 // http请求方式: POST,https协议
 // https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=ACCESS_TOKEN
-func (m *Material) Get(mediaID string) core.Response {
+func (m *Material) Get(mediaID string) core.Responder {
 	log.Debug("Material|Get", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
@@ -95,7 +95,7 @@ func (m *Material) Get(mediaID string) core.Response {
 //Del 删除永久素材
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=ACCESS_TOKEN
-func (m *Material) Del(mediaID string) core.Response {
+func (m *Material) Del(mediaID string) core.Responder {
 	log.Debug("Material|Del", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
@@ -111,7 +111,7 @@ func (m *Material) Del(mediaID string) core.Response {
 //UpdateNews 修改永久图文素材
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN
-func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) core.Response {
+func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) core.Responder {
 	log.Debug("Material|UpdateNews", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
@@ -129,7 +129,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 //GetMaterialCount 获取素材总数
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=ACCESS_TOKEN
-func (m *Material) GetMaterialCount() core.Response {
+func (m *Material) GetMaterialCount() core.Responder {
 	log.Debug("Material|GetMaterialCount")
 	p := m.accessToken.GetToken().KeyMap()
 	resp := core.Get(
@@ -146,7 +146,7 @@ func (m *Material) GetMaterialCount() core.Response {
 //type	是	素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
 //offset	是	从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
 //count	是	返回素材的数量，取值在1到20之间
-func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Response {
+func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Responder {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(

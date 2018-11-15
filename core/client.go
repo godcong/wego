@@ -96,71 +96,71 @@ func ClientSet(setter ClientSetter, v []interface{}) bool {
 	return false
 }
 
-func PostForm(url string, query util.Map, form interface{}) Response {
+func PostForm(url string, query util.Map, form interface{}) Responder {
 	return client.PostForm(url, query, form)
 }
 
 // PostForm post form request
-func (c *Client) PostForm(url string, query util.Map, form interface{}) Response {
+func (c *Client) PostForm(url string, query util.Map, form interface{}) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processForm(POST, url, form)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
 }
-func PostJSON(url string, query util.Map, json interface{}) Response {
+func PostJSON(url string, query util.Map, json interface{}) Responder {
 	return client.PostJSON(url, query, json)
 }
 
 /*PostJSON json post请求 */
-func (c *Client) PostJSON(url string, query util.Map, json interface{}) Response {
+func (c *Client) PostJSON(url string, query util.Map, json interface{}) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processJSON(POST, url, json)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
 }
 
-func PostXML(url string, query util.Map, xml interface{}) Response {
+func PostXML(url string, query util.Map, xml interface{}) Responder {
 	return client.PostXML(url, query, xml)
 }
 
 /*PostXML xml post请求 */
-func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
+func (c *Client) PostXML(url string, query util.Map, xml interface{}) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processXML(POST, url, xml)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
 }
 
-func Upload(url string, query, multi util.Map) Response {
+func Upload(url string, query, multi util.Map) Responder {
 	return client.Upload(url, query, multi)
 }
 
 /*Upload upload请求 */
-func (c *Client) Upload(url string, query, multi util.Map) Response {
+func (c *Client) Upload(url string, query, multi util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processMultipart(POST, url, multi)
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
 }
 
-func Post(url string, maps util.Map) Response {
+func Post(url string, maps util.Map) Responder {
 	return client.Post(url, maps)
 }
 
 /*Post post请求 */
-func (c *Client) Post(url string, maps util.Map) Response {
+func (c *Client) Post(url string, maps util.Map) Responder {
 	client := buildClient(maps)
 	url = buildRequestURL(url, maps)
 	req := buildRequest(POST, url, maps)
 	return do(c.Context, client, req)
 }
 
-func Get(url string, query util.Map) Response {
+func Get(url string, query util.Map) Responder {
 	return client.Get(url, query)
 }
 
 /*Get get请求 */
-func (c *Client) Get(url string, query util.Map) Response {
+func (c *Client) Get(url string, query util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processNothing(GET, url, nil)
 	client := buildTransport(NilConfig())
@@ -176,13 +176,13 @@ func (c *Client) GetRaw(url string, query util.Map) []byte {
 }
 
 // Request ...
-func Request(url string, method string, option util.Map) Response {
+func Request(url string, method string, option util.Map) Responder {
 	log.Debug("Request|httpClient", url, method, option)
 	return request(context.Background(), url, method, option)
 }
 
 // RequestWithContext ...
-func RequestWithContext(ctx context.Context, url string, method string, option util.Map) Response {
+func RequestWithContext(ctx context.Context, url string, method string, option util.Map) Responder {
 	log.Debug("RequestWithContext|httpClient", url, method, option)
 	return request(ctx, url, method, option)
 }
@@ -194,7 +194,7 @@ func RequestRaw(url string, method string, option util.Map) []byte {
 }
 
 /*Request 普通请求 */
-func (c *Client) Request(url string, method string, option util.Map) Response {
+func (c *Client) Request(url string, method string, option util.Map) Responder {
 	log.Debug("ClientRequest|httpClient", url, method, option)
 	return request(c.Context, url, method, option)
 }
@@ -320,7 +320,7 @@ func buildClient(maps util.Map) *http.Client {
 	return buildTransport(NilConfig())
 }
 
-func do(ctx context.Context, c *http.Client, r *http.Request) Response {
+func do(ctx context.Context, c *http.Client, r *http.Request) Responder {
 	response, err := c.Do(r.WithContext(ctx))
 	if err != nil {
 		log.Error("Client|Do", err)

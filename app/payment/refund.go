@@ -23,7 +23,7 @@ func NewRefund(config *core.Config) *Refund {
 	return newRefund(NewPayment(config)).(*Refund)
 }
 
-func (r *Refund) refund(num string, total, refund int, options util.Map) core.Response {
+func (r *Refund) refund(num string, total, refund int, options util.Map) core.Responder {
 	m := util.MapNilMake(options)
 	m.SetNil("out_refund_no", num)
 	m.SetNil("total_fee", strconv.Itoa(total))
@@ -42,7 +42,7 @@ func (r *Refund) refund(num string, total, refund int, options util.Map) core.Re
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, option ...util.Map) core.Response {
+func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, option ...util.Map) core.Responder {
 	m := util.MapsToMap(util.Map{"out_trade_no": tradeNum}, option)
 	return r.refund(num, total, refund, m)
 }
@@ -51,12 +51,12 @@ func (r *Refund) ByOutTradeNumber(tradeNum, num string, total, refund int, optio
 接口地址
 接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
 */
-func (r *Refund) ByTransactionID(tid, num string, total, refund int, option ...util.Map) core.Response {
+func (r *Refund) ByTransactionID(tid, num string, total, refund int, option ...util.Map) core.Responder {
 	m := util.MapsToMap(util.Map{"transaction_id": tid}, option)
 	return r.refund(num, total, refund, m)
 }
 
-func (r *Refund) query(m util.Map) core.Response {
+func (r *Refund) query(m util.Map) core.Responder {
 	m.Set("appid", r.Get("app_id"))
 	return r.Request(payRefundQuery, m)
 }
@@ -65,7 +65,7 @@ func (r *Refund) query(m util.Map) core.Response {
 接口地址
 接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
-func (r *Refund) QueryByRefundID(id string) core.Response {
+func (r *Refund) QueryByRefundID(id string) core.Responder {
 	return r.query(util.Map{"refund_id": id})
 }
 
@@ -73,7 +73,7 @@ func (r *Refund) QueryByRefundID(id string) core.Response {
 接口地址
 接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
-func (r *Refund) QueryByOutRefundNumber(id string) core.Response {
+func (r *Refund) QueryByOutRefundNumber(id string) core.Responder {
 	return r.query(util.Map{"out_refund_no": id})
 }
 
@@ -81,7 +81,7 @@ func (r *Refund) QueryByOutRefundNumber(id string) core.Response {
 接口地址
 接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
-func (r *Refund) QueryByOutTradeNumber(id string) core.Response {
+func (r *Refund) QueryByOutTradeNumber(id string) core.Responder {
 	return r.query(util.Map{"out_trade_no": id})
 }
 
@@ -89,6 +89,6 @@ func (r *Refund) QueryByOutTradeNumber(id string) core.Response {
 接口地址
 接口链接:https://api.mch.weixin.qq.com/pay/refundquery
 */
-func (r *Refund) QueryByTransactionID(id string) core.Response {
+func (r *Refund) QueryByTransactionID(id string) core.Responder {
 	return r.query(util.Map{"transaction_id": id})
 }

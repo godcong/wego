@@ -49,7 +49,7 @@ func (s *Sandbox) getCacheKey() string {
 }
 
 /*SandboxSignKey 沙箱key */
-func (s *Sandbox) SandboxSignKey() core.Response {
+func (s *Sandbox) SandboxSignKey() core.Responder {
 	m := make(util.Map)
 	m.Set("mch_id", s.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateNonceStr())

@@ -212,8 +212,8 @@ type OneCard struct {
 //CreateLandingPage 创建货架接口
 // HTTP请求方式: POST
 // URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
-//func (c *Card) CreateLandingPage(page *CardLandingPage) core.Response {
-func (c *Card) CreateLandingPage(maps util.Map) core.Response {
+//func (c *Card) CreateLandingPage(page *CardLandingPage) core.Responder {
+func (c *Card) CreateLandingPage(maps util.Map) core.Responder {
 	resp := core.PostJSON(
 		Link(cardLandingPageCreate),
 		c.accessToken.GetToken().KeyMap(),
@@ -226,7 +226,7 @@ func (c *Card) CreateLandingPage(maps util.Map) core.Response {
 //
 // HTTP请求方式: POST
 // URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
-func (c *Card) Deposit(cardID string, code []string) core.Response {
+func (c *Card) Deposit(cardID string, code []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeDeposit),
 		c.accessToken.GetToken().KeyMap(),
@@ -242,7 +242,7 @@ func (c *Card) Deposit(cardID string, code []string) core.Response {
 //
 //  HTTP请求方式: POST
 //  URL:http://api.weixin.qq.com/card/code/getdepositcount?access_token=ACCESS_TOKEN
-func (c *Card) GetDepositCount(cardID string) core.Response {
+func (c *Card) GetDepositCount(cardID string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeGetDepositCount),
 		c.accessToken.GetToken().KeyMap(),
@@ -256,7 +256,7 @@ func (c *Card) GetDepositCount(cardID string) core.Response {
 //CheckCode 核查code接口
 //HTTP请求方式: POST
 //HTTP调用:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
-func (c *Card) CheckCode(cardID string, code []string) core.Response {
+func (c *Card) CheckCode(cardID string, code []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeCheckCode),
 		c.accessToken.GetToken().KeyMap(),
@@ -276,7 +276,7 @@ func (c *Card) CheckCode(cardID string, code []string) core.Response {
 //code	是	string(20)	110201201245	单张卡券的唯一标准。
 //card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
 //check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
-func (c *Card) GetCode(maps util.Map) core.Response {
+func (c *Card) GetCode(maps util.Map) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeGet),
 		c.accessToken.GetToken().KeyMap(),
@@ -288,7 +288,7 @@ func (c *Card) GetCode(maps util.Map) core.Response {
 //GetHTML 图文消息群发卡券
 //HTTP请求方式: POST
 //URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
-func (c *Card) GetHTML(cid string) core.Response {
+func (c *Card) GetHTML(cid string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardMPNewsGetHTML),
 		c.accessToken.GetToken().KeyMap(),
@@ -300,19 +300,19 @@ func (c *Card) GetHTML(cid string) core.Response {
 }
 
 //SetTestWhiteListByID 设置测试白名单(by openid)
-func (c *Card) SetTestWhiteListByID(list []string) core.Response {
+func (c *Card) SetTestWhiteListByID(list []string) core.Responder {
 	return c.SetTestWhiteList("openid", list)
 }
 
 //SetTestWhiteListByName 设置测试白名单(by username)
-func (c *Card) SetTestWhiteListByName(list []string) core.Response {
+func (c *Card) SetTestWhiteListByName(list []string) core.Responder {
 	return c.SetTestWhiteList("username", list)
 }
 
 //SetTestWhiteList 设置测试白名单
 //HTTP请求方式: POST
 //URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
-func (c *Card) SetTestWhiteList(typ string, list []string) core.Response {
+func (c *Card) SetTestWhiteList(typ string, list []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardTestWhiteListSet),
 		c.accessToken.GetToken().KeyMap(),
@@ -326,7 +326,7 @@ func (c *Card) SetTestWhiteList(typ string, list []string) core.Response {
 //CreateQrCode 创建二维码
 // HTTP请求方式: POST
 // URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
-func (c *Card) CreateQrCode(action *QrCodeAction) core.Response {
+func (c *Card) CreateQrCode(action *QrCodeAction) core.Responder {
 	resp := core.PostJSON(
 		Link(cardQrcodeCreate),
 		c.accessToken.GetToken().KeyMap(),
@@ -338,8 +338,8 @@ func (c *Card) CreateQrCode(action *QrCodeAction) core.Response {
 //Create 创建卡券
 // HTTP请求方式: POST
 // URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
-//func (c *Card) Create(card *OneCard) core.Response {
-func (c *Card) Create(maps util.Map) core.Response {
+//func (c *Card) Create(card *OneCard) core.Responder {
+func (c *Card) Create(maps util.Map) core.Responder {
 	key := c.accessToken.GetToken().KeyMap()
 	//_, d := maps.Get()
 	resp := core.PostJSON(
@@ -353,7 +353,7 @@ func (c *Card) Create(maps util.Map) core.Response {
 //GetApplyProtocol 卡券开放类目查询接口
 //HTTP请求方式: GET
 //URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
-func (c *Card) GetApplyProtocol() core.Response {
+func (c *Card) GetApplyProtocol() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetApplyProtocol), token.KeyMap())
 }
@@ -361,7 +361,7 @@ func (c *Card) GetApplyProtocol() core.Response {
 //GetColors 卡券开放类目查询接口
 //HTTP请求方式: GET
 //URL:https://api.weixin.qq.com/card/getcolors?access_token=TOKEN
-func (c *Card) GetColors() core.Response {
+func (c *Card) GetColors() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetColors), token.KeyMap())
 }

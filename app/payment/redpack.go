@@ -32,7 +32,7 @@ func NewRedPack(config *core.Config) *RedPack {
 字段名	字段	必填	示例值	类型	说明
 商户订单号	mch_billno	是	10000098201411111234567890	String(28)	商户发放红包的商户订单号
 */
-func (r *RedPack) Info(mchBillNo string) core.Response {
+func (r *RedPack) Info(mchBillNo string) core.Responder {
 	m := util.Map{
 		"mch_billno": mchBillNo,
 		"appid":      "app_id",
@@ -106,7 +106,7 @@ clientversion :用户操作的客户端版本
 urlencode(posttime=xx& mobile =xx&deviceid=xx)
 扣钱方mchid	consume_mch_id	否	10000098	String(32)	常规模式下无效，服务商模式下选填，服务商模式下不填默认扣子商户的钱
 */
-func (r *RedPack) SendNormal(m util.Map) core.Response {
+func (r *RedPack) SendNormal(m util.Map) core.Responder {
 	m.Set("total_num", strconv.Itoa(1))
 	m.Set("client_ip", core.GetServerIP())
 	m.Set("wxappid", r.Get("app_id"))
@@ -173,7 +173,7 @@ urlencode(posttime=xx& mobile =xx&deviceid=xx)
 服务商替特约商户发放时使用
 扣钱方mchid	consume_mch_id	否	10000098	String(32)	常规模式下无效，服务商模式下选填，服务商模式下不填默认扣子商户的钱
 */
-func (r *RedPack) SendGroup(m util.Map) core.Response {
+func (r *RedPack) SendGroup(m util.Map) core.Responder {
 	m.Set("amt_type", "ALL_RAND")
 	m.Set("wxappid", r.Get("app_id"))
 	return r.SafeRequest(mmpaymkttransfersSendGroupRedPack, m)

@@ -33,7 +33,7 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点:中�
 字段名	变量名	类型	必填	示例值	描述
 商户订单号	out_trade_no	String(32)	是	1217752501201407033233368018	商户系统内部的订单号,transaction_id、out_trade_no二选一，如果同时存在优先级:transaction_id> out_trade_no
 */
-func (r *Reverse) ByOutTradeNumber(num string) core.Response {
+func (r *Reverse) ByOutTradeNumber(num string) core.Responder {
 	return r.reverse(util.Map{"out_trade_no": num})
 }
 
@@ -49,11 +49,11 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点:中�
 字段名	变量名	类型	必填	示例值	描述
 微信订单号	transaction_id	String(32)	否	1217752501201407033233368018	微信的订单号，优先使用
 */
-func (r *Reverse) ByTransactionID(id string) core.Response {
+func (r *Reverse) ByTransactionID(id string) core.Responder {
 	return r.reverse(util.Map{"transaction_id": id})
 }
 
-func (r *Reverse) reverse(m util.Map) core.Response {
+func (r *Reverse) reverse(m util.Map) core.Responder {
 	m.Set("appid", r.Get("app_id"))
 	return r.SafeRequest(payReverse, m)
 }

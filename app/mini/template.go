@@ -64,7 +64,7 @@ keyword_id	关键词id，添加模板时需要
 name	关键词内容
 example	关键词内容对应的示例
 */
-func (t *Template) Get(id string) core.Response {
+func (t *Template) Get(id string) core.Responder {
 	token := t.accessToken.GetToken()
 	return t.client.PostJSON(Link(templateLibraryGet), token.KeyMap(), util.Map{"id": id})
 }
@@ -82,7 +82,7 @@ template_id	是	要删除的模板id
 在调用模板消息接口后，会返回JSON数据包。
 正常时的返回JSON数据包示例:
 */
-func (t *Template) Delete(templateID string) core.Response {
+func (t *Template) Delete(templateID string) core.Responder {
 	token := t.accessToken.GetToken()
 	return t.client.PostJSON(Link(templateDel), token.KeyMap(), util.Map{"template_id": templateID})
 }
@@ -108,7 +108,7 @@ title	模板标题
 content	模板内容
 example	模板内容示例
 */
-func (t *Template) GetTemplates(offset, count int) core.Response {
+func (t *Template) GetTemplates(offset, count int) core.Responder {
 	token := t.accessToken.GetToken()
 	return t.client.PostJSON(Link(templateList), token.KeyMap(), util.Map{"offset": offset, "count": count})
 
@@ -130,7 +130,7 @@ keyword_id_list	是	开发者自行组合好的模板关键词列表，关键词
 参数	说明
 template_id	添加至帐号下的模板id，发送小程序模板消息时所需
 */
-func (t *Template) Add(id string, keyword util.Map) core.Response {
+func (t *Template) Add(id string, keyword util.Map) core.Responder {
 	token := t.accessToken.GetToken()
 	return t.client.PostJSON(Link(templateAdd), token.KeyMap(), util.Map{"id": id, "keyword_id_list": keyword})
 }
@@ -159,7 +159,7 @@ emphasis_keyword	否	模板需要放大的关键词，不填则默认无放大
 41030	page不正确
 45009	接口调用超过限额（目前默认每个帐号日调用限额为100万）
 */
-func (t *Template) Send(template *message.Template) core.Response {
+func (t *Template) Send(template *message.Template) core.Responder {
 	token := t.accessToken.GetToken()
 	resp := t.client.PostJSON(Link(templateSend), token.KeyMap(), template)
 	return resp

@@ -38,7 +38,7 @@ func (o *Order) SetRequest(r *http.Request) *Order {
 交易类型	trade_type	是	String(16)	JSAPI	取值如下:JSAPI，NATIVE，APP，详细说明见参数规定
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
-func (o *Order) Unify(m util.Map) core.Response {
+func (o *Order) Unify(m util.Map) core.Responder {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIP())
@@ -62,7 +62,7 @@ func (o *Order) Unify(m util.Map) core.Response {
 字段名	变量名	必填	类型	示例值	描述
 商户订单号	out_trade_no	是	String(32)	1217752501201407033233368018	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
 */
-func (o *Order) Close(no string) core.Response {
+func (o *Order) Close(no string) core.Responder {
 	m := make(util.Map)
 	m.Set("appid", o.Get("app_id"))
 	m.Set("out_trade_no", no)
@@ -88,7 +88,7 @@ https://api.mch.weixin.qq.com/pay/orderquery        （建议接入点:中国国
 签名	sign	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	签名，详见签名生成算法
 签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
 */
-func (o *Order) query(m util.Map) core.Response {
+func (o *Order) query(m util.Map) core.Responder {
 	m.Set("appid", o.Get("app_id"))
 	return o.Request(payOrderQuery, m)
 }
@@ -98,7 +98,7 @@ func (o *Order) query(m util.Map) core.Response {
 字段名	变量名	必填	类型	示例值	描述
 微信订单号	transaction_id	String(32)	1009660380201506130728806387	微信的订单号，优先使用
 */
-func (o *Order) QueryByTransactionID(id string) core.Response {
+func (o *Order) QueryByTransactionID(id string) core.Responder {
 	return o.query(util.Map{"transaction_id": id})
 }
 
@@ -108,6 +108,6 @@ func (o *Order) QueryByTransactionID(id string) core.Response {
 公众账号ID	appid	是	String(32)	wxd678efh567hg6787	微信分配的公众账号ID（企业号corpid即为此appId）
 商户订单号	out_trade_no	String(32)	20150806125346	商户系统内部的订单号，当没提供transaction_id时需要传这个。
 */
-func (o *Order) QueryByOutTradeNumber(no string) core.Response {
+func (o *Order) QueryByOutTradeNumber(no string) core.Responder {
 	return o.query(util.Map{"out_trade_no": no})
 }

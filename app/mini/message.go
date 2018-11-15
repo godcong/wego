@@ -51,7 +51,7 @@ picurl	是	图文链接消息的图片链接，支持 JPG、PNG 格式，较好�
 pagepath	是	小程序的页面路径，跟app.json对齐，支持参数，比如pages/index/index?foo=bar
 thumb_media_id	是	小程序消息卡片的封面， image类型的media_id，通过新增素材接口上传图片文件获得，建议大小为520*416
 */
-func (m *Message) Send(msg util.Map) core.Response {
+func (m *Message) Send(msg util.Map) core.Responder {
 	log.Debug("Message|Send", msg)
 
 	key := m.accessToken.GetToken().KeyMap()

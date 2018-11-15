@@ -17,6 +17,9 @@ import (
 	"strings"
 )
 
+type Requester interface {
+}
+
 // ErrNilRequestBody ...
 var ErrNilRequestBody = errors.New("nil request body")
 
@@ -244,7 +247,7 @@ func buildRequest(method, url string, m util.Map) *http.Request {
 	return f(method, url, data)
 }
 
-func request(context context.Context, url string, method string, p util.Map) Response {
+func request(context context.Context, url string, method string, p util.Map) Responder {
 	method = strings.ToUpper(method)
 	client := buildClient(p)
 	url = buildRequestURL(url, p)

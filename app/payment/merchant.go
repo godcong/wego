@@ -22,22 +22,22 @@ func NewMerchant(config *core.Config) *Merchant {
 }
 
 // AddSubMerchant ...
-func (m *Merchant) AddSubMerchant(maps util.Map) core.Response {
+func (m *Merchant) AddSubMerchant(maps util.Map) core.Responder {
 	return m.manage("add", maps)
 }
 
 // QuerySubMerchantByMerchantID ...
-func (m *Merchant) QuerySubMerchantByMerchantID(id string) core.Response {
+func (m *Merchant) QuerySubMerchantByMerchantID(id string) core.Responder {
 	return m.manage("dummyQuery", util.Map{"micro_mch_id": id})
 }
 
 // QuerySubMerchantByWeChatID ...
-func (m *Merchant) QuerySubMerchantByWeChatID(id string) core.Response {
+func (m *Merchant) QuerySubMerchantByWeChatID(id string) core.Responder {
 	return m.manage("dummyQuery", util.Map{"recipient_wechatid": id})
 }
 
 // ModifyInfo ...
-func (m *Merchant) ModifyInfo(maps util.Map) core.Response {
+func (m *Merchant) ModifyInfo(maps util.Map) core.Responder {
 	maps.Join(util.Map{
 		"mch_id":     m.GetString("mch_id"),
 		"sub_mch_id": "",
@@ -46,7 +46,7 @@ func (m *Merchant) ModifyInfo(maps util.Map) core.Response {
 }
 
 // AddRecommendConfBySubscribe ...
-func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
+func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Responder {
 	maps := util.Map{
 		"subscribe_appid": appID,
 		"mch_id":          m.GetString("mch_id"),
@@ -57,7 +57,7 @@ func (m *Merchant) AddRecommendConfBySubscribe(appID string) core.Response {
 }
 
 // AddRecommendConfByReceipt ...
-func (m *Merchant) AddRecommendConfByReceipt(appID string) core.Response {
+func (m *Merchant) AddRecommendConfByReceipt(appID string) core.Responder {
 	maps := util.Map{
 		"receipt_appid": appID,
 		"mch_id":        m.GetString("mch_id"),
@@ -71,7 +71,7 @@ func (m *Merchant) mchAddSubDevConfig() {
 	//TODO
 }
 
-func (m *Merchant) manage(action string, maps util.Map) core.Response {
+func (m *Merchant) manage(action string, maps util.Map) core.Responder {
 
 	maps.Join(util.Map{
 		"appid":      m.GetString("app_id"),

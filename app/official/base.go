@@ -25,7 +25,7 @@ func NewBase(config *core.Config) *Base {
 HTTP请求方式:POST
 HTTP调用: https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
 */
-func (b *Base) ClearQuota() core.Response {
+func (b *Base) ClearQuota() core.Responder {
 	token := b.accessToken.GetToken()
 
 	params := util.Map{
@@ -39,7 +39,7 @@ func (b *Base) ClearQuota() core.Response {
 HTTP请求方式: GET
 HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
 */
-func (b *Base) GetCallbackIP() core.Response {
+func (b *Base) GetCallbackIP() core.Responder {
 	token := b.accessToken.GetToken()
 	return core.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
 }

@@ -34,7 +34,7 @@ openssl rsa -RSAPublicKey_in -in <filename> -pubout
 PKCS#8 转 PKCS#1:
 openssl rsa -pubin -in <filename> -RSAPublicKey_out
 */
-func (s *Security) GetPublicKey() core.Response {
+func (s *Security) GetPublicKey() core.Responder {
 	m := util.Map{"sign_type": "MD5"}
 	maps := util.Map{
 		core.DataTypeXML:      s.initRequest(m),

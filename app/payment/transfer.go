@@ -37,7 +37,7 @@ func NewTransfer(config *core.Config) *Transfer {
 商户号	mch_id	是	10000098	String(32)	微信支付分配的商户号
 Appid	appid	是	wxe062425f740d30d8	String(32)	商户号的appid
 */
-func (t *Transfer) QueryBalanceOrder(s string) core.Response {
+func (t *Transfer) QueryBalanceOrder(s string) core.Responder {
 	m := util.Map{
 		"appid":            t.Get("app_id"),
 		"mch_id":           t.Get("mch_id"),
@@ -69,7 +69,7 @@ FORCE_CHECK:强校验真实姓名
 企业付款描述信息	desc	是	理赔	String	企业付款操作说明信息。必填。
 Ip地址	spbill_create_ip	是	192.168.0.1	String(32)	该IP同在商户平台设置的IP白名单中的IP没有关联，该IP可传用户端或者服务端的IP。
 */
-func (t *Transfer) ToBalance(maps util.Map) core.Response {
+func (t *Transfer) ToBalance(maps util.Map) core.Responder {
 	maps.Delete("mch_id")
 	maps.Set("mchid", t.Get("mch_id"))
 	maps.Set("mch_appid", t.Get("app_id"))
@@ -121,7 +121,7 @@ BANK_FAIL（银行退票，订单状态由付款成功流转至退票,退票时�
 成功付款时间	pay_succ_time	否	String	微信侧付款成功时间（但无法保证银行不会退票）
 失败原因	reason	否	String	订单失败原因（如:余额不足）
 */
-func (t *Transfer) QueryBankCardOrder(s string) core.Response {
+func (t *Transfer) QueryBankCardOrder(s string) core.Responder {
 	m := util.Map{
 		"mch_id":           t.Get("mch_id"),
 		"partner_trade_no": s,
@@ -179,7 +179,7 @@ string(32)
 微信企业付款单号	payment_no	是	string(64)	代付成功后，返回的内部业务单号
 手续费金额	cmms_amt	是	int	手续费金额 RMB:分
 */
-func (t *Transfer) ToBankCard(maps util.Map) core.Response {
+func (t *Transfer) ToBankCard(maps util.Map) core.Responder {
 	if v := maps.Check("bank_code", "partner_trade_no", "enc_bank_no", "enc_true_name", "amount"); v != -1 {
 		log.Error(fmt.Sprintf("the %d index of value is required", v))
 		return nil
