@@ -348,6 +348,22 @@ func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd 
 	return p.Request(paySettlementquery, m)
 }
 
+// QueryExchangeRate ...
+func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) core.Response {
+
+	m := util.MapsToMap(util.Map{
+		"appid":    p.Get("app_id"),
+		"fee_type": feeType,
+		"date":     date,
+		"mch_id":   p.Get("mch_id"),
+	}, option)
+
+	m.Set("sign", GenerateSignatureWithIgnore(m, p.GetKey(), nil))
+	return p.client.Request(p.Link(payQueryexchagerate), "post", util.Map{
+		core.DataTypeXML: m,
+	})
+}
+
 // Link connect domain url and url suffix
 func (p *Payment) Link(url string) string {
 	if p.IsSandbox() {
