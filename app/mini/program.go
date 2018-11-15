@@ -16,7 +16,6 @@ var subLists = util.Map{
 type Program struct {
 	*core.Config
 	Sub         util.Map
-	client      *core.Client
 	accessToken *core.AccessToken
 }
 
@@ -29,16 +28,13 @@ func newMiniProgram(config *core.Config, p util.Map) *Program {
 
 // NewMiniProgram ...
 func NewMiniProgram(config *core.Config, v ...interface{}) *Program {
-	client := core.ClientGet(v)
+
 	accessToken := newAccessToken(util.Map{
 		"grant_type": "client_credential",
 		"appid":      config.GetString("app_id"),
 		"secret":     config.GetString("secret"),
 	})
-	accessToken.SetClient(client)
-
 	account := newMiniProgram(config, util.Map{})
-	account.SetClient(client)
 	account.SetAccessToken(accessToken)
 	return account
 }
@@ -64,16 +60,6 @@ func (p *Program) SubExpectInit(except ...string) *Program {
 // SubOnlyInit ...
 func (p *Program) SubOnlyInit(only ...string) *Program {
 	return subInit(p, subLists.Only(only))
-}
-
-// Client ...
-func (p *Program) Client() *core.Client {
-	return p.client
-}
-
-// SetClient ...
-func (p *Program) SetClient(client *core.Client) {
-	p.client = client
 }
 
 // AccessToken ...

@@ -32,14 +32,12 @@ func newOfficialAccount(config *core.Config, p util.Map) *Account {
 
 //NewOfficialAccount return a official account
 func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
-	client := core.ClientGet(v)
+
 	accessToken := newAccessToken(util.Map{
 		"grant_type": "client_credential",
 		"appid":      config.GetString("app_id"),
 		"secret":     config.GetString("secret"),
 	})
-	accessToken.SetClient(client)
-
 	account := newOfficialAccount(config, util.Map{})
 	account.SetAccessToken(accessToken)
 	return account
