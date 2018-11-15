@@ -61,6 +61,10 @@ func newApplication(config *core.Config) *Application {
 	}
 
 	app.System = initSystem(config.GetSubConfig("system"))
+	log.InitLog(log.Log{
+		Level: "debug",
+		File:  "wechat.log",
+	}, true)
 	app.Register(RegConfig, config)
 	return app
 }
