@@ -41,7 +41,6 @@ func NewOfficialAccount(config *core.Config, v ...interface{}) *Account {
 	accessToken.SetClient(client)
 
 	account := newOfficialAccount(config, util.Map{})
-	account.SetClient(client)
 	account.SetAccessToken(accessToken)
 	return account
 }
