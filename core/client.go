@@ -131,6 +131,10 @@ func (c *Client) PostXML(url string, query util.Map, xml interface{}) Response {
 	return do(c.Context, client, request)
 }
 
+func Upload(url string, query, multi util.Map) Response {
+	return client.Upload(url, query, multi)
+}
+
 /*Upload upload请求 */
 func (c *Client) Upload(url string, query, multi util.Map) Response {
 	url = url + "?" + query.URLEncode()
@@ -139,12 +143,20 @@ func (c *Client) Upload(url string, query, multi util.Map) Response {
 	return do(c.Context, client, request)
 }
 
+func Post(url string, maps util.Map) Response {
+	return client.Post(url, maps)
+}
+
 /*Post post请求 */
 func (c *Client) Post(url string, maps util.Map) Response {
 	client := buildClient(maps)
 	url = buildRequestURL(url, maps)
 	req := buildRequest(POST, url, maps)
 	return do(c.Context, client, req)
+}
+
+func Get(url string, query util.Map) Response {
+	return client.Get(url, query)
 }
 
 /*Get get请求 */

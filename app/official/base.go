@@ -31,7 +31,7 @@ func (b *Base) ClearQuota() core.Response {
 	params := util.Map{
 		"appid": b.Get("app_id"),
 	}
-	return b.client.PostJSON(Link(clearQuotaURLSuffix), token.KeyMap(), params)
+	return core.PostJSON(Link(clearQuotaURLSuffix), token.KeyMap(), params)
 
 }
 
@@ -41,5 +41,5 @@ HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_T
 */
 func (b *Base) GetCallbackIP() core.Response {
 	token := b.accessToken.GetToken()
-	return b.client.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
+	return core.Get(Link(getCallbackIPURLSuffix), token.KeyMap())
 }
