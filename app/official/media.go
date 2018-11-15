@@ -35,7 +35,7 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response 
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := core..Upload(
+	resp := core.Upload(
 		Link(mediaUploadURLSuffix),
 		p,
 		util.Map{

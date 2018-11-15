@@ -13,9 +13,9 @@ import (
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	URL         string
-	TokenKey    string
-	client      *Client
+	URL      string
+	TokenKey string
+	//client      *Client
 	credentials util.Map
 }
 
@@ -27,7 +27,7 @@ const accessTokenURLSuffix = "/cgi-bin/token"
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	return a.client.GetRaw(Connect(APIWeixin, a.URL), a.credentials)
+	return Get(Connect(APIWeixin, a.URL), a.credentials).Bytes()
 }
 
 func newAccessToken(p util.Map) *AccessToken {

@@ -34,7 +34,7 @@ Open 打开文章评论
 */
 func (c *Comment) Open(id, index int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentOpenURLSuffix),
 		p,
 		util.Map{
@@ -55,7 +55,7 @@ Close 关闭评论
 */
 func (c *Comment) Close(id, index int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentCloseURLSuffix),
 		p,
 		util.Map{
@@ -76,7 +76,7 @@ List 获取文章评论
 */
 func (c *Comment) List(id, index, begin, count, typ int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentListURLSuffix),
 		p,
 		util.Map{
@@ -102,7 +102,7 @@ Markelect  将评论标记精选
 */
 func (c *Comment) Markelect(id, index, userCommentID int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentMarkelectURLSuffix),
 		p,
 		util.Map{
@@ -127,7 +127,7 @@ user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentUnmarkelectURLSuffix),
 		p,
 		util.Map{
@@ -148,7 +148,7 @@ user_comment_id	是	int	用户评论id
 */
 func (c *Comment) Delete(id, index, userCommentID int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentDeleteURLSuffix),
 		p,
 		util.Map{
@@ -173,7 +173,7 @@ ReplyAdd 回复评论
 */
 func (c *Comment) ReplyAdd(id, index, userCommentID int, content string) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentReplyAddURLSuffix),
 		p,
 		util.Map{
@@ -198,7 +198,7 @@ ReplyDelete 删除回复
 */
 func (c *Comment) ReplyDelete(id, index, userCommentID int) core.Response {
 	p := c.accessToken.GetToken().KeyMap()
-	resp := c.client.PostJSON(
+	resp := core.PostJSON(
 		Link(commentReplyDeleteURLSuffix),
 		p,
 		util.Map{

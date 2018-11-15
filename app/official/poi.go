@@ -61,7 +61,7 @@ Add 创建门店
 */
 func (p *Poi) Add(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Add", *biz)
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.PostJSON(
 		Link(poiAddPoi),
@@ -80,7 +80,7 @@ POST数据格式	json
 */
 func (p *Poi) Get(poiID string) core.Response {
 	log.Debug("Poi|Get", poiID)
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.PostJSON(
 		Link(poiGetPoi),
@@ -109,7 +109,7 @@ POST数据格式	buffer
 */
 func (p *Poi) Update(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Update", *biz)
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.PostJSON(
 		Link(poiUpdatePoi),
@@ -209,7 +209,7 @@ GetList 查询门店列表
 */
 func (p *Poi) GetList(begin int, limit int) core.Response {
 	log.Debug("Poi|GetList", begin, limit)
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.PostJSON(
 		Link(poiGetListPoi),
@@ -231,7 +231,7 @@ POST数据格式	buffer
 */
 func (p *Poi) Del(poiID string) core.Response {
 	log.Debug("Poi|Del", poiID)
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.PostJSON(
 		Link(poiDelPoi),
@@ -254,7 +254,7 @@ http请求方式	GET
 */
 func (p *Poi) GetCategory() core.Response {
 	log.Debug("Poi|GetCategory")
-	//p.client.SetDomain(core.NewDomain("mp"))
+	//core.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
 	resp := core.Get(
 		Link(poiGetWXCategory),
