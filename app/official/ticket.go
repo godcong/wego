@@ -30,7 +30,7 @@ func (t *Ticket) Get(typ string) core.Response {
 	log.Debug("Ticket|Get", typ)
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)
-	resp := t.client.Get(
+	resp := core.Get(
 		Link(ticketGetTicket),
 		p)
 	return resp

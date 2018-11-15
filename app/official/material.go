@@ -30,7 +30,7 @@ func NewMaterial(config *core.Config) *Material {
 func (m *Material) AddNews(maps util.Map) core.Response {
 	log.Debug("Material|AddNews", maps)
 	key := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(materialAddNewsURLSuffix),
 		key,
 		maps)
@@ -48,7 +48,7 @@ func (m *Material) AddMaterial(filePath string, mediaType core.MediaType) core.R
 
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.Upload(
+	resp := core.Upload(
 		Link(materialAddMaterialURLSuffix),
 		p,
 		util.Map{
@@ -64,7 +64,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) core
 	log.Debug("Media|UploadVideo", filePath, title, introduction)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", core.MediaTypeVideo.String())
-	resp := m.client.Upload(
+	resp := core.Upload(
 		Link(materialAddMaterialURLSuffix),
 		p,
 		util.Map{
@@ -83,7 +83,7 @@ func (m *Material) UploadVideo(filePath string, title, introduction string) core
 func (m *Material) Get(mediaID string) core.Response {
 	log.Debug("Material|Get", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(materialGetMaterialURLSuffix),
 		p,
 		util.Map{
@@ -98,7 +98,7 @@ func (m *Material) Get(mediaID string) core.Response {
 func (m *Material) Del(mediaID string) core.Response {
 	log.Debug("Material|Del", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(materialDelMaterialURLSuffix),
 		p,
 		util.Map{
@@ -114,7 +114,7 @@ func (m *Material) Del(mediaID string) core.Response {
 func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Article) core.Response {
 	log.Debug("Material|UpdateNews", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(materialUpdateNewsURLSuffix),
 		p,
 		util.Map{
@@ -132,7 +132,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 func (m *Material) GetMaterialCount() core.Response {
 	log.Debug("Material|GetMaterialCount")
 	p := m.accessToken.GetToken().KeyMap()
-	resp := m.client.Get(
+	resp := core.Get(
 		Link(materialGetMaterialcountURLSuffix),
 		p)
 	return resp
@@ -149,7 +149,7 @@ func (m *Material) GetMaterialCount() core.Response {
 func (m *Material) BatchGet(mediaType core.MediaType, offset, count int) core.Response {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	p := m.accessToken.GetToken().KeyMap()
-	resp := m.client.PostJSON(
+	resp := core.PostJSON(
 		Link(materialBatchgetMaterialURLSuffix),
 		p,
 		util.Map{

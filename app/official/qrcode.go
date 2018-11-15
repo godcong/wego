@@ -99,7 +99,7 @@ func NewQrCode(config *core.Config) *QrCode {
 func (q *QrCode) Create(action *QrCodeAction) core.Response {
 	//TODO: need fix
 	log.Debug("QrCode|Create", action)
-	resp := q.client.PostJSON(
+	resp := core.PostJSON(
 		Link(qrcodeCreateURLSuffix),
 		q.accessToken.GetToken().KeyMap(),
 		action,
@@ -114,7 +114,7 @@ func (q *QrCode) ShowQrCode(ticket string) core.Response {
 	log.Debug("QrCode|ShowQrCode", ticket)
 
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := q.client.Get(
+	resp := core.Get(
 		core.Link(showQrcodeURLSuffix, "mp"),
 		util.Map{
 			"ticket": url.QueryEscape(ticket),

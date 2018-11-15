@@ -63,7 +63,7 @@ func (p *Poi) Add(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Add", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.PostJSON(
+	resp := core.PostJSON(
 		Link(poiAddPoi),
 		p.accessToken.GetToken().KeyMap(),
 		util.Map{
@@ -82,7 +82,7 @@ func (p *Poi) Get(poiID string) core.Response {
 	log.Debug("Poi|Get", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.PostJSON(
+	resp := core.PostJSON(
 		Link(poiGetPoi),
 		p.accessToken.GetToken().KeyMap(),
 		util.Map{
@@ -111,7 +111,7 @@ func (p *Poi) Update(biz *PoiBaseInfo) core.Response {
 	log.Debug("Poi|Update", *biz)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.PostJSON(
+	resp := core.PostJSON(
 		Link(poiUpdatePoi),
 		p.accessToken.GetToken().KeyMap(),
 		util.Map{
@@ -211,7 +211,7 @@ func (p *Poi) GetList(begin int, limit int) core.Response {
 	log.Debug("Poi|GetList", begin, limit)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.PostJSON(
+	resp := core.PostJSON(
 		Link(poiGetListPoi),
 		p.accessToken.GetToken().KeyMap(),
 		util.Map{
@@ -233,7 +233,7 @@ func (p *Poi) Del(poiID string) core.Response {
 	log.Debug("Poi|Del", poiID)
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.PostJSON(
+	resp := core.PostJSON(
 		Link(poiDelPoi),
 		p.accessToken.GetToken().KeyMap(),
 		util.Map{
@@ -256,7 +256,7 @@ func (p *Poi) GetCategory() core.Response {
 	log.Debug("Poi|GetCategory")
 	//p.client.SetDomain(core.NewDomain("mp"))
 	// base64.URLEncoding.EncodeToString([]byte(ticket))
-	resp := p.client.Get(
+	resp := core.Get(
 		Link(poiGetWXCategory),
 		p.accessToken.GetToken().KeyMap())
 	return resp

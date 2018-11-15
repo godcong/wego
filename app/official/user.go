@@ -41,7 +41,7 @@ func NewUser(config *core.Config) *User {
 func (u *User) UpdateRemark(openid, remark string) core.Response {
 	log.Debug("User|UpdateRemark", openid, remark)
 	p := u.accessToken.GetToken().KeyMap()
-	resp := u.client.PostJSON(
+	resp := core.PostJSON(
 		Link(userInfoUpdateRemarkURLSuffix),
 		p,
 		util.Map{
@@ -65,7 +65,7 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 		p.Set("lang", lang)
 	}
 
-	resp := u.client.Get(
+	resp := core.Get(
 		Link(userInfoURLSuffix),
 		p)
 	var info core.UserInfo
@@ -99,7 +99,7 @@ func (u *User) BatchGet(openids []string, lang string) []*core.UserInfo {
 		}
 
 	}
-	resp := u.client.PostJSON(
+	resp := core.PostJSON(
 		Link(userInfoBatchGetURLSuffix),
 		p,
 		util.Map{
@@ -126,7 +126,7 @@ func (u *User) Get(nextOpenid string) core.Response {
 		query.Set("next_openid", nextOpenid)
 	}
 
-	resp := u.client.Get(
+	resp := core.Get(
 		Link(userGetURLSuffix),
 		query)
 

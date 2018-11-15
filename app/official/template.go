@@ -70,7 +70,7 @@ func NewTemplate(config *core.Config) *Template {
 //印刷	印刷	40
 //其它	其它	41
 func (t *Template) SetIndustry(id1, id2 string) core.Response {
-	resp := t.client.PostJSON(
+	resp := core.PostJSON(
 		Link(templateAPISetIndustryURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
 		util.Map{"industry_id1": id1, "industry_id2": id2},
@@ -83,7 +83,7 @@ func (t *Template) SetIndustry(id1, id2 string) core.Response {
 // http请求方式:GET
 // https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN
 func (t *Template) GetIndustry() core.Response {
-	resp := t.client.Get(
+	resp := core.Get(
 		Link(templateGetIndustryURLSuffix),
 		t.accessToken.GetToken().KeyMap())
 	return resp
@@ -94,7 +94,7 @@ func (t *Template) GetIndustry() core.Response {
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
 func (t *Template) Add(shortID string) core.Response {
-	resp := t.client.PostJSON(
+	resp := core.PostJSON(
 		Link(templateAPIAddTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
 		util.Map{"template_id_short": shortID})
@@ -105,7 +105,7 @@ func (t *Template) Add(shortID string) core.Response {
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
 func (t *Template) Send(template *message.Template) core.Response {
-	resp := t.client.PostJSON(
+	resp := core.PostJSON(
 		Link(messageTemplateSendURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
 		template,
@@ -116,7 +116,7 @@ func (t *Template) Send(template *message.Template) core.Response {
 //GetAllPrivate 获取模板列表
 // url:https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN
 func (t *Template) GetAllPrivate() core.Response {
-	resp := t.client.Get(
+	resp := core.Get(
 		Link(templateGetAllPrivateTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
 	)
@@ -126,7 +126,7 @@ func (t *Template) GetAllPrivate() core.Response {
 //DelAllPrivate 删除模板
 // url:https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN
 func (t *Template) DelAllPrivate(templateID string) core.Response {
-	resp := t.client.PostJSON(
+	resp := core.PostJSON(
 		Link(templateDelPrivateTemplateURLSuffix),
 		t.accessToken.GetToken().KeyMap(),
 		util.Map{"template_id": templateID},

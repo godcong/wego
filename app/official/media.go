@@ -35,7 +35,7 @@ func (m *Media) Upload(filePath string, mediaType core.MediaType) core.Response 
 	log.Debug("Media|Upload", filePath, mediaType)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("type", mediaType.String())
-	resp := m.client.Upload(
+	resp := core..Upload(
 		Link(mediaUploadURLSuffix),
 		p,
 		util.Map{
@@ -82,7 +82,7 @@ func (m *Media) Get(mediaID string) core.Response {
 	log.Debug("Media|Get", mediaID)
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.Get(
+	resp := core.Get(
 		Link(mediaGetURLSuffix),
 		p)
 	return resp
@@ -94,7 +94,7 @@ func (m *Media) Get(mediaID string) core.Response {
 func (m *Media) GetJssdk(mediaID string) core.Response {
 	p := m.accessToken.GetToken().KeyMap()
 	p.Set("media_id", mediaID)
-	resp := m.client.Get(
+	resp := core.Get(
 		Link(mediaGetJssdkURLSuffix),
 		p)
 	return resp
@@ -119,7 +119,7 @@ func (m *Media) UploadBufferImg(filePath string) core.Response {
 
 func (m *Media) uploadImg(name string, filePath string) core.Response {
 	token := m.accessToken.GetToken()
-	resp := m.client.Upload(
+	resp := core.Upload(
 		Link(mediaUploadImgURLSuffix),
 		token.KeyMap(),
 		util.Map{
