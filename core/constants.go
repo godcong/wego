@@ -34,3 +34,12 @@ const msgrecordGetmsglistURLSuffix = "/customservice/msgrecord/getmsglist"
 
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
 const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
+
+//ticketGetTicket api address suffix
+const ticketGetTicket = "/cgi-bin/ticket/getticket"
+
+// POST ...
+const POST = "POST"
+
+// GET ...
+const GET = "GET"

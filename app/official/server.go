@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
-	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/log"
 )
 
@@ -25,7 +25,7 @@ type Server struct {
 	CryptResponse bool
 	//message         *core.Message
 	msgType         string
-	bizMsg          *crypt.BizMsg
+	bizMsg          *cipher.BizMsg
 	defaultCallback []core.MessageCallback
 	callback        map[message.MsgType][]core.MessageCallback
 }
@@ -150,7 +150,7 @@ func newServer(account *Account) *Server {
 
 	return &Server{
 		msgType:         "xml",
-		bizMsg:          crypt.NewBizMsg(token, key, id),
+		bizMsg:          cipher.NewBizMsg(token, key, id),
 		defaultCallback: []core.MessageCallback{},
 		callback:        map[message.MsgType][]core.MessageCallback{},
 	}

@@ -1,4 +1,4 @@
-package crypt
+package cipher
 
 import (
 	"crypto/rand"
@@ -21,6 +21,78 @@ var (
 	ErrorNotRSAPrivateKey    = errors.New("key is not a valid RSA private key")
 	ErrorNotRSAPublicKey     = errors.New("key is not a valid RSA public key")
 )
+
+type cryptRSA struct {
+	KeyPath []byte
+}
+
+// Type ...
+func (*cryptRSA) Type() CryptType {
+	return RSA
+}
+
+// SetParameter ...
+func (c *cryptRSA) SetParameter(key string, val []byte) {
+	c.KeyPath = val
+}
+
+// GetParameter ...
+func (c *cryptRSA) GetParameter(key string) []byte {
+	return c.KeyPath
+}
+
+// Encrypt ...
+func (c *cryptRSA) Encrypt(data []byte) ([]byte, error) {
+
+	publicKey, err := ioutil.ReadFile(string(c.KeyPath))
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+	key, err := ParseRSAPublicKeyFromPEM(publicKey)
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+	part, err := rsa.EncryptOAEP(sha1.New(), rand.Reader, key, []byte(data), nil)
+	if err != nil {
+		log.Debug(err)
+		return nil, err
+	}
+
+	buf := make([]byte, base64.StdEncoding.EncodedLen(len(part)))
+	base64.StdEncoding.Encode(buf, part)
+	return buf, nil
+}
+
+// Decrypt ...
+func (c *cryptRSA) Decrypt(data []byte) ([]byte, error) {
+	privateKey, err := ioutil.ReadFile(string(c.KeyPath))
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := ParseRSAPrivateKeyFromPEM(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := Base64Decode(data)
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := rsa.DecryptOAEP(sha1.New(), rand.Reader, key, t, nil)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
+}
+
+// CryptRSA ...
+func CryptRSA() Cipher {
+	return &cryptRSA{}
+}
 
 /*ParseRSAPrivateKeyFromPEM Parse PEM encoded PKCS1 or PKCS8 private key */
 func ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error) {

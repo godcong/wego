@@ -1,7 +1,11 @@
 package payment
 
 import (
+	"fmt"
+	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/log"
 	"strings"
+	"time"
 
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
@@ -10,6 +14,7 @@ import (
 /*JSSDK JSSDK */
 type JSSDK struct {
 	*Payment
+	jssdk *core.JSSDK
 }
 
 func newJSSDK(p *Payment) interface{} {
@@ -23,13 +28,13 @@ func NewJSSDK(config *core.Config) *JSSDK {
 	return newJSSDK(NewPayment(config)).(*JSSDK)
 }
 
-func (j *JSSDK) getURL() string {
+func (J *JSSDK) getURL() string {
 	return core.GetServerIP()
 }
 
 /*BridgeConfig bridge 设置 */
-func (j *JSSDK) BridgeConfig(pid string) util.Map {
-	appID := j.DeepGet("sub_appid", "app_id")
+func (J *JSSDK) BridgeConfig(pid string) util.Map {
+	appID := J.DeepGet("sub_appid", "app_id")
 
 	m := util.Map{
 		"appId":     appID,
@@ -39,14 +44,14 @@ func (j *JSSDK) BridgeConfig(pid string) util.Map {
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", GenerateSignature(m, j.GetString("key"), MakeSignMD5))
+	m.Set("paySign", GenerateSignature(m, J.GetString("key"), MakeSignMD5))
 
 	return m
 }
 
 /*SdkConfig sdk 设置 */
-func (j *JSSDK) SdkConfig(pid string) util.Map {
-	config := j.BridgeConfig(pid)
+func (J *JSSDK) SdkConfig(pid string) util.Map {
+	config := J.BridgeConfig(pid)
 
 	config.Set("timestamp", config.Get("timeStamp"))
 	config.Delete("timeStamp")
@@ -55,24 +60,24 @@ func (j *JSSDK) SdkConfig(pid string) util.Map {
 }
 
 /*AppConfig app 设置 */
-func (j *JSSDK) AppConfig(pid string) util.Map {
+func (J *JSSDK) AppConfig(pid string) util.Map {
 	m := util.Map{
-		"appid":     j.Get("app_id"),
-		"partnerid": j.Get("mch_id"),
+		"appid":     J.Get("app_id"),
+		"partnerid": J.Get("mch_id"),
 		"prepayid":  pid,
 		"noncestr":  util.GenerateNonceStr(),
 		"timestamp": util.Time(),
 		"package":   "Sign=WXPay",
 	}
 
-	m.Set("sign", GenerateSignature(m, j.GetString("aes_key"), MakeSignMD5))
+	m.Set("sign", GenerateSignature(m, J.GetString("aes_key"), MakeSignMD5))
 	return m
 }
 
 // ShareAddressConfig ...
 //参数:token
 //类型:string或*core.AccessToken
-func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
+func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	token := ""
 	switch vv := v.(type) {
 	case *core.AccessToken:
@@ -82,22 +87,71 @@ func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	}
 
 	m := util.Map{
-		"appId":     j.Get("app_id"),
+		"appId":     J.Get("app_id"),
 		"scope":     "jsapi_address",
 		"timeStamp": util.Time(),
 		"nonceStr":  util.GenerateNonceStr(),
 		"signType":  "SHA1",
 	}
 
-	sm := util.Map{
+	signMsg := util.Map{
 		"appid":       m.Get("appId"),
-		"url":         j.getURL(),
+		"url":         J.getURL(),
 		"timestamp":   m.Get("timeStamp"),
 		"noncestr":    m.Get("nonceStr"),
 		"accesstoken": token,
 	}
 
-	m.Set("addrSign", util.SHA1(sm.URLEncode()))
+	m.Set("addrSign", util.SHA1(signMsg.URLEncode()))
 
 	return m
+}
+
+// BuildConfig ...
+func (J *JSSDK) BuildConfig(maps util.Map) util.Map {
+	ticket := J.GetTicket()
+	nonce := util.GenerateNonceStr()
+	ts := util.Time()
+	url := maps.GetString("url")
+	m := util.Map{
+		"appId":     J.Get("appId"),
+		"nonceStr":  nonce,
+		"timestamp": ts,
+		"url":       url,
+		"jsApiList": maps.Get("jsApiList"),
+		"signature": getTicketSignature(ticket, nonce, ts, url),
+	}
+	return m
+}
+
+// GetTicket ...
+func (J *JSSDK) GetTicket() string {
+	if cache.Has(J.getCacheKey()) {
+		return cache.Get(J.getCacheKey()).(string)
+	}
+
+	resp := J.jssdk.Ticket().Get("jsapi", false)
+	if resp.Error() != nil {
+		return ""
+	}
+	m := resp.ToMap()
+	ticket := m.GetString("ticket")
+	expires, b := m.GetInt64("expires_in")
+
+	log.Println(expires, b)
+	if !b {
+		return ""
+	}
+	t := time.Unix(time.Now().Unix()+expires-500, 0)
+	cache.SetWithTTL(J.getCacheKey(), ticket, &t)
+	return ticket
+
+}
+
+func (J *JSSDK) getCacheKey() string {
+	return "godcong.wego.official.account.jssdk.ticket.jsapi" + J.GetString("app_id")
+}
+
+func getTicketSignature(ticket, nonce, ts, url string) string {
+	return util.SHA1(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket, nonce, ts, url))
 }

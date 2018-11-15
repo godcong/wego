@@ -5,6 +5,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"strconv"
 )
 
 // NewAble ...
@@ -332,6 +333,35 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 
 	log.Debug("initRequest end", maps)
 	return maps
+}
+
+// SettlementQuery ...
+func (p *Payment) SettlementQuery(useTag, offset, limit int, dateStart, dateEnd string, option ...util.Map) core.Response {
+	m := util.MapsToMap(util.Map{
+		"appid":      p.Get("app_id"),
+		"date_end":   dateEnd,
+		"date_start": dateStart,
+		"offset":     strconv.Itoa(offset),
+		"limit":      strconv.Itoa(limit),
+		"usetag":     strconv.Itoa(useTag),
+	}, option)
+	return p.Request(paySettlementquery, m)
+}
+
+// QueryExchangeRate ...
+func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) core.Response {
+
+	m := util.MapsToMap(util.Map{
+		"appid":    p.Get("app_id"),
+		"fee_type": feeType,
+		"date":     date,
+		"mch_id":   p.Get("mch_id"),
+	}, option)
+
+	m.Set("sign", GenerateSignatureWithIgnore(m, p.GetKey(), nil))
+	return p.client.Request(p.Link(payQueryexchagerate), "post", util.Map{
+		core.DataTypeXML: m,
+	})
 }
 
 // Link connect domain url and url suffix

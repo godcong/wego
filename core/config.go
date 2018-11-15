@@ -253,6 +253,7 @@ func NewConfig(tree *toml.Tree) *Config {
 	}
 }
 
+// NilConfig ...
 func NilConfig() *Config {
 	cfg, err := toml.TreeFromMap(util.Map{})
 	if err != nil {

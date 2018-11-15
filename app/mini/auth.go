@@ -1,8 +1,8 @@
 package mini
 
 import (
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/crypt"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
@@ -10,13 +10,13 @@ import (
 /*Auth Auth */
 type Auth struct {
 	*Program
-	dc *crypt.DataCrypt
+	dc *cipher.DataCrypt
 }
 
 func newAuth(program *Program) *Auth {
 	return &Auth{
 		Program: program,
-		dc:      crypt.NewDataCrypt(program.GetString("app_id")),
+		dc:      cipher.NewDataCrypt(program.GetString("app_id")),
 	}
 }
 
