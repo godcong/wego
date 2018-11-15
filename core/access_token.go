@@ -65,13 +65,7 @@ func CredentialGet(v []interface{}) util.Map {
 /*NewAccessToken NewAccessToken*/
 func NewAccessToken(v ...interface{}) *AccessToken {
 	accessToken := newAccessToken(CredentialGet(v))
-	accessToken.SetClient(ClientGet(v))
 	return accessToken
-}
-
-// SetClient ...
-func (a *AccessToken) SetClient(client *Client) {
-	a.client = client
 }
 
 // Credentials ...
