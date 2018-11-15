@@ -61,10 +61,7 @@ func newApplication(config *core.Config) *Application {
 	}
 
 	app.System = initSystem(config.GetSubConfig("system"))
-	log.InitLog(log.Log{
-		Level: "debug",
-		File:  "wechat.log",
-	}, true)
+	log.InitLog(app.System.Log, app.System.Debug)
 	app.Register(RegConfig, config)
 	return app
 }
@@ -169,10 +166,10 @@ type Application struct {
 
 //C parse config from map
 func C(p util.Map) *core.Config {
-	cfg, err := toml.TreeFromMap(p.Map())
-	if err == nil {
-		return core.NewConfig(cfg)
+	tree, err := toml.TreeFromMap(p.Map())
+	if err != nil {
+		log.Error(err)
+		return nil
 	}
-	log.Error(err)
-	return nil
+	return core.NewConfig(tree)
 }
