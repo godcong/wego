@@ -20,7 +20,6 @@ var moduleLists = util.Map{
 type Account struct {
 	*core.Config
 	Module      util.Map
-	client      *core.Client
 	accessToken *core.AccessToken
 }
 
@@ -79,16 +78,6 @@ func (a *Account) AccessToken() *core.AccessToken {
 // SetAccessToken ...
 func (a *Account) SetAccessToken(accessToken *core.AccessToken) {
 	a.accessToken = accessToken
-}
-
-// Client ...
-func (a *Account) Client() *core.Client {
-	return a.client
-}
-
-//SetClient set client replace the default client
-func (a *Account) SetClient(client *core.Client) {
-	a.client = client
 }
 
 /*Server Server*/
