@@ -142,7 +142,7 @@ func RequestWithContext(ctx context.Context, method string, url string, option u
 }
 
 // RequestRaw ...
-func RequestRaw(url string, method string, option util.Map) []byte {
+func RequestRaw(method, url string, option util.Map) []byte {
 	log.Debug("RequestRaw|httpClient", url, method, option)
 	return RequestWithContext(context.Background(), method, url, option).Bytes()
 }
