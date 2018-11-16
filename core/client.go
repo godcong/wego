@@ -96,6 +96,7 @@ func ClientSet(setter ClientSetter, v []interface{}) bool {
 	return false
 }
 
+// PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
 	return client.PostForm(url, query, form)
 }
@@ -107,11 +108,13 @@ func (c *Client) PostForm(url string, query util.Map, form interface{}) Responde
 	client := buildTransport(NilConfig())
 	return do(c.Context, client, request)
 }
+
+// PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
 	return client.PostJSON(url, query, json)
 }
 
-/*PostJSON json post请求 */
+// PostJSON json post请求
 func (c *Client) PostJSON(url string, query util.Map, json interface{}) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processJSON(POST, url, json)
@@ -119,11 +122,12 @@ func (c *Client) PostJSON(url string, query util.Map, json interface{}) Responde
 	return do(c.Context, client, request)
 }
 
+// PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
 	return client.PostXML(url, query, xml)
 }
 
-/*PostXML xml post请求 */
+// PostXML  xml post请求
 func (c *Client) PostXML(url string, query util.Map, xml interface{}) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processXML(POST, url, xml)
@@ -131,11 +135,12 @@ func (c *Client) PostXML(url string, query util.Map, xml interface{}) Responder 
 	return do(c.Context, client, request)
 }
 
+// Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
 	return client.Upload(url, query, multi)
 }
 
-/*Upload upload请求 */
+// Upload upload请求
 func (c *Client) Upload(url string, query, multi util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processMultipart(POST, url, multi)
@@ -143,11 +148,12 @@ func (c *Client) Upload(url string, query, multi util.Map) Responder {
 	return do(c.Context, client, request)
 }
 
+// Post post请求
 func Post(url string, maps util.Map) Responder {
 	return client.Post(url, maps)
 }
 
-/*Post post请求 */
+// Post post请求
 func (c *Client) Post(url string, maps util.Map) Responder {
 	client := buildClient(maps)
 	url = buildRequestURL(url, maps)
@@ -155,11 +161,12 @@ func (c *Client) Post(url string, maps util.Map) Responder {
 	return do(c.Context, client, req)
 }
 
+// Get get请求
 func Get(url string, query util.Map) Responder {
 	return client.Get(url, query)
 }
 
-/*Get get请求 */
+// Get get请求
 func (c *Client) Get(url string, query util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := processNothing(GET, url, nil)

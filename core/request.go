@@ -17,7 +17,9 @@ import (
 	"strings"
 )
 
+// Requester ...
 type Requester interface {
+	Request() *http.Request
 }
 
 // ErrNilRequestBody ...

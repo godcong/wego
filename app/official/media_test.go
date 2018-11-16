@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/app/official"
 )
 
+// TestMedia_Upload ...
 func TestMedia_Upload(t *testing.T) {
 	media := official.NewMedia(config)
 	var resp core.Responder
@@ -20,12 +21,14 @@ func TestMedia_Upload(t *testing.T) {
 
 }
 
+// TestMedia_Get ...
 func TestMedia_Get(t *testing.T) {
 	media := official.NewMedia(config)
 	resp := media.Get("9fCk1Any5VcwmbJPzGztWMq3a1PsWv11KpgLTdM_YXgIlwdAUosdeSI_M6M7Qtwb")
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMedia_GetJssdk ...
 func TestMedia_GetJssdk(t *testing.T) {
 	media := official.NewMedia(config)
 	resp := media.GetJssdk("JLqX5-WgxC5k7zu91j54HupFziaCqsfGfrIzOclTs_CHvvmPLJ5bdIZtBfI-pgYF")

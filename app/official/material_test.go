@@ -10,10 +10,12 @@ import (
 
 var material = official.NewMaterial(config)
 
+// TestNewMaterial ...
 func TestNewMaterial(t *testing.T) {
 
 }
 
+// TestMaterial_AddNews ...
 func TestMaterial_AddNews(t *testing.T) {
 
 	var resp core.Responder
@@ -31,12 +33,14 @@ func TestMaterial_AddNews(t *testing.T) {
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_AddMaterial ...
 func TestMaterial_AddMaterial(t *testing.T) {
 
 	resp := material.AddMaterial("test.jpg", core.MediaTypeImage)
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_UploadVideo ...
 func TestMaterial_UploadVideo(t *testing.T) {
 
 	var resp core.Responder
@@ -44,6 +48,7 @@ func TestMaterial_UploadVideo(t *testing.T) {
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_Get ...
 func TestMaterial_Get(t *testing.T) {
 
 	var resp core.Responder
@@ -52,6 +57,7 @@ func TestMaterial_Get(t *testing.T) {
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_Del ...
 func TestMaterial_Del(t *testing.T) {
 
 	var resp core.Responder
@@ -60,6 +66,7 @@ func TestMaterial_Del(t *testing.T) {
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_UpdateNews ...
 func TestMaterial_UpdateNews(t *testing.T) {
 
 	var resp core.Responder
@@ -68,6 +75,7 @@ func TestMaterial_UpdateNews(t *testing.T) {
 	t.Log(string(resp.Bytes()))
 }
 
+// TestMaterial_GetMaterialCount ...
 func TestMaterial_GetMaterialCount(t *testing.T) {
 
 	var resp core.Responder
@@ -77,6 +85,7 @@ func TestMaterial_GetMaterialCount(t *testing.T) {
 
 }
 
+// TestMaterial_BatchGet ...
 func TestMaterial_BatchGet(t *testing.T) {
 
 	var resp core.Responder
