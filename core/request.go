@@ -97,6 +97,7 @@ type request struct {
 }
 
 func (r *request) Do(ctx context.Context) Responder {
+	log.Debug("Requester|Do", r.method, r.url, r.body)
 	request := r.function(r.method, r.url, r.body)
 	return do(ctx, r.client, request)
 }

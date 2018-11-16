@@ -117,11 +117,10 @@ func (p *Payment) SetSubMerchant(mchID, appID string) *Payment {
 
 // Request 默认请求
 func (p *Payment) Request(s string, maps util.Map) core.Responder {
-
 	m := util.Map{
 		core.DataTypeXML: p.initRequest(maps),
 	}
-	return core.Request(p.Link(s), "post", m)
+	return core.Post(p.Link(s), m)
 }
 
 // RequestRaw Response转成[]byte

@@ -109,7 +109,7 @@ func TestOrder_Unify(t *testing.T) {
 	//m.Set("openid", "oE_gl0Yr54fUjBhU5nBlP4hS2efo")
 
 	////m.Set("product_id", "12")
-	r := wego.Payment().Order().Unify(m)
+	r := payment.NewOrder(cfg).Unify(m)
 	if r.Error() != nil {
 		t.Log(r)
 	}
@@ -138,7 +138,7 @@ func TestNewPayment(t *testing.T) {
 		"mch_id": "150000000000",                 //商户ID
 		"key":    "aTKnSUcTkbaaaaaaaaaaaaaaaaaa", //支付key
 
-		"notify_url": "https://host.address/uri", //支付回调地址
+		"notify_url": "https://mp.quick58.com/api/callback", //支付回调地址
 
 		//如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
 		"cert_path": "cert/apiclient_cert.pem", //支付证书地址
@@ -154,7 +154,7 @@ func TestNewPayment(t *testing.T) {
 	m := make(util.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
 	m.Set("out_trade_no", "123456")
-	m.Set("total_fee", "1")
+	m.Set("total_fee", "102")
 	m.Set("trade_type", "NATIVE")
 	r := payment.Order().Unify(m)
 	if r.Error() != nil {

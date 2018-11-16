@@ -136,7 +136,7 @@ func Request(method string, url string, option util.Map) Responder {
 }
 
 // RequestWithContext ...
-func RequestWithContext(ctx context.Context, url string, method string, option util.Map) Responder {
+func RequestWithContext(ctx context.Context, method string, url string, option util.Map) Responder {
 	log.Debug("RequestWithContext|httpClient", url, method, option)
 	return buildRequester(method, url, option).Do(ctx)
 }
