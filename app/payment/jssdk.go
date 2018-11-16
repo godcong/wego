@@ -2,8 +2,6 @@ package payment
 
 import (
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/util"
-	"strings"
 )
 
 /*JSSDK JSSDK */
@@ -15,6 +13,7 @@ func newJSSDK(p *Payment) interface{} {
 	jssdk := &JSSDK{
 		JSSDK: core.NewJSSDK(p.Config),
 	}
+	jssdk.CacheKey = jssdk.getCacheKey
 	return jssdk
 }
 
@@ -27,4 +26,7 @@ func NewJSSDK(config *core.Config) *JSSDK {
 
 func (j *JSSDK) getURL() string {
 	return core.GetServerIP()
+}
+func (j *JSSDK) getCacheKey() string {
+	return "godcong.wego.payment.jssdk.ticket.jsapi" + j.GetString("app_id")
 }
