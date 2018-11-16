@@ -79,16 +79,6 @@ func (a *Application) Config() *core.Config {
 	return (*core.Config)(nil)
 }
 
-//Client get application client instance
-func (a *Application) Client() *core.Client {
-	if v, b := a.Get(RegClient); b {
-		return v.(*core.Client)
-	}
-	client := core.DefaultClient()
-	a.Register("client", client)
-	return client
-}
-
 //Payment return a default Payment
 func (a *Application) Payment(cfg string) *payment.Payment {
 	return payment.NewPayment(a.Config().GetSubConfig(cfg))

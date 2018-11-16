@@ -45,192 +45,116 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
-var client = &Client{
-	Context: context.Background(),
-}
-
-/*Client Client */
-type Client struct {
-	context.Context
-}
-
-// ClientSetter ...
-type ClientSetter interface {
-	SetClient(*Client)
-}
-
-// ClientGetter ...
-type ClientGetter interface {
-	GetClient() *Client
-}
-
-// ClientGet ...
-func ClientGet(v []interface{}) *Client {
-	size := len(v)
-	for i := 0; i < size; i++ {
-		switch sv := v[i].(type) {
-		case *Client:
-			return sv
-		case Client:
-			return &sv
-		}
-	}
-
-	return DefaultClient()
-}
-
-// ClientSet ...
-func ClientSet(setter ClientSetter, v []interface{}) bool {
-	size := len(v)
-	for i := 0; i < size; i++ {
-		switch sv := (v[i]).(type) {
-		case *Client:
-			setter.SetClient(sv)
-			return true
-		case Client:
-			setter.SetClient(&sv)
-			return true
-		}
-	}
-
-	return false
-}
+//type Client struct {
+//	context.Context
+//}
+//
+////DefaultClient result a client with default value
+//var DefaultClient = &Client{
+//	Context: context.Background(),
+//}
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
-	return client.PostForm(url, query, form)
-}
-
-// PostForm post form request
-func (c *Client) PostForm(url string, query util.Map, form interface{}) Responder {
 	url = url + "?" + query.URLEncode()
-	request := processForm(POST, url, form)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request)
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processForm,
+		method:   POST,
+		url:      url,
+		body:     form,
+	}
+	return request.Do(context.Background())
 }
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
-	return client.PostJSON(url, query, json)
-}
-
-// PostJSON json post请求
-func (c *Client) PostJSON(url string, query util.Map, json interface{}) Responder {
 	url = url + "?" + query.URLEncode()
-	request := processJSON(POST, url, json)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request)
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processJSON,
+		method:   POST,
+		url:      url,
+		body:     json,
+	}
+	return request.Do(context.Background())
 }
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
-	return client.PostXML(url, query, xml)
-}
-
-// PostXML  xml post请求
-func (c *Client) PostXML(url string, query util.Map, xml interface{}) Responder {
 	url = url + "?" + query.URLEncode()
-	request := processXML(POST, url, xml)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request)
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processXML,
+		method:   POST,
+		url:      url,
+		body:     xml,
+	}
+	return request.Do(context.Background())
 }
 
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
-	return client.Upload(url, query, multi)
-}
-
-// Upload upload请求
-func (c *Client) Upload(url string, query, multi util.Map) Responder {
 	url = url + "?" + query.URLEncode()
-	request := processMultipart(POST, url, multi)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request)
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processMultipart,
+		method:   POST,
+		url:      url,
+		body:     multi,
+	}
+	return request.Do(context.Background())
 }
 
 // Post post请求
 func Post(url string, maps util.Map) Responder {
-	return client.Post(url, maps)
-}
-
-// Post post请求
-func (c *Client) Post(url string, maps util.Map) Responder {
-	client := buildClient(maps)
-	url = buildRequestURL(url, maps)
-	req := buildRequest(POST, url, maps)
-	return do(c.Context, client, req)
+	return Request(POST, url, maps)
 }
 
 // Get get请求
 func Get(url string, query util.Map) Responder {
-	return client.Get(url, query)
+	url = url + "?" + query.URLEncode()
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processNothing,
+		method:   GET,
+		url:      url,
+		body:     nil,
+	}
+	return request.Do(context.Background())
 }
 
-// Get get请求
-func (c *Client) Get(url string, query util.Map) Responder {
-	url = url + "?" + query.URLEncode()
-	request := processNothing(GET, url, nil)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request)
-}
-
-//GetRaw get request result raw data
-func (c *Client) GetRaw(url string, query util.Map) []byte {
-	url = url + "?" + query.URLEncode()
-	request := processNothing(GET, url, nil)
-	client := buildTransport(NilConfig())
-	return do(c.Context, client, request).Bytes()
+// GetRaw get请求 返回[]byte
+func GetRaw(url string, query util.Map) []byte {
+	return Get(url, query).Bytes()
 }
 
 // Request ...
-func Request(url string, method string, option util.Map) Responder {
+func Request(method string, url string, option util.Map) Responder {
 	log.Debug("Request|httpClient", url, method, option)
-	return request(context.Background(), url, method, option)
+	return RequestWithContext(context.Background(), method, url, option)
 }
 
 // RequestWithContext ...
 func RequestWithContext(ctx context.Context, url string, method string, option util.Map) Responder {
 	log.Debug("RequestWithContext|httpClient", url, method, option)
-	return request(ctx, url, method, option)
+	return buildRequester(method, url, option).Do(ctx)
 }
 
 // RequestRaw ...
 func RequestRaw(url string, method string, option util.Map) []byte {
 	log.Debug("RequestRaw|httpClient", url, method, option)
-	return request(context.Background(), url, method, option).Bytes()
+	return RequestWithContext(context.Background(), method, url, option).Bytes()
 }
 
-/*Request 普通请求 */
-func (c *Client) Request(url string, method string, option util.Map) Responder {
-	log.Debug("ClientRequest|httpClient", url, method, option)
-	return request(c.Context, url, method, option)
-}
+func buildTransport(config *Config, option ...util.Map) *http.Client {
+	m := util.MapsToMap(util.Map{
+		"time_out":   30,
+		"keep_alive": 30,
+	}, option)
+	timeOut, _ := m.GetInt64("time_out")
+	keepAlive, _ := m.GetInt64("keep_alive")
 
-/*RequestRaw raw请求 */
-func (c *Client) RequestRaw(url string, method string, option util.Map) []byte {
-	log.Debug("ClientRequest|httpClient", url, method, option)
-	return request(c.Context, url, method, option).Bytes()
-}
-
-func newClient(ctx context.Context) *Client {
-	return &Client{
-		Context: ctx,
-	}
-}
-
-/*NewClient 创建一个client */
-func NewClient(ctx context.Context) *Client {
-	return newClient(ctx)
-}
-
-//DefaultClient result a client with default value
-func DefaultClient() *Client {
-	return client
-}
-
-func buildTransport(config *Config) *http.Client {
-	timeOut := config.GetIntD("http.time_out", 30)
-	keepAlive := config.GetIntD("http.keep_alive", 30)
 	return &http.Client{
 		Transport: &http.Transport{
 			Proxy: nil,
@@ -264,14 +188,17 @@ func buildTransport(config *Config) *http.Client {
 
 }
 
-func buildSafeTransport(config *Config) *http.Client {
+func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
 	if config == nil {
 		panic("safe request must set config before use")
 	}
 
-	//if idx := config.Check("cert_path", "key_path"); idx != -1 {
-	//	panic(fmt.Sprintf("the %d key was not found", idx))
-	//}
+	m := util.MapsToMap(util.Map{
+		"time_out":   30,
+		"keep_alive": 30,
+	}, option)
+	timeOut, _ := m.GetInt64("time_out")
+	keepAlive, _ := m.GetInt64("keep_alive")
 
 	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
 	if err != nil {
@@ -290,8 +217,6 @@ func buildSafeTransport(config *Config) *http.Client {
 		InsecureSkipVerify: true, //client端略过对证书的校验
 	}
 	tlsConfig.BuildNameToCertificate()
-	timeOut := config.GetIntD("http.time_out", 30)
-	keepAlive := config.GetIntD("http.keep_alive", 30)
 	return &http.Client{
 		Transport: &http.Transport{
 			DialContext: (&net.Dialer{
@@ -318,7 +243,7 @@ func buildClient(maps util.Map) *http.Client {
 		if b && v.Check("cert_path", "key_path") == -1 {
 			return buildSafeTransport(v)
 		}
-		return buildTransport(v)
+		return buildTransport(NilConfig())
 
 	}
 	//默认输出未配置client
