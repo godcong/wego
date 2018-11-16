@@ -54,7 +54,7 @@ unionid	用户在开放平台的唯一标识符
 失败:
 {"errcode":40163,"errmsg":"code been used, hints: [ req_id: gjUEFA0981th20 ]"}
 */
-func (a *Auth) Session(code string) util.Map {
+func (a *Auth) Session(code string) core.Responder {
 	params := util.Map{
 		"appid":      a.Get("app_id"),
 		"secret":     a.Get("secret"),
@@ -65,19 +65,21 @@ func (a *Auth) Session(code string) util.Map {
 		Link(snsJscode2session),
 		params,
 	)
-	return resp.ToMap()
+	return resp
 }
 
-/*UserInfoByCode 从Code获取用户信息 */
+//UserInfoByCode 从Code获取用户信息
+//Deprecated: unused
 func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
-	p := a.Session(code)
+	p := a.Session(code).ToMap()
 	if !p.Has("errcode") {
 		return a.UserInfo(p.GetString("session_key"), encrypted, iv)
 	}
 	return nil
 }
 
-/*UserInfo 用户信息 */
+//UserInfo 用户信息
+//Deprecated: unused
 func (a *Auth) UserInfo(key, encrypted, iv string) []byte {
 	r, e := a.dc.Decrypt(encrypted, iv, key)
 	if e != nil {

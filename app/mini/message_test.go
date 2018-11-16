@@ -1,8 +1,8 @@
 package mini_test
 
 import (
+	"github.com/godcong/wego"
 	"github.com/godcong/wego/app/mini"
-	"github.com/godcong/wego/core"
 	"testing"
 
 	"github.com/godcong/wego/util"
@@ -43,7 +43,7 @@ var imageMessage = util.Map{
 
 // TestMessage_Send ...
 func TestMessage_Send(t *testing.T) {
-	msg := mini.NewMessage(core.C(util.Map{
+	msg := mini.NewMessage(wego.C(util.Map{
 		"app_id": "wx3c69535993f4651d",
 		"secret": "f8c7a2cf0c6ed44e2c719964bbe13b1e",
 	}))

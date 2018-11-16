@@ -123,7 +123,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	if token == nil {
 		return nil
 	}
-	log.Printf("AccessToken|getToken: %+v", *token)
+	log.Debug("AccessToken|getToken", *token)
 	if v := token.ExpiresIn; v != 0 {
 		a.SetTokenWithLife(token.AccessToken, time.Unix(v, 0))
 	} else {

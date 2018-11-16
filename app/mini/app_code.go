@@ -2,8 +2,7 @@ package mini
 
 import (
 	"github.com/godcong/wego/core"
-	"log"
-
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
 
@@ -37,13 +36,10 @@ line_color	Object	{"r":"0","g":"0","b":"0"}	auth_color 为 false 时生效，使
 is_hyaline	Bool	false	是否需要透明底色， is_hyaline 为true时，生成透明底色的小程序码
 注意:通过该接口生成的小程序码，永久有效，数量限制见文末说明，请谨慎使用。用户扫描该码进入小程序后，将直接进入 path 对应的页面。
 */
-func (a *AppCode) Get(path string, optionals util.Map) util.Map {
-	params := util.Map{"path": path}
-	params.Join(optionals)
-
-	j := a.getStream(Link(wxaGetWXACode), params)
-
-	return util.JSONToMap(j)
+func (a *AppCode) Get(path string, option ...util.Map) core.Responder {
+	params := util.MapsToMap(util.Map{"path": path}, option)
+	responder := a.getStream(Link(wxaGetWXACode), params)
+	return responder
 }
 
 /*GetQrCode 获取小程序二维码
@@ -57,11 +53,10 @@ path	String		不能为空，最大长度 128 字节
 width	Int	430	二维码的宽度
 注意:通过该接口生成的小程序二维码，永久有效，数量限制见文末说明，请谨慎使用。用户扫描该码进入小程序后，将直接进入 path 对应的页面。
 */
-func (a *AppCode) GetQrCode(path string, width int) util.Map {
-	params := util.Map{"path": path, "width": width}
-
-	j := a.getStream(Link(wxaappCreatewxaqrcode), params)
-	return util.JSONToMap(j)
+func (a *AppCode) GetQrCode(path string, width int) core.Responder {
+	maps := util.Map{"path": path, "width": width}
+	responder := a.getStream(Link(wxaappCreatewxaqrcode), maps)
+	return responder
 }
 
 /*GetUnlimit 获取小程序码
@@ -80,26 +75,15 @@ line_color	Object	{"r":"0","g":"0","b":"0"}	auto_color 为 false 时生效，使
 is_hyaline	Bool	false	是否需要透明底色， is_hyaline 为true时，生成透明底色的小程序码
 注意:通过该接口生成的小程序码，永久有效，数量暂无限制。用户扫描该码进入小程序后，开发者需在对应页面获取的码中 scene 字段的值，再做处理逻辑。使用如下代码可以获取到二维码中的 scene 字段的值。调试阶段可以使用开发工具的条件编译自定义参数 scene=xxxx 进行模拟，开发工具模拟时的 scene 的参数值需要进行 urlencode
 */
-func (a *AppCode) GetUnlimit(scene string, optionals util.Map) util.Map {
-	params := util.Map{"scene": scene}
-	params.Join(optionals)
-
-	j := a.getStream(Link(wxaGetWXACodeUnlimit), params)
-	return util.JSONToMap(j)
+func (a *AppCode) GetUnlimit(scene string, option ...util.Map) core.Responder {
+	maps := util.MapsToMap(util.Map{"scene": scene}, option)
+	responder := a.getStream(Link(wxaGetWXACodeUnlimit), maps)
+	return responder
 }
 
-func (a *AppCode) getStream(url string, m util.Map) []byte {
-	log.Println(url, m)
-	token0 := a.AccessToken().GetToken()
-	token := token0.KeyMap()
-	//strings.Join([]string{"access_token", token0.GetKey()}, "=")
-
-	resp := core.RequestRaw(
-		url,
-		"post",
-		util.Map{core.DataTypeQuery: token.URLEncode(),
-			core.DataTypeJSON: m})
-	panic(resp)
-	//TODO
-	return nil
+func (a *AppCode) getStream(url string, m util.Map) core.Responder {
+	log.Debug("AppCode|getStream", url, m)
+	token := a.AccessToken().GetToken()
+	responder := core.PostJSON(url, token.KeyMap(), m)
+	return responder
 }
