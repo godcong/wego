@@ -13,20 +13,18 @@ import (
 
 /*JSSDK JSSDK */
 type JSSDK struct {
-	*Payment
-	jssdk *core.JSSDK
+	*core.JSSDK
 }
 
 func newJSSDK(p *Payment) interface{} {
 	return &JSSDK{
-		Payment: p,
+		JSSDK: core.NewJSSDK(p.Config),
 	}
 }
 
 /*NewJSSDK NewJSSDK */
 func NewJSSDK(config *core.Config) *JSSDK {
 	jssdk := newJSSDK(NewPayment(config)).(*JSSDK)
-	jssdk.jssdk = core.NewJSSDK(config)
 	return jssdk
 }
 
@@ -132,7 +130,7 @@ func (J *JSSDK) GetTicket(genre string, refresh bool) string {
 		return cache.Get(J.getCacheKey()).(string)
 	}
 
-	resp := J.jssdk.Ticket().Get(genre)
+	resp := J.Ticket().Get(genre)
 	if resp.Error() != nil {
 		return ""
 	}

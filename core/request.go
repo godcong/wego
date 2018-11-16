@@ -86,11 +86,66 @@ func buildRequestQuery(p util.Map) string {
 	}
 }
 
+type nilRequester struct {
+	method string
+	url    string
+}
+
+// Request ...
+func (r *nilRequester) Request() *http.Request {
+	return processNothing(r.method, r.url, nil)
+}
+
 func processNothing(method, url string, i interface{}) *http.Request {
 	request, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil
 	}
+	return request
+}
+
+type multiRequester struct {
+	method string
+	url    string
+	body   interface{}
+}
+
+// Request ...
+func (r *multiRequester) Request() *http.Request {
+	buf := bytes.Buffer{}
+	writer := multipart.NewWriter(&buf)
+	defer writer.Close()
+	log.Debug("processMultipart|i", r.body)
+	switch v := r.body.(type) {
+	case util.Map:
+		path := v.GetString("media")
+		fh, e := os.Open(path)
+		if e != nil {
+			log.Debug("processMultipart|e", e)
+			return nil
+		}
+		defer fh.Close()
+
+		fw, e := writer.CreateFormFile("media", path)
+		if e != nil {
+			log.Debug("processMultipart|e", e)
+			return nil
+		}
+
+		if _, e = io.Copy(fw, fh); e != nil {
+			log.Debug("processMultipart|e", e)
+			return nil
+		}
+		des := v.GetMap("description")
+		if des != nil {
+			writer.WriteField("description", string(des.ToJSON()))
+		}
+	}
+	request, err := http.NewRequest(r.method, r.url, &buf)
+	if err != nil {
+		return nil
+	}
+	request.Header.Set("Content-Type", writer.FormDataContentType())
 	return request
 }
 
