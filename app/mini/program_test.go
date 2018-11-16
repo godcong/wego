@@ -9,55 +9,58 @@ import (
 )
 
 var cfg = wego.C(util.Map{
-	"app_id":  "wx3c69535993f4651d",
-	"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
-	"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
+	"app_id":  "wx1ad61aeef1903b93",
+	"secret":  "c96956c2fd5ce7bfd7a0db1f7679ff6d",
+	"key":     "O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ",
 	"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 })
 
 func TestAppCode_Get(t *testing.T) {
-	resp := mini.NewAppCode(cfg).Get("https://mp.quick58.com")
+	obj := mini.NewAppCode(cfg)
+	resp := obj.Get("https://mp.quick58.com")
 	_ = core.SaveTo(resp, "d:/Get.jpg")
 }
 
 func TestAppCode_GetQrCode(t *testing.T) {
-	resp := mini.NewAppCode(cfg).GetQrCode("https://mp.quick58.com", 430)
+	obj := mini.NewAppCode(cfg)
+	resp := obj.GetQrCode("https://mp.quick58.com", 430)
 	_ = core.SaveTo(resp, "d:/GetQrCode.jpg")
 }
 
 func TestAppCode_GetUnlimit(t *testing.T) {
-	resp := mini.NewAppCode(cfg).GetUnlimit("https://mp.quick58.com")
+	obj := mini.NewAppCode(cfg)
+	resp := obj.GetUnlimit("https://mp.quick58.com")
 	_ = core.SaveTo(resp, "d:/GetUnlimit.jpg")
 }
 
 // TestAuth_Session ...
 func TestAuth_Session(t *testing.T) {
-	auth := mini.NewAuth(cfg)
-	resp := auth.Session("0022IX8c1OPfgv0tOQ6c1tGZ8c12IX8E")
+	obj := mini.NewAuth(cfg)
+	resp := obj.Session("0022IX8c1OPfgv0tOQ6c1tGZ8c12IX8E")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_DailyRetainInfo(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.DailyRetainInfo("20181116", "20181116")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.DailyRetainInfo("20181116", "20181116")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_DailyVisitTrend(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.DailyVisitTrend("20181109", "20181109")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.DailyVisitTrend("20181109", "20181109")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_MonthlyVisitTrend(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.MonthlyVisitTrend("20181001", "20181031")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.MonthlyVisitTrend("20181001", "20181031")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_MonthlyRetainInfo(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.MonthlyRetainInfo("20181001", "20181031")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.MonthlyRetainInfo("20181001", "20181031")
 	t.Log(resp.ToMap())
 }
 
@@ -73,29 +76,74 @@ func TestDataCube_UserPortrait(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
-//TODO:not through(未取得数据)
+//TODO:not through(未取得正常返回数据)
 func TestDataCube_VisitDistribution(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.VisitDistribution("20181107", "20181107")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.VisitDistribution("20181107", "20181107")
 	t.Log(resp.ToMap())
 }
 
-//TODO:not through(未取得数据)
+//TODO:not through(未取得正常返回数据)
 func TestDataCube_VisitPage(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.VisitPage("20181109", "20181109")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.VisitPage("20181109", "20181109")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_WeeklyRetainInfo(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.WeeklyRetainInfo("20181105", "20181111")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.WeeklyRetainInfo("20181105", "20181111")
 	t.Log(resp.ToMap())
 }
 
 func TestDataCube_WeeklyVisitTrend(t *testing.T) {
-	cube := mini.NewDataCube(cfg)
-	resp := cube.WeeklyVisitTrend("20181105", "20181111")
+	obj := mini.NewDataCube(cfg)
+	resp := obj.WeeklyVisitTrend("20181105", "20181111")
+	t.Log(resp.ToMap())
+}
+
+func TestPlugin_List(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.List()
+	t.Log(resp.ToMap())
+}
+
+//TODO:not through(未取得正常返回数据)
+func TestPlugin_Apply(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.Apply("wx1ad61aeef1903b93")
+	t.Log(resp.ToMap())
+}
+
+//TODO:not through(未取得正常返回数据)
+func TestPlugin_DevAgree(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.DevAgree("wx1ad61aeef1903b93")
+	t.Log(resp.ToMap())
+}
+
+//TODO:not through(未取得正常返回数据)
+func TestPlugin_Unbind(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.Unbind("wx1ad61aeef1903b93")
+	t.Log(resp.ToMap())
+}
+
+func TestPlugin_DevApplyList(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
+	t.Log(resp.ToMap())
+}
+
+func TestPlugin_DevDelete(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
+	t.Log(resp.ToMap())
+}
+
+func TestPlugin_DevRefuse(t *testing.T) {
+	obj := mini.NewPlugin(cfg)
+	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
 	t.Log(resp.ToMap())
 }
 

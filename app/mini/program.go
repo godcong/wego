@@ -1,6 +1,7 @@
 package mini
 
 import (
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 )
@@ -16,6 +17,7 @@ var subLists = util.Map{
 type Program struct {
 	*core.Config
 	Sub         util.Map
+	cipher      cipher.Cipher
 	accessToken *core.AccessToken
 }
 
