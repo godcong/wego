@@ -38,22 +38,8 @@ const mmpaysptransPayBank = "/mmpaysptrans/pay_bank"
 
 const authCodeToOpenidURLSuffix = "/tools/authcodetoopenid"
 
-//bizPayURL biz pay url suffix
-const bizPayURL = "weixin://wxpay/bizpayurl?"
 const sandboxURLSuffix = "/sandboxnew"
 const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
 
-// FieldSign ...
-const FieldSign = "sign"
-
-// FieldSignType ...
-const FieldSignType = "sign_type"
-
-// FieldLimit ...
-const FieldLimit = "limit"
-
-/*HMACSHA256 定义:HMAC-SHA256 */
-const HMACSHA256 = "HMAC-SHA256"
-
-/*MD5 定义:MD5 */
-const MD5 = "MD5"
+// BizPayURL ...
+const BizPayURL = "weixin://wxpay/bizpayurl?"

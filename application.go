@@ -61,7 +61,7 @@ func newApplication(config *core.Config) *Application {
 	}
 
 	app.System = initSystem(config.GetSubConfig("system"))
-	log.InitLog(app.System.Log, app.System.Debug)
+	//log.InitLog(app.System.Log, app.System.Debug)
 	app.Register(RegConfig, config)
 	return app
 }

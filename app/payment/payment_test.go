@@ -12,9 +12,9 @@ import (
 	"testing"
 )
 
-var out_trade_no = "201813091059590000003433-asd003"
+var outTradeNo = "201813091059590000003433-asd003"
 
-var long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY"
+var longUrl = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 
 var cfg = wego.C(util.Map{
 	"sandbox": true,
@@ -98,7 +98,7 @@ func TestRefund_ByOutTradeNumber(t *testing.T) {
 func TestOrder_Unify(t *testing.T) {
 	m := make(util.Map)
 	m.Set("body", "腾讯充值中心-QQ会员充值")
-	m.Set("out_trade_no", out_trade_no+"6")
+	m.Set("out_trade_no", outTradeNo+"6")
 	//m.Set("device_info", "")
 	////m.Set("fee_type", "CNY")
 	m.Set("total_fee", "1")
@@ -171,7 +171,7 @@ func TestValidateSign(t *testing.T) {
 	//m := make(util.Map)
 	//xml.Unmarshal([]byte(data), &m)
 
-	t.Log(payment.ValidateSign(m, "O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ"))
+	t.Log(util.ValidateSign(m, "O9aVVkSTmgJK4qSibhSYpGQzRbZ2NQSJ"))
 	rlt := payment.SUCCESS()
 	t.Log(string(rlt.ToXML()))
 }
@@ -271,20 +271,6 @@ func TestNewTransfer(t *testing.T) {
 	m.Set("amount", "1000")
 	m1 := tran.ToBankCard(m)
 	t.Log(m1.ToMap())
-}
-
-// TestSettlement_Query ...
-func TestSettlement_Query(t *testing.T) {
-	resp := payment.NewSettlement(cfg).Query(2, 0, 100, "20181101", "20181112")
-	t.Log(resp.Error())
-	t.Log(resp.ToMap())
-}
-
-// TestExchange_QueryRate ...
-func TestExchange_QueryRate(t *testing.T) {
-	resp := payment.NewExchange(cfg).QueryRate("USD", "20181112")
-	t.Log(resp.Error())
-	t.Log(resp.ToMap())
 }
 
 // TestCoupon_Send ...

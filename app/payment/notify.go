@@ -33,12 +33,12 @@ func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//wrong request will do nothing
 	if err != nil {
 		log.Error(err)
-		rlt = Fail(err.Error())
+		rlt = FAIL(err.Error())
 	} else {
 		//TODO: decode req_info
 		_, err = n.NotifyCallback(maps)
 		if err != nil {
-			rlt = Fail(err.Error())
+			rlt = FAIL(err.Error())
 		}
 	}
 
@@ -66,7 +66,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		log.Error(err)
 		rlt = FailDes(err.Error())
 	} else {
-		if ValidateSign(maps, n.GetKey()) {
+		if util.ValidateSign(maps, n.GetKey()) {
 			p, err = n.NotifyCallback(maps)
 			if err != nil {
 				rlt = FailDes(err.Error())
@@ -86,7 +86,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				rlt.Set("mch_id", n.Get("mch_id"))
 				rlt.Set("nonce_str", util.GenerateNonceStr())
 				rlt.Set("prepay_id", p.Get("prepay_id"))
-				rlt.Set("sign", GenerateSignatureWithIgnore(maps, n.GetKey(), []string{FieldSign}))
+				rlt.Set("sign", util.GenerateSignatureWithIgnore(maps, n.GetKey(), []string{util.FieldSign}))
 
 			}
 
@@ -114,12 +114,12 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.Error(err)
-		rlt = Fail(err.Error())
+		rlt = FAIL(err.Error())
 	} else {
-		if ValidateSign(maps, n.GetKey()) {
+		if util.ValidateSign(maps, n.GetKey()) {
 			_, err = n.NotifyCallback(maps)
 			if err != nil {
-				rlt = Fail(err.Error())
+				rlt = FAIL(err.Error())
 			}
 		}
 	}
@@ -149,8 +149,8 @@ func SUCCESS() util.Map {
 	}
 }
 
-// Fail ...
-func Fail(msg string) util.Map {
+// FAIL ...
+func FAIL(msg string) util.Map {
 	return util.Map{
 		"return_code": "FAIL",
 		"return_msg":  msg,

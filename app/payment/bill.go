@@ -55,7 +55,7 @@ func (b *Bill) DownloadFundFlow(bd string, at string, option ...util.Map) core.R
 	m := util.MapsToMap(util.Map{
 		"appid":        b.Get("app_id"),
 		"bill_date":    bd,
-		"sign_type":    HMACSHA256,
+		"sign_type":    util.HMACSHA256,
 		"account_type": at,
 	}, option)
 
@@ -75,11 +75,11 @@ func (b *Bill) BatchQueryComment(beginTime, endTime string, offset int, option .
 		"end_time":   endTime,
 		"offset":     strconv.Itoa(offset),
 		"appid":      b.Get("app_id"),
-		"sign_type":  HMACSHA256,
+		"sign_type":  util.HMACSHA256,
 	}, option)
 
 	return core.Request(b.Link(batchQueryComment), "post", util.Map{
-		core.DataTypeXML:      b.initRequestWithIgnore(m, FieldSign, FieldSignType, FieldLimit),
+		core.DataTypeXML:      b.initRequestWithIgnore(m, util.FieldSign, util.FieldSignType, util.FieldLimit),
 		core.DataTypeSecurity: b.Config,
 	})
 

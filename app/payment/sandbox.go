@@ -53,7 +53,7 @@ func (s *Sandbox) SandboxSignKey() core.Responder {
 	m := make(util.Map)
 	m.Set("mch_id", s.Get("mch_id"))
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := GenerateSignature(m, s.GetString("key"), MakeSignMD5)
+	sign := util.GenerateSignature(m, s.GetString("key"), util.MakeSignMD5)
 	m.Set("sign", sign)
 	resp := core.PostXML(Link(sandboxSignKeyURLSuffix), nil, m)
 

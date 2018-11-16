@@ -1,4 +1,4 @@
-package payment
+package util
 
 import (
 	"crypto/hmac"
@@ -6,13 +6,27 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"github.com/godcong/wego/log"
-	"github.com/godcong/wego/util"
 	"io"
 	"strings"
 )
 
 /*SignFunc sign函数定义 */
 type SignFunc func(data, key string) string
+
+// FieldSign ...
+const FieldSign = "sign"
+
+// FieldSignType ...
+const FieldSignType = "sign_type"
+
+// FieldLimit ...
+const FieldLimit = "limit"
+
+/*HMACSHA256 定义:HMAC-SHA256 */
+const HMACSHA256 = "HMAC-SHA256"
+
+/*MD5 定义:MD5 */
+const MD5 = "MD5"
 
 // MakeSignHMACSHA256 make sign with hmac-sha256
 func MakeSignHMACSHA256(data, key string) string {
@@ -29,18 +43,8 @@ func MakeSignMD5(data, key string) string {
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
-func signIgnore(current string, s []string) bool {
-	size := len(s)
-	for j := 0; j < size; j++ {
-		if current == s[j] {
-			return true
-		}
-	}
-	return false
-}
-
 // GenerateSignatureWithIgnore ...
-func GenerateSignatureWithIgnore(p util.Map, key string, ignore []string) string {
+func GenerateSignatureWithIgnore(p Map, key string, ignore []string) string {
 	m := p.Expect(ignore)
 	keys := m.SortKeys()
 	var sign []string
@@ -65,7 +69,7 @@ func GenerateSignatureWithIgnore(p util.Map, key string, ignore []string) string
 }
 
 // GenerateSignature make sign from map data
-func GenerateSignature(p util.Map, key string, fn SignFunc) string {
+func GenerateSignature(p Map, key string, fn SignFunc) string {
 	m := p.Expect([]string{FieldSign})
 	keys := m.SortKeys()
 	var sign []string
@@ -84,8 +88,8 @@ func GenerateSignature(p util.Map, key string, fn SignFunc) string {
 	return fn(sb, key)
 }
 
-// ValidateSign ...
-func ValidateSign(maps util.Map, key string) bool {
+// ValidateSign check the sign validate
+func ValidateSign(maps Map, key string) bool {
 	if !maps.Has("sign") {
 		return false
 	}

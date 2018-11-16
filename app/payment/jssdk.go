@@ -44,7 +44,7 @@ func (J *JSSDK) BridgeConfig(pid string) util.Map {
 		"signType":  "MD5",
 	}
 
-	m.Set("paySign", GenerateSignature(m, J.GetString("key"), MakeSignMD5))
+	m.Set("paySign", util.GenerateSignature(m, J.GetString("key"), util.MakeSignMD5))
 
 	return m
 }
@@ -70,7 +70,7 @@ func (J *JSSDK) AppConfig(pid string) util.Map {
 		"package":   "Sign=WXPay",
 	}
 
-	m.Set("sign", GenerateSignature(m, J.GetString("aes_key"), MakeSignMD5))
+	m.Set("sign", util.GenerateSignature(m, J.GetString("aes_key"), util.MakeSignMD5))
 	return m
 }
 

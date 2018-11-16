@@ -5,11 +5,19 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+
 	"strconv"
 )
 
-// NewAble ...
-type NewAble func(payment *Payment) interface{}
+//Payment ...
+type Payment struct {
+	*core.Config
+	Module util.Map
+	//client *core.Client
+}
+
+//NewPaymentAble ...
+type NewPaymentAble func(payment *Payment) interface{}
 
 var moduleLists = util.Map{
 	"Bill":     newBill,
@@ -23,13 +31,6 @@ var moduleLists = util.Map{
 	"Sandbox":  newSandbox,
 	"Security": newSecurity,
 	"Transfer": newTransfer,
-}
-
-/*Payment Payment */
-type Payment struct {
-	*core.Config
-	Module util.Map
-	//client *core.Client
 }
 
 func newPayment(config *core.Config, p util.Map) *Payment {
@@ -49,7 +50,7 @@ func NewPayment(config *core.Config, v ...interface{}) *Payment {
 
 func subInit(payment *Payment, p util.Map) *Payment {
 	for k, v := range p {
-		if vv, b := v.(NewAble); b {
+		if vv, b := v.(NewPaymentAble); b {
 			payment.Module[k] = vv(payment)
 		}
 	}
@@ -103,8 +104,8 @@ func (p *Payment) Scheme(pid string) string {
 	maps.Set("time_stamp", util.Time())
 	maps.Set("nonce_str", util.GenerateNonceStr())
 	maps.Set("product_id", pid)
-	maps.Set("sign", GenerateSignature(maps, p.GetKey(), MakeSignMD5))
-	return bizPayURL + maps.URLEncode()
+	maps.Set("sign", util.GenerateSignature(maps, p.GetKey(), util.MakeSignMD5))
+	return BizPayURL + maps.URLEncode()
 }
 
 //SetSubMerchant set Module merchat
@@ -301,7 +302,7 @@ func (p *Payment) initRequestWithIgnore(maps util.Map, ignore ...string) util.Ma
 	}
 
 	if !maps.Has("sign") {
-		maps.Set("sign", GenerateSignatureWithIgnore(maps, p.GetKey(), ignore))
+		maps.Set("sign", util.GenerateSignatureWithIgnore(maps, p.GetKey(), ignore))
 	}
 
 	log.Debug("initRequest end", maps)
@@ -322,7 +323,7 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 	}
 
 	if !maps.Has("sign") {
-		maps.Set("sign", GenerateSignatureWithIgnore(maps, p.GetKey(), []string{FieldSign}))
+		maps.Set("sign", util.GenerateSignatureWithIgnore(maps, p.GetKey(), []string{util.FieldSign}))
 	}
 
 	log.Debug("initRequest end", maps)
@@ -351,7 +352,7 @@ func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) co
 		"mch_id":   p.Get("mch_id"),
 	}, option)
 
-	m.Set("sign", GenerateSignatureWithIgnore(m, p.GetKey(), nil))
+	m.Set("sign", util.GenerateSignatureWithIgnore(m, p.GetKey(), nil))
 	return core.Request(p.Link(payQueryexchagerate), "post", util.Map{
 		core.DataTypeXML: m,
 	})
