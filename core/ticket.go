@@ -7,18 +7,7 @@ import (
 /*Ticket Ticket */
 type Ticket struct {
 	*Config
-	client      *Client
 	accessToken *AccessToken
-}
-
-// Client ...
-func (t *Ticket) Client() *Client {
-	return t.client
-}
-
-// SetClient ...
-func (t *Ticket) SetClient(client *Client) {
-	t.client = client
 }
 
 // AccessToken ...
@@ -39,11 +28,9 @@ func newTicket(config *Config) *Ticket {
 
 /*NewTicket NewTicket */
 func NewTicket(config *Config, v ...interface{}) *Ticket {
-	client := ClientGet(v)
 	accessToken := newAccessToken(ClientCredential(config))
 
 	ticket := newTicket(config)
-	ticket.SetClient(client)
 	ticket.SetAccessToken(accessToken)
 
 	return ticket
@@ -52,7 +39,7 @@ func NewTicket(config *Config, v ...interface{}) *Ticket {
 //Get 获取api_ticket
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=wx_card
-func (t *Ticket) Get(typ string, refresh bool) Responder {
+func (t *Ticket) Get(typ string) Responder {
 	log.Debug("Ticket|Get", typ)
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)

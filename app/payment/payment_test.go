@@ -336,3 +336,18 @@ func TestScannedNotify_ServeHTTP(t *testing.T) {
 
 	t.Fatal(http.ListenAndServe(":8080", nil))
 }
+
+// TestJSSDK_GetTicket ...
+func TestJSSDK_GetTicket(t *testing.T) {
+	jssdk := payment.NewJSSDK(wego.C(util.Map{
+		"mch_id":    "1516796851",
+		"app_id":    "wx15810ca16324c225",
+		"secret":    "4f2601f6567ac4b5741aa2dc2e5eadfd",
+		"key":       "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
+		"aes_key":   "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
+		"cert_path": "D:/workspace/project/goproject/wego/cert/apiclient_cert.pem",
+		"key_path":  "D:/workspace/project/goproject/wego/cert/apiclient_key.pem",
+	}))
+
+	t.Log(jssdk.GetTicket("jsapi", true))
+}

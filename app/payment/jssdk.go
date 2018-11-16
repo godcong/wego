@@ -25,7 +25,9 @@ func newJSSDK(p *Payment) interface{} {
 
 /*NewJSSDK NewJSSDK */
 func NewJSSDK(config *core.Config) *JSSDK {
-	return newJSSDK(NewPayment(config)).(*JSSDK)
+	jssdk := newJSSDK(NewPayment(config)).(*JSSDK)
+	jssdk.jssdk = core.NewJSSDK(config)
+	return jssdk
 }
 
 func (J *JSSDK) getURL() string {
@@ -109,7 +111,7 @@ func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 
 // BuildConfig ...
 func (J *JSSDK) BuildConfig(maps util.Map) util.Map {
-	ticket := J.GetTicket()
+	ticket := J.GetTicket("jsapi", false)
 	nonce := util.GenerateNonceStr()
 	ts := util.Time()
 	url := maps.GetString("url")
@@ -125,24 +127,24 @@ func (J *JSSDK) BuildConfig(maps util.Map) util.Map {
 }
 
 // GetTicket ...
-func (J *JSSDK) GetTicket() string {
-	if cache.Has(J.getCacheKey()) {
+func (J *JSSDK) GetTicket(genre string, refresh bool) string {
+	if !refresh && cache.Has(J.getCacheKey()) {
 		return cache.Get(J.getCacheKey()).(string)
 	}
 
-	resp := J.jssdk.Ticket().Get("jsapi", false)
+	resp := J.jssdk.Ticket().Get(genre)
 	if resp.Error() != nil {
 		return ""
 	}
 	m := resp.ToMap()
 	ticket := m.GetString("ticket")
 	expires, b := m.GetInt64("expires_in")
-
-	log.Println(expires, b)
+	log.Debug(ticket, expires, b)
 	if !b {
 		return ""
 	}
-	t := time.Unix(time.Now().Unix()+expires-500, 0)
+
+	t := time.Now().Add(time.Second * time.Duration(expires-500))
 	cache.SetWithTTL(J.getCacheKey(), ticket, &t)
 	return ticket
 
