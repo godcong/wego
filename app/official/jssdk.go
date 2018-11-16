@@ -7,7 +7,6 @@ import (
 // JSSDK ...
 type JSSDK struct {
 	*core.JSSDK
-	URL string
 }
 
 func newJSSDK(account *Account) *JSSDK {

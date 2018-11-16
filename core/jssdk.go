@@ -14,6 +14,7 @@ import (
 type JSSDK struct {
 	*Config
 	ticket   *Ticket
+	URL      string
 	CacheKey func() string
 }
 
@@ -127,9 +128,10 @@ func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
 	ticket := j.GetTicket("jsapi", false)
 	nonce := util.GenerateNonceStr()
 	ts := util.Time()
-	url := maps.GetString("url")
+	url := maps.GetStringD("url", j.URL)
+	appId := maps.GetStringD("app_id", j.GetString("app_id"))
 	m := util.Map{
-		"appId":     j.Get("appId"),
+		"appId":     appId,
 		"nonceStr":  nonce,
 		"timestamp": ts,
 		"url":       url,
