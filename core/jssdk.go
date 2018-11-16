@@ -1,7 +1,11 @@
 package core
 
 import (
+	"fmt"
+	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/log"
 	"strings"
+	"time"
 
 	"github.com/godcong/wego/util"
 )
@@ -9,23 +13,27 @@ import (
 /*JSSDK JSSDK */
 type JSSDK struct {
 	*Config
-	ticket *Ticket
+	ticket   *Ticket
+	CacheKey func() string
 }
 
 // Ticket ...
-func (J *JSSDK) Ticket() *Ticket {
-	return J.ticket
+func (j *JSSDK) Ticket() *Ticket {
+	return j.ticket
 }
 
 // SetTicket ...
-func (J *JSSDK) SetTicket(ticket *Ticket) {
-	J.ticket = ticket
+func (j *JSSDK) SetTicket(ticket *Ticket) {
+	j.ticket = ticket
 }
 
 func newJSSDK(config *Config) interface{} {
-	return &JSSDK{
+	jssdk := &JSSDK{
 		Config: config,
+		ticket: nil,
 	}
+	jssdk.CacheKey = jssdk.getCacheKey
+	return jssdk
 }
 
 /*NewJSSDK NewJSSDK */
@@ -35,13 +43,13 @@ func NewJSSDK(config *Config) *JSSDK {
 	return jssdk
 }
 
-func (J *JSSDK) getURL() string {
+func (j *JSSDK) getURL() string {
 	return GetServerIP()
 }
 
 /*BridgeConfig bridge 设置 */
-func (J *JSSDK) BridgeConfig(pid string) util.Map {
-	appID := J.DeepGet("sub_appid", "app_id")
+func (j *JSSDK) BridgeConfig(pid string) util.Map {
+	appID := j.DeepGet("sub_appid", "app_id")
 
 	m := util.Map{
 		"appId":     appID,
@@ -51,14 +59,14 @@ func (J *JSSDK) BridgeConfig(pid string) util.Map {
 		"signType":  "MD5",
 	}
 
-	//m.Set("paySign", GenerateSignature(m, J.GetString("key"), MakeSignMD5))
+	//m.Set("paySign", GenerateSignature(m, j.GetString("key"), MakeSignMD5))
 
 	return m
 }
 
 /*SdkConfig sdk 设置 */
-func (J *JSSDK) SdkConfig(pid string) util.Map {
-	config := J.BridgeConfig(pid)
+func (j *JSSDK) SdkConfig(pid string) util.Map {
+	config := j.BridgeConfig(pid)
 
 	config.Set("timestamp", config.Get("timeStamp"))
 	config.Delete("timeStamp")
@@ -67,24 +75,24 @@ func (J *JSSDK) SdkConfig(pid string) util.Map {
 }
 
 /*AppConfig app 设置 */
-func (J *JSSDK) AppConfig(pid string) util.Map {
+func (j *JSSDK) AppConfig(pid string) util.Map {
 	m := util.Map{
-		"appid":     J.Get("app_id"),
-		"partnerid": J.Get("mch_id"),
+		"appid":     j.Get("app_id"),
+		"partnerid": j.Get("mch_id"),
 		"prepayid":  pid,
 		"noncestr":  util.GenerateNonceStr(),
 		"timestamp": util.Time(),
 		"package":   "Sign=WXPay",
 	}
 
-	//m.Set("sign", GenerateSignature(m, J.GetString("aes_key"), MakeSignMD5))
+	//m.Set("sign", GenerateSignature(m, j.GetString("aes_key"), MakeSignMD5))
 	return m
 }
 
 // ShareAddressConfig ...
 //参数:token
 //类型:string或*core.AccessToken
-func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
+func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	token := ""
 	switch vv := v.(type) {
 	case *AccessToken:
@@ -94,7 +102,7 @@ func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	}
 
 	m := util.Map{
-		"appId":     J.Get("app_id"),
+		"appId":     j.Get("app_id"),
 		"scope":     "jsapi_address",
 		"timeStamp": util.Time(),
 		"nonceStr":  util.GenerateNonceStr(),
@@ -103,7 +111,7 @@ func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 
 	signMsg := util.Map{
 		"appid":       m.Get("appId"),
-		"url":         J.getURL(),
+		"url":         j.getURL(),
 		"timestamp":   m.Get("timeStamp"),
 		"noncestr":    m.Get("nonceStr"),
 		"accesstoken": token,
@@ -112,4 +120,53 @@ func (J *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	m.Set("addrSign", util.SHA1(signMsg.URLEncode()))
 
 	return m
+}
+
+// BuildConfig ...
+func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
+	ticket := j.GetTicket("jsapi", false)
+	nonce := util.GenerateNonceStr()
+	ts := util.Time()
+	url := maps.GetString("url")
+	m := util.Map{
+		"appId":     j.Get("appId"),
+		"nonceStr":  nonce,
+		"timestamp": ts,
+		"url":       url,
+		"jsApiList": maps.Get("jsApiList"),
+		"signature": getTicketSignature(ticket, nonce, ts, url),
+	}
+	return m
+}
+
+// GetTicket ...
+func (j *JSSDK) GetTicket(genre string, refresh bool) string {
+	if !refresh && cache.Has(j.getCacheKey()) {
+		return cache.Get(j.getCacheKey()).(string)
+	}
+
+	resp := j.Ticket().Get(genre)
+	if resp.Error() != nil {
+		return ""
+	}
+	m := resp.ToMap()
+	ticket := m.GetString("ticket")
+	expires, b := m.GetInt64("expires_in")
+	log.Debug(ticket, expires, b)
+	if !b {
+		return ""
+	}
+
+	t := time.Now().Add(time.Second * time.Duration(expires-500))
+	cache.SetWithTTL(j.getCacheKey(), ticket, &t)
+	return ticket
+
+}
+
+func (j *JSSDK) getCacheKey() string {
+	return "godcong.wego.default.jssdk.ticket.jsapi" + j.GetString("app_id")
+}
+
+func getTicketSignature(ticket, nonce, ts, url string) string {
+	return util.SHA1(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket, nonce, ts, url))
 }
