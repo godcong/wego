@@ -11,23 +11,13 @@ import (
 
 // JSSDK ...
 type JSSDK struct {
-	*Account
-	url string
-}
-
-// URL ...
-func (j *JSSDK) URL() string {
-	return j.url
-}
-
-// SetURL ...
-func (j *JSSDK) SetURL(url string) {
-	j.url = url
+	*core.JSSDK
+	URL string
 }
 
 func newJSSDK(account *Account) *JSSDK {
 	return &JSSDK{
-		Account: account,
+		JSSDK: core.NewJSSDK(account.Config),
 	}
 }
 
@@ -41,7 +31,7 @@ func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
 	ticket := j.GetTicket()
 	nonce := util.GenerateNonceStr()
 	ts := util.Time()
-	url := j.URL()
+	url := maps.GetStringD("url", j.URL)
 	m := util.Map{
 		"appId":     j.Get("appId"),
 		"nonceStr":  nonce,

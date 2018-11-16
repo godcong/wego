@@ -17,14 +17,16 @@ type JSSDK struct {
 }
 
 func newJSSDK(p *Payment) interface{} {
-	return &JSSDK{
+	jssdk := &JSSDK{
 		JSSDK: core.NewJSSDK(p.Config),
 	}
+	return jssdk
 }
 
 /*NewJSSDK NewJSSDK */
 func NewJSSDK(config *core.Config) *JSSDK {
 	jssdk := newJSSDK(NewPayment(config)).(*JSSDK)
+
 	return jssdk
 }
 
