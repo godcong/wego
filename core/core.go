@@ -8,32 +8,40 @@ import (
 
 // SaveTo ...
 func SaveTo(response Responder, path string) error {
-	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
-	if e != nil {
-		log.Debug("Responder|ToFile", e)
-		return e
+	var err error
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
+	if err != nil {
+		log.Debug("Responder|ToFile", err)
+		return err
 	}
-	defer file.Close()
-	_, e = file.Write(response.Bytes())
-	if e != nil {
-		return e
+	defer func() {
+		err = file.Close()
+	}()
+	_, err = file.Write(response.Bytes())
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
 // SaveEncodingTo ...
 func SaveEncodingTo(response Responder, path string, t transform.Transformer) error {
-	file, e := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
-	if e != nil {
-		log.Debug("Responder|ToFile", e)
-		return e
+	var err error
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
+	if err != nil {
+		log.Debug("Responder|ToFile", err)
+		return err
 	}
-	defer file.Close()
+	defer func() {
+		err = file.Close()
+	}()
 	writer := transform.NewWriter(file, t)
-	_, e = writer.Write(response.Bytes())
-	if e != nil {
-		return e
+	_, err = writer.Write(response.Bytes())
+	if err != nil {
+		return err
 	}
-	defer writer.Close()
+	defer func() {
+		err = writer.Close()
+	}()
 	return nil
 }

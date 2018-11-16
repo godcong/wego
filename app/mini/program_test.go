@@ -17,17 +17,17 @@ var cfg = wego.C(util.Map{
 
 func TestAppCode_Get(t *testing.T) {
 	resp := mini.NewAppCode(cfg).Get("https://mp.quick58.com")
-	core.SaveTo(resp, "d:/Get.jpg")
+	_ = core.SaveTo(resp, "d:/Get.jpg")
 }
 
 func TestAppCode_GetQrCode(t *testing.T) {
 	resp := mini.NewAppCode(cfg).GetQrCode("https://mp.quick58.com", 430)
-	core.SaveTo(resp, "d:/GetQrCode.jpg")
+	_ = core.SaveTo(resp, "d:/GetQrCode.jpg")
 }
 
 func TestAppCode_GetUnlimit(t *testing.T) {
 	resp := mini.NewAppCode(cfg).GetUnlimit("https://mp.quick58.com")
-	core.SaveTo(resp, "d:/GetUnlimit.jpg")
+	_ = core.SaveTo(resp, "d:/GetUnlimit.jpg")
 }
 
 // TestAuth_Session ...
