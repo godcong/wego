@@ -57,6 +57,16 @@ func (b *Broadcasting) Preview(msg util.Map) core.Responder {
 //https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN
 func (b *Broadcasting) Delete(msgID string) core.Responder {
 	token := b.accessToken.GetToken()
-	return core.PostJSON(Link(messageMassPreview), token.KeyMap(), util.Map{"msg_id": msgID})
+	return core.PostJSON(Link(messageMassDelete), token.KeyMap(), util.Map{"msg_id": msgID})
+
+}
+
+//Status 查询群发消息发送状态【订阅号与服务号认证后均可用】
+//接口调用请求说明
+//http请求方式: POST
+//https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN
+func (b *Broadcasting) Status(msgID string) core.Responder {
+	token := b.accessToken.GetToken()
+	return core.PostJSON(Link(messageMassGet), token.KeyMap(), util.Map{"msg_id": msgID})
 
 }

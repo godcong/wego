@@ -51,6 +51,8 @@ const showQrcodeURLSuffix = "/cgi-bin/showqrcode"
 const messageMassSend = "/cgi-bin/message/mass/send"
 const messageMassSendall = "/cgi-bin/message/mass/sendall"
 const messageMassPreview = "cgi-bin/message/mass/preview"
+const messageMassDelete = "/cgi-bin/message/mass/delete"
+const messageMassGet = "/cgi-bin/message/mass/get"
 
 //DatacubeTimeLayout time format for datacube
 const DatacubeTimeLayout = "2006-01-02"
