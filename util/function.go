@@ -2,7 +2,9 @@ package util
 
 import (
 	"bytes"
+	"crypto/hmac"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -416,6 +418,12 @@ func CurrentTimeStampString() string {
 // SHA1 transfer string to sha1
 func SHA1(s string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
+}
+
+func HmacSha256(data []byte, key string) string {
+	m := hmac.New(sha256.New, []byte(key))
+	m.Write(data)
+	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
 func signatureSHA1(m Map) string {

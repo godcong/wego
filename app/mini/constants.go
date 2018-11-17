@@ -24,6 +24,9 @@ const templateLibraryGet = "/cgi-bin/wxopen/template/library/get"
 
 const snsJscode2session = "/sns/jscode2session"
 
+const wxaRemoveUserStorage = "wxa/remove_user_storage"
+const wxaSetUserStorage = "wxa/set_user_storage"
+const wxaChecksession = "wxa/checksession"
 const wxaappCreatewxaqrcode = "/cgi-bin/wxaapp/createwxaqrcode"
 const wxaGetWXACodeUnlimit = "/wxa/getwxacodeunlimit"
 const wxaPlugin = "wxa/plugin"

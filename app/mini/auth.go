@@ -68,6 +68,20 @@ func (a *Auth) Session(code string) core.Responder {
 	return resp
 }
 
+func (a *Auth) CheckSession(session string) core.Responder {
+	//TODO
+	params := util.Map{
+		"appid":      a.Get("app_id"),
+		"secret":     a.Get("secret"),
+		"sig_method": "hmac_sha256",
+	}
+	resp := core.Get(
+		Link(wxaChecksession),
+		params,
+	)
+	return resp
+}
+
 //UserInfoByCode 从Code获取用户信息
 //Deprecated: unused
 func (a *Auth) UserInfoByCode(code, encrypted, iv string) []byte {
