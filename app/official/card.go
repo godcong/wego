@@ -8,11 +8,13 @@ import (
 // Card ...
 type Card struct {
 	*Account
+	jssdk *JSSDK
 }
 
 func newCard(officialAccount *Account) *Card {
 	return &Card{
 		Account: officialAccount,
+		jssdk:   NewJSSDK(officialAccount.Config),
 	}
 }
 
@@ -364,6 +366,21 @@ func (c *Card) GetApplyProtocol() core.Responder {
 func (c *Card) GetColors() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetColors), token.KeyMap())
+}
+
+func (c *Card) Checkin(p util.Map) core.Responder {
+	token := c.accessToken.GetToken()
+	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
+}
+
+func (c *Card) Categories() core.Responder {
+	token := c.accessToken.GetToken()
+	return core.Get(Link(cardGetapplyprotocol), token.KeyMap())
+
+}
+
+func (c *Card) GetCardApiTicket(refresh bool) {
+	c.jssdk.GetTicket("wx_card", refresh)
 }
 
 ////NewOneCard 创建卡券信息

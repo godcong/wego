@@ -70,3 +70,7 @@ func (b *Broadcasting) Status(msgID string) core.Responder {
 	return core.PostJSON(Link(messageMassGet), token.KeyMap(), util.Map{"msg_id": msgID})
 
 }
+
+func (b *Broadcasting) SendText() {
+
+}

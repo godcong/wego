@@ -155,6 +155,12 @@ const cardGetApplyProtocol = "/card/getapplyprotocol"
 //cardGetColors api address suffix
 const cardGetColors = "/card/getcolors"
 
+//cardGetapplyprotocol api address suffix
+const cardGetapplyprotocol = "/card/getapplyprotocol"
+
+//cardBoardingpassCheckin api address suffix
+const cardBoardingpassCheckin = "/card/boardingpass/checkin"
+
 //poiAddPoi api address suffix
 const poiAddPoi = "/cgi-bin/poi/addpoi"
 
