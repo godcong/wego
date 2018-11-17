@@ -414,20 +414,29 @@ func (c *Card) Categories() core.Responder {
 
 //BatchGet 批量查询卡券列表
 //接口调用请求说明
-//HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
+//HTTP请求方式: POST URL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
 func (c *Card) BatchGet(offset, count int, statusList []CardStatus) core.Responder {
+	token := c.accessToken.GetToken()
 	maps := util.Map{
 		"offset":      offset,
 		"count":       count,
 		"status_list": statusList,
 	}
-	token := c.accessToken.GetToken()
-
 	return core.PostJSON(Link(cardBatchget), token.KeyMap(), maps)
 }
 
-func (c *Card) Update() {
-
+//Update 更改卡券信息接口
+//接口说明
+//支持更新所有卡券类型的部分通用字段及特殊卡券（会员卡、飞机票、电影票、会议门票）中特定字段的信息。
+//接口调用请求说明
+//HTTP请求方式: POST URL:https://api.weixin.qq.com/card/update?access_token=TOKEN
+func (c *Card) Update(cardID string, p util.Map) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"card_id": cardID,
+	}
+	maps.Join(p)
+	return core.PostJSON(Link(cardUpdate), token.KeyMap(), maps)
 }
 
 //GetCardApiTicket get ticket

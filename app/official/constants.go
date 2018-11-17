@@ -163,6 +163,8 @@ const cardGetapplyprotocol = "/card/getapplyprotocol"
 
 const cardBatchget = "card/batchget"
 
+const cardUpdate = "card/update"
+
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
 
