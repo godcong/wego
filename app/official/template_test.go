@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewTemplate(t *testing.T) {
-	t0 := official.NewTemplate(config)
+	t0 := official.NewTemplate(cfg)
 
 	//testTemplate_SetIndustry(t, t0)
 	//testTemplate_GetIndustry(t, t0)

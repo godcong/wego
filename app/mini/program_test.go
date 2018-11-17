@@ -4,6 +4,7 @@ import (
 	"github.com/godcong/wego"
 	"github.com/godcong/wego/app/mini"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/util"
 	"testing"
 )
@@ -145,6 +146,69 @@ func TestPlugin_DevRefuse(t *testing.T) {
 	obj := mini.NewPlugin(cfg)
 	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
 	t.Log(resp.ToMap())
+}
+
+func TestTemplate_List(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	rlt := temp.List(0, 10)
+	t.Log(rlt.ToMap())
+}
+
+func TestTemplate_Get(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	rlt := temp.Get("AT0002")
+	t.Log(rlt.ToMap())
+}
+
+func TestTemplate_GetTemplates(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	rlt := temp.GetTemplates(0, 10)
+	t.Log(rlt.ToMap())
+}
+
+func TestTemplate_Delete(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	rlt := temp.Delete("KzKGxK6BKFfEk9VOEa6zSTdpmOcc7MtcjQ75yezIIB8")
+	t.Log(rlt.ToMap())
+}
+
+func TestTemplate_Add(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	rlt := temp.Add("AT0002", []int{100, 101})
+	t.Log(rlt.ToMap())
+	//KzKGxK6BKFfEk9VOEa6zSTdpmOcc7MtcjQ75yezIIB8
+}
+
+func TestTemplate_Send(t *testing.T) {
+	temp := mini.NewTemplate(cfg)
+	msg := &message.Template{
+		ToUser:     "oE_gl0Yr54fUjBhU5nBlP4hS2efo",
+		TemplateID: "0-A8LciZI4nQpjFnQ_jtykix4rqKlMcqbSILDaJKPhQ",
+		URL:        "",
+		Data: message.TemplateData{
+			"keyword1": &message.ValueColor{
+				Value: "恭喜你成功购买奇葩商品一枚！",
+				Color: "#173177",
+			},
+			"keyword2": &message.ValueColor{
+				Value: "恭喜你成功购买奇葩商品一枚！",
+				Color: "#173177",
+			},
+			"keyword3": &message.ValueColor{
+				Value: "恭喜你成功购买奇葩商品一枚！",
+				Color: "#173177",
+			},
+			"keyword4": &message.ValueColor{
+				Value: "恭喜你成功购买奇葩商品一枚！",
+				Color: "#173177",
+			},
+		},
+		Page:            "index?value=123",
+		FormID:          "1523991474645",
+		EmphasisKeyword: "keyword1.DATA",
+	}
+	rlt := temp.Send(msg.ToMap())
+	t.Log(string(rlt.Bytes()))
 }
 
 // TestAuth_UserInfo ...
