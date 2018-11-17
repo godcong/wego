@@ -47,6 +47,17 @@ const CardSceneIvr CardScene = "SCENE_IVR"
 //CardSceneCardCustomCell 卡券自定义cell
 const CardSceneCardCustomCell CardScene = "SCENE_CARD_CUSTOM_CELL"
 
+//支持开发者拉出指定状态的卡券列表
+type CardStatus string
+
+const (
+	CARD_STATUS_NOT_VERIFY  CardStatus = "CARD_STATUS_NOT_VERIFY"  //待审核
+	CARD_STATUS_VERIFY_FAIL CardStatus = "CARD_STATUS_VERIFY_FAIL" //审核失败
+	CARD_STATUS_VERIFY_OK   CardStatus = "CARD_STATUS_VERIFY_OK"   //通过审核
+	CARD_STATUS_DELETE      CardStatus = "CARD_STATUS_DELETE"      //卡券被商户删除
+	CARD_STATUS_DISPATCH    CardStatus = "CARD_STATUS_DISPATCH"    //在公众平台投放过的卡券；
+)
+
 // String ...
 func (s CardScene) String() string {
 	return string(s)
@@ -404,14 +415,19 @@ func (c *Card) Categories() core.Responder {
 //BatchGet 批量查询卡券列表
 //接口调用请求说明
 //HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
-func (c *Card) BatchGet(offset, count int, option ...util.Map) core.Responder {
-	maps := util.MapsToMap(util.Map{
-		"offset": offset,
-		"count":  count,
-	}, option)
+func (c *Card) BatchGet(offset, count int, statusList []CardStatus) core.Responder {
+	maps := util.Map{
+		"offset":      offset,
+		"count":       count,
+		"status_list": statusList,
+	}
 	token := c.accessToken.GetToken()
 
 	return core.PostJSON(Link(cardBatchget), token.KeyMap(), maps)
+}
+
+func (c *Card) Update() {
+
 }
 
 //GetCardApiTicket get ticket
