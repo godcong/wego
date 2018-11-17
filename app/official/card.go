@@ -368,6 +368,10 @@ func (c *Card) GetColors() core.Responder {
 	return core.Get(Link(cardGetColors), token.KeyMap())
 }
 
+//Checkin 更新飞机票信息接口
+//接口调用请求说明
+//http请求方式: POST
+//URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
 func (c *Card) Checkin(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
