@@ -373,12 +373,22 @@ func (c *Card) Checkin(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
 }
 
+//Categories 卡券开放类目查询接口
+//接口说明
+//通过调用该接口查询卡券开放的类目ID，类目会随业务发展变更，请每次用接口去查询获取实时卡券类目。
+//注意：
+//1.本接口查询的返回值还有卡券资质ID,此处的卡券资质为：已微信认证的公众号通过微信公众平台申请卡券功能时，所需的资质。
+//2.对于第三方强授权模式，子商户无论选择什么类目，均提交营业执照即可，所以不用考虑此处返回的资质字段，返回值仅参考类目ID即可。
+//接口详情
+//接口调用请求说明
+//https请求方式: GET https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
 func (c *Card) Categories() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetapplyprotocol), token.KeyMap())
 
 }
 
+//GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
 }
