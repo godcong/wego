@@ -149,6 +149,9 @@ const cardTestWhiteListSet = "/card/testwhitelist/set"
 //cardCreate api address suffix
 const cardCreate = "/card/create"
 
+//cardGet api address suffix
+const cardGet = "/card/get"
+
 //cardGetApplyProtocol api address suffix
 const cardGetApplyProtocol = "/card/getapplyprotocol"
 

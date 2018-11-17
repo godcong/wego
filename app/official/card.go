@@ -352,6 +352,15 @@ func (c *Card) Create(maps util.Map) core.Responder {
 	return resp
 }
 
+//Get 查看卡券详情
+//开发者可以调用该接口查询某个card_id的创建信息、审核状态以及库存数量。
+//接口调用请求说明
+//HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/get?access_token=TOKEN
+func (c *Card) Get(cardID string) core.Responder {
+	token := c.accessToken.GetToken()
+	return core.PostJSON("card/get", token.KeyMap(), util.Map{"card_id": cardID})
+}
+
 //GetApplyProtocol 卡券开放类目查询接口
 //HTTP请求方式: GET
 //URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
