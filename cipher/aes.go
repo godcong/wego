@@ -3,7 +3,6 @@ package cipher
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"strings"
 )
 
 /*DataCrypt DataCrypt */
@@ -66,7 +65,7 @@ func (c *cryptAES128CBC) Decrypt(data []byte) ([]byte, error) {
 		return nil, e
 	}
 
-	decodeData, e := Base64Decode([]byte(data))
+	decodeData, e := Base64Decode(data)
 	if e != nil {
 		return nil, e
 	}
@@ -80,15 +79,54 @@ func (c *cryptAES128CBC) Decrypt(data []byte) ([]byte, error) {
 
 	mode.CryptBlocks(decodeData, decodeData)
 
-	//过滤所有 非正常字符结尾
-	idx := strings.LastIndex(string(decodeData), "}") + 1
-
-	return decodeData[:idx], nil
+	return PKCS7UnPadding(decodeData), nil
 }
 
 // CryptAES128CBC ...
 func CryptAES128CBC() Cipher {
 	return &cryptAES128CBC{}
+}
+
+type cryptAES256ECB struct {
+	Key []byte
+}
+
+func (c *cryptAES256ECB) Type() CryptType {
+	panic("implement me")
+}
+
+func (c *cryptAES256ECB) SetParameter(key string, val []byte) {
+	c.Key = val
+}
+
+func (c *cryptAES256ECB) GetParameter(key string) []byte {
+	return c.Key
+}
+
+func (c *cryptAES256ECB) Encrypt([]byte) ([]byte, error) {
+	panic("implement me")
+}
+
+func (c *cryptAES256ECB) Decrypt(data []byte) ([]byte, error) {
+	decodeData, e := Base64Decode(data)
+	if e != nil {
+		return nil, e
+	}
+
+	block, err := aes.NewCipher(c.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	mode := NewECBDecrypter(block)
+
+	mode.CryptBlocks(decodeData, decodeData)
+
+	return PKCS7UnPadding(decodeData), nil
+}
+
+func CryptAES256ECB() Cipher {
+	return &cryptAES256ECB{}
 }
 
 // Decrypt ...
@@ -117,8 +155,5 @@ func (c *DataCrypt) Decrypt(data, iv, key string) ([]byte, error) {
 
 	mode.CryptBlocks(dData, dData)
 
-	//过滤所有 非正常字符结尾
-	idx := strings.LastIndex(string(dData), "}") + 1
-
-	return dData[:idx], nil
+	return PKCS7UnPadding(dData), nil
 }
