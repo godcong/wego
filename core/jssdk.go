@@ -60,7 +60,7 @@ func (j *JSSDK) BridgeConfig(pid string) util.Map {
 		"signType":  "MD5",
 	}
 
-	//m.Set("paySign", GenerateSignature(m, j.GetString("key"), MakeSignMD5))
+	m.Set("paySign", util.GenerateSignature(m, j.GetString("key"), util.MakeSignMD5))
 
 	return m
 }
@@ -86,13 +86,13 @@ func (j *JSSDK) AppConfig(pid string) util.Map {
 		"package":   "Sign=WXPay",
 	}
 
-	//m.Set("sign", GenerateSignature(m, j.GetString("aes_key"), MakeSignMD5))
+	m.Set("sign", util.GenerateSignature(m, j.GetString("aes_key"), util.MakeSignMD5))
 	return m
 }
 
 // ShareAddressConfig ...
-//参数:token
-//类型:string或*core.AccessToken
+//	参数:token
+//	类型:string或*core.AccessToken
 func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 	token := ""
 	switch vv := v.(type) {
