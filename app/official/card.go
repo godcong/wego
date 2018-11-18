@@ -1,8 +1,10 @@
 package official
 
 import (
+	"encoding/json"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
+	"strings"
 )
 
 // Card ...
@@ -223,9 +225,9 @@ type OneCard struct {
 }
 
 //CreateLandingPage 创建货架接口
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
-//func (c *Card) CreateLandingPage(page *CardLandingPage) core.Responder {
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
+//	func (c *Card) CreateLandingPage(page *CardLandingPage) core.Responder {
 func (c *Card) CreateLandingPage(maps util.Map) core.Responder {
 	resp := core.PostJSON(
 		Link(cardLandingPageCreate),
@@ -236,9 +238,8 @@ func (c *Card) CreateLandingPage(maps util.Map) core.Responder {
 }
 
 //Deposit 导入code接口
-//
-// HTTP请求方式: POST
-// URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
+//	HTTP请求方式: POST
+//	URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
 func (c *Card) Deposit(cardID string, code []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeDeposit),
@@ -267,8 +268,8 @@ func (c *Card) GetDepositCount(cardID string) core.Responder {
 }
 
 //CheckCode 核查code接口
-//HTTP请求方式: POST
-//HTTP调用:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
+//	HTTP请求方式: POST
+//	HTTP调用:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
 func (c *Card) CheckCode(cardID string, code []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeCheckCode),
@@ -282,13 +283,13 @@ func (c *Card) CheckCode(cardID string, code []string) core.Responder {
 }
 
 //GetCode 查询Code接口
-//HTTP请求方式: POST
-//HTTP调用:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
-//参数说明:
-//参数名	必填	类型	示例值	描述
-//code	是	string(20)	110201201245	单张卡券的唯一标准。
-//card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
-//check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
+//	HTTP请求方式: POST
+//	HTTP调用:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
+//	参数说明:
+//	参数名	必填	类型	示例值	描述
+//	code	是	string(20)	110201201245	单张卡券的唯一标准。
+//	card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
+//	check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
 func (c *Card) GetCode(maps util.Map) core.Responder {
 	resp := core.PostJSON(
 		Link(cardCodeGet),
@@ -299,8 +300,8 @@ func (c *Card) GetCode(maps util.Map) core.Responder {
 }
 
 //GetHTML 图文消息群发卡券
-//HTTP请求方式: POST
-//URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
 func (c *Card) GetHTML(cid string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardMPNewsGetHTML),
@@ -323,8 +324,8 @@ func (c *Card) SetTestWhiteListByName(list []string) core.Responder {
 }
 
 //SetTestWhiteList 设置测试白名单
-//HTTP请求方式: POST
-//URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
 func (c *Card) SetTestWhiteList(typ string, list []string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardTestWhiteListSet),
@@ -337,8 +338,8 @@ func (c *Card) SetTestWhiteList(typ string, list []string) core.Responder {
 }
 
 //CreateQrCode 创建二维码
-// HTTP请求方式: POST
-// URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
 func (c *Card) CreateQrCode(action *QrCodeAction) core.Responder {
 	resp := core.PostJSON(
 		Link(cardQrcodeCreate),
@@ -349,9 +350,9 @@ func (c *Card) CreateQrCode(action *QrCodeAction) core.Responder {
 }
 
 //Create 创建卡券
-// HTTP请求方式: POST
-// URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
-//func (c *Card) Create(card *OneCard) core.Responder {
+//	HTTP请求方式: POST
+//	URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
+//	func (c *Card) Create(card *OneCard) core.Responder {
 func (c *Card) Create(maps util.Map) core.Responder {
 	key := c.accessToken.GetToken().KeyMap()
 	//_, d := maps.Get()
@@ -364,48 +365,48 @@ func (c *Card) Create(maps util.Map) core.Responder {
 }
 
 //Get 查看卡券详情
-//开发者可以调用该接口查询某个card_id的创建信息、审核状态以及库存数量。
-//接口调用请求说明
-//HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/get?access_token=TOKEN
+//	开发者可以调用该接口查询某个card_id的创建信息、审核状态以及库存数量。
+//	接口调用请求说明
+//	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/get?access_token=TOKEN
 func (c *Card) Get(cardID string) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON("card/get", token.KeyMap(), util.Map{"card_id": cardID})
 }
 
 //GetApplyProtocol 卡券开放类目查询接口
-//HTTP请求方式: GET
-//URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
+//	HTTP请求方式: GET
+//	URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
 func (c *Card) GetApplyProtocol() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetApplyProtocol), token.KeyMap())
 }
 
 //GetColors 卡券开放类目查询接口
-//HTTP请求方式: GET
-//URL:https://api.weixin.qq.com/card/getcolors?access_token=TOKEN
+//	HTTP请求方式: GET
+//	URL:https://api.weixin.qq.com/card/getcolors?access_token=TOKEN
 func (c *Card) GetColors() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetColors), token.KeyMap())
 }
 
 //Checkin 更新飞机票信息接口
-//接口调用请求说明
-//http请求方式: POST
-//URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
+//	接口调用请求说明
+//	http请求方式: POST
+//	URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
 func (c *Card) Checkin(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
 }
 
 //Categories 卡券开放类目查询接口
-//接口说明
-//通过调用该接口查询卡券开放的类目ID，类目会随业务发展变更，请每次用接口去查询获取实时卡券类目。
-//注意：
-//1.本接口查询的返回值还有卡券资质ID,此处的卡券资质为：已微信认证的公众号通过微信公众平台申请卡券功能时，所需的资质。
-//2.对于第三方强授权模式，子商户无论选择什么类目，均提交营业执照即可，所以不用考虑此处返回的资质字段，返回值仅参考类目ID即可。
-//接口详情
-//接口调用请求说明
-//https请求方式: GET https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
+//	接口说明
+//	通过调用该接口查询卡券开放的类目ID，类目会随业务发展变更，请每次用接口去查询获取实时卡券类目。
+//	注意：
+//	1.本接口查询的返回值还有卡券资质ID,此处的卡券资质为：已微信认证的公众号通过微信公众平台申请卡券功能时，所需的资质。
+//	2.对于第三方强授权模式，子商户无论选择什么类目，均提交营业执照即可，所以不用考虑此处返回的资质字段，返回值仅参考类目ID即可。
+//	接口详情
+//	接口调用请求说明
+//	https请求方式: GET https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
 func (c *Card) Categories() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardGetapplyprotocol), token.KeyMap())
@@ -413,8 +414,8 @@ func (c *Card) Categories() core.Responder {
 }
 
 //BatchGet 批量查询卡券列表
-//接口调用请求说明
-//HTTP请求方式: POST URL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
+//	接口调用请求说明
+//	HTTP请求方式: POST URL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
 func (c *Card) BatchGet(offset, count int, statusList []CardStatus) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -426,10 +427,10 @@ func (c *Card) BatchGet(offset, count int, statusList []CardStatus) core.Respond
 }
 
 //Update 更改卡券信息接口
-//接口说明
-//支持更新所有卡券类型的部分通用字段及特殊卡券（会员卡、飞机票、电影票、会议门票）中特定字段的信息。
-//接口调用请求说明
-//HTTP请求方式: POST URL:https://api.weixin.qq.com/card/update?access_token=TOKEN
+//	接口说明
+//	支持更新所有卡券类型的部分通用字段及特殊卡券（会员卡、飞机票、电影票、会议门票）中特定字段的信息。
+//	接口调用请求说明
+//	HTTP请求方式: POST URL:https://api.weixin.qq.com/card/update?access_token=TOKEN
 func (c *Card) Update(cardID string, p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -439,76 +440,102 @@ func (c *Card) Update(cardID string, p util.Map) core.Responder {
 	return core.PostJSON(Link(cardUpdate), token.KeyMap(), maps)
 }
 
+//Delete 删除卡券接口
+//删除卡券接口允许商户删除任意一类卡券。删除卡券后，该卡券对应已生成的领取用二维码、添加到卡包JS API均会失效。 注意：如用户在商家删除卡券前已领取一张或多张该卡券依旧有效。即删除卡券不能删除已被用户领取，保存在微信客户端中的卡券。
+//接口调用请求说明
+//HTTP请求方式: POST URL:https://api.weixin.qq.com/card/delete?access_token=TOKEN
+func (c *Card) Delete(cardID string) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"card_id": cardID,
+	}
+	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
+}
+
+
+
 //GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
 }
 
-////NewOneCard 创建卡券信息
-////参数:
-////	cardType 卡券类型
-////	data	卡券信息 (可传nil)
-//func NewOneCard(cardType CardType, data util.Map) *OneCard {
-//	ct := strings.ToLower(cardType.String())
-//	return &OneCard{
-//		CardType: cardType,
-//		data: util.Map{
-//			"card_type": cardType,
-//			ct:          data,
-//		},
-//	}
-//}
-//
-////AddAdvancedInfo 添加卡券advanced_info
-//func (c *OneCard) AddAdvancedInfo(info *CardAdvancedInfo) *OneCard {
-//	return c.add("advanced_info", info)
-//}
-//
-////AddBaseInfo 添加卡券base_info
-//func (c *OneCard) AddBaseInfo(info *CardBaseInfo) *OneCard {
-//	return c.add("base_info", info)
-//}
-//
-////AddDealDetail 添加卡券deal_detail
-//func (c *OneCard) AddDealDetail(d string) *OneCard {
-//	return c.add("deal_detail", d)
-//}
-//
-//func (c *OneCard) add(name string, info interface{}) *OneCard {
-//	ct := strings.ToLower(c.CardType.String())
-//	if c.data != nil {
-//		if v, b := c.data[ct].(util.Map); b {
-//			if v != nil {
-//				v[name] = info
-//			} else {
-//				v = util.Map{
-//					name: info,
-//				}
-//			}
-//			c.data[ct] = v
-//		}
-//	} else {
-//		c.data = util.Map{
-//			"card_type": c.CardType,
-//			ct: util.Map{
-//				name: info,
-//			},
-//		}
-//	}
-//	return c
-//}
-//
-////Set 设置卡券信息(包含base_info,advanced_info,deal_detail)
-//func (c *OneCard) Set(cardType CardType, data util.Map) {
-//	ct := strings.ToLower(cardType.String())
-//	c.CardType = cardType
-//	c.data = util.Map{
-//		"card_type": ct,
-//		ct:          data,
-//	}
-//}
-//
-////Get 获取卡券类型,卡券信息
-//func (c *OneCard) Get() (CardType, util.Map) {
-//	return c.CardType, c.data
-//}
+//NewOneCard 创建卡券信息
+//	参数:
+//	cardType 卡券类型
+//	data	卡券信息 (可传nil)
+func NewOneCard(cardType CardType, data util.Map) *OneCard {
+	ct := strings.ToLower(cardType.String())
+	return &OneCard{
+		CardType: cardType,
+		data: util.Map{
+			"card_type": cardType,
+			ct:          data,
+		},
+	}
+}
+
+//AddAdvancedInfo 添加卡券advanced_info
+func (c *OneCard) AddAdvancedInfo(info *CardAdvancedInfo) *OneCard {
+	return c.add("advanced_info", info)
+}
+
+//AddBaseInfo 添加卡券base_info
+func (c *OneCard) AddBaseInfo(info *CardBaseInfo) *OneCard {
+	return c.add("base_info", info)
+}
+
+//AddDealDetail 添加卡券deal_detail
+func (c *OneCard) AddDealDetail(d string) *OneCard {
+	return c.add("deal_detail", d)
+}
+
+func (c *OneCard) add(name string, info interface{}) *OneCard {
+	ct := strings.ToLower(c.CardType.String())
+	if c.data != nil {
+		if v, b := c.data[ct].(util.Map); b {
+			if v != nil {
+				v[name] = info
+			} else {
+				v = util.Map{
+					name: info,
+				}
+			}
+			c.data[ct] = v
+		}
+	} else {
+		c.data = util.Map{
+			"card_type": c.CardType,
+			ct: util.Map{
+				name: info,
+			},
+		}
+	}
+	return c
+}
+
+//Set 设置卡券信息(包含base_info,advanced_info,deal_detail)
+func (c *OneCard) Set(cardType CardType, data util.Map) {
+	ct := strings.ToLower(cardType.String())
+	c.CardType = cardType
+	c.data = util.Map{
+		"card_type": ct,
+		ct:          data,
+	}
+}
+
+//Get 获取卡券类型,卡券信息
+func (c *OneCard) Get() (CardType, util.Map) {
+	return c.CardType, c.data
+}
+
+func (c *OneCard) ToMap() util.Map {
+	maps := util.Map{}
+	v, err := json.Marshal(c)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal(v, maps)
+	if err != nil {
+		return nil
+	}
+}

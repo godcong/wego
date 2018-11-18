@@ -161,9 +161,14 @@ const cardGetColors = "/card/getcolors"
 //cardGetapplyprotocol api address suffix
 const cardGetapplyprotocol = "/card/getapplyprotocol"
 
-const cardBatchget = "card/batchget"
+//cardBatchget api address suffix
+const cardBatchget = "/card/batchget"
 
-const cardUpdate = "card/update"
+//cardUpdate api address suffix
+const cardUpdate = "/card/update"
+
+//cardDelete api address suffix
+const cardDelete = "/card/delete"
 
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
