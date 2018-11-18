@@ -452,8 +452,13 @@ func (c *Card) Delete(cardID string) core.Responder {
 	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
 }
 
-func (c *Card) GetUserCards() {
-
+func (c *Card) GetUserCards(openID, cardID string) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"openid":  openID,
+		"card_id": cardID,
+	}
+	return core.PostJSON(Link(cardUserGetcardlist), token.KeyMap(), maps)
 }
 
 //GetCardApiTicket get ticket
