@@ -176,6 +176,8 @@ const cardUserGetcardlist = "/card/user/getcardlist"
 //cardPaycellSet api address suffix
 const cardPaycellSet = "card/paycell/set"
 
+const cardModifystock = "card/modifystock"
+
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
 
