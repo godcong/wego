@@ -461,6 +461,15 @@ func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	return core.PostJSON(Link(cardUserGetcardlist), token.KeyMap(), maps)
 }
 
+func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"is_open": isOpen,
+		"card_id": cardID,
+	}
+	return core.PostJSON(Link(cardPaycellSet), token.KeyMap(), maps)
+}
+
 //GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)

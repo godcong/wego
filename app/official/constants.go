@@ -170,7 +170,11 @@ const cardUpdate = "/card/update"
 //cardDelete api address suffix
 const cardDelete = "/card/delete"
 
+//cardUserGetcardlist api address suffix
 const cardUserGetcardlist = "/card/user/getcardlist"
+
+//cardPaycellSet api address suffix
+const cardPaycellSet = "card/paycell/set"
 
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
