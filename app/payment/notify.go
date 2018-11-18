@@ -1,10 +1,13 @@
 package payment
 
 import (
+	"encoding/xml"
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"net/http"
+	"strings"
 )
 
 // Notify ...
@@ -24,18 +27,36 @@ type refundedNotify struct {
 	NotifyCallback
 }
 
+func DecodeReqInfo(key, info string) util.Map {
+	maps := util.Map{}
+	ecb := cipher.CryptAES256ECB()
+	key = strings.ToLower(util.MakeSignMD5(key, ""))
+	ecb.SetParameter("key", []byte(key))
+	dec, _ := ecb.Decrypt([]byte(info))
+	_ = xml.Unmarshal(dec, &maps)
+	return maps
+}
+
 // ServeHTTP ...
 func (n *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
-	defer NotifyResponseXML(w, rlt.ToXML())
+	defer func() {
+		err = NotifyResponseXML(w, rlt.ToXML())
+		log.Error(err)
+	}()
 	maps, err := core.RequestToMap(req)
 	//wrong request will do nothing
 	if err != nil {
 		log.Error(err)
 		rlt = FAIL(err.Error())
 	} else {
-		//TODO: decode req_info
+		reqInfo := maps.GetString("req_info")
+		maps.Set("reqInfo", DecodeReqInfo(n.GetString("key"), reqInfo))
+		if n.NotifyCallback == nil {
+			log.Error(ErrNilNotifyCallback)
+			return
+		}
 		_, err = n.NotifyCallback(maps)
 		if err != nil {
 			rlt = FAIL(err.Error())
@@ -58,7 +79,10 @@ type scannedNotify struct {
 func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
-	defer NotifyResponseXML(w, rlt.ToXML())
+	defer func() {
+		err = NotifyResponseXML(w, rlt.ToXML())
+		log.Error(err)
+	}()
 	var p util.Map
 	maps, err := core.RequestToMap(req)
 
@@ -67,6 +91,10 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		rlt = FailDes(err.Error())
 	} else {
 		if util.ValidateSign(maps, n.GetKey()) {
+			if n.NotifyCallback == nil {
+				log.Error(ErrNilNotifyCallback)
+				return
+			}
 			p, err = n.NotifyCallback(maps)
 			if err != nil {
 				rlt = FailDes(err.Error())
@@ -109,7 +137,10 @@ type paidNotify struct {
 func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	rlt := SUCCESS()
-	defer NotifyResponseXML(w, rlt.ToXML())
+	defer func() {
+		err = NotifyResponseXML(w, rlt.ToXML())
+		log.Error(err)
+	}()
 	maps, err := core.RequestToMap(req)
 
 	if err != nil {
@@ -117,6 +148,10 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		rlt = FAIL(err.Error())
 	} else {
 		if util.ValidateSign(maps, n.GetKey()) {
+			if n.NotifyCallback == nil {
+				log.Error(ErrNilNotifyCallback)
+				return
+			}
 			_, err = n.NotifyCallback(maps)
 			if err != nil {
 				rlt = FAIL(err.Error())
