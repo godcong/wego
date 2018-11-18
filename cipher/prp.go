@@ -67,13 +67,6 @@ func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
 	return Base64Encode(ciphertext), nil
 }
 
-/*PKCS7Padding PKCS7Padding */
-func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
-}
-
 // Decrypt ...
 func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
@@ -98,16 +91,6 @@ func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	}
 
 	return xmlContent, nil
-}
-
-/*PKCS7UnPadding PKCS7UnPadding */
-func PKCS7UnPadding(plantText []byte) []byte {
-	length := len(plantText)
-	unpadding := int(plantText[length-1])
-	if unpadding < 1 || unpadding > 32 {
-		unpadding = 0
-	}
-	return plantText[:(length - unpadding)]
 }
 
 /*SHA1 SHA1 */
