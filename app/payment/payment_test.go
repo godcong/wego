@@ -17,15 +17,11 @@ var outTradeNo = "201813091059590000003433-asd003"
 var longUrl = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 
 var cfg = wego.C(util.Map{
-	"mch_id":     "1516796851",
-	"app_id":     "wx15810ca16324c225",
-	"secret":     "4f2601f6567ac4b5741aa2dc2e5eadfd",
-	"key":        "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
-	"aes_key":    "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
-	"notify_url": "https://mp.quick58.com/api/charge/callback",
-	"refund_url": "https://mp.quick58.com/api/refund/callback",
-	"cert_path":  "D:/workspace/project/goproject/wego/cert/apiclient_cert.pem",
-	"key_path":   "D:/workspace/project/goproject/wego/cert/apiclient_key.pem",
+	"sandbox": true,
+	"app_id":  "wx3c69535993f4651d",
+	"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
+	"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
+	"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 })
 
 // TestOrder_Close ...
@@ -213,9 +209,9 @@ func TestMerchant_QuerySubMerchantByWeChatId(t *testing.T) {
 // TestBill_Download ...
 func TestBill_Download(t *testing.T) {
 	bill := payment.NewBill(cfg)
-	resp := bill.Download("20181109")
+	resp := bill.Download("20181118")
 	//_ = core.SaveEncodingTo(resp, "d:/test.csv", simplifiedchinese.GBK.NewEncoder())
-	core.SaveTo(resp, "d:/test.csv")
+	_ = core.SaveTo(resp, "d:/test2.csv")
 	t.Log(resp.Error())
 	t.Log(string(resp.Bytes()))
 
