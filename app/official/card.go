@@ -302,12 +302,12 @@ func (c *Card) GetCode(maps util.Map) core.Responder {
 //GetHTML 图文消息群发卡券
 //	HTTP请求方式: POST
 //	URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
-func (c *Card) GetHTML(cid string) core.Responder {
+func (c *Card) GetHTML(cardID string) core.Responder {
 	resp := core.PostJSON(
 		Link(cardMPNewsGetHTML),
 		c.accessToken.GetToken().KeyMap(),
 		util.Map{
-			"card_id": cid,
+			"card_id": cardID,
 		},
 	)
 	return resp
@@ -452,7 +452,9 @@ func (c *Card) Delete(cardID string) core.Responder {
 	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
 }
 
+func (c *Card) GetUserCards() {
 
+}
 
 //GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
