@@ -540,4 +540,5 @@ func (c *OneCard) ToMap() util.Map {
 	if err != nil {
 		return nil
 	}
+	return maps
 }
