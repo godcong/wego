@@ -17,11 +17,15 @@ var outTradeNo = "201813091059590000003433-asd003"
 var longUrl = "weixin://wxpay/bizpayurl?pr=etxB4DY"
 
 var cfg = wego.C(util.Map{
-	"sandbox": true,
-	"app_id":  "wx3c69535993f4651d",
-	"secret":  "f8c7a2cf0c6ed44e2c719964bbe13b1e",
-	"key":     "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
-	"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
+	"mch_id":     "1516796851",
+	"app_id":     "wx15810ca16324c225",
+	"secret":     "4f2601f6567ac4b5741aa2dc2e5eadfd",
+	"key":        "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK",
+	"aes_key":    "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
+	"notify_url": "https://mp.quick58.com/api/charge/callback",
+	"refund_url": "https://mp.quick58.com/api/refund/callback",
+	"cert_path":  "D:/workspace/project/goproject/wego/cert/apiclient_cert.pem",
+	"key_path":   "D:/workspace/project/goproject/wego/cert/apiclient_key.pem",
 })
 
 // TestOrder_Close ...
@@ -54,7 +58,7 @@ func TestPayment_Refund(t *testing.T) {
 
 // TestRefund_QueryByTransactionID ...
 func TestRefund_QueryByTransactionID(t *testing.T) {
-	resp := payment.NewRefund(cfg).QueryByTransactionID("4200000192201811091287458035")
+	resp := payment.NewRefund(cfg).QueryByTransactionID("4200000201201811188154323032")
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
 }
@@ -82,7 +86,7 @@ func TestRefund_QueryByRefundID(t *testing.T) {
 
 // TestRefund_ByTransactionID ...
 func TestRefund_ByTransactionID(t *testing.T) {
-	resp := payment.NewRefund(cfg).ByTransactionID("4200000192201811091287458035", "111111", 100, 100)
+	resp := payment.NewRefund(cfg).ByTransactionID("4200000201201811188154323032", "111111", 100, 100)
 	t.Log(resp.Error())
 	t.Log(resp.ToMap())
 }

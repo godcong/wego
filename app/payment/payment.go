@@ -134,7 +134,7 @@ func (p *Payment) SafeRequest(s string, maps util.Map) core.Responder {
 		core.DataTypeXML:      p.initRequest(maps),
 		core.DataTypeSecurity: p.Config,
 	}
-	return core.Request(p.Link(s), "post", m)
+	return core.Request(core.POST, p.Link(s), m)
 }
 
 // Base ...
@@ -352,7 +352,7 @@ func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) co
 	}, option)
 
 	m.Set("sign", util.GenerateSignatureWithIgnore(m, p.GetKey(), nil))
-	return core.Request(p.Link(payQueryexchagerate), "post", util.Map{
+	return core.Request(p.Link(payQueryexchagerate), core.POST, util.Map{
 		core.DataTypeXML: m,
 	})
 }

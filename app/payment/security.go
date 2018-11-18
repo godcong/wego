@@ -40,5 +40,5 @@ func (s *Security) GetPublicKey() core.Responder {
 		core.DataTypeXML:      s.initRequest(m),
 		core.DataTypeSecurity: s.Config,
 	}
-	return core.Request(riskGetPublicKey, "post", maps)
+	return core.Request(riskGetPublicKey, core.POST, maps)
 }

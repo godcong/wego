@@ -99,6 +99,9 @@ type request struct {
 func (r *request) Do(ctx context.Context) Responder {
 	log.Debug("Requester|Do", r.method, r.url, r.body)
 	request := r.function(r.method, r.url, r.body)
+	if request == nil {
+		return Err(nil, errors.New("nil request"))
+	}
 	return do(ctx, r.client, request)
 }
 
@@ -117,6 +120,7 @@ func (r *request) Do(ctx context.Context) Responder {
 func processNothing(method, url string, i interface{}) *http.Request {
 	request, err := http.NewRequest(method, url, nil)
 	if err != nil {
+		log.Error(err)
 		return nil
 	}
 	return request
@@ -193,26 +197,31 @@ func processMultipart(method, url string, i interface{}) *http.Request {
 	switch v := i.(type) {
 	case util.Map:
 		path := v.GetString("media")
-		fh, e := os.Open(path)
-		if e != nil {
-			log.Debug("processMultipart|e", e)
+		fh, err := os.Open(path)
+		if err != nil {
+			log.Error("processMultipart|err", err)
 			return nil
 		}
-		defer fh.Close()
+		defer func() {
+			err = fh.Close()
+			if err != nil {
+				log.Error(err)
+			}
+		}()
 
-		fw, e := writer.CreateFormFile("media", path)
-		if e != nil {
-			log.Debug("processMultipart|e", e)
+		fw, err := writer.CreateFormFile("media", path)
+		if err != nil {
+			log.Error("processMultipart|err", err)
 			return nil
 		}
 
-		if _, e = io.Copy(fw, fh); e != nil {
-			log.Debug("processMultipart|e", e)
+		if _, err = io.Copy(fw, fh); err != nil {
+			log.Error("processMultipart|err", err)
 			return nil
 		}
 		des := v.GetMap("description")
 		if des != nil {
-			writer.WriteField("description", string(des.ToJSON()))
+			_ = writer.WriteField("description", string(des.ToJSON()))
 		}
 	}
 	request, err := http.NewRequest(method, url, &buf)
@@ -246,9 +255,10 @@ func toXMLReader(v interface{}) io.Reader {
 }
 
 func processXML(method, url string, i interface{}) *http.Request {
-
+	log.Debug(method, url, i)
 	request, err := http.NewRequest(method, url, toXMLReader(i))
 	if err != nil {
+		log.Error(err)
 		return nil
 	}
 	request.Header["Content-Type"] = []string{"application/xml; charset=utf-8"}
@@ -280,6 +290,7 @@ func toJSONReader(v interface{}) io.Reader {
 func processJSON(method, url string, i interface{}) *http.Request {
 	request, err := http.NewRequest(method, url, toJSONReader(i))
 	if err != nil {
+		log.Error(err)
 		return nil
 	}
 	request.Header["Content-Type"] = []string{"application/json; charset=utf-8"}
@@ -308,9 +319,9 @@ func toFormReader(v interface{}) io.Reader {
 }
 
 func processForm(method, url string, i interface{}) *http.Request {
-
 	request, err := http.NewRequest(method, url, toFormReader(i))
 	if err != nil {
+		log.Error(err)
 		return nil
 	}
 
@@ -331,9 +342,8 @@ func buildRequester(method, url string, m util.Map) Requester {
 		request.function = processJSON
 		request.body = m.Get(DataTypeJSON)
 	case m.Has(DataTypeXML):
-		request.body = m.Get(DataTypeXML)
 		request.function = processXML
-
+		request.body = m.Get(DataTypeXML)
 	case m.Has(DataTypeForm):
 		request.function = processForm
 		request.body = m.Get(DataTypeForm)
