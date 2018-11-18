@@ -228,7 +228,8 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 		switch token := t.(type) {
 		// 处理元素开始（标签）
 		case xml.StartElement:
-			if strings.ToLower(token.Name.Local) == "xml" {
+			if strings.ToLower(token.Name.Local) == "xml" ||
+				strings.ToLower(token.Name.Local) == "root" {
 				continue
 			}
 			ele = append(ele, token.Name.Local)
@@ -252,7 +253,8 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 		case xml.EndElement:
 			name := token.Name.Local
 			// fmt.Printf("This is the end: %s\n", name)
-			if strings.ToLower(name) == "xml" {
+			if strings.ToLower(name) == "xml" ||
+				strings.ToLower(name) == "root" {
 				break
 			}
 			last = strings.Join(ele, ".")

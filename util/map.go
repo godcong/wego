@@ -525,11 +525,17 @@ func (m Map) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if len(m) == 0 {
 		return ErrNilMap
 	}
+	if start.Name.Local == "root" {
+		return marshalXML(m, e, xml.StartElement{Name: xml.Name{Local: "root"}})
+	}
 	return marshalXML(m, e, xml.StartElement{Name: xml.Name{Local: "xml"}})
 }
 
 // UnmarshalXML ...
 func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if start.Name.Local == "root" {
+		return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "root"}}, false)
+	}
 	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}}, false)
 }
 
