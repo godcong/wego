@@ -536,10 +536,16 @@ func (c *Card) PayActivate() core.Responder {
 // PayGetPrice ...
 func (c *Card) PayGetPrice(cardID string, quantity int) core.Responder {
 	token := c.accessToken.GetToken()
-	return core.PostJSON(Link(cardPayActivate), token.KeyMap(), util.Map{
+	return core.PostJSON(Link(cardPayGetpayprice), token.KeyMap(), util.Map{
 		"card_id":  cardID,
 		"quantity": quantity,
 	})
+}
+
+// PayGetCoinsInfo ...
+func (c *Card) PayGetCoinsInfo() core.Responder {
+	token := c.accessToken.GetToken()
+	return core.Get(Link(cardPayGetcoinsinfo), token.KeyMap())
 }
 
 //GetCardAPITicket get ticket
