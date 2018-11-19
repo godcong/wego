@@ -142,6 +142,12 @@ const cardCodeGet = "/card/code/get"
 
 const cardCodeUpdate = "card/code/update"
 
+const cardCodeUnavailable = "card/code/unavailable"
+
+const cardCodeConsume = "card/code/consume"
+
+const cardCodeDecrypt = "card/code/decrypt"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
