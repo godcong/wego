@@ -463,6 +463,18 @@ func (c *Card) CodeUnavailable(code string, cardID string) core.Responder {
 	return core.PostJSON(Link(cardCodeUnavailable), token.KeyMap(), maps)
 }
 
+// CodeConsume ...
+func (c *Card) CodeConsume(code string, cardID string) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"code": code,
+	}
+	if cardID != "" {
+		maps.Set("card_id", cardID)
+	}
+	return core.PostJSON(Link(cardCodeConsume), token.KeyMap(), maps)
+}
+
 //Delete 删除卡券接口
 //删除卡券接口允许商户删除任意一类卡券。删除卡券后，该卡券对应已生成的领取用二维码、添加到卡包JS API均会失效。 注意：如用户在商家删除卡券前已领取一张或多张该卡券依旧有效。即删除卡券不能删除已被用户领取，保存在微信客户端中的卡券。
 //接口调用请求说明
