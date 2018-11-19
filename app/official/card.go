@@ -548,6 +548,14 @@ func (c *Card) PayGetCoinsInfo() core.Responder {
 	return core.Get(Link(cardPayGetcoinsinfo), token.KeyMap())
 }
 
+// PayRecharge ...
+func (c *Card) PayRecharge(count int) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardPayGetpayprice), token, util.Map{
+		"coin_count": count,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)

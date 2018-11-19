@@ -154,6 +154,16 @@ const cardPayGetpayprice = "card/pay/getpayprice"
 
 const cardPayGetcoinsinfo = "card/pay/getcoinsinfo"
 
+const cardPayGetorder = "card/pay/getorder"
+
+const cardPayGetorderlist = "card/pay/getorderlist"
+
+const cardPayConfirm = "card/pay/confirm"
+
+const cardGeneralcardActivate = "card/generalcard/activate"
+
+const cardGeneralcardUnactivate = "card/generalcard/unactivate"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
