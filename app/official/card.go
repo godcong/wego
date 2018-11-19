@@ -571,6 +571,16 @@ func (c *Card) PayGetOrderList(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardPayGetorderlist), token, util.MapNilMake(p))
 }
 
+// PayConfirm ...
+func (c *Card) PayConfirm(cardID, orderID string, quantity int) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardPayConfirm), token, util.Map{
+		"card_id":  cardID,
+		"order_id": orderID,
+		"quantity": quantity,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
