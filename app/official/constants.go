@@ -170,6 +170,8 @@ const cardMeetingticketUpdateuser = "/card/meetingticket/updateuser"
 const cardGiftcardPageAdd = "/card/giftcard/page/add"
 const cardGiftcardPageGet = "/card/giftcard/page/get"
 
+const cardGiftcardPageUpdate = "/card/giftcard/page/update"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
