@@ -125,6 +125,7 @@ func (n QrCodeActionName) String() string {
 	return string(n)
 }
 
+// ToMap ...
 func (action *QrCodeAction) ToMap() util.Map {
 	maps := util.Map{}
 	err := util.InterfaceToMap(action, &maps)

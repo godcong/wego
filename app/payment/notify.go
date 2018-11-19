@@ -27,6 +27,7 @@ type refundedNotify struct {
 	NotifyCallback
 }
 
+// DecodeReqInfo ...
 func DecodeReqInfo(key, info string) util.Map {
 	maps := util.Map{}
 	ecb := cipher.CryptAES256ECB()

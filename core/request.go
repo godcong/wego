@@ -22,6 +22,7 @@ type Requester interface {
 	Do(ctx context.Context) Responder
 }
 
+// RequestBuildFunc ...
 type RequestBuildFunc func(url, method string, i interface{}) *http.Request
 
 // ErrNilRequestBody ...
@@ -96,6 +97,7 @@ type request struct {
 	body     interface{}
 }
 
+// Do ...
 func (r *request) Do(ctx context.Context) Responder {
 	log.Debug("Requester|Do", r.method, r.url, r.body)
 	request := r.function(r.method, r.url, r.body)

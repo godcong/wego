@@ -91,22 +91,27 @@ type cryptAES256ECB struct {
 	Key []byte
 }
 
+// Type ...
 func (c *cryptAES256ECB) Type() CryptType {
 	panic("implement me")
 }
 
+// SetParameter ...
 func (c *cryptAES256ECB) SetParameter(key string, val []byte) {
 	c.Key = val
 }
 
+// GetParameter ...
 func (c *cryptAES256ECB) GetParameter(key string) []byte {
 	return c.Key
 }
 
+// Encrypt ...
 func (c *cryptAES256ECB) Encrypt([]byte) ([]byte, error) {
 	panic("implement me")
 }
 
+// Decrypt ...
 func (c *cryptAES256ECB) Decrypt(data []byte) ([]byte, error) {
 	decodeData, e := Base64Decode(data)
 	if e != nil {
@@ -125,6 +130,7 @@ func (c *cryptAES256ECB) Decrypt(data []byte) ([]byte, error) {
 	return PKCS7UnPadding(decodeData), nil
 }
 
+// CryptAES256ECB ...
 func CryptAES256ECB() Cipher {
 	return &cryptAES256ECB{}
 }

@@ -68,6 +68,7 @@ func (a *Auth) Session(code string) core.Responder {
 	return resp
 }
 
+// CheckSession ...
 func (a *Auth) CheckSession(session string) core.Responder {
 	//TODO
 	params := util.Map{

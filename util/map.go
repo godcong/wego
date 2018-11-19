@@ -539,6 +539,7 @@ func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}}, false)
 }
 
+// InterfaceToMap ...
 func InterfaceToMap(v interface{}, m *Map) error {
 	b, err := json.Marshal(v)
 	if err != nil {

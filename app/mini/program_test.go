@@ -16,18 +16,21 @@ var cfg = wego.C(util.Map{
 	"aes_key": "DbWPitkfiWkhLwDPA48laxJojyiNqVwtK7R1ENPvEwC",
 })
 
+// TestAppCode_Get ...
 func TestAppCode_Get(t *testing.T) {
 	obj := mini.NewAppCode(cfg)
 	resp := obj.Get("https://mp.quick58.com")
 	_ = core.SaveTo(resp, "d:/Get.jpg")
 }
 
+// TestAppCode_GetQrCode ...
 func TestAppCode_GetQrCode(t *testing.T) {
 	obj := mini.NewAppCode(cfg)
 	resp := obj.GetQrCode("https://mp.quick58.com", 430)
 	_ = core.SaveTo(resp, "d:/GetQrCode.jpg")
 }
 
+// TestAppCode_GetUnlimit ...
 func TestAppCode_GetUnlimit(t *testing.T) {
 	obj := mini.NewAppCode(cfg)
 	resp := obj.GetUnlimit("https://mp.quick58.com")
@@ -41,36 +44,42 @@ func TestAuth_Session(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_DailyRetainInfo ...
 func TestDataCube_DailyRetainInfo(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.DailyRetainInfo("20181116", "20181116")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_DailyVisitTrend ...
 func TestDataCube_DailyVisitTrend(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.DailyVisitTrend("20181109", "20181109")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_MonthlyVisitTrend ...
 func TestDataCube_MonthlyVisitTrend(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.MonthlyVisitTrend("20181001", "20181031")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_MonthlyRetainInfo ...
 func TestDataCube_MonthlyRetainInfo(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.MonthlyRetainInfo("20181001", "20181031")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_SummaryTrend ...
 func TestDataCube_SummaryTrend(t *testing.T) {
 	cube := mini.NewDataCube(cfg)
 	resp := cube.SummaryTrend("20181109", "20181109")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_UserPortrait ...
 func TestDataCube_UserPortrait(t *testing.T) {
 	cube := mini.NewDataCube(cfg)
 	resp := cube.UserPortrait("20181109", "20181115")
@@ -91,18 +100,21 @@ func TestDataCube_VisitPage(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_WeeklyRetainInfo ...
 func TestDataCube_WeeklyRetainInfo(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.WeeklyRetainInfo("20181105", "20181111")
 	t.Log(resp.ToMap())
 }
 
+// TestDataCube_WeeklyVisitTrend ...
 func TestDataCube_WeeklyVisitTrend(t *testing.T) {
 	obj := mini.NewDataCube(cfg)
 	resp := obj.WeeklyVisitTrend("20181105", "20181111")
 	t.Log(resp.ToMap())
 }
 
+// TestPlugin_List ...
 func TestPlugin_List(t *testing.T) {
 	obj := mini.NewPlugin(cfg)
 	resp := obj.List()
@@ -130,48 +142,56 @@ func TestPlugin_Unbind(t *testing.T) {
 	t.Log(resp.ToMap())
 }
 
+// TestPlugin_DevApplyList ...
 func TestPlugin_DevApplyList(t *testing.T) {
 	obj := mini.NewPlugin(cfg)
 	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
 	t.Log(resp.ToMap())
 }
 
+// TestPlugin_DevDelete ...
 func TestPlugin_DevDelete(t *testing.T) {
 	obj := mini.NewPlugin(cfg)
 	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
 	t.Log(resp.ToMap())
 }
 
+// TestPlugin_DevRefuse ...
 func TestPlugin_DevRefuse(t *testing.T) {
 	obj := mini.NewPlugin(cfg)
 	resp := obj.DevApplyList("wx1ad61aeef1903b93", 0, 0)
 	t.Log(resp.ToMap())
 }
 
+// TestTemplate_List ...
 func TestTemplate_List(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	rlt := temp.List(0, 10)
 	t.Log(rlt.ToMap())
 }
 
+// TestTemplate_Get ...
 func TestTemplate_Get(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	rlt := temp.Get("AT0002")
 	t.Log(rlt.ToMap())
 }
 
+// TestTemplate_GetTemplates ...
 func TestTemplate_GetTemplates(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	rlt := temp.GetTemplates(0, 10)
 	t.Log(rlt.ToMap())
 }
 
+// TestTemplate_Delete ...
 func TestTemplate_Delete(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	rlt := temp.Delete("KzKGxK6BKFfEk9VOEa6zSTdpmOcc7MtcjQ75yezIIB8")
 	t.Log(rlt.ToMap())
 }
 
+// TestTemplate_Add ...
 func TestTemplate_Add(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	rlt := temp.Add("AT0002", []int{100, 101})
@@ -179,6 +199,7 @@ func TestTemplate_Add(t *testing.T) {
 	//KzKGxK6BKFfEk9VOEa6zSTdpmOcc7MtcjQ75yezIIB8
 }
 
+// TestTemplate_Send ...
 func TestTemplate_Send(t *testing.T) {
 	temp := mini.NewTemplate(cfg)
 	msg := &message.Template{

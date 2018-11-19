@@ -21,6 +21,7 @@ func NewOpenData(config *core.Config) *OpenData {
 	return newOpenData(NewMiniProgram(config)).(*OpenData)
 }
 
+// RemoveUserStorage ...
 func (d *OpenData) RemoveUserStorage(openID string, sessionKey string, keys []string) core.Responder {
 	maps := util.Map{
 		"key": keys,
@@ -36,6 +37,7 @@ func (d *OpenData) RemoveUserStorage(openID string, sessionKey string, keys []st
 	return core.PostJSON(Link(wxaRemoveUserStorage), query, maps)
 }
 
+// SetUserStorage ...
 func (d *OpenData) SetUserStorage(openID string, sessionKey string, list util.Map) core.Responder {
 	maps := util.Map{
 		"kv_list": list,

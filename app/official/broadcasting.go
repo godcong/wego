@@ -71,6 +71,7 @@ func (b *Broadcasting) Status(msgID string) core.Responder {
 
 }
 
+// SendText ...
 func (b *Broadcasting) SendText() {
 
 }

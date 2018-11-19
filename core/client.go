@@ -45,15 +45,6 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
-//type Client struct {
-//	context.Context
-//}
-//
-////DefaultClient result a client with default value
-//var DefaultClient = &Client{
-//	Context: context.Background(),
-//}
-
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
 	url = url + "?" + query.URLEncode()

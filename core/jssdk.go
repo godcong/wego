@@ -129,9 +129,9 @@ func (j *JSSDK) BuildConfig(maps util.Map) util.Map {
 	nonce := util.GenerateNonceStr()
 	ts := util.Time()
 	url := maps.GetStringD("url", j.URL)
-	appId := maps.GetStringD("app_id", j.GetString("app_id"))
+	appID := maps.GetStringD("app_id", j.GetString("app_id"))
 	m := util.Map{
-		"appId":     appId,
+		"appID":     appID,
 		"nonceStr":  nonce,
 		"timestamp": ts,
 		"url":       url,

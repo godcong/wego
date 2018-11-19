@@ -52,6 +52,7 @@ const CardSceneCardCustomCell CardScene = "SCENE_CARD_CUSTOM_CELL"
 //支持开发者拉出指定状态的卡券列表
 type CardStatus string
 
+// CARD_STATUS_NOT_VERIFY ...
 const (
 	CARD_STATUS_NOT_VERIFY  CardStatus = "CARD_STATUS_NOT_VERIFY"  //待审核
 	CARD_STATUS_VERIFY_FAIL CardStatus = "CARD_STATUS_VERIFY_FAIL" //审核失败
@@ -452,6 +453,7 @@ func (c *Card) Delete(cardID string) core.Responder {
 	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
 }
 
+// GetUserCards ...
 func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -461,6 +463,7 @@ func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	return core.PostJSON(Link(cardUserGetcardlist), token.KeyMap(), maps)
 }
 
+// SetPayCell ...
 func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -470,6 +473,7 @@ func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	return core.PostJSON(Link(cardPaycellSet), token.KeyMap(), maps)
 }
 
+// ModifyStock ...
 func (c *Card) ModifyStock(cardID string, option util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -553,6 +557,7 @@ func (c *OneCard) Get() (CardType, util.Map) {
 	return c.CardType, c.data
 }
 
+// ToMap ...
 func (c *OneCard) ToMap() util.Map {
 	maps := util.Map{}
 	v, err := json.Marshal(c)

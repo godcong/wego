@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/core/message"
 )
 
+// TestNewTemplate ...
 func TestNewTemplate(t *testing.T) {
 	t0 := official.NewTemplate(cfg)
 
