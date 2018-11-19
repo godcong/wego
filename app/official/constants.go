@@ -140,6 +140,8 @@ const cardCodeCheckCode = "/card/code/checkcode"
 //cardCodeGet api address suffix
 const cardCodeGet = "/card/code/get"
 
+const cardCodeUpdate = "card/code/update"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 

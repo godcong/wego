@@ -49,16 +49,16 @@ const CardSceneIvr CardScene = "SCENE_IVR"
 //CardSceneCardCustomCell 卡券自定义cell
 const CardSceneCardCustomCell CardScene = "SCENE_CARD_CUSTOM_CELL"
 
-//支持开发者拉出指定状态的卡券列表
+//CardStatus 支持开发者拉出指定状态的卡券列表
 type CardStatus string
 
-// CARD_STATUS_NOT_VERIFY ...
+// CardStatusNotVerify ...
 const (
-	CARD_STATUS_NOT_VERIFY  CardStatus = "CARD_STATUS_NOT_VERIFY"  //待审核
-	CARD_STATUS_VERIFY_FAIL CardStatus = "CARD_STATUS_VERIFY_FAIL" //审核失败
-	CARD_STATUS_VERIFY_OK   CardStatus = "CARD_STATUS_VERIFY_OK"   //通过审核
-	CARD_STATUS_DELETE      CardStatus = "CARD_STATUS_DELETE"      //卡券被商户删除
-	CARD_STATUS_DISPATCH    CardStatus = "CARD_STATUS_DISPATCH"    //在公众平台投放过的卡券；
+	CardStatusNotVerify  CardStatus = "CARD_STATUS_NOT_VERIFY"  //待审核
+	CardStatusVerifyFail CardStatus = "CARD_STATUS_VERIFY_FAIL" //审核失败
+	CardStatusVerifyOk   CardStatus = "CARD_STATUS_VERIFY_OK"   //通过审核
+	CardStatusDelete     CardStatus = "CARD_STATUS_DELETE"      //卡券被商户删除
+	CardStatusDispatch   CardStatus = "CARD_STATUS_DISPATCH"    //在公众平台投放过的卡券；
 )
 
 // String ...
@@ -441,6 +441,18 @@ func (c *Card) Update(cardID string, p util.Map) core.Responder {
 	return core.PostJSON(Link(cardUpdate), token.KeyMap(), maps)
 }
 
+// UpdateCode ...
+func (c *Card) UpdateCode(code string, newCode string, cardID string) core.Responder {
+	token := c.accessToken.GetToken()
+	maps := util.Map{
+		"code":     code,
+		"new_code": newCode,
+		"card_id":  cardID,
+	}
+	return core.PostJSON(Link(cardCodeUpdate), token.KeyMap(), maps)
+
+}
+
 //Delete 删除卡券接口
 //删除卡券接口允许商户删除任意一类卡券。删除卡券后，该卡券对应已生成的领取用二维码、添加到卡包JS API均会失效。 注意：如用户在商家删除卡券前已领取一张或多张该卡券依旧有效。即删除卡券不能删除已被用户领取，保存在微信客户端中的卡券。
 //接口调用请求说明
@@ -483,8 +495,8 @@ func (c *Card) ModifyStock(cardID string, option util.Map) core.Responder {
 	return core.PostJSON(Link(cardModifystock), token.KeyMap(), maps)
 }
 
-//GetCardApiTicket get ticket
-func (c *Card) GetCardApiTicket(refresh bool) {
+//GetCardAPITicket get ticket
+func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
 }
 
