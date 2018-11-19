@@ -556,6 +556,15 @@ func (c *Card) PayRecharge(count int) core.Responder {
 	})
 }
 
+// PayOrder ...
+func (c *Card) PayOrder(orderID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardPayGetorder), token, util.Map{
+		"order_id": orderID,
+	})
+
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
