@@ -602,6 +602,12 @@ func (c *Card) GeneralUpdateUser(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardGeneralcardUpdateuser), token, util.MapNilMake(p))
 }
 
+// MeetingUpdateUser ...
+func (c *Card) MeetingUpdateUser(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardMeetingticketUpdateuser), token, util.MapNilMake(p))
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)

@@ -165,6 +165,7 @@ const cardGeneralcardActivate = "card/generalcard/activate"
 const cardGeneralcardUnactivate = "card/generalcard/unactivate"
 
 const cardGeneralcardUpdateuser = "card/generalcard/updateuser"
+const cardMeetingticketUpdateuser = "card/meetingticket/updateuser"
 
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
