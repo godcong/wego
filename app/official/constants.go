@@ -174,6 +174,8 @@ const cardGiftcardPageUpdate = "/card/giftcard/page/update"
 
 const cardGiftcardPageBatchget = "/card/giftcard/page/batchget"
 
+const cardGiftcardMaintainSet = "/card/giftcard/maintain/set"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
