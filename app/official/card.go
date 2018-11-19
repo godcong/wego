@@ -527,8 +527,8 @@ func (c *Card) ModifyStock(cardID string, option util.Map) core.Responder {
 	return core.PostJSON(Link(cardModifystock), token.KeyMap(), maps)
 }
 
-// Activate ...
-func (c *Card) Activate() core.Responder {
+// PayActivate ...
+func (c *Card) PayActivate() core.Responder {
 	token := c.accessToken.GetToken()
 	return core.Get(Link(cardPayActivate), token.KeyMap())
 }

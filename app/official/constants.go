@@ -150,6 +150,8 @@ const cardCodeDecrypt = "card/code/decrypt"
 
 const cardPayActivate = "card/pay/activate"
 
+const cardPayGetpayprice = "card/pay/getpayprice"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
