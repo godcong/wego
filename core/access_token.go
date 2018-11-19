@@ -101,6 +101,13 @@ func (a *AccessToken) GetToken() *Token {
 	return a.getToken(false)
 }
 
+// KeyMap ...
+func (a *AccessToken) KeyMap() util.Map {
+	log.Debug("AccessToken|KeyMap")
+	token := a.getToken(false)
+	return token.KeyMap()
+}
+
 /*GetTokenWithRefresh 重新获取token */
 func (a *AccessToken) GetTokenWithRefresh() *Token {
 	log.Debug("AccessToken|GetTokenWithRefresh")

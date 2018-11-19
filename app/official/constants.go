@@ -148,6 +148,8 @@ const cardCodeConsume = "card/code/consume"
 
 const cardCodeDecrypt = "card/code/decrypt"
 
+const cardPayActivate = "card/pay/activate"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
