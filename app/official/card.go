@@ -533,6 +533,15 @@ func (c *Card) PayActivate() core.Responder {
 	return core.Get(Link(cardPayActivate), token.KeyMap())
 }
 
+// PayGetPrice ...
+func (c *Card) PayGetPrice(cardID string, quantity int) core.Responder {
+	token := c.accessToken.GetToken()
+	return core.PostJSON(Link(cardPayActivate), token.KeyMap(), util.Map{
+		"card_id":  cardID,
+		"quantity": quantity,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
