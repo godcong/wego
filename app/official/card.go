@@ -596,6 +596,12 @@ func (c *Card) GeneralDeactivate(cardID, code string) core.Responder {
 	})
 }
 
+// GeneralUpdateUser ...
+func (c *Card) GeneralUpdateUser(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGeneralcardUpdateuser), token, util.MapNilMake(p))
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
