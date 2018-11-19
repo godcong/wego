@@ -608,6 +608,19 @@ func (c *Card) MeetingUpdateUser(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardMeetingticketUpdateuser), token, util.MapNilMake(p))
 }
 
+//GiftAdd 创建-礼品卡货架接口
+//接口说明
+//开发者可以通过该接口创建一个礼品卡货架并且用于公众号、门店的礼品卡售卖。
+//接口调用请求说明
+//协议	HTTPS
+//http请求方式	POST
+//请求Url	https://api.weixin.qq.com/card/giftcard/page/add?access_token=ACCESS_TOKEN
+//POST数据格式	JSON
+func (c *Card) GiftAdd(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardPageAdd), token, util.MapNilMake(p))
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)

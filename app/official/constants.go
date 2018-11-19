@@ -140,32 +140,35 @@ const cardCodeCheckCode = "/card/code/checkcode"
 //cardCodeGet api address suffix
 const cardCodeGet = "/card/code/get"
 
-const cardCodeUpdate = "card/code/update"
+const cardCodeUpdate = "/card/code/update"
 
-const cardCodeUnavailable = "card/code/unavailable"
+const cardCodeUnavailable = "/card/code/unavailable"
 
-const cardCodeConsume = "card/code/consume"
+const cardCodeConsume = "/card/code/consume"
 
-const cardCodeDecrypt = "card/code/decrypt"
+const cardCodeDecrypt = "/card/code/decrypt"
 
-const cardPayActivate = "card/pay/activate"
+const cardPayActivate = "/card/pay/activate"
 
-const cardPayGetpayprice = "card/pay/getpayprice"
+const cardPayGetpayprice = "/card/pay/getpayprice"
 
-const cardPayGetcoinsinfo = "card/pay/getcoinsinfo"
+const cardPayGetcoinsinfo = "/card/pay/getcoinsinfo"
 
-const cardPayGetorder = "card/pay/getorder"
+const cardPayGetorder = "/card/pay/getorder"
 
-const cardPayGetorderlist = "card/pay/getorderlist"
+const cardPayGetorderlist = "/card/pay/getorderlist"
 
-const cardPayConfirm = "card/pay/confirm"
+const cardPayConfirm = "/card/pay/confirm"
 
-const cardGeneralcardActivate = "card/generalcard/activate"
+const cardGeneralcardActivate = "/card/generalcard/activate"
 
-const cardGeneralcardUnactivate = "card/generalcard/unactivate"
+const cardGeneralcardUnactivate = "/card/generalcard/unactivate"
 
-const cardGeneralcardUpdateuser = "card/generalcard/updateuser"
-const cardMeetingticketUpdateuser = "card/meetingticket/updateuser"
+const cardGeneralcardUpdateuser = "/card/generalcard/updateuser"
+const cardMeetingticketUpdateuser = "/card/meetingticket/updateuser"
+
+const cardGiftcardPageAdd = "/card/giftcard/page/add"
+const cardGiftcardPageGet = "/card/giftcard/page/get"
 
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
@@ -201,9 +204,9 @@ const cardDelete = "/card/delete"
 const cardUserGetcardlist = "/card/user/getcardlist"
 
 //cardPaycellSet api address suffix
-const cardPaycellSet = "card/paycell/set"
+const cardPaycellSet = "/card/paycell/set"
 
-const cardModifystock = "card/modifystock"
+const cardModifystock = "/card/modifystock"
 
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
