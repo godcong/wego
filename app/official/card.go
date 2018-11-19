@@ -651,6 +651,18 @@ func (c *Card) GiftUpdate(pageID string, p util.Map) core.Responder {
 	return core.PostJSON(Link(cardGiftcardPageUpdate), token, p)
 }
 
+//GiftBatchGet 查询-礼品卡货架列表接口
+//接口说明
+//开发者可以通过该接口查询当前商户下所有的礼品卡货架id。
+//接口调用请求说明
+//协议	HTTPS
+//http请求方式	POST
+//请求Url	https://api.weixin.qq.com/card/giftcard/page/batchget?access_token=ACCESS_TOKEN
+func (c *Card) GiftBatchGet() core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardPageBatchget), token, util.Map{})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
