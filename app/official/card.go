@@ -581,6 +581,12 @@ func (c *Card) PayConfirm(cardID, orderID string, quantity int) core.Responder {
 	})
 }
 
+// GeneralActivate ...
+func (c *Card) GeneralActivate(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGeneralcardActivate), token, util.MapNilMake(p))
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
