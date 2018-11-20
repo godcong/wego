@@ -806,6 +806,21 @@ func (c *Card) InvoiceGetAuthField() core.Responder {
 	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{})
 }
 
+//InvoiceGetAuthData 查询开票信息
+//接口说明
+//用户完成授权后，商户可以调用该接口查询某一个订单
+//请求格式
+//URL:
+//https: //api.weixin.qq.com/card/invoice/getauthdata?access_token={access_token}
+func (c *Card) InvoiceGetAuthData(orderID, appID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "get_auth_field")
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+		"order_id": orderID,
+		"s_appid":  appID,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
