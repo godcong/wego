@@ -940,6 +940,21 @@ func (c *Card) GetBizUinInfo(beginDate, endDate string, condSource int) core.Res
 	})
 }
 
+//GetCardInfo 获取朋友的券数据接口
+//	接口说明
+//	支持开发者调用该接口拉取朋友的券在固定时间区间内的相关数据。
+//	接口调用请求说明
+//	http请求方式: POST https: //api.weixin.qq.com/datacube/getcardcardinfo?access_token=ACCESS_TOKEN
+func (c *Card) GetCardInfo(cardID, beginDate, endDate string, condSource int) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(datacubeGetcardcardinfo), token, util.Map{
+		"begin_date":  beginDate, //请开发者按示例格式填写日期，否则会报错dateformaterror
+		"end_date":    endDate,
+		"cond_source": condSource,
+		"card_id":     cardID,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
