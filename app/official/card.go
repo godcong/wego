@@ -463,7 +463,14 @@ func (c *Card) CodeUnavailable(code string, cardID string) core.Responder {
 	return core.PostJSON(Link(cardCodeUnavailable), token.KeyMap(), maps)
 }
 
-// CodeConsume ...
+//CodeConsume 核销用户礼品卡接口
+//	接口说明
+//	当礼品卡被使用完毕或者发生转存、绑定等操作后，开发者可以通过该接口核销用户的礼品卡，使礼品卡在列表中沉底并不再被使用。
+//	接口调用请求说明
+//	协议	HTTPS
+//	http请求方式	POST
+//	请求Url	https://api.weixin.qq.com/card/code/consume?access_token=TOKEN
+//	POST数据格式	JSON
 func (c *Card) CodeConsume(code string, cardID string) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -596,7 +603,14 @@ func (c *Card) GeneralDeactivate(cardID, code string) core.Responder {
 	})
 }
 
-// GeneralUpdateUser ...
+//GeneralUpdateUser 更新用户礼品卡信息接口
+//	接口说明
+//	当礼品卡被使用后，开发者可以通过该接口变更某个礼品卡的余额信息。
+//	接口调用请求说明
+//	协议	HTTPS
+//	http请求方式	POST
+//	请求Url	https://api.weixin.qq.com/card/generalcard/updateuser?access_token=TOKEN
+//	POST数据格式	JSON
 func (c *Card) GeneralUpdateUser(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardGeneralcardUpdateuser), token, util.MapNilMake(p))
@@ -691,6 +705,24 @@ func (c *Card) GiftSetByID(pageID string, maintain bool) core.Responder {
 // GiftSetAll ...
 func (c *Card) GiftSetAll(all, maintain bool) core.Responder {
 	return c.giftSet("", all, maintain)
+}
+
+//GiftRefund 退款接口
+//	接口说明
+//	开发者可以通过该接口对某一笔订单操作退款，注意该接口比较隐私，请开发者提高操作该功能的权限等级。
+//	接口调用请求说明
+//	协议	HTTPS
+//	http请求方式	POST
+//	请求Url	https://api.weixin.qq.com/card/giftcard/order/refund?access_token=ACCESS_TOKEN
+//	POST数据格式	JSON
+//	请求数据说明：
+//	参数	说明	是否必填
+//	order_id	须退款的订单id	是
+func (c *Card) GiftRefund(orderID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+		"order_id": orderID,
+	})
 }
 
 //GetCardAPITicket get ticket
