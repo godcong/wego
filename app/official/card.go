@@ -834,6 +834,31 @@ func (c *Card) MemberActivate(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
 }
 
+//MemberActivateUserForm 普通一键激活
+//	一键激活是微信提供的快速便捷的激活方案，用户领取后点击“激活会员卡”会跳转至官方的资料填写页面，微信会自动拉取该用户之前填写过的开卡信息，用户无需重复填写， 同时避免了手机号验证的过程，从而实现一键激活的目的，提高了开卡率。具体流程如下图：
+//	步骤一：在创建接口填入wx_activate字段
+//	接口说明
+//	设置微信一键开卡功能，现支持在创建会员卡时填入指定字段指定要一键激活，member_card中增加"wx_activate": true。 详情请见创建会员卡接口
+//	若商户使用了自定义卡号，开发者可以设置用户填写信息后跳转至商户的网页，并由开发者进行激活。
+//	参数说明
+//	参数    是否必须    说明
+//	member_card
+//	wx_activate    否    填写true or false
+//	开发者注意事项
+//	1.填入了自动激活auto_activate字段，激活链接activate_url和一键开卡接口设置都会失效；
+//	2.若同时传入了activate_url，则一键开卡接口设置会失效；
+//	3.建议开发者activate_url、auto_activate和wx_activate只填写一项。
+//	步骤二：设置开卡字段接口
+//	开发者在创建时填入wx_activate字段后，需要调用该接口设置用户激活时需要填写的选项，否则一键开卡设置不生效。
+//	接口调用请求说明
+//	HTTP请求方式: POST
+//	URL:https: //api.weixin.qq.com/card/membercard/activateuserform/set?access_token=TOKEN
+func (c *Card) MemberActivateUserForm(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "get_auth_field")
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
