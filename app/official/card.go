@@ -872,6 +872,24 @@ func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
 	})
 }
 
+//MemberActivateTempInfo 设置开卡字段接口
+//	步骤三：获取用户提交资料
+//	用户填写并提交开卡资料后，会跳转到商户的网页，商户可以在网页内获取用户已填写的信息并进行开卡资质判断，信息确认等动作。
+//	具体方式如下：
+//	用户点击提交后，微信会在商户的url后面拼接获取用户填写信息的参数：activate_ticket、openid、card_id和加密code-encrypt_code,如商户填写的wx_activate_after_submit_url为www.qq.com,则拼接后的url为
+//	www.qq.com&card_id=pbLatjvFdsLDUMoN8JqcsGeiMHKk&encrypt_code=Bupk8bb9xxxxxx3rdXV6fClBVtkHQplYohdzGvgDl4%3D&outer_str=&openid=obLatjjwDxxxxxxxoGIdwNqRXw&activate_ticket=fDZv9eMQAFfrNr3XBoqhb%2F%2BMSDM0yjDF6CdiUhC%2BOlEaxb0clsUxxxxxxxxxxxd6yQsjRMRu4kAcKTibYLN5tmHBdll1b6zQRsLF53MpKjGU%3D。
+//	开发者可以根据activate_ticket获取到用户填写的信息，用于开发者页面的逻辑判断。
+//	接口说明
+//	支持开发者根据activate_ticket获取到用户填写的信息。
+//	接口调用请求说明
+//	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/membercard/activatetempinfo/get?access_token=TOKEN
+func (c *Card) MemberActivateTempInfo(activateTicket string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+		"activate_ticket": activateTicket,
+	})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
