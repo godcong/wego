@@ -177,6 +177,7 @@ const cardGiftcardPageBatchget = "/card/giftcard/page/batchget"
 const cardGiftcardMaintainSet = "/card/giftcard/maintain/set"
 
 const cardPaygiftcardAdd = "/card/paygiftcard/add"
+const cardCodeMark = "/card/code/mark"
 
 const cardMembercardUpdateuser = "/card/membercard/updateuser"
 

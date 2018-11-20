@@ -834,7 +834,7 @@ func (c *Card) MemberActivate(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardMembercardActivate), token, p)
 }
 
-//MemberActivateUserForm 普通一键激活
+//SetMemberActivateUserForm 普通一键激活
 //	一键激活是微信提供的快速便捷的激活方案，用户领取后点击“激活会员卡”会跳转至官方的资料填写页面，微信会自动拉取该用户之前填写过的开卡信息，用户无需重复填写， 同时避免了手机号验证的过程，从而实现一键激活的目的，提高了开卡率。具体流程如下图：
 //	步骤一：在创建接口填入wx_activate字段
 //	接口说明
@@ -853,18 +853,18 @@ func (c *Card) MemberActivate(p util.Map) core.Responder {
 //	接口调用请求说明
 //	HTTP请求方式: POST
 //	URL:https: //api.weixin.qq.com/card/membercard/activateuserform/set?access_token=TOKEN
-func (c *Card) MemberActivateUserForm(p util.Map) core.Responder {
+func (c *Card) SetMemberActivateUserForm(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardMembercardActivateuserformSet), token, p)
 }
 
-//拉取会员信息接口
+//GetMemberUserInfo
 //	接口说明
 //	支持开发者根据CardID和Code查询会员信息。
 //	接口调用请求说明
 //	HTTP请求方式: POST
 //	URL:https://api.weixin.qq.com/card/membercard/userinfo/get?access_token=TOKEN
-func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
+func (c *Card) GetMemberUserInfo(cardID, code string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardMembercardUserinfoGet), token, util.Map{
 		"card_id": cardID,
@@ -872,7 +872,7 @@ func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
 	})
 }
 
-//MemberActivateTempInfo 设置开卡字段接口
+//GetMemberActivateTempInfo 设置开卡字段接口
 //	步骤三：获取用户提交资料
 //	用户填写并提交开卡资料后，会跳转到商户的网页，商户可以在网页内获取用户已填写的信息并进行开卡资质判断，信息确认等动作。
 //	具体方式如下：
@@ -883,7 +883,7 @@ func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
 //	支持开发者根据activate_ticket获取到用户填写的信息。
 //	接口调用请求说明
 //	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/membercard/activatetempinfo/get?access_token=TOKEN
-func (c *Card) MemberActivateTempInfo(activateTicket string) core.Responder {
+func (c *Card) GetMemberActivateTempInfo(activateTicket string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardMembercardActivatetempinfoGet), token, util.Map{
 		"activate_ticket": activateTicket,
@@ -910,6 +910,17 @@ func (c *Card) MemberUpdateUser(p util.Map) core.Responder {
 func (c *Card) AddPayGift(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardPaygiftcardAdd), token, p)
+}
+
+//Mark(占用)Code接口
+//朋友的券由于共享的特性，会出现多个消费者同时进入某一个卡券的自定义H5网页的情况，若该网页涉及线上下单、核销、支付等行为，会造成两个消费者同时使用同一张券，会有一个消费者使用失败的情况，为此我们设计了mark（占用）code接口。
+//对于出示核销（消费者点击“出示使用”按钮）的场景，开发者直接调用核销接口，无需考虑mark逻辑，此时由客户端代为完成。
+//对于消费者进入H5网页核销的情况，我们约定，开发者在帮助消费者核销卡券之前，必须帮助先将此code（卡券串码）与一个openid绑定（即mark住），才能进一步调用核销接口，否则报错。
+//接口调用请求说明
+//http请求方式: POST https://api.weixin.qq.com/card/code/mark?access_token=TOKEN
+func (c *Card) MarkCode(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardCodeMark), token, p)
 }
 
 //GetCardAPITicket get ticket
