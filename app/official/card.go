@@ -746,6 +746,17 @@ func (c *Card) InvoiceSetPayMch(mchID string, appID string) core.Responder {
 	return core.PostJSON(Link(cardGiftcardMaintainSet), token, maps)
 }
 
+//InvoiceGetPayMch 查询支付后开票信息接口
+//	请求url：
+//	https://api.weixin.qq.com/card/invoice/setbizattr?action=get_pay_mch&access_token={access_token}
+//	请求方法：POST
+func (c *Card) InvoiceGetPayMch() core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "get_pay_mch")
+	maps := util.Map{}
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, maps)
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
