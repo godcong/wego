@@ -390,11 +390,11 @@ func (c *Card) GetColors() core.Responder {
 	return core.Get(Link(cardGetColors), token.KeyMap())
 }
 
-//Checkin 更新飞机票信息接口
+//CheckIn 更新飞机票信息接口
 //	接口调用请求说明
 //	http请求方式: POST
 //	URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
-func (c *Card) Checkin(p util.Map) core.Responder {
+func (c *Card) CheckIn(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
 }
@@ -921,6 +921,23 @@ func (c *Card) AddPayGift(p util.Map) core.Responder {
 func (c *Card) MarkCode(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardCodeMark), token, p)
+}
+
+//GetBizUinInfo 拉取朋友的券数据接口
+//	接口简介及开发注意事项
+//	为支持开发者调用API查看卡券相关数据，微信卡券团队封装数据接口并面向具备卡券功能权限的开发者开放使用。开发者调用该接口可获取本商户下的所有卡券相关的总数据以及指定卡券的相关数据。
+//	拉取卡券概况数据接口
+//	接口说明
+//	支持调用该接口拉取本商户的总体数据情况，包括时间区间内的各指标总量。
+//	接口调用请求说明
+//	http请求方式: POST https://api.weixin.qq.com/datacube/getcardbizuininfo?access_token=ACCESS_TOKEN
+func (c *Card) GetBizUinInfo(beginDate, endDate string, condSource int) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(datacubeGetcardbizuininfo), token, util.Map{
+		"begin_date":  beginDate, //请开发者按示例格式填写日期，否则会报错dateformaterror
+		"end_date":    endDate,
+		"cond_source": condSource,
+	})
 }
 
 //GetCardAPITicket get ticket

@@ -178,6 +178,8 @@ const cardGiftcardMaintainSet = "/card/giftcard/maintain/set"
 
 const cardPaygiftcardAdd = "/card/paygiftcard/add"
 const cardCodeMark = "/card/code/mark"
+const datacubeGetcardcardinfo = "/datacube/getcardcardinfo"
+const datacubeGetcardbizuininfo = "/datacube/getcardbizuininfo"
 
 const cardMembercardUpdateuser = "/card/membercard/updateuser"
 
