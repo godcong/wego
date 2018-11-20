@@ -821,6 +821,19 @@ func (c *Card) InvoiceGetAuthData(orderID, appID string) core.Responder {
 	})
 }
 
+//MemberActivate 接口激活
+//	激活方式说明
+//	接口激活通常需要开发者开发用户填写资料的网页。通常有两种激活流程：
+//	用户必须在填写资料后才能领卡，领卡后开发者调用激活接口为用户激活会员卡；
+//	是用户可以先领取会员卡，点击激活会员卡跳转至开发者设置的资料填写页面，填写完成后开发者调用激活接口为用户激活会员卡。
+//	接口详情
+//	接口调用请求说明
+//	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/membercard/activate?access_token=TOKEN
+func (c *Card) MemberActivate(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
