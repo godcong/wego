@@ -725,6 +725,27 @@ func (c *Card) GiftRefund(orderID string) core.Responder {
 	})
 }
 
+//InvoiceSetPayMch 设置支付后开票信息
+//	接口说明
+//	商户可以通过该接口设置某个商户号发生收款后在支付消息上出现开票授权按钮。
+//	请求url：
+//	https://api.weixin.qq.com/card/invoice/setbizattr?action=set_pay_mch&access_token={access_token}
+//	请求方法：POST
+//	参数	类型	是否必填	描述
+//	paymch_info	Object	是	授权页字段
+//	paymch_info包含以下字段：
+//	参数	类型	是否必填	描述
+//	mchid	String	是	微信支付商户号
+//	s_pappid	String	是	开票平台id，需要找开票平台提供
+func (c *Card) InvoiceSetPayMch(mchID string, appID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "set_pay_mch")
+	maps := util.Map{}
+	maps.Set("paymch_info.mchid", mchID)
+	maps.Set("paymch_info.s_pappid", appID)
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, maps)
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
