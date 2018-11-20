@@ -855,8 +855,21 @@ func (c *Card) MemberActivate(p util.Map) core.Responder {
 //	URL:https: //api.weixin.qq.com/card/membercard/activateuserform/set?access_token=TOKEN
 func (c *Card) MemberActivateUserForm(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
-	token.Set("action", "get_auth_field")
 	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+}
+
+//拉取会员信息接口
+//	接口说明
+//	支持开发者根据CardID和Code查询会员信息。
+//	接口调用请求说明
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/membercard/userinfo/get?access_token=TOKEN
+func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+		"card_id": cardID,
+		"code":    code,
+	})
 }
 
 //GetCardAPITicket get ticket
