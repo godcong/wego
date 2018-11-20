@@ -720,7 +720,7 @@ func (c *Card) GiftSetAll(all, maintain bool) core.Responder {
 //	order_id	须退款的订单id	是
 func (c *Card) GiftRefund(orderID string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+	return core.PostJSON(Link(cardGiftcardOrderRefund), token, util.Map{
 		"order_id": orderID,
 	})
 }
@@ -743,7 +743,7 @@ func (c *Card) InvoiceSetPayMch(mchID string, appID string) core.Responder {
 	maps := util.Map{}
 	maps.Set("paymch_info.mchid", mchID)
 	maps.Set("paymch_info.s_pappid", appID)
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, maps)
+	return core.PostJSON(Link(cardInvoiceSetbizattr), token, maps)
 }
 
 //InvoiceGetPayMch 查询支付后开票信息接口
@@ -753,7 +753,7 @@ func (c *Card) InvoiceSetPayMch(mchID string, appID string) core.Responder {
 func (c *Card) InvoiceGetPayMch() core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("action", "get_pay_mch")
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{})
+	return core.PostJSON(Link(cardInvoiceSetbizattr), token, util.Map{})
 }
 
 //InvoiceSetAuthField 设置授权页字段信息接口
@@ -791,7 +791,7 @@ func (c *Card) InvoiceGetPayMch() core.Responder {
 func (c *Card) InvoiceSetAuthField(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("action", "set_auth_field")
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+	return core.PostJSON(Link(cardInvoiceSetbizattr), token, p)
 }
 
 //查询授权页字段信息接口
@@ -803,7 +803,7 @@ func (c *Card) InvoiceSetAuthField(p util.Map) core.Responder {
 func (c *Card) InvoiceGetAuthField() core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("action", "get_auth_field")
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{})
+	return core.PostJSON(Link(cardInvoiceSetbizattr), token, util.Map{})
 }
 
 //InvoiceGetAuthData 查询开票信息
@@ -815,7 +815,7 @@ func (c *Card) InvoiceGetAuthField() core.Responder {
 func (c *Card) InvoiceGetAuthData(orderID, appID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("action", "get_auth_field")
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+	return core.PostJSON(Link(cardInvoiceGetauthdata), token, util.Map{
 		"order_id": orderID,
 		"s_appid":  appID,
 	})
@@ -831,7 +831,7 @@ func (c *Card) InvoiceGetAuthData(orderID, appID string) core.Responder {
 //	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/membercard/activate?access_token=TOKEN
 func (c *Card) MemberActivate(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+	return core.PostJSON(Link(cardMembercardActivate), token, p)
 }
 
 //MemberActivateUserForm 普通一键激活
@@ -855,7 +855,7 @@ func (c *Card) MemberActivate(p util.Map) core.Responder {
 //	URL:https: //api.weixin.qq.com/card/membercard/activateuserform/set?access_token=TOKEN
 func (c *Card) MemberActivateUserForm(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
+	return core.PostJSON(Link(cardMembercardActivateuserformSet), token, p)
 }
 
 //拉取会员信息接口
@@ -866,7 +866,7 @@ func (c *Card) MemberActivateUserForm(p util.Map) core.Responder {
 //	URL:https://api.weixin.qq.com/card/membercard/userinfo/get?access_token=TOKEN
 func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+	return core.PostJSON(Link(cardMembercardUserinfoGet), token, util.Map{
 		"card_id": cardID,
 		"code":    code,
 	})
@@ -885,9 +885,31 @@ func (c *Card) MemberUserInfo(cardID, code string) core.Responder {
 //	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/membercard/activatetempinfo/get?access_token=TOKEN
 func (c *Card) MemberActivateTempInfo(activateTicket string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{
+	return core.PostJSON(Link(cardMembercardActivatetempinfoGet), token, util.Map{
 		"activate_ticket": activateTicket,
 	})
+}
+
+//MemberUpdateUser 更新会员信息
+//	当会员持卡消费后，支持开发者调用该接口更新会员信息。会员卡交易后的每次信息变更需通过该接口通知微信，便于后续消息通知及其他扩展功能。
+//	接口调用请求说明
+//	HTTP请求方式: POSTURL:https: //api.weixin.qq.com/card/membercard/updateuser?access_token=TOKEN
+func (c *Card) MemberUpdateUser(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardMembercardUpdateuser), token, p)
+}
+
+//设置支付后投放卡券
+//开通微信支付的商户可以设置在用户微信支付后自动为用户发送一条领卡消息，用户点击消息即可领取会员卡/优惠券。
+//目前该功能仅支持微信支付商户号主体和制作会员卡公众号主体一致的情况下配置，否则报错。开发者可以登录
+//“公众平台”-“公众号设置”、“微信支付商户平台首页”插卡企业主体信息是否一致。
+//接口说明
+//支持商户设置支付后投放卡券规则，可以区分时间段和金额区间发会员卡。
+//接口调用请求说明
+//HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/paygiftcard/add?access_token=TOKEN
+func (c *Card) AddPayGift(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardPaygiftcardAdd), token, p)
 }
 
 //GetCardAPITicket get ticket

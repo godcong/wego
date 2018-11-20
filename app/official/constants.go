@@ -176,6 +176,24 @@ const cardGiftcardPageBatchget = "/card/giftcard/page/batchget"
 
 const cardGiftcardMaintainSet = "/card/giftcard/maintain/set"
 
+const cardPaygiftcardAdd = "/card/paygiftcard/add"
+
+const cardMembercardUpdateuser = "/card/membercard/updateuser"
+
+const cardMembercardActivatetempinfoGet = "/card/membercard/activatetempinfo/get"
+
+const cardMembercardUserinfoGet = "/card/membercard/userinfo/get"
+
+const cardMembercardActivateuserformSet = "/card/membercard/activateuserform/set"
+
+const cardMembercardActivate = "/card/membercard/activate"
+
+const cardInvoiceGetauthdata = "/card/invoice/getauthdata"
+
+const cardInvoiceSetbizattr = "/card/invoice/setbizattr"
+
+const cardGiftcardOrderRefund = "/card/giftcard/order/refund"
+
 //cardMPNewsGetHTML api address suffix
 const cardMPNewsGetHTML = "/card/mpnews/gethtml"
 
