@@ -753,8 +753,45 @@ func (c *Card) InvoiceSetPayMch(mchID string, appID string) core.Responder {
 func (c *Card) InvoiceGetPayMch() core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("action", "get_pay_mch")
-	maps := util.Map{}
-	return core.PostJSON(Link(cardGiftcardMaintainSet), token, maps)
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{})
+}
+
+//InvoiceSetAuthField 设置授权页字段信息接口
+//使用说明
+//商户可以通过该接口设置用户授权时应该填写的内容
+//请求说明url：
+//https://api.weixin.qq.com/card/invoice/setbizattr?action=set_auth_field&access_token={access_token}
+//请求方法：POST
+//请求参数
+//数据格式：JSON
+//参数	类型	是否必填	描述
+//auth_field	Object	是	授权页字段
+//auth_field包含以下字段：
+//参数	类型	是否必填	描述
+//user_field	Object	是	授权页个人发票字段
+//biz_field	Object	是	授权页单位发票字段
+//user_field包含以下字段：
+//参数	类型	是否必填	描述
+//show_title	Int	否	是否填写抬头，0为否，1为是
+//show_phone	Int	否	是否填写电话号码，0为否，1为是
+//show_email	Int	否	是否填写邮箱，0为否，1为是
+//custom_field	Object	否	自定义字段
+//biz_field包含以下字段：
+//参数	类型	是否必填	描述
+//show_title	Int	否	是否填写抬头，0为否，1为是
+//show_tax_no	Int	否	是否填写税号，0为否，1为是
+//show_addr	Int	否	是否填写单位地址，0为否，1为是
+//show_phone	Int	否	是否填写电话号码，0为否，1为是
+//show_bank_type	Int	否	是否填写开户银行，0为否，1为是
+//show_bank_no	Int	否	是否填写银行帐号，0为否，1为是
+//custom_field	Object	否	自定义字段
+//custom_field为list，每个对象包含以下字段：
+//参数	类型	是否必填	描述
+//key	String	是	自定义字段名称，最长5个字
+func (c *Card) InvoiceSetAuthField(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "set_auth_field")
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
 }
 
 //GetCardAPITicket get ticket
