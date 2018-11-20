@@ -794,6 +794,18 @@ func (c *Card) InvoiceSetAuthField(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardGiftcardMaintainSet), token, p)
 }
 
+//查询授权页字段信息接口
+//接口说明
+//开发者可以通过该接口查看授权页抬头的填写项。
+//请求说明url：
+//https://api.weixin.qq.com/card/invoice/setbizattr?action=get_auth_field&access_token={access_token}
+//请求方法：POST
+func (c *Card) InvoiceGetAuthField() core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("action", "get_auth_field")
+	return core.PostJSON(Link(cardGiftcardMaintainSet), token, util.Map{})
+}
+
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
