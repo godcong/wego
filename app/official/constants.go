@@ -239,6 +239,10 @@ const cardMovieticketUpdateuser = "card/movieticket/updateuser"
 
 const cardSubmerchantSubmit = "card/submerchant/submit"
 
+const cardSubmerchantUpdate = "card/submerchant/update"
+
+const cardSubmerchantget = "card/submerchant/get"
+
 const cardSubmerchantbatchget = "card/submerchant/batchget"
 
 //cardBoardingpassCheckin api address suffix

@@ -934,12 +934,12 @@ func (c *Card) UpdateSubMerchant(p util.Map) core.Responder {
 		"operator_media_id",
 		"app_id",
 	})
-	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"info": p})
+	return core.PostJSON(Link(cardSubmerchantUpdate), token, util.Map{"info": p})
 }
 
 func (c *Card) GetSubMerchant(mchID string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"merchant_id": mchID})
+	return core.PostJSON(Link(cardSubmerchantget), token, util.Map{"merchant_id": mchID})
 
 }
 
