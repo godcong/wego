@@ -921,6 +921,22 @@ func (c *Card) SubmitSubMerchant(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"info": p})
 }
 
+func (c *Card) UpdateSubMerchant(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	p = p.Only([]string{
+		"brand_name",
+		"logo_url",
+		"protocol",
+		"end_time",
+		"primary_category_id",
+		"secondary_category_id",
+		"agreement_media_id",
+		"operator_media_id",
+		"app_id",
+	})
+	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"info": p})
+}
+
 //GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
