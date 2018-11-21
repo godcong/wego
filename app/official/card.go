@@ -943,6 +943,15 @@ func (c *Card) GetSubMerchant(mchID string) core.Responder {
 
 }
 
+func (c *Card) BatchGetSubMerchant(beginID, limit int, status string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{
+		"begin_id": beginID,
+		"limit":    limit,
+		"status":   status,
+	})
+}
+
 //GetCardApiTicket get ticket
 func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
