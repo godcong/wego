@@ -90,7 +90,7 @@ func (c *Comment) List(id, index, begin, count, typ int) core.Responder {
 }
 
 /*
-Markelect  将评论标记精选
+MarkElect  将评论标记精选
 
  https 请求方式: POST
  https://api.weixin.qq.com/cgi-bin/comment/markelect?access_token=ACCESS_TOKEN
@@ -100,7 +100,7 @@ Markelect  将评论标记精选
  index	否	int	多图文时，用来指定第几篇图文，从0开始，不带默认操作该msg_data_id的第一篇图文
  user_comment_id	是	int	用户评论id
 */
-func (c *Comment) Markelect(id, index, userCommentID int) core.Responder {
+func (c *Comment) MarkElect(id, index, userCommentID int) core.Responder {
 	p := c.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
 		Link(commentMarkelectURLSuffix),
@@ -114,7 +114,7 @@ func (c *Comment) Markelect(id, index, userCommentID int) core.Responder {
 }
 
 /*
-Unmarkelect 将评论取消精选
+UnmarkElect 将评论取消精选
 
  https 请求方式: POST
  https://api.weixin.qq.com/cgi-bin/comment/unmarkelect?access_token=ACCESS_TOKEN
@@ -125,7 +125,7 @@ id	是	int	群发返回的msg_data_id
 index	否	int	多图文时，用来指定第几篇图文，从0开始，不带默认操作该msg_data_id的第一篇图文
 user_comment_id	是	int	用户评论id
 */
-func (c *Comment) Unmarkelect(id, index, userCommentID int) core.Responder {
+func (c *Comment) UnmarkElect(id, index, userCommentID int) core.Responder {
 	p := c.accessToken.GetToken().KeyMap()
 	resp := core.PostJSON(
 		Link(commentUnmarkelectURLSuffix),

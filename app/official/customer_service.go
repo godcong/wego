@@ -2,12 +2,24 @@ package official
 
 import "github.com/godcong/wego/core"
 
-/*CustomerService CustomerService*/
+//CustomerService CustomerService
 type CustomerService struct {
-	message *core.Message
+	*Account
 }
 
-/*List List */
-func (c *CustomerService) List() {
-	core.Get(Link(getKFListURLSuffix), nil)
+func newCustomerService(acc *Account) *CustomerService {
+	return &CustomerService{
+		Account: acc,
+	}
+}
+
+//NewCustomerService 新建CustomerService
+func NewCustomerService(config *core.Config) *CustomerService {
+	return newCustomerService(NewOfficialAccount(config))
+}
+
+//List ...
+func (c *CustomerService) List() core.Responder {
+
+	return core.Get(Link(getKFListURLSuffix), nil)
 }

@@ -29,14 +29,14 @@ func TestComment_List(t *testing.T) {
 
 func TestComment_Marketlect(t *testing.T) {
 	c := official.NewComment(config)
-	resp := c.Markelect(0, 1, 0)
+	resp := c.MarkElect(0, 1, 0)
 	t.Log(string(resp.Bytes()))
 	t.Log(resp.Error())
 }
 
 func TestComment_Unmarkelect(t *testing.T) {
 	c := official.NewComment(config)
-	resp := c.Unmarkelect(0, 1, 0)
+	resp := c.UnmarkElect(0, 1, 0)
 	t.Log(string(resp.Bytes()))
 	t.Log(resp.Error())
 }
