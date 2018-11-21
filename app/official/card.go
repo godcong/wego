@@ -902,11 +902,23 @@ func (c *Card) GetCardInfo(cardID string, beginDate, endDate time.Time, condSour
 	})
 }
 
-//GetCardAPITicket get ticket
-func (c *Card) GetCardAPITicket(refresh bool) {
-func (c *Card) MovieTicketUpdateUser(p util.Map) core.Responder {
+func (c *Card) MovieUpdateUser(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardMovieticketUpdateuser), token.KeyMap(), p)
+}
+
+func (c *Card) SubmitSubMerchant(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	p = p.Only([]string{"brand_name",
+		"logo_url",
+		"protocol",
+		"end_time",
+		"primary_category_id",
+		"secondary_category_id",
+		"agreement_media_id",
+		"operator_media_id",
+		"app_id"})
+	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"info": p})
 }
 
 //GetCardApiTicket get ticket

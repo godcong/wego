@@ -237,6 +237,8 @@ const cardModifystock = "/card/modifystock"
 
 const cardMovieticketUpdateuser = "card/movieticket/updateuser"
 
+const cardSubmerchantSubmit = "card/submerchant/submit"
+
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
 
