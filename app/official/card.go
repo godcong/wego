@@ -391,11 +391,11 @@ func (c *Card) GetColors() core.Responder {
 	return core.Get(Link(cardGetColors), token.KeyMap())
 }
 
-//CheckIn 更新飞机票信息接口
+//Checkin 更新飞机票信息接口
 //	接口调用请求说明
 //	http请求方式: POST
 //	URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
-func (c *Card) CheckIn(p util.Map) core.Responder {
+func (c *Card) Checkin(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardBoardingpassCheckin), token.KeyMap(), p)
 }
@@ -442,57 +442,6 @@ func (c *Card) Update(cardID string, p util.Map) core.Responder {
 	return core.PostJSON(Link(cardUpdate), token.KeyMap(), maps)
 }
 
-// UpdateCode ...
-func (c *Card) UpdateCode(code string, newCode string, cardID string) core.Responder {
-	token := c.accessToken.GetToken()
-	maps := util.Map{
-		"code":     code,
-		"new_code": newCode,
-		"card_id":  cardID,
-	}
-	return core.PostJSON(Link(cardCodeUpdate), token.KeyMap(), maps)
-
-}
-
-// CodeUnavailable ...
-func (c *Card) CodeUnavailable(code string, cardID string) core.Responder {
-	token := c.accessToken.GetToken()
-	maps := util.Map{
-		"code":    code,
-		"card_id": cardID,
-	}
-	return core.PostJSON(Link(cardCodeUnavailable), token.KeyMap(), maps)
-}
-
-//CodeConsume 核销用户礼品卡接口
-//	接口说明
-//	当礼品卡被使用完毕或者发生转存、绑定等操作后，开发者可以通过该接口核销用户的礼品卡，使礼品卡在列表中沉底并不再被使用。
-//	接口调用请求说明
-//	协议	HTTPS
-//	http请求方式	POST
-//	请求Url	https://api.weixin.qq.com/card/code/consume?access_token=TOKEN
-//	POST数据格式	JSON
-func (c *Card) CodeConsume(code string, cardID string) core.Responder {
-	token := c.accessToken.GetToken()
-	maps := util.Map{
-		"code": code,
-	}
-	if cardID != "" {
-		maps.Set("card_id", cardID)
-	}
-	return core.PostJSON(Link(cardCodeConsume), token.KeyMap(), maps)
-}
-
-// CodeDecrypt ...
-func (c *Card) CodeDecrypt(encryptCode string) core.Responder {
-	token := c.accessToken.GetToken()
-	maps := util.Map{
-		"encrypt_code": encryptCode,
-	}
-
-	return core.PostJSON(Link(cardCodeDecrypt), token.KeyMap(), maps)
-}
-
 //Delete 删除卡券接口
 //删除卡券接口允许商户删除任意一类卡券。删除卡券后，该卡券对应已生成的领取用二维码、添加到卡包JS API均会失效。 注意：如用户在商家删除卡券前已领取一张或多张该卡券依旧有效。即删除卡券不能删除已被用户领取，保存在微信客户端中的卡券。
 //接口调用请求说明
@@ -505,7 +454,6 @@ func (c *Card) Delete(cardID string) core.Responder {
 	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
 }
 
-// GetUserCards ...
 func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -515,7 +463,6 @@ func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	return core.PostJSON(Link(cardUserGetcardlist), token.KeyMap(), maps)
 }
 
-// SetPayCell ...
 func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -525,7 +472,6 @@ func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	return core.PostJSON(Link(cardPaycellSet), token.KeyMap(), maps)
 }
 
-// ModifyStock ...
 func (c *Card) ModifyStock(cardID string, option util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -958,6 +904,13 @@ func (c *Card) GetCardInfo(cardID string, beginDate, endDate time.Time, condSour
 
 //GetCardAPITicket get ticket
 func (c *Card) GetCardAPITicket(refresh bool) {
+func (c *Card) MovieTicketUpdateUser(p util.Map) core.Responder {
+	token := c.accessToken.GetToken()
+	return core.PostJSON(Link(cardMovieticketUpdateuser), token.KeyMap(), p)
+}
+
+//GetCardApiTicket get ticket
+func (c *Card) GetCardApiTicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
 }
 
@@ -1030,7 +983,6 @@ func (c *OneCard) Get() (CardType, util.Map) {
 	return c.CardType, c.data
 }
 
-// ToMap ...
 func (c *OneCard) ToMap() util.Map {
 	maps := util.Map{}
 	v, err := json.Marshal(c)
