@@ -5,7 +5,8 @@ const domain = "https://api.weixin.qq.com"
 const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
 const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
 
-const getKFListURLSuffix = "/cgi-bin/customservice/getkflist"
+const customserviceGetkflist = "/cgi-bin/customservice/getkflist"
+const customserviceGetonlinekflist = "cgi-bin/customservice/getonlinekflist"
 
 const menuCreateURLSuffix = "/cgi-bin/menu/create"
 const menuGetURLSuffix = "/cgi-bin/menu/get"

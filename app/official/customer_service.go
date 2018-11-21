@@ -21,5 +21,10 @@ func NewCustomerService(config *core.Config) *CustomerService {
 //List ...
 func (c *CustomerService) List() core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.Get(Link(getKFListURLSuffix), token)
+	return core.Get(Link(customserviceGetkflist), token)
+}
+
+func (c *CustomerService) OnlineList() core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.Get(Link(customserviceGetonlinekflist), token)
 }
