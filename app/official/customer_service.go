@@ -84,3 +84,9 @@ func (c *CustomerService) MessageList(startTime, endTime time.Time, msgId, numbe
 	}
 	return core.PostJSON("customservice/msgrecord/getmsglist", token, p)
 }
+
+func (c *CustomerService) SessionList(account string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("kf_account", account)
+	return core.Get("customservice/kfsession/getsessionlist", token)
+}
