@@ -1,6 +1,9 @@
 package official
 
-import "github.com/godcong/wego/core"
+import (
+	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/util"
+)
 
 //CustomerService CustomerService
 type CustomerService struct {
@@ -27,4 +30,12 @@ func (c *CustomerService) List() core.Responder {
 func (c *CustomerService) OnlineList() core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.Get(Link(customserviceGetonlinekflist), token)
+}
+
+func (c *CustomerService) AccountAdd(account string, nickname string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("/customservice/kfaccount/add", token, util.Map{
+		"kf_account": account,
+		"nickname":   nickname,
+	})
 }
