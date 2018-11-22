@@ -95,3 +95,11 @@ func (c *CustomerService) SessionWaitCase() core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.Get("customservice/kfsession/getwaitcase", token)
 }
+
+func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("customservice/kfsession/create", token, util.Map{
+		"kf_account": account,
+		"openid":     openID,
+	})
+}
