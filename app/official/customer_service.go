@@ -61,3 +61,9 @@ func (c *CustomerService) AccountInviteWorker(account, wechatID string) core.Res
 		"invite_wx":  wechatID,
 	})
 }
+
+func (c *CustomerService) AccountUploadHeadImg(account, path string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("kf_account", account)
+	return core.Upload("customservice/kfaccount/uploadheadimg", token, util.Map{"media": path})
+}
