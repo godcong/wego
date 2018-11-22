@@ -39,3 +39,11 @@ func (c *CustomerService) AccountAdd(account string, nickname string) core.Respo
 		"nickname":   nickname,
 	})
 }
+
+func (c *CustomerService) AccountUpdate(account string, nickname string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("/customservice/kfaccount/update", token, util.Map{
+		"kf_account": account,
+		"nickname":   nickname,
+	})
+}
