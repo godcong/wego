@@ -110,3 +110,9 @@ func (c *CustomerService) SessionClose(account, openID string) core.Responder {
 		"openid":     openID,
 	})
 }
+
+func (c *CustomerService) SessionGet(openID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("openid", openID)
+	return core.Get("customservice/kfsession/getsession", token)
+}
