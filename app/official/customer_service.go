@@ -53,3 +53,11 @@ func (c *CustomerService) AccountDelete(account string) core.Responder {
 	token.Set("kf_account", account)
 	return core.PostJSON("/customservice/kfaccount/del", token, util.Map{})
 }
+
+func (c *CustomerService) AccountInviteWorker(account, wechatID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("/customservice/kfaccount/inviteworker", token, util.Map{
+		"kf_account": account,
+		"invite_wx":  wechatID,
+	})
+}
