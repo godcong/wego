@@ -3,6 +3,7 @@ package official
 import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
+	"time"
 )
 
 //CustomerService CustomerService
@@ -66,4 +67,20 @@ func (c *CustomerService) AccountUploadHeadImg(account, path string) core.Respon
 	token := c.accessToken.KeyMap()
 	token.Set("kf_account", account)
 	return core.Upload("customservice/kfaccount/uploadheadimg", token, util.Map{"media": path})
+}
+
+func (c *CustomerService) MessageSend(p util.Map) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("cgi-bin/message/custom/send", token, p)
+}
+
+func (c *CustomerService) MessageList(startTime, endTime time.Time, msgId, number int) core.Responder {
+	token := c.accessToken.KeyMap()
+	p := util.Map{
+		"starttime": startTime.Unix(),
+		"endtime":   endTime.Unix(),
+		"msgid":     msgId,
+		"number":    number,
+	}
+	return core.PostJSON("customservice/msgrecord/getmsglist", token, p)
 }
