@@ -103,3 +103,10 @@ func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
 		"openid":     openID,
 	})
 }
+func (c *CustomerService) SessionClose(account, openID string) core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.PostJSON("customservice/kfsession/close", token, util.Map{
+		"kf_account": account,
+		"openid":     openID,
+	})
+}
