@@ -90,3 +90,8 @@ func (c *CustomerService) SessionList(account string) core.Responder {
 	token.Set("kf_account", account)
 	return core.Get("customservice/kfsession/getsessionlist", token)
 }
+
+func (c *CustomerService) SessionWaitCase() core.Responder {
+	token := c.accessToken.KeyMap()
+	return core.Get("customservice/kfsession/getwaitcase", token)
+}
