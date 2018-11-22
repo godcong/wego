@@ -47,3 +47,9 @@ func (c *CustomerService) AccountUpdate(account string, nickname string) core.Re
 		"nickname":   nickname,
 	})
 }
+
+func (c *CustomerService) AccountDelete(account string) core.Responder {
+	token := c.accessToken.KeyMap()
+	token.Set("kf_account", account)
+	return core.PostJSON("/customservice/kfaccount/del", token, util.Map{})
+}
