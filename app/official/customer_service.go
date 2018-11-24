@@ -28,11 +28,13 @@ func (c *CustomerService) List() core.Responder {
 	return core.Get(Link(customserviceGetkflist), token)
 }
 
+// OnlineList ...
 func (c *CustomerService) OnlineList() core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.Get(Link(customserviceGetonlinekflist), token)
 }
 
+// AccountAdd ...
 func (c *CustomerService) AccountAdd(account string, nickname string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("/customservice/kfaccount/add", token, util.Map{
@@ -41,6 +43,7 @@ func (c *CustomerService) AccountAdd(account string, nickname string) core.Respo
 	})
 }
 
+// AccountUpdate ...
 func (c *CustomerService) AccountUpdate(account string, nickname string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("/customservice/kfaccount/update", token, util.Map{
@@ -49,12 +52,14 @@ func (c *CustomerService) AccountUpdate(account string, nickname string) core.Re
 	})
 }
 
+// AccountDelete ...
 func (c *CustomerService) AccountDelete(account string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("kf_account", account)
 	return core.PostJSON("/customservice/kfaccount/del", token, util.Map{})
 }
 
+// AccountInviteWorker ...
 func (c *CustomerService) AccountInviteWorker(account, wechatID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("/customservice/kfaccount/inviteworker", token, util.Map{
@@ -63,39 +68,45 @@ func (c *CustomerService) AccountInviteWorker(account, wechatID string) core.Res
 	})
 }
 
+// AccountUploadHeadImg ...
 func (c *CustomerService) AccountUploadHeadImg(account, path string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("kf_account", account)
 	return core.Upload("customservice/kfaccount/uploadheadimg", token, util.Map{"media": path})
 }
 
+// MessageSend ...
 func (c *CustomerService) MessageSend(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("cgi-bin/message/custom/send", token, p)
 }
 
-func (c *CustomerService) MessageList(startTime, endTime time.Time, msgId, number int) core.Responder {
+// MessageList ...
+func (c *CustomerService) MessageList(startTime, endTime time.Time, msgID, number int) core.Responder {
 	token := c.accessToken.KeyMap()
 	p := util.Map{
 		"starttime": startTime.Unix(),
 		"endtime":   endTime.Unix(),
-		"msgid":     msgId,
+		"msgid":     msgID,
 		"number":    number,
 	}
 	return core.PostJSON("customservice/msgrecord/getmsglist", token, p)
 }
 
+// SessionList ...
 func (c *CustomerService) SessionList(account string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("kf_account", account)
 	return core.Get("customservice/kfsession/getsessionlist", token)
 }
 
+// SessionWaitCase ...
 func (c *CustomerService) SessionWaitCase() core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.Get("customservice/kfsession/getwaitcase", token)
 }
 
+// SessionCreate ...
 func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("customservice/kfsession/create", token, util.Map{
@@ -103,6 +114,8 @@ func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
 		"openid":     openID,
 	})
 }
+
+// SessionClose ...
 func (c *CustomerService) SessionClose(account, openID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON("customservice/kfsession/close", token, util.Map{
@@ -111,6 +124,7 @@ func (c *CustomerService) SessionClose(account, openID string) core.Responder {
 	})
 }
 
+// SessionGet ...
 func (c *CustomerService) SessionGet(openID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("openid", openID)

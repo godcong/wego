@@ -454,6 +454,7 @@ func (c *Card) Delete(cardID string) core.Responder {
 	return core.PostJSON(Link(cardDelete), token.KeyMap(), maps)
 }
 
+// GetUserCards ...
 func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -463,6 +464,7 @@ func (c *Card) GetUserCards(openID, cardID string) core.Responder {
 	return core.PostJSON(Link(cardUserGetcardlist), token.KeyMap(), maps)
 }
 
+// SetPayCell ...
 func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -472,6 +474,7 @@ func (c *Card) SetPayCell(cardID string, isOpen bool) core.Responder {
 	return core.PostJSON(Link(cardPaycellSet), token.KeyMap(), maps)
 }
 
+// ModifyStock ...
 func (c *Card) ModifyStock(cardID string, option util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	maps := util.Map{
@@ -741,7 +744,7 @@ func (c *Card) InvoiceSetAuthField(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardInvoiceSetbizattr), token, p)
 }
 
-//查询授权页字段信息接口
+//InvoiceGetAuthField 查询授权页字段信息接口
 //接口说明
 //开发者可以通过该接口查看授权页抬头的填写项。
 //请求说明url：
@@ -805,7 +808,7 @@ func (c *Card) SetMemberActivateUserForm(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardMembercardActivateuserformSet), token, p)
 }
 
-//GetMemberUserInfo
+// GetMemberUserInfo 查询会员信息
 //	接口说明
 //	支持开发者根据CardID和Code查询会员信息。
 //	接口调用请求说明
@@ -846,7 +849,7 @@ func (c *Card) MemberUpdateUser(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardMembercardUpdateuser), token, p)
 }
 
-//设置支付后投放卡券
+//AddPayGift 设置支付后投放卡券
 //开通微信支付的商户可以设置在用户微信支付后自动为用户发送一条领卡消息，用户点击消息即可领取会员卡/优惠券。
 //目前该功能仅支持微信支付商户号主体和制作会员卡公众号主体一致的情况下配置，否则报错。开发者可以登录
 //“公众平台”-“公众号设置”、“微信支付商户平台首页”插卡企业主体信息是否一致。
@@ -859,7 +862,7 @@ func (c *Card) AddPayGift(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardPaygiftcardAdd), token, p)
 }
 
-//Mark(占用)Code接口
+//MarkCode Mark(占用)Code接口
 //朋友的券由于共享的特性，会出现多个消费者同时进入某一个卡券的自定义H5网页的情况，若该网页涉及线上下单、核销、支付等行为，会造成两个消费者同时使用同一张券，会有一个消费者使用失败的情况，为此我们设计了mark（占用）code接口。
 //对于出示核销（消费者点击“出示使用”按钮）的场景，开发者直接调用核销接口，无需考虑mark逻辑，此时由客户端代为完成。
 //对于消费者进入H5网页核销的情况，我们约定，开发者在帮助消费者核销卡券之前，必须帮助先将此code（卡券串码）与一个openid绑定（即mark住），才能进一步调用核销接口，否则报错。
@@ -902,11 +905,13 @@ func (c *Card) GetCardInfo(cardID string, beginDate, endDate time.Time, condSour
 	})
 }
 
+// MovieUpdateUser ...
 func (c *Card) MovieUpdateUser(p util.Map) core.Responder {
 	token := c.accessToken.GetToken()
 	return core.PostJSON(Link(cardMovieticketUpdateuser), token.KeyMap(), p)
 }
 
+// SubmitSubMerchant ...
 func (c *Card) SubmitSubMerchant(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	p = p.Only([]string{"brand_name",
@@ -921,6 +926,7 @@ func (c *Card) SubmitSubMerchant(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardSubmerchantSubmit), token, util.Map{"info": p})
 }
 
+// UpdateSubMerchant ...
 func (c *Card) UpdateSubMerchant(p util.Map) core.Responder {
 	token := c.accessToken.KeyMap()
 	p = p.Only([]string{
@@ -937,12 +943,14 @@ func (c *Card) UpdateSubMerchant(p util.Map) core.Responder {
 	return core.PostJSON(Link(cardSubmerchantUpdate), token, util.Map{"info": p})
 }
 
+// GetSubMerchant ...
 func (c *Card) GetSubMerchant(mchID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardSubmerchantget), token, util.Map{"merchant_id": mchID})
 
 }
 
+// BatchGetSubMerchant ...
 func (c *Card) BatchGetSubMerchant(beginID, limit int, status string) core.Responder {
 	token := c.accessToken.KeyMap()
 	return core.PostJSON(Link(cardSubmerchantbatchget), token, util.Map{
@@ -952,8 +960,8 @@ func (c *Card) BatchGetSubMerchant(beginID, limit int, status string) core.Respo
 	})
 }
 
-//GetCardApiTicket get ticket
-func (c *Card) GetCardApiTicket(refresh bool) {
+//GetCardAPITicket get ticket
+func (c *Card) GetCardAPITicket(refresh bool) {
 	c.jssdk.GetTicket("wx_card", refresh)
 }
 
@@ -1026,6 +1034,7 @@ func (c *OneCard) Get() (CardType, util.Map) {
 	return c.CardType, c.data
 }
 
+// ToMap ...
 func (c *OneCard) ToMap() util.Map {
 	maps := util.Map{}
 	v, err := json.Marshal(c)
