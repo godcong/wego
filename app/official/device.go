@@ -90,3 +90,11 @@ func (d *Device) Unbind(openID, deviceID, ticket string) core.Responder {
 	}
 	return core.PostJSON("device/unbind", token, maps)
 }
+func (d *Device) CompelBind(openID, deviceID string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"openid":    openID,
+		"device_id": deviceID,
+	}
+	return core.PostJSON("device/compel_bind", token, maps)
+}
