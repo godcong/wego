@@ -70,3 +70,13 @@ func (d *Device) GetQrCode(productID string) core.Responder {
 	}
 	return core.PostJSON("device/getqrcode", token, maps)
 }
+
+func (d *Device) Bind(openID, deviceID, ticket string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"openid":    openID,
+		"device_id": deviceID,
+		"ticket":    ticket,
+	}
+	return core.PostJSON("'device/bind", token, maps)
+}
