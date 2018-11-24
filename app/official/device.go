@@ -115,3 +115,11 @@ func (d *Device) GetStatus(deviceID string) core.Responder {
 	}
 	return core.PostJSON("device/get_stat", token, maps)
 }
+
+func (d *Device) VerifyQrCode(ticket string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"ticket": ticket,
+	}
+	return core.PostJSON("device/verify_qrcode", token, maps)
+}
