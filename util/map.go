@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+// MapAble ...
+type MapAble interface {
+	ToMap() Map
+}
+
 // ErrNilMap ...
 var ErrNilMap = errors.New("nil map")
 
@@ -518,6 +523,11 @@ func (m Map) Check(s ...string) int {
 // Map trans Map to map[string]interface
 func (m Map) Map() map[string]interface{} {
 	return (map[string]interface{})(m)
+}
+
+// ToMap return self map
+func (m Map) ToMap() Map {
+	return m
 }
 
 // MarshalXML ...
