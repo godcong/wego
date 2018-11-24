@@ -37,7 +37,7 @@ func (d *Device) TransMessage(deviceID, openID, content string) core.Responder {
 
 }
 
-func (d *Device) QrCode(devices []string) core.Responder {
+func (d *Device) CreateQrCode(devices []string) core.Responder {
 	token := d.accessToken.KeyMap()
 	num := strconv.Itoa(len(devices))
 	maps := util.Map{
@@ -61,4 +61,12 @@ func (d *Device) Authorize(ables []util.MapAble, productID string, optype int) c
 		"op_type":     optype,
 	}
 	return core.PostJSON("device/authorize_device", token, maps)
+}
+
+func (d *Device) GetQrCode(productID string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"product_id": productID,
+	}
+	return core.PostJSON("device/getqrcode", token, maps)
 }
