@@ -103,13 +103,13 @@ func (c *CustomerService) SessionList(account string) core.Responder {
 // SessionWaitCase ...
 func (c *CustomerService) SessionWaitCase() core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.Get("customservice/kfsession/getwaitcase", token)
+	return core.Get(customserviceKfsessionGetwaitcase, token)
 }
 
 // SessionCreate ...
 func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON("customservice/kfsession/create", token, util.Map{
+	return core.PostJSON(customserviceKfsessionCreate, token, util.Map{
 		"kf_account": account,
 		"openid":     openID,
 	})
@@ -118,7 +118,7 @@ func (c *CustomerService) SessionCreate(account, openID string) core.Responder {
 // SessionClose ...
 func (c *CustomerService) SessionClose(account, openID string) core.Responder {
 	token := c.accessToken.KeyMap()
-	return core.PostJSON("customservice/kfsession/close", token, util.Map{
+	return core.PostJSON(customserviceKfsessionClose, token, util.Map{
 		"kf_account": account,
 		"openid":     openID,
 	})
@@ -128,5 +128,5 @@ func (c *CustomerService) SessionClose(account, openID string) core.Responder {
 func (c *CustomerService) SessionGet(openID string) core.Responder {
 	token := c.accessToken.KeyMap()
 	token.Set("openid", openID)
-	return core.Get("customservice/kfsession/getsession", token)
+	return core.Get(customserviceKfsessionGetsession, token)
 }
