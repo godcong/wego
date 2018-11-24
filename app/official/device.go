@@ -46,3 +46,19 @@ func (d *Device) QrCode(devices []string) core.Responder {
 	}
 	return core.PostJSON("'device/create_qrcode", token, maps)
 }
+
+func (d *Device) Authorize(ables []util.MapAble, productID string, optype int) core.Responder {
+	token := d.accessToken.KeyMap()
+	num := strconv.Itoa(len(ables))
+	var tmps []util.Map
+	for _, v := range ables {
+		tmps = append(tmps, v.ToMap())
+	}
+	maps := util.Map{
+		"device_num":  num,
+		"device_list": tmps,
+		"product_id":  productID,
+		"op_type":     optype,
+	}
+	return core.PostJSON("device/authorize_device", token, maps)
+}
