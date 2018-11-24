@@ -131,3 +131,11 @@ func (d *Device) GetOpenid(deviceID string) core.Responder {
 	}
 	return core.PostJSON("device/get_openid", token, maps)
 }
+
+func (d *Device) GetBindDevice(openID string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"open_id": openID,
+	}
+	return core.PostJSON("device/get_bind_device", token, maps)
+}
