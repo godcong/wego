@@ -78,5 +78,15 @@ func (d *Device) Bind(openID, deviceID, ticket string) core.Responder {
 		"device_id": deviceID,
 		"ticket":    ticket,
 	}
-	return core.PostJSON("'device/bind", token, maps)
+	return core.PostJSON("device/bind", token, maps)
+}
+
+func (d *Device) Unbind(openID, deviceID, ticket string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"openid":    openID,
+		"device_id": deviceID,
+		"ticket":    ticket,
+	}
+	return core.PostJSON("device/unbind", token, maps)
 }
