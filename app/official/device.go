@@ -123,3 +123,11 @@ func (d *Device) VerifyQrCode(ticket string) core.Responder {
 	}
 	return core.PostJSON("device/verify_qrcode", token, maps)
 }
+
+func (d *Device) GetOpenid(deviceID string) core.Responder {
+	token := d.accessToken.KeyMap()
+	maps := util.Map{
+		"device_id": deviceID,
+	}
+	return core.PostJSON("device/get_openid", token, maps)
+}
