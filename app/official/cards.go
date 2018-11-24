@@ -1,6 +1,10 @@
 package official
 
-import "github.com/godcong/wego/util"
+import (
+	"encoding/json"
+	"github.com/godcong/wego/util"
+	"strings"
+)
 
 // CardScene ...
 type CardScene string
@@ -200,4 +204,87 @@ type CardAdvancedInfo struct {
 type OneCard struct {
 	CardType CardType `json:"card_type"`
 	data     util.Map
+}
+
+//NewOneCard 创建卡券信息
+//	参数:
+//	cardType 卡券类型
+//	data	卡券信息 (可传nil)
+func NewOneCard(cardType CardType, data util.Map) *OneCard {
+	ct := strings.ToLower(cardType.String())
+	return &OneCard{
+		CardType: cardType,
+		data: util.Map{
+			"card_type": cardType,
+			ct:          data,
+		},
+	}
+}
+
+//AddAdvancedInfo 添加卡券advanced_info
+func (c *OneCard) AddAdvancedInfo(info *CardAdvancedInfo) *OneCard {
+	return c.add("advanced_info", info)
+}
+
+//AddBaseInfo 添加卡券base_info
+func (c *OneCard) AddBaseInfo(info *CardBaseInfo) *OneCard {
+	return c.add("base_info", info)
+}
+
+//AddDealDetail 添加卡券deal_detail
+func (c *OneCard) AddDealDetail(d string) *OneCard {
+	return c.add("deal_detail", d)
+}
+
+func (c *OneCard) add(name string, info interface{}) *OneCard {
+	ct := strings.ToLower(c.CardType.String())
+	if c.data != nil {
+		if v, b := c.data[ct].(util.Map); b {
+			if v != nil {
+				v[name] = info
+			} else {
+				v = util.Map{
+					name: info,
+				}
+			}
+			c.data[ct] = v
+		}
+	} else {
+		c.data = util.Map{
+			"card_type": c.CardType,
+			ct: util.Map{
+				name: info,
+			},
+		}
+	}
+	return c
+}
+
+//Set 设置卡券信息(包含base_info,advanced_info,deal_detail)
+func (c *OneCard) Set(cardType CardType, data util.Map) {
+	ct := strings.ToLower(cardType.String())
+	c.CardType = cardType
+	c.data = util.Map{
+		"card_type": ct,
+		ct:          data,
+	}
+}
+
+//Get 获取卡券类型,卡券信息
+func (c *OneCard) Get() (CardType, util.Map) {
+	return c.CardType, c.data
+}
+
+// ToMap ...
+func (c *OneCard) ToMap() util.Map {
+	maps := util.Map{}
+	v, err := json.Marshal(c)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal(v, maps)
+	if err != nil {
+		return nil
+	}
+	return maps
 }
