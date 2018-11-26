@@ -137,6 +137,19 @@ func (a *Account) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
+// HandleRefundedNotify ...
+func (a *Account) HandleMessagedNotify(f NotifyCallback) Notify {
+	return &messageNotify{
+		Account:        a,
+		NotifyCallback: f,
+	}
+}
+
+// HandleRefunded ...
+func (a *Account) HandleMessaged(f NotifyCallback) NotifyFunc {
+	return a.HandleMessagedNotify(f).ServeHTTP
+}
+
 //Link 拼接地址
 func Link(url string) string {
 	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
