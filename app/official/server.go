@@ -3,21 +3,20 @@ package official
 import (
 	"bytes"
 	"encoding/xml"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-
 	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/log"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 )
 
-// SUCCESS ...
-const SUCCESS = "SUCCESS"
-
-// FAIL ...
-const FAIL = "FAIL"
+//// SUCCESS ...
+//const SUCCESS = "SUCCESS"
+//
+//// FAIL ...
+//const FAIL = "FAIL"
 
 /*Server Server */
 type Server struct {
