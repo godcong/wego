@@ -33,6 +33,7 @@ const (
 	MsgTypeTransfer        MsgType = "transfer_customer_service" //表示消息消息转发到客服
 	MsgTypeEvent           MsgType = "event"                     //表示事件推送消息
 	MsgTypeMiniprogrampage MsgType = "miniprogrampage"
+	MsgTypeAll             MsgType = "_msg_type_all_"
 )
 
 /*MSGCDATA MSGCDATA */

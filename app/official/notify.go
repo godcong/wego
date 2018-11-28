@@ -27,8 +27,7 @@ type NotifyFunc func(w http.ResponseWriter, req *http.Request)
 type messageNotify struct {
 	*Account
 	NotifyCallback
-	msgType message.MsgType
-	bizMsg  *cipher.BizMsg
+	bizMsg *cipher.BizMsg
 }
 
 // ServeHTTP ...
@@ -94,4 +93,9 @@ func (n *messageNotify) decodeReqInfo(req *http.Request) (util.Map, error) {
 	}
 
 	return maps, err
+}
+
+type messageTypeNotify struct {
+	*messageNotify
+	msgType message.MsgType
 }

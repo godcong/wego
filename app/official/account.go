@@ -1,6 +1,7 @@
 package official
 
 import (
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/util"
@@ -138,12 +139,18 @@ func (a *Account) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
-// HandelTypeMessageNotify ...
-func (a *Account) HandelTypeMessageNotify(msgType message.MsgType, f NotifyCallback) Notify {
-	return &messageNotify{
-		msgType:        msgType,
-		Account:        a,
-		NotifyCallback: f,
+// HandelMessageTypeNotify ...
+func (a *Account) HandelMessageTypeNotify(msgType message.MsgType, f NotifyCallback) Notify {
+	token := a.GetString("token")
+	key := a.GetString("aes_key")
+	id := a.GetString("app_id")
+	return &messageTypeNotify{
+		messageNotify: &messageNotify{
+			Account:        a,
+			NotifyCallback: f,
+			bizMsg:         cipher.NewBizMsg(token, key, id),
+		},
+		msgType: msgType,
 	}
 }
 
@@ -154,9 +161,13 @@ func (a *Account) HandleTypeMessage(f NotifyCallback) NotifyFunc {
 
 // HandleMessageNotify ...
 func (a *Account) HandleMessageNotify(f NotifyCallback) Notify {
+	token := a.GetString("token")
+	key := a.GetString("aes_key")
+	id := a.GetString("app_id")
 	return &messageNotify{
 		Account:        a,
 		NotifyCallback: f,
+		bizMsg:         cipher.NewBizMsg(token, key, id),
 	}
 }
 
