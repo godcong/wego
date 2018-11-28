@@ -99,3 +99,33 @@ type messageTypeNotify struct {
 	*messageNotify
 	msgType message.MsgType
 }
+
+// ServeHTTP ...
+func (n *messageTypeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var err error
+	//rlt := SUCCESS()
+	//defer func() {
+	//	err = NotifyResponseXML(w, rlt.ToXML())
+	//	log.Error(err)
+	//}()
+
+	maps, err := n.decodeReqInfo(req)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if n.msgType.String() == maps.GetString("MsgType") {
+		r, err := n.NotifyCallback(maps)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		_, err = w.Write(r.ToXML())
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
+	}
+
+}
