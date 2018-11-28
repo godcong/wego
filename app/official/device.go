@@ -25,6 +25,7 @@ func NewDevice(config *core.Config) *Device {
 	return newDevice(NewOfficialAccount(config))
 }
 
+// TransMessage ...
 func (d *Device) TransMessage(deviceID, openID, content string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -37,6 +38,7 @@ func (d *Device) TransMessage(deviceID, openID, content string) core.Responder {
 
 }
 
+// CreateQrCode ...
 func (d *Device) CreateQrCode(devices []string) core.Responder {
 	token := d.accessToken.KeyMap()
 	num := strconv.Itoa(len(devices))
@@ -47,6 +49,7 @@ func (d *Device) CreateQrCode(devices []string) core.Responder {
 	return core.PostJSON("'device/create_qrcode", token, maps)
 }
 
+// Authorize ...
 func (d *Device) Authorize(ables []util.MapAble, productID string, optype int) core.Responder {
 	token := d.accessToken.KeyMap()
 	num := strconv.Itoa(len(ables))
@@ -63,6 +66,7 @@ func (d *Device) Authorize(ables []util.MapAble, productID string, optype int) c
 	return core.PostJSON("device/authorize_device", token, maps)
 }
 
+// GetQrCode ...
 func (d *Device) GetQrCode(productID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -71,6 +75,7 @@ func (d *Device) GetQrCode(productID string) core.Responder {
 	return core.PostJSON("device/getqrcode", token, maps)
 }
 
+// Bind ...
 func (d *Device) Bind(openID, deviceID, ticket string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -81,6 +86,7 @@ func (d *Device) Bind(openID, deviceID, ticket string) core.Responder {
 	return core.PostJSON("device/bind", token, maps)
 }
 
+// Unbind ...
 func (d *Device) Unbind(openID, deviceID, ticket string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -90,6 +96,8 @@ func (d *Device) Unbind(openID, deviceID, ticket string) core.Responder {
 	}
 	return core.PostJSON("device/unbind", token, maps)
 }
+
+// CompelBind ...
 func (d *Device) CompelBind(openID, deviceID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -99,6 +107,7 @@ func (d *Device) CompelBind(openID, deviceID string) core.Responder {
 	return core.PostJSON("device/compel_bind", token, maps)
 }
 
+// CompelUnbind ...
 func (d *Device) CompelUnbind(openID, deviceID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -108,6 +117,7 @@ func (d *Device) CompelUnbind(openID, deviceID string) core.Responder {
 	return core.PostJSON("device/compel_unbind", token, maps)
 }
 
+// GetStatus ...
 func (d *Device) GetStatus(deviceID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -116,6 +126,7 @@ func (d *Device) GetStatus(deviceID string) core.Responder {
 	return core.PostJSON("device/get_stat", token, maps)
 }
 
+// VerifyQrCode ...
 func (d *Device) VerifyQrCode(ticket string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -124,6 +135,7 @@ func (d *Device) VerifyQrCode(ticket string) core.Responder {
 	return core.PostJSON("device/verify_qrcode", token, maps)
 }
 
+// GetOpenid ...
 func (d *Device) GetOpenid(deviceID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{
@@ -132,6 +144,7 @@ func (d *Device) GetOpenid(deviceID string) core.Responder {
 	return core.PostJSON("device/get_openid", token, maps)
 }
 
+// GetBindDevice ...
 func (d *Device) GetBindDevice(openID string) core.Responder {
 	token := d.accessToken.KeyMap()
 	maps := util.Map{

@@ -126,7 +126,7 @@ func (m *Material) UpdateNews(mediaID string, index int, articles []*media.Artic
 
 }
 
-//GetMaterialCount 获取素材总数
+//GetCount 获取素材总数
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=ACCESS_TOKEN
 func (m *Material) GetCount() core.Responder {

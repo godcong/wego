@@ -12,12 +12,6 @@ import (
 	"net/url"
 )
 
-//// SUCCESS ...
-//const SUCCESS = "SUCCESS"
-//
-//// FAIL ...
-//const FAIL = "FAIL"
-
 /*Server Server */
 type Server struct {
 	*Account

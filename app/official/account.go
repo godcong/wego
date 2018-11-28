@@ -2,6 +2,7 @@ package official
 
 import (
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/util"
 )
 
@@ -137,16 +138,21 @@ func (a *Account) JSSDK() *JSSDK {
 	return obj.(*JSSDK)
 }
 
-func (a *Account) HandelTypeMessageNotify(f NotifyCallback) Notify {
-
+// HandelTypeMessageNotify ...
+func (a *Account) HandelTypeMessageNotify(msgType message.MsgType, f NotifyCallback) Notify {
+	return &messageNotify{
+		msgType:        msgType,
+		Account:        a,
+		NotifyCallback: f,
+	}
 }
 
-// HandleRefunded ...
+// HandleTypeMessage ...
 func (a *Account) HandleTypeMessage(f NotifyCallback) NotifyFunc {
 	return a.HandleMessageNotify(f).ServeHTTP
 }
 
-// HandleRefundedNotify ...
+// HandleMessageNotify ...
 func (a *Account) HandleMessageNotify(f NotifyCallback) Notify {
 	return &messageNotify{
 		Account:        a,
@@ -154,7 +160,7 @@ func (a *Account) HandleMessageNotify(f NotifyCallback) Notify {
 	}
 }
 
-// HandleRefunded ...
+// HandleMessage ...
 func (a *Account) HandleMessage(f NotifyCallback) NotifyFunc {
 	return a.HandleMessageNotify(f).ServeHTTP
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"github.com/godcong/wego/cipher"
+	"github.com/godcong/wego/core/message"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"io/ioutil"
@@ -26,9 +27,11 @@ type NotifyFunc func(w http.ResponseWriter, req *http.Request)
 type messageNotify struct {
 	*Account
 	NotifyCallback
-	bizMsg *cipher.BizMsg
+	msgType message.MsgType
+	bizMsg  *cipher.BizMsg
 }
 
+// ServeHTTP ...
 func (n *messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
 	//rlt := SUCCESS()
