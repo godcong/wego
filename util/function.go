@@ -121,9 +121,9 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 	var err error
 	switch v1 := v.(type) {
 	case Map:
-		marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+		return marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
 	case map[string]interface{}:
-		marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+		return marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
 	case string:
 		if _, err := strconv.ParseInt(v1, 10, 0); err != nil {
 			err = e.EncodeElement(
@@ -145,10 +145,13 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 	case []interface{}:
 		size := len(v1)
 		for i := 0; i < size; i++ {
-			convertXML(k, v1[i], e, xml.StartElement{Name: xml.Name{Local: k}})
+			err := convertXML(k, v1[i], e, xml.StartElement{Name: xml.Name{Local: k}})
+			if err != nil {
+				return err
+			}
 		}
 		if len(v1) == 1 {
-			convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
+			return convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
 		}
 
 	default:
@@ -171,7 +174,10 @@ func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	for k, v := range maps {
-		convertXML(k, v, e, xml.StartElement{Name: xml.Name{Local: k}})
+		err := convertXML(k, v, e, xml.StartElement{Name: xml.Name{Local: k}})
+		if err != nil {
+			return err
+		}
 	}
 	return e.EncodeToken(start.End())
 }

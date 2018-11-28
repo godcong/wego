@@ -167,7 +167,7 @@ func NotifyResponseXML(w http.ResponseWriter, data []byte) error {
 	w.WriteHeader(http.StatusOK)
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
-		header["Content-Type"] = []string{"application/json; charset=utf-8"}
+		header["Content-Type"] = []string{"application/xml; charset=utf-8"}
 	}
 	_, err := w.Write(data)
 	if err != nil {
