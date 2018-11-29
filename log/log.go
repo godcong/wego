@@ -40,10 +40,9 @@ type Log struct {
 }
 
 //var logger = logging.MustGetLogger("LOG")
-var debug = false
+var debug = true
 var logs = Log{
-	Level: "debug",
-	Color: true,
+	Level: "error",
 	File:  "logs/wechat.log",
 }
 
