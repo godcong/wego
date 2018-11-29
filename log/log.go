@@ -51,19 +51,27 @@ func init() {
 }
 
 func initLog(d bool) {
+	var err error
+	var file *os.File
 	debug = d
 	if IsDebug() {
 		i := strings.LastIndexAny(logs.File, "/")
 		y := strings.LastIndexAny(logs.File, ".")
 		r := []rune(logs.File)
-		e := os.Rename(logs.File, string(r[:y])+"_"+time.Now().Format("060102150405")+string(r[y:]))
-		os.MkdirAll(string(r[:i]), os.ModePerm)
-		f, e := os.OpenFile(logs.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
-		if e != nil {
+		err = os.Rename(logs.File, string(r[:y])+"_"+time.Now().Format("060102150405")+string(r[y:]))
+		if err != nil {
+			log.Println("cannot open file: " + logs.File)
+		}
+		err = os.MkdirAll(string(r[:i]), os.ModePerm)
+		if err != nil {
+			log.Println("cannot open file: " + logs.File)
+		}
+		file, err = os.OpenFile(logs.File, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
+		if err != nil {
 			log.Println("cannot open file: " + logs.File)
 		}
 		log.SetFlags(log.LstdFlags | log.Llongfile)
-		log.SetOutput(io.MultiWriter(os.Stdout, f))
+		log.SetOutput(io.MultiWriter(os.Stdout, file))
 	}
 
 }
