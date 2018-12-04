@@ -57,18 +57,19 @@ func (u *User) UpdateRemark(openid, remark string) core.Responder {
 // https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 // 成功:
 // {"subscribe":1,"openid":"o6_bmjrPTlm6_2sgVt7hMZOPfL2M","nickname":"Band","sex":1,"language":"zh_CN","city":"广州","province":"广东","country":"中国","headimgurl":"http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0","subscribe_time":1382694957,"unionid":"o6_bmasdasdsad6_2sgVt7hMZOPfL""remark":"","groupid":0,"tagid_list":[128,2],"subscribe_scene":"ADD_SCENE_QR_CODE","qr_scene":98765,"qr_scene_str":""}
-func (u *User) UserInfo(openid, lang string) *core.UserInfo {
-	log.Debug("User|UpdateRemark", openid, lang)
+func (u *User) UserInfo(openid string, options ...util.Map) *core.UserInfo {
+	log.Debug("User|UpdateRemark", openid)
+
+	var info core.UserInfo
 	p := u.accessToken.GetToken().KeyMap()
 	p.Set("openid", openid)
-	if lang != "" {
-		p.Set("lang", lang)
-	}
+
+	p = util.MapsToMap(p, options)
 
 	resp := core.Get(
 		Link(userInfoURLSuffix),
 		p)
-	var info core.UserInfo
+
 	err := json.Unmarshal(resp.Bytes(), &info)
 	if err != nil {
 		return nil
