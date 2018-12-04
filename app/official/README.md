@@ -9,7 +9,7 @@
     
 ### 请求微信的服务器IP列表
 
-    obj.Base().GetCallbackIP
+    obj.Base().GetCallbackIP()
     
 ## JSSDK    
 
@@ -31,4 +31,6 @@
     });
     </script>
     
-    
+## 获取用户信息
+
+    user := obj.User().Get(#openId#);

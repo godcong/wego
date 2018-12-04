@@ -69,7 +69,10 @@ func (u *User) UserInfo(openid, lang string) *core.UserInfo {
 		Link(userInfoURLSuffix),
 		p)
 	var info core.UserInfo
-	json.Unmarshal(resp.Bytes(), &info)
+	err := json.Unmarshal(resp.Bytes(), &info)
+	if err != nil {
+		return nil
+	}
 
 	return &info
 }
