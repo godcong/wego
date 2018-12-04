@@ -32,5 +32,10 @@
     </script>
     
 ## 获取用户信息
-
-    user := obj.User().Get(#openId#);
+    获取单个
+    user := obj.User().UserInfo(#openId#,#lang#)
+    获取多个
+    users := obj.User().BatchGet(#openIDs#,#lang#)
+    
+## 获取用户列表
+    user := obj.User().Get(#openId#).ToMap();
