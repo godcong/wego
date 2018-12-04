@@ -39,3 +39,6 @@
     
 ## 获取用户列表
     user := obj.User().Get(#openId#).ToMap();
+    
+## 修改用户备注    
+    user := obj.User().UpdateRemark(#openId#,#remark#).ToMap();
