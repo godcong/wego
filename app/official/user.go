@@ -150,3 +150,17 @@ func (u *User) BatchBlackList(openIDs []string) core.Responder {
 
 	return resp
 }
+
+//BatchUnblackList ...
+func (u *User) BatchUnblackList(openIDs []string) core.Responder {
+	log.Debug("User|BatchUnblackList", openIDs)
+	query := u.accessToken.GetToken().KeyMap()
+
+	query.Set("openid_list", openIDs)
+
+	resp := core.Get(
+		Link("cgi-bin/tags/members/batchunblacklist"),
+		query)
+
+	return resp
+}
