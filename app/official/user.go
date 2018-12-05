@@ -142,11 +142,12 @@ func (u *User) BatchBlackList(openIDs []string) core.Responder {
 	log.Debug("User|BatchBlackList", openIDs)
 	query := u.accessToken.GetToken().KeyMap()
 
-	query.Set("openid_list", openIDs)
-
-	resp := core.Get(
+	resp := core.PostJSON(
 		Link("cgi-bin/tags/members/batchblacklist"),
-		query)
+		query,
+		util.Map{
+			"openid_list": openIDs,
+		})
 
 	return resp
 }
@@ -156,11 +157,30 @@ func (u *User) BatchUnblackList(openIDs []string) core.Responder {
 	log.Debug("User|BatchUnblackList", openIDs)
 	query := u.accessToken.GetToken().KeyMap()
 
+	resp := core.PostJSON(
+		Link("cgi-bin/tags/members/batchunblacklist"),
+		query,
+		util.Map{
+			"openid_list": openIDs,
+		})
+
+	return resp
+}
+
+//ChangeOpenID ...
+func (u *User) ChangeOpenID(oldAppID string, openIDs []string) core.Responder {
+	log.Debug("User|ChangeOpenID", oldAppID, openIDs)
+	query := u.accessToken.GetToken().KeyMap()
+	query.Set("from_appid", oldAppID)
 	query.Set("openid_list", openIDs)
 
-	resp := core.Get(
-		Link("cgi-bin/tags/members/batchunblacklist"),
-		query)
+	resp := core.PostJSON(
+		Link("cgi-bin/changeopenid"),
+		query,
+		util.Map{
+			"from_appid":  oldAppID,
+			"openid_list": openIDs,
+		})
 
 	return resp
 }
