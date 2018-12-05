@@ -136,3 +136,17 @@ func (u *User) Get(nextOpenid string) core.Responder {
 
 	return resp
 }
+
+//BatchBlackList ...
+func (u *User) BatchBlackList(openIDs []string) core.Responder {
+	log.Debug("User|BatchBlackList", openIDs)
+	query := u.accessToken.GetToken().KeyMap()
+
+	query.Set("openid_list", openIDs)
+
+	resp := core.Get(
+		Link("cgi-bin/tags/members/batchblacklist"),
+		query)
+
+	return resp
+}
