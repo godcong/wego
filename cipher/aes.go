@@ -93,7 +93,7 @@ type cryptAES256ECB struct {
 
 // Type ...
 func (c *cryptAES256ECB) Type() CryptType {
-	panic("implement me")
+	return AES256ECB
 }
 
 // SetParameter ...

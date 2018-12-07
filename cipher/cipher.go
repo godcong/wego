@@ -6,6 +6,7 @@ type CryptType int
 // AES128CBC ...
 const (
 	AES128CBC CryptType = iota
+	AES256ECB           = iota
 	RSA                 = iota
 )
 
