@@ -478,9 +478,9 @@ func GenerateRandomString(size int, kind ...RandomKind) string {
 		}
 	}
 	var result []byte
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < size; i++ {
-		result = append(result, bytes[r.Intn(len(bytes))])
+		result = append(result, bytes[rand.Intn(len(bytes))])
 	}
 	return string(result)
 }
