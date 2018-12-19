@@ -5,21 +5,21 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-//Base base
-type Base struct {
-	*Payment
-}
-
-func newBase(payment *Payment) interface{} {
-	return &Base{
-		Payment: payment,
-	}
-}
-
-//NewBase new base
-func NewBase(config *core.Config) *Base {
-	return newBase(NewPayment(config)).(*Base)
-}
+////Base base
+//type Base struct {
+//	*Payment
+//}
+//
+//func newBase(payment *Payment) interface{} {
+//	return &Base{
+//		Payment: payment,
+//	}
+//}
+//
+////NewBase new base
+//func NewBase(config *core.Config) *Base {
+//	return newBase(NewPayment(config)).(*Base)
+//}
 
 /*Pay 支付
 接口地址
@@ -49,7 +49,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (p *Base) Pay(maps util.Map) core.Responder {
+func (p *Payment) Pay(maps util.Map) core.Responder {
 	maps.Set("appid", p.Get("app_id"))
 
 	//set notify callback
@@ -69,7 +69,7 @@ authCode - 授权码
 返回:
 openid string
 */
-func (p *Base) AuthCodeToOpenid(authCode string) core.Responder {
+func (p *Payment) AuthCodeToOpenid(authCode string) core.Responder {
 	m := make(util.Map)
 	m.Set("appid", p.Get("app_id"))
 	m.Set("auth_code", authCode)
