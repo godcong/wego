@@ -97,6 +97,10 @@ type request struct {
 	body     interface{}
 }
 
+func BuildRequester() Requester {
+	return nil
+}
+
 // Do ...
 func (r *request) Do(ctx context.Context) Responder {
 	log.Debug("Requester|Do", r.method, r.url, r.body)
