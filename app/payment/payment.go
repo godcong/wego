@@ -13,7 +13,7 @@ import (
 type Payment struct {
 	*core.Config
 	Module util.Map
-	//client *core.Client
+	prefix string
 }
 
 //NewPaymentAble ...
@@ -37,6 +37,7 @@ func newPayment(config *core.Config, p util.Map) *Payment {
 	payment := &Payment{
 		Config: config,
 		Module: p,
+		prefix: "",
 	}
 
 	return payment

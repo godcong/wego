@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
+// TestPayment ...
 func TestPayment(t *testing.T) {
 	t.Log(util.CurrentTimeStampMS())
 	t.Log(util.CurrentTimeStampNS())
 	t.Log(util.CurrentTimeStamp())
 	t.Log(util.CurrentTimeStampString())
-
 }

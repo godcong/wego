@@ -18,96 +18,143 @@ type Responder interface {
 	ToMap() util.Map
 	Bytes() []byte
 	Error() error
+	Result() (util.Map, error)
 }
-
-type responseMap struct {
+type respMap struct {
 	Data util.Map
 }
 
-type responseJSON struct {
+// Result ...
+func (r *respMap) Result() (util.Map, error) {
+	return r.ToMap(), r.Error()
+}
+
+type respJSON struct {
 	Data []byte
 	Err  error
 }
 
-type responseXML struct {
-	Data []byte
-	Err  error
-}
-
-type responseError struct {
-	Data []byte
-	Err  error
-}
-
-//ToMap response to map
-func (r *responseMap) ToMap() util.Map {
-	return r.Data
-}
-
-//Bytes response to bytes
-func (r *responseMap) Bytes() []byte {
-	return r.Data.ToJSON()
-}
-
-//Error response error
-func (r *responseMap) Error() error {
-	return nil
-}
-
-//ToMap response to map
-func (r *responseJSON) ToMap() util.Map {
+// Result ...
+func (r *respJSON) Result() (util.Map, error) {
 	m := make(util.Map)
 	err := json.Unmarshal(r.Data, &m)
 	if err != nil {
 		r.Err = err
-		return nil
+		return nil, err
 	}
-	return m
+	return m, err
 }
 
-//Bytes response to bytes
-func (r *responseJSON) Bytes() []byte {
-	return r.Data
+type respXML struct {
+	Data []byte
+	Err  error
 }
 
-//Error response error
-func (*responseJSON) Error() error {
-	return nil
-}
-
-//ToMap response to map
-func (r *responseError) ToMap() util.Map {
-	return nil
-}
-
-//Bytes response to bytes
-func (r *responseError) Bytes() []byte {
-	return r.Data
-}
-
-//Error response error
-func (r *responseError) Error() error {
-	return r.Err
-}
-
-//ToMap response to map
-func (r *responseXML) ToMap() util.Map {
+// Result ...
+func (r *respXML) Result() (util.Map, error) {
 	m := make(util.Map)
 	err := xml.Unmarshal(r.Data, &m)
 	if err != nil {
 		r.Err = err
-		return nil
+		return nil, err
 	}
+	return m, nil
+}
+
+type respData struct {
+	Data []byte
+	Err  error
+}
+
+// Result ...
+func (r *respData) Result() (util.Map, error) {
+	return nil, r.Err
+}
+
+// ToMap ...
+func (r *respData) ToMap() util.Map {
+	return nil
+}
+
+// Bytes ...
+func (r *respData) Bytes() []byte {
+	return r.Data
+}
+
+// Error ...
+func (r *respData) Error() error {
+	return r.Err
+}
+
+type respError struct {
+	Data []byte
+	Err  error
+}
+
+//ToMap response to map
+func (r *respMap) ToMap() util.Map {
+	return r.Data
+}
+
+//Bytes response to bytes
+func (r *respMap) Bytes() []byte {
+	return r.Data.ToJSON()
+}
+
+//Error response error
+func (r *respMap) Error() error {
+	return nil
+}
+
+//ToMap response to map
+func (r *respJSON) ToMap() util.Map {
+	m, _ := r.Result()
 	return m
 }
 
 //Bytes response to bytes
-func (r *responseXML) Bytes() []byte {
+func (r *respJSON) Bytes() []byte {
 	return r.Data
 }
 
 //Error response error
-func (r *responseXML) Error() error {
+func (*respJSON) Error() error {
+	return nil
+}
+
+// Result ...
+func (r *respError) Result() (util.Map, error) {
+	return nil, r.Err
+}
+
+//ToMap response to map
+func (r *respError) ToMap() util.Map {
+	return nil
+}
+
+//Bytes response to bytes
+func (r *respError) Bytes() []byte {
+	return r.Data
+}
+
+//Error response error
+func (r *respError) Error() error {
+	return r.Err
+}
+
+//ToMap response to map
+func (r *respXML) ToMap() util.Map {
+	m, _ := r.Result()
+	return m
+}
+
+//Bytes response to bytes
+func (r *respXML) Bytes() []byte {
+	return r.Data
+}
+
+//Error response error
+func (r *respXML) Error() error {
 	return nil
 }
 
@@ -123,7 +170,7 @@ func filterContent(content string) string {
 
 //Err return if response has error
 func Err(data []byte, err error) Responder {
-	return &responseError{
+	return &respError{
 		Data: data,
 		Err:  err,
 	}
@@ -147,11 +194,11 @@ func CastToResponse(resp *http.Response) Responder {
 	if resp.StatusCode == 200 {
 		if strings.Index(ct, "xml") != -1 ||
 			bytes.Index(body, []byte("<xml")) != -1 {
-			return &responseXML{
+			return &respXML{
 				Data: body,
 			}
 		}
-		return &responseJSON{
+		return &respJSON{
 			Data: body,
 		}
 	}
