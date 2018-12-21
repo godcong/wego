@@ -34,7 +34,7 @@ func (d *Device) TransMessage(deviceID, openID, content string) core.Responder {
 		"open_id":     openID,
 		"content":     cipher.Base64Encode([]byte(content)),
 	}
-	return core.PostJSON("device/transmsg", token, maps)
+	return core.PostJSON(deviceTransmsg, token, maps)
 
 }
 
@@ -46,7 +46,7 @@ func (d *Device) CreateQrCode(devices []string) core.Responder {
 		"device_num":     num,
 		"device_id_list": devices,
 	}
-	return core.PostJSON("'device/create_qrcode", token, maps)
+	return core.PostJSON(deviceCreateQrcode, token, maps)
 }
 
 // Authorize ...
@@ -63,7 +63,7 @@ func (d *Device) Authorize(ables []util.MapAble, productID string, optype int) c
 		"product_id":  productID,
 		"op_type":     optype,
 	}
-	return core.PostJSON("device/authorize_device", token, maps)
+	return core.PostJSON(deviceAuthorizeDevice, token, maps)
 }
 
 // GetQrCode ...
@@ -72,7 +72,7 @@ func (d *Device) GetQrCode(productID string) core.Responder {
 	maps := util.Map{
 		"product_id": productID,
 	}
-	return core.PostJSON("device/getqrcode", token, maps)
+	return core.PostJSON(deviceGetqrcode, token, maps)
 }
 
 // Bind ...
@@ -83,7 +83,7 @@ func (d *Device) Bind(openID, deviceID, ticket string) core.Responder {
 		"device_id": deviceID,
 		"ticket":    ticket,
 	}
-	return core.PostJSON("device/bind", token, maps)
+	return core.PostJSON(deviceBind, token, maps)
 }
 
 // Unbind ...
@@ -94,7 +94,7 @@ func (d *Device) Unbind(openID, deviceID, ticket string) core.Responder {
 		"device_id": deviceID,
 		"ticket":    ticket,
 	}
-	return core.PostJSON("device/unbind", token, maps)
+	return core.PostJSON(deviceUnbind, token, maps)
 }
 
 // CompelBind ...
@@ -104,7 +104,7 @@ func (d *Device) CompelBind(openID, deviceID string) core.Responder {
 		"openid":    openID,
 		"device_id": deviceID,
 	}
-	return core.PostJSON("device/compel_bind", token, maps)
+	return core.PostJSON(deviceCompelBind, token, maps)
 }
 
 // CompelUnbind ...
@@ -114,7 +114,7 @@ func (d *Device) CompelUnbind(openID, deviceID string) core.Responder {
 		"openid":    openID,
 		"device_id": deviceID,
 	}
-	return core.PostJSON("device/compel_unbind", token, maps)
+	return core.PostJSON(deviceCompelUnbind, token, maps)
 }
 
 // GetStatus ...
@@ -123,7 +123,7 @@ func (d *Device) GetStatus(deviceID string) core.Responder {
 	maps := util.Map{
 		"device_id": deviceID,
 	}
-	return core.PostJSON("device/get_stat", token, maps)
+	return core.PostJSON(deviceGetStat, token, maps)
 }
 
 // VerifyQrCode ...
@@ -132,7 +132,7 @@ func (d *Device) VerifyQrCode(ticket string) core.Responder {
 	maps := util.Map{
 		"ticket": ticket,
 	}
-	return core.PostJSON("device/verify_qrcode", token, maps)
+	return core.PostJSON(deviceVerifyQrcode, token, maps)
 }
 
 // GetOpenid ...
@@ -141,7 +141,7 @@ func (d *Device) GetOpenid(deviceID string) core.Responder {
 	maps := util.Map{
 		"device_id": deviceID,
 	}
-	return core.PostJSON("device/get_openid", token, maps)
+	return core.PostJSON(deviceGetOpenid, token, maps)
 }
 
 // GetBindDevice ...
@@ -150,5 +150,5 @@ func (d *Device) GetBindDevice(openID string) core.Responder {
 	maps := util.Map{
 		"open_id": openID,
 	}
-	return core.PostJSON("device/get_bind_device", token, maps)
+	return core.PostJSON(deviceGetBindDevice, token, maps)
 }

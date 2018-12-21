@@ -248,15 +248,15 @@ const cardPaycellSet = "/card/paycell/set"
 
 const cardModifystock = "/card/modifystock"
 
-const cardMovieticketUpdateuser = "card/movieticket/updateuser"
+const cardMovieticketUpdateuser = "/card/movieticket/updateuser"
 
-const cardSubmerchantSubmit = "card/submerchant/submit"
+const cardSubmerchantSubmit = "/card/submerchant/submit"
 
-const cardSubmerchantUpdate = "card/submerchant/update"
+const cardSubmerchantUpdate = "/card/submerchant/update"
 
-const cardSubmerchantget = "card/submerchant/get"
+const cardSubmerchantget = "/card/submerchant/get"
 
-const cardSubmerchantbatchget = "card/submerchant/batchget"
+const cardSubmerchantbatchget = "/card/submerchant/batchget"
 
 //cardBoardingpassCheckin api address suffix
 const cardBoardingpassCheckin = "/card/boardingpass/checkin"
@@ -284,3 +284,16 @@ const getCurrentAutoReplyInfo = "/cgi-bin/get_current_autoreply_info"
 
 //getCurrentSelfMenuInfo api address suffix
 const getCurrentSelfMenuInfo = "/cgi-bin/get_current_selfmenu_info"
+
+const deviceGetBindDevice = "/device/get_bind_device"
+const deviceGetOpenid = "/device/get_openid"
+const deviceVerifyQrcode = "device/verify_qrcode"
+const deviceGetStat = "device/get_stat"
+const deviceCompelUnbind = "device/compel_unbind"
+const deviceCompelBind = "device/compel_bind"
+const deviceUnbind = "device/unbind"
+const deviceBind = "device/bind"
+const deviceGetqrcode = "device/getqrcode"
+const deviceAuthorizeDevice = "device/authorize_device"
+const deviceCreateQrcode = "device/create_qrcode"
+const deviceTransmsg = "device/transmsg"
