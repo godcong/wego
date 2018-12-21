@@ -5,22 +5,6 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-////Base base
-//type Base struct {
-//	*Payment
-//}
-//
-//func newBase(payment *Payment) interface{} {
-//	return &Base{
-//		Payment: payment,
-//	}
-//}
-//
-////NewBase new base
-//func NewBase(config *core.Config) *Base {
-//	return newBase(NewPayment(config)).(*Base)
-//}
-
 /*Pay 支付
 接口地址
 SDK下载:https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=11_1

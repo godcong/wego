@@ -97,6 +97,7 @@ type request struct {
 	body     interface{}
 }
 
+// BuildRequester ...
 func BuildRequester() Requester {
 	return nil
 }

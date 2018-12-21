@@ -77,7 +77,7 @@ func (p *Payment) IsSandbox() bool {
 	return p.GetBool("sandbox")
 }
 
-//GetKey get key
+//GetKey get keyGetKey
 func (p *Payment) GetKey() string {
 	log.Debug(p.String())
 	key := p.GetString("key")
@@ -135,16 +135,6 @@ func (p *Payment) SafeRequest(s string, maps util.Map) core.Responder {
 		core.DataTypeSecurity: p.Config,
 	}
 	return core.Request(core.POST, p.Link(s), m)
-}
-
-// Base ...
-func (p *Payment) Base() *Base {
-	obj, b := p.Module["Base"]
-	if !b {
-		obj = newBase(p)
-		p.Module["Base"] = obj
-	}
-	return obj.(*Base)
 }
 
 // Reverse ...

@@ -11,7 +11,6 @@ import (
 type NewAble func(account *Account) interface{}
 
 var moduleLists = util.Map{
-	"Base":   newBase,
 	"JSSDK":  newJSSDK,
 	"OAuth":  newOAuth,
 	"Menu":   newMenu,
@@ -87,16 +86,6 @@ func (a *Account) Server() *Server {
 		a.Module["Server"] = obj
 	}
 	return obj.(*Server)
-}
-
-/*Base Base*/
-func (a *Account) Base() *Base {
-	obj, b := a.Module["Base"]
-	if !b {
-		obj = newBase(a)
-		a.Module["Base"] = obj
-	}
-	return obj.(*Base)
 }
 
 /*Menu Menu*/

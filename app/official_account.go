@@ -5,6 +5,7 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+// OfficialAccount ...
 type OfficialAccount struct {
 	*core.Config
 	accessToken *AccessToken

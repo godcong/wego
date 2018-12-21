@@ -1,7 +1,6 @@
 package wego_test
 
 import (
-	"github.com/godcong/wego"
 	"testing"
 )
 
@@ -50,14 +49,6 @@ func TestGetApp(t *testing.T) {
 // TestCoreUrl ...
 func TestCoreUrl(t *testing.T) {
 
-}
-
-// TestGetOfficialAccount ...
-func TestGetOfficialAccount(t *testing.T) {
-	base := wego.OfficialAccount().Base()
-	resp := base.GetCallbackIP()
-	t.Log(resp.ToMap())
-	//testBase(t, oa)
 }
 
 // TestXml ...
