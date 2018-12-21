@@ -350,12 +350,12 @@ func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) co
 // Link connect domain url and url suffix
 func (p *Payment) Link(url string) string {
 	if p.IsSandbox() {
-		return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain)+sandboxURLSuffix, url)
+		return core.Splice(core.DefaultConfig().GetStringD("domain.payment.url", domain)+sandboxURLSuffix, url)
 	}
-	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
+	return core.Splice(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }
 
 //Link url
 func Link(url string) string {
-	return core.Connect(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
+	return core.Splice(core.DefaultConfig().GetStringD("domain.payment.url", domain), url)
 }

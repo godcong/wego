@@ -167,5 +167,5 @@ func (a *Account) HandleMessage(f NotifyCallback) NotifyFunc {
 
 //Link 拼接地址
 func Link(url string) string {
-	return core.Connect(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
+	return core.Splice(core.DefaultConfig().GetStringD("domain.official_account.url", domain), url)
 }

@@ -28,7 +28,7 @@ const accessTokenURLSuffix = "/cgi-bin/token"
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	return core.Get(core.Connect(a.prefix, a.URL), a.credentials).Bytes()
+	return core.Get(core.Splice(a.prefix, a.URL), a.credentials).Bytes()
 }
 
 func newAccessToken(p util.Map) *AccessToken {

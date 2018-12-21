@@ -11,11 +11,11 @@ func Link(uri string, host ...string) string {
 		domain = host[0]
 	}
 	domainAddr := DomainHost(domain)
-	return Connect(domainAddr, uri)
+	return Splice(domainAddr, uri)
 }
 
-/*Connect 拼接地址 */
-func Connect(domain string, uri string) string {
+/*Splice 拼接地址 */
+func Splice(domain string, uri string) string {
 	switch {
 	case strings.Index(uri, "/") == 0 && strings.LastIndex(domain, "/") == (len(domain)-1):
 		domain = domain[:len(domain)-1]

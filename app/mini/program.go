@@ -106,5 +106,5 @@ func (p *Program) Template() *Template {
 
 //Link 拼接地址
 func Link(url string) string {
-	return core.Connect(core.DefaultConfig().GetStringD("domain.mini_program.url", domain), url)
+	return core.Splice(core.DefaultConfig().GetStringD("domain.mini_program.url", domain), url)
 }

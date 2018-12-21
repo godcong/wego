@@ -44,7 +44,7 @@ func (t *Ticket) Get(typ string) Responder {
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)
 	resp := Get(
-		Connect(APIWeixin, ticketGetTicket),
+		Splice(APIWeixin, ticketGetTicket),
 		p)
 	return resp
 }
