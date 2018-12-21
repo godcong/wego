@@ -11,25 +11,21 @@ type Cache interface {
 	Has(key string) bool
 	Delete(key string) Cache
 	Clear()
-	GetMultiple(keys []string) map[string]interface{}
+	GetMultiple(keys ...string) map[string]interface{}
 	SetMultiple(values map[string]interface{}) Cache
-	DeleteMultiple(keys []string) Cache
+	DeleteMultiple(keys ...string) Cache
 }
 
 //var cache sync.Map
 var cache Cache
 
-func init() {
-	UseCache(NewMapCache())
-}
-
-/*UseCache register cache to map */
-func UseCache(c Cache) {
+/*RegisterCache register cache to map */
+func RegisterCache(c Cache) {
 	cache = c
 }
 
-/*GetCache get cache from map */
-func GetCache() Cache {
+/*DefaultCache get cache from map */
+func DefaultCache() Cache {
 	return cache
 }
 
@@ -69,8 +65,8 @@ func Clear() {
 }
 
 //GetMultiple get multiple value
-func GetMultiple(keys []string) map[string]interface{} {
-	return cache.GetMultiple(keys)
+func GetMultiple(keys ...string) map[string]interface{} {
+	return cache.GetMultiple(keys...)
 }
 
 //SetMultiple set multiple value
@@ -79,6 +75,6 @@ func SetMultiple(values map[string]interface{}) Cache {
 }
 
 //DeleteMultiple delete multiple value
-func DeleteMultiple(keys []string) Cache {
-	return DeleteMultiple(keys)
+func DeleteMultiple(keys ...string) Cache {
+	return cache.DeleteMultiple(keys...)
 }

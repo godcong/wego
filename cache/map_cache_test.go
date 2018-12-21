@@ -8,9 +8,11 @@ import (
 	"github.com/godcong/wego/cache"
 )
 
+// TestMapCache_SetWithTTL ...
 func TestMapCache_SetWithTTL(t *testing.T) {
-	c := cache.GetCache().SetWithTTL("hello", "nihao", time.Now())
-	c = cache.GetCache().SetWithTTL("hello1", "nihao1", time.Now())
+	tm := time.Now()
+	c := cache.DefaultCache().SetWithTTL("hello", "nihao", &tm)
+	c = cache.DefaultCache().SetWithTTL("hello1", "nihao1", &tm)
 	log.Println(c.Get("hello"))
 	time.Sleep(time.Duration(10) * time.Second)
 	log.Println(c.Get("hello"))

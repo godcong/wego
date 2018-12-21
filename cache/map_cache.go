@@ -15,10 +15,13 @@ type mapCacheData struct {
 	life  *time.Time
 }
 
-/*NewMapCache NewMapCache */
-func NewMapCache() Cache {
-	c := &MapCache{}
-	return c
+func init() {
+	RegisterCache(NewMapCache())
+}
+
+// NewMapCache ...
+func NewMapCache() *MapCache {
+	return &MapCache{}
 }
 
 /*Get check exist */
@@ -80,7 +83,7 @@ func (m *MapCache) Clear() {
 }
 
 /*GetMultiple get multiple values */
-func (m *MapCache) GetMultiple(keys []string) map[string]interface{} {
+func (m *MapCache) GetMultiple(keys ...string) map[string]interface{} {
 	c := make(map[string]interface{})
 	size := len(keys)
 	for i := 0; i < size; i++ {
@@ -102,7 +105,7 @@ func (m *MapCache) SetMultiple(values map[string]interface{}) Cache {
 }
 
 /*DeleteMultiple delete multiple values */
-func (m *MapCache) DeleteMultiple(keys []string) Cache {
+func (m *MapCache) DeleteMultiple(keys ...string) Cache {
 	size := len(keys)
 	for i := 0; i < size; i++ {
 		m.Delete(keys[i])
