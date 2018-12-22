@@ -15,8 +15,16 @@ type SandboxConfig struct {
 	Secret string
 }
 
+type BaseConfig struct {
+	AppID  string
+	Secret string
+	Token  string
+	AesKey string
+}
+
 type OfficialAccountConfig struct {
-	SandboxConfig
+	Sandbox SandboxConfig
+	def     BaseConfig
 }
 
 // Config ...
