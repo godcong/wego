@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"github.com/juju/errors"
 	"github.com/pelletier/go-toml"
 )
 
@@ -158,7 +159,7 @@ type Application struct {
 func C(p util.Map) *core.Config {
 	tree, err := toml.TreeFromMap(p.Map())
 	if err != nil {
-		log.Error(err)
+		errors.Trace(err)
 		return nil
 	}
 	return core.NewConfig(tree)

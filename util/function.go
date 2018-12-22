@@ -7,15 +7,14 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"fmt"
+	"github.com/godcong/wego/log"
+	"github.com/juju/errors"
+	"github.com/satori/go.uuid"
 	"math/rand"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/godcong/wego/log"
-	"github.com/satori/go.uuid"
 )
 
 /*CustomHeader xml header*/
@@ -167,7 +166,7 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 
 func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
 	if maps == nil {
-		return errors.New("nil map")
+		return errors.New("map is nil")
 	}
 	err := e.EncodeToken(start)
 	if err != nil {
@@ -215,7 +214,7 @@ func JSONToMap(content []byte) Map {
 	m := Map{}
 	err := json.Unmarshal(content, &m)
 	if err != nil {
-		log.Error(err)
+		errors.Trace(err)
 	}
 	return m
 }
@@ -330,6 +329,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) (Map, error) {
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	err := unmarshalXML(m, dec, xml.StartElement{Name: xml.Name{Local: "xml"}}, true)
 	if err != nil {
+		errors.Trace(err)
 		return nil, err
 	}
 
