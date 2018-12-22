@@ -22,6 +22,11 @@ type BaseConfig struct {
 	AesKey string
 }
 
+type HttpConfig struct {
+	TimeOut   int
+	KeepAlive int
+}
+
 type OfficialAccountConfig struct {
 	Sandbox SandboxConfig
 	def     BaseConfig
