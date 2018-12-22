@@ -32,6 +32,20 @@ type OfficialAccountConfig struct {
 	def     BaseConfig
 }
 
+type PaymentConfig struct {
+	Sandbox        bool
+	AppID          string
+	MerchantID     string
+	Key            string
+	NotifyURL      string
+	RefundURL      string
+	CertPath       string
+	KeyPath        string
+	RootCAPath     string
+	PublicKeyPath  string
+	PrivateKeyPath string
+}
+
 // Config ...
 type Config struct {
 }
