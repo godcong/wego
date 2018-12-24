@@ -6,15 +6,18 @@ type SystemConfig struct {
 	Cache string
 }
 
+// LogConfig ...
 type LogConfig struct {
 	Path string
 }
 
+// SandboxConfig ...
 type SandboxConfig struct {
 	AppID  string
 	Secret string
 }
 
+// BaseConfig ...
 type BaseConfig struct {
 	AppID  string
 	Secret string
@@ -22,16 +25,19 @@ type BaseConfig struct {
 	AesKey string
 }
 
-type HttpConfig struct {
+// HTTPConfig ...
+type HTTPConfig struct {
 	TimeOut   int
 	KeepAlive int
 }
 
+// OfficialAccountConfig ...
 type OfficialAccountConfig struct {
 	Sandbox SandboxConfig
 	def     BaseConfig
 }
 
+// PaymentConfig ...
 type PaymentConfig struct {
 	Sandbox        bool
 	AppID          string
@@ -46,6 +52,6 @@ type PaymentConfig struct {
 	PrivateKeyPath string
 }
 
-// Config ...
-type Config struct {
+// WeConfig ...
+type WeConfig struct {
 }
