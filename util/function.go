@@ -351,7 +351,8 @@ func GenerateNonceStr() string {
 
 /*GenerateUUID GenerateUUID */
 func GenerateUUID() string {
-	s := uuid.NewV1().String()
+	u1, _ := uuid.NewV1()
+	s := u1.String()
 	s = strings.Replace(s, "-", "", -1)
 	run := ([]rune)(s)[:32]
 	return string(run)
