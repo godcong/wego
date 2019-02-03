@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/log"
-	"strings"
-	"time"
-
 	"github.com/godcong/wego/util"
+	"strings"
 )
 
 /*JSSDK JSSDK */
@@ -159,8 +157,7 @@ func (j *JSSDK) GetTicket(genre string, refresh bool) string {
 		return ""
 	}
 
-	t := time.Now().Add(time.Second * time.Duration(expires-500))
-	cache.SetWithTTL(j.getCacheKey(), ticket, &t)
+	cache.SetWithTTL(j.getCacheKey(), ticket, expires-500)
 	return ticket
 
 }

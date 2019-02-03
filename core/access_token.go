@@ -132,7 +132,7 @@ func (a *AccessToken) getToken(refresh bool) *Token {
 	}
 	log.Debug("AccessToken|getToken", *token)
 	if v := token.ExpiresIn; v != 0 {
-		a.SetTokenWithLife(token.AccessToken, time.Unix(v, 0))
+		a.SetTokenWithLife(token.AccessToken, v)
 	} else {
 		a.SetToken(token.AccessToken)
 	}
@@ -157,21 +157,20 @@ func (a *AccessToken) RequestToken(credentials string) *Token {
 }
 
 /*SetTokenWithLife set string accessToken with life time */
-func (a *AccessToken) SetTokenWithLife(token string, lifeTime time.Time) *AccessToken {
+func (a *AccessToken) SetTokenWithLife(token string, lifeTime int64) *AccessToken {
 	return a.setToken(token, lifeTime)
 }
 
 /*SetToken set string accessToken */
 func (a *AccessToken) SetToken(token string) *AccessToken {
-	return a.setToken(token, time.Unix(7200, 0))
+	return a.setToken(token, 7200)
 }
 
-func (a *AccessToken) setToken(token string, lifeTime time.Time) *AccessToken {
-	life := time.Now().Add(time.Duration(lifeTime.Unix()) - AccessTokenSafeSeconds)
+func (a *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
 	cache.SetWithTTL(a.getCacheKey(), &Token{
 		AccessToken: token,
-		ExpiresIn:   lifeTime.Unix(),
-	}, &life)
+		ExpiresIn:   time.Now().Add(time.Duration(lifeTime)).Unix(),
+	}, lifeTime-AccessTokenSafeSeconds)
 	return a
 }
 

@@ -31,7 +31,7 @@ func (m *MapCache) Get(key string) interface{} {
 
 /*Set check exist */
 func (m *MapCache) Set(key string, val interface{}) Cache {
-	return m.SetWithTTL(key, val, nil)
+	return m.SetWithTTL(key, val, 0)
 }
 
 /*GetD get interface with default */

@@ -10,13 +10,14 @@ import (
 const configPath = "config.toml"
 
 func init() {
-	config, err := LoadConfig(configPath)
-	if err != nil {
-		log.Println("no config files loaded")
-		log.Error(err)
-		return
-	}
-	cache.Set("config", config)
+	//config, err := LoadConfig(configPath)
+	//if err != nil {
+	//	log.Println("no config files loaded")
+	//	log.Error(err)
+	//	return
+	//}
+	//cache.Set("config", config)
+	return
 }
 
 /*Config Config Tree */
