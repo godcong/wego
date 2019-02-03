@@ -7,7 +7,6 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	"path/filepath"
-	"time"
 )
 
 //Payment ...
@@ -58,8 +57,7 @@ func (p *Payment) GetKey() string {
 
 	if response.GetString("return_code") == "SUCCESS" {
 		key := response.GetString("sandbox_signkey")
-		ttl := time.Unix(24*3600, 0)
-		cache.SetWithTTL(p.getCacheKey(), key, &ttl)
+		cache.SetWithTTL(p.getCacheKey(), key, 3*24*3600)
 		return key
 	}
 	return ""
