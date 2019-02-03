@@ -1,12 +1,12 @@
 package app
 
-// SandboxConfig ...
+// SandboxProperty ...
 type SandboxProperty struct {
 	AppID  string
 	Secret string
 }
 
-// Payment ...
+// PaymentProperty ...
 type PaymentProperty struct {
 	AppID      string `xorm:"app_id" json:"app_id"`
 	MchID      string `xorm:"mch_id" json:"mch_id"`
@@ -20,13 +20,13 @@ type PaymentProperty struct {
 	PrivateKey string `xorm:"private_key" json:"private_key"`
 }
 
-// OAuth ...
+// OAuthProperty ...
 type OAuthProperty struct {
 	Scopes      []string `xorm:"scopes"`
 	RedirectURI string   `xorm:"redirect_uri"`
 }
 
-// OpenPlatform ...
+// OpenPlatformProperty ...
 type OpenPlatformProperty struct {
 	AppID  string `xorm:"app_id"`
 	Secret string `xorm:"secret"`
@@ -34,7 +34,7 @@ type OpenPlatformProperty struct {
 	AesKey string `xorm:"aes_key"`
 }
 
-// OfficialAccount ...
+// OfficialAccountProperty ...
 type OfficialAccountProperty struct {
 	AppID  string `xorm:"app_id"`
 	Secret string `xorm:"secret"`
@@ -42,7 +42,7 @@ type OfficialAccountProperty struct {
 	AesKey string `xorm:"aes_key"`
 }
 
-// MiniProgram ...
+// MiniProgramProperty ...
 type MiniProgramProperty struct {
 	AppID  string `xorm:"app_id"`
 	Secret string `xorm:"secret"`
@@ -50,12 +50,12 @@ type MiniProgramProperty struct {
 	AesKey string `xorm:"aes_key"`
 }
 
-// WeConfig ...
+// Property ...
 type Property struct {
-	SandboxProperty
-	OAuthProperty
-	OpenPlatformProperty
-	OfficialAccountProperty
-	MiniProgramProperty
-	PaymentProperty
+	Sandbox         *SandboxProperty
+	OAuth           *OAuthProperty
+	OpenPlatform    *OpenPlatformProperty
+	OfficialAccount *OfficialAccountProperty
+	MiniProgram     *MiniProgramProperty
+	Payment         *PaymentProperty
 }
