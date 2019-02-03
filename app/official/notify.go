@@ -103,11 +103,6 @@ type messageTypeNotify struct {
 // ServeHTTP ...
 func (n *messageTypeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var err error
-	//rlt := SUCCESS()
-	//defer func() {
-	//	err = NotifyResponseXML(w, rlt.ToXML())
-	//	log.Error(err)
-	//}()
 
 	maps, err := n.decodeReqInfo(req)
 	if err != nil {
