@@ -31,6 +31,7 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 		opt = opts[0]
 	}
 	return &Payment{
+		Host:        core.BaseDomain,
 		option:      opt,
 		property:    property.Payment,
 		sandbox:     property.Sandbox,
