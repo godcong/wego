@@ -40,9 +40,6 @@ const mmpaysptransPayBank = "/mmpaysptrans/pay_bank"
 
 const authCodeToOpenidURLSuffix = "/tools/authcodetoopenid"
 
-const sandboxURLSuffix = "/sandboxnew"
-const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
-
 // BizPayURL ...
 const BizPayURL = "weixin://wxpay/bizpayurl?"
 

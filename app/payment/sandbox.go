@@ -41,6 +41,7 @@ func (s *Sandbox) GetKey() string {
 		return key
 	}
 	return ""
+
 }
 
 func (s *Sandbox) getCacheKey() string {
