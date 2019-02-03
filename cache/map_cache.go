@@ -49,10 +49,11 @@ func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
 }
 
 /*SetWithTTL set interface with ttl */
-func (m *MapCache) SetWithTTL(key string, val interface{}, ttl *time.Time) Cache {
+func (m *MapCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
+	t := time.Now().Add(time.Duration(ttl))
 	m.Store(key, &mapCacheData{
 		value: val,
-		life:  ttl,
+		life:  &t,
 	})
 	return m
 }

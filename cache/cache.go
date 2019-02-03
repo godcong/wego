@@ -1,13 +1,11 @@
 package cache
 
-import "time"
-
 /*Cache define an cache interface */
 type Cache interface {
 	Get(key string) interface{}
 	GetD(key string, v interface{}) interface{}
 	Set(key string, val interface{}) Cache
-	SetWithTTL(key string, val interface{}, ttl *time.Time) Cache
+	SetWithTTL(key string, val interface{}, ttl int64) Cache
 	Has(key string) bool
 	Delete(key string) Cache
 	Clear()
@@ -45,7 +43,7 @@ func Set(key string, val interface{}) Cache {
 }
 
 //SetWithTTL set value with time to life
-func SetWithTTL(key string, val interface{}, ttl *time.Time) Cache {
+func SetWithTTL(key string, val interface{}, ttl int64) Cache {
 	return cache.SetWithTTL(key, val, ttl)
 }
 

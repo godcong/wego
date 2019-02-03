@@ -27,12 +27,8 @@ func (r *RedisCache) Set(key string, val interface{}) Cache {
 }
 
 // SetWithTTL ...
-func (r *RedisCache) SetWithTTL(key string, val interface{}, ttl *time.Time) Cache {
-	l := ttl.Unix() - time.Now().Unix()
-	if l <= 0 {
-		l = 0
-	}
-	r.client.Set(key, val, time.Duration(l))
+func (r *RedisCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
+	r.client.Set(key, val, time.Duration(ttl))
 	return r
 }
 
