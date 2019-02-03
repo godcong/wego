@@ -65,7 +65,7 @@ func (p *Payment) GetKey() string {
 }
 
 func (p *Payment) getCacheKey() string {
-	name := p.sandbox.AppID + p.sandbox.MchID
+	name := p.sandbox.AppID + "." + p.sandbox.MchID
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
