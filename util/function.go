@@ -484,3 +484,11 @@ func GenerateRandomString(size int, kind ...RandomKind) string {
 	}
 	return string(result)
 }
+
+// MustInt64 ...
+func MustInt64(src, def int64) int64 {
+	if src != 0 {
+		return src
+	}
+	return def
+}

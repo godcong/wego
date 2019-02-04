@@ -394,6 +394,15 @@ func (m Map) ParseJSON(b []byte) Map {
 	return m
 }
 
+// URLValues ...
+func (m Map) URLValues() url.Values {
+	val := url.Values{}
+	for key, value := range m {
+		m.Set(key, value)
+	}
+	return val
+}
+
 /*URLEncode transfer map to url encode */
 func (m Map) URLEncode() string {
 	var buf strings.Builder
