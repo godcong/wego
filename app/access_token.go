@@ -12,11 +12,18 @@ import (
 	"github.com/godcong/wego/util"
 )
 
+// AccessTokenCredential ...
+type AccessTokenCredential struct {
+	GrantType string
+	AppID     string
+	Secret    string
+}
+
 /*AccessToken AccessToken */
 type AccessToken struct {
 	URL         string
 	TokenKey    string
-	credentials util.Map
+	credentials *AccessTokenCredential
 	prefix      string
 }
 
@@ -71,16 +78,13 @@ func NewAccessToken(v ...interface{}) *AccessToken {
 }
 
 // Credentials ...
-func (a *AccessToken) Credentials() util.Map {
+func (a *AccessToken) Credentials() *AccessTokenCredential {
 	return a.credentials
 }
 
 //SetCredentials set request credential
-func (a *AccessToken) SetCredentials(p util.Map) *AccessToken {
-	if idx := p.Check("grant_type", "appid", "secret"); idx != -1 {
-		log.Error(fmt.Errorf("the %d key was not found", idx))
-	}
-	a.credentials = p
+func (a *AccessToken) SetCredentials(c *AccessTokenCredential) *AccessToken {
+	a.credentials = c
 	return a
 }
 
