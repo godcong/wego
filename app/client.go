@@ -48,12 +48,13 @@ type SafeCert struct {
 
 // ClientOption ...
 type ClientOption struct {
-	UseSafe   bool
-	SafeCert  *SafeCert
-	BodyType  BodyType
-	Query     util.Map
-	Timeout   int64
-	KeepAlive int64
+	UseSafe     bool
+	SafeCert    *SafeCert
+	AccessToken *AccessToken
+	BodyType    BodyType
+	Query       util.Map
+	Timeout     int64
+	KeepAlive   int64
 }
 
 // NewClient ...
@@ -94,7 +95,7 @@ func (c *Client) Do(ctx context.Context) Responder {
 // RemoteURL ...
 func (c *Client) RemoteURL() string {
 	if c.Option != nil && c.Option.Query != nil {
-		return c.URL + "?" + c.Option.Query.Encode()
+		return c.URL + "?" + c.Option.Query.URLEncode()
 	}
 	return c.URL
 }

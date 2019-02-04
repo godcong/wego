@@ -30,6 +30,7 @@ func (c *AccessTokenCredential) ToJSON() []byte {
 
 // AccessTokenOption ...
 type AccessTokenOption struct {
+	Credential *AccessTokenCredential
 	RemoteHost string
 	TokenKey   string
 	TokenURL   string
@@ -74,19 +75,9 @@ func newAccessToken(property *Property, opts ...*AccessTokenOption) *AccessToken
 	}
 }
 
-// ClientCredential ...
-func ClientCredential(config *core.Config) util.Map {
-	return util.Map{
-		"grant_type": "client_credential",
-		"appid":      config.GetString("app_id"),
-		"secret":     config.GetString("secret"),
-	}
-}
-
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property Property, opts ...*AccessTokenCredential) *AccessToken {
-	accessToken := newAccessToken(property)
-	return accessToken
+func NewAccessToken(property *Property, opts ...*AccessTokenOption) *AccessToken {
+	return newAccessToken(property, opts...)
 }
 
 /*Refresh 刷新AccessToken */
