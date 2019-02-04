@@ -5,12 +5,13 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"crypto/sha256"
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"github.com/godcong/wego/log"
+	"github.com/json-iterator/go"
 	"github.com/juju/errors"
 	"github.com/satori/go.uuid"
+	"golang.org/x/exp/xerrors"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -113,10 +114,6 @@ func MapToXML(m Map) ([]byte, error) {
 }
 
 func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement) error {
-	//err := e.EncodeToken(start)
-	//if err != nil {
-	//	return err
-	//}
 	var err error
 	switch v1 := v.(type) {
 	case Map:
@@ -152,15 +149,9 @@ func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement)
 		if len(v1) == 1 {
 			return convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
 		}
-
 	default:
-		//convertXML(k, v1, e, xml.StartElement{Name: xml.Name{Local: k}})
 		log.Error(v1)
 	}
-	//if len(v) == 1 {
-	//	convertXML(k, "dummy", e, xml.StartElement{Name: xml.Name{Local: k}})
-	//}
-	//return e.EncodeToken(start.End())
 	return nil
 }
 
@@ -201,8 +192,8 @@ func mapToXML(maps Map, needHeader bool) ([]byte, error) {
 }
 
 /*XMLToMap Convert XML to MAP */
-func XMLToMap(contentXML []byte) Map {
-	m, err := xmlToMap(contentXML, false)
+func XMLToMap(content []byte) Map {
+	m, err := xmlToMap(content, false)
 	if err != nil {
 		return nil
 	}
@@ -212,18 +203,16 @@ func XMLToMap(contentXML []byte) Map {
 /*JSONToMap Convert JSON to MAP */
 func JSONToMap(content []byte) Map {
 	m := Map{}
-	err := json.Unmarshal(content, &m)
+	err := jsoniter.Unmarshal(content, &m)
 	if err != nil {
-		errors.Trace(err)
+		log.Error(err)
 	}
 	return m
 }
 
 func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast bool) error {
-	//m := make(Map)
 	current := ""
 	var data interface{}
-	//var err error
 	last := ""
 	arrayTmp := make(Map)
 	arrayTag := ""
@@ -329,8 +318,7 @@ func xmlToMap(contentXML []byte, hasHeader bool) (Map, error) {
 	dec := xml.NewDecoder(bytes.NewReader(contentXML))
 	err := unmarshalXML(m, dec, xml.StartElement{Name: xml.Name{Local: "xml"}}, true)
 	if err != nil {
-		errors.Trace(err)
-		return nil, err
+		return nil, xerrors.Errorf("xml to map:%w", err)
 	}
 
 	return m, nil
