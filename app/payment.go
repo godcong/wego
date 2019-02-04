@@ -81,6 +81,23 @@ func (obj *Payment) Pay(maps util.Map) core.Responder {
 	//return obj.Request(payMicroPay, maps)
 }
 
+// Request 默认请求
+func (obj *Payment) Request(s string, maps util.Map) core.Responder {
+	m := util.Map{
+		core.DataTypeXML: obj.initRequest(maps),
+	}
+	return core.Post(obj.Link(s), m)
+}
+
+// SafeRequest 安全请求
+func (obj *Payment) SafeRequest(s string, maps util.Map) core.Responder {
+	m := util.Map{
+		core.DataTypeXML:      obj.initRequest(maps),
+		core.DataTypeSecurity: obj.Config,
+	}
+	return core.Request(core.POST, obj.Link(s), m)
+}
+
 // IsSandbox ...
 func (obj *Payment) IsSandbox() bool {
 	if obj.option != nil {

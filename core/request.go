@@ -28,12 +28,11 @@ type RequestBuildFunc func(url, method string, i interface{}) *http.Request
 // ErrNilRequestBody ...
 var ErrNilRequestBody = errors.New("nil request body")
 
-func buildRequestURL(url string, p util.Map) string {
-	query := buildRequestQuery(p)
-	if query == "" {
-		return url
+func buildRequestURL(url string, val url.Values) string {
+	if val != nil {
+		return strings.Join([]string{url, val.Encode()}, "?")
 	}
-	return url + "?" + query
+	return url
 }
 
 // RequestToMap ...
@@ -97,11 +96,6 @@ type request struct {
 	body     interface{}
 }
 
-// BuildRequester ...
-func BuildRequester() Requester {
-	return nil
-}
-
 // Do ...
 func (r *request) Do(ctx context.Context) Responder {
 	log.Debug("Requester|Do", r.method, r.url, r.body)
@@ -132,69 +126,6 @@ func processNothing(method, url string, i interface{}) *http.Request {
 	}
 	return request
 }
-
-//
-//type postRequester struct {
-//	client *http.Client
-//	method string
-//	url    string
-//	body   util.Map
-//}
-
-//func (r *postRequester) Do(ctx context.Context) Responder {
-//	request := buildRequester(r.method, r.url, r.body)
-//	return do(ctx, r.client, request)
-//}
-//type multiRequester struct {
-//	client *http.Client
-//	method string
-//	url    string
-//	body   interface{}
-//}
-//
-//func (r *multiRequester) Do(ctx context.Context) Responder {
-//	request := processMultipart(r.method, r.url, r.body)
-//	return do(ctx, r.client, request)
-//}
-
-// Request ...
-//func (r *multiRequester) Request() *http.Request {
-//	buf := bytes.Buffer{}
-//	writer := multipart.NewWriter(&buf)
-//	defer writer.Close()
-//	log.Debug("processMultipart|i", r.body)
-//	switch v := r.body.(type) {
-//	case util.Map:
-//		path := v.GetString("media")
-//		fh, e := os.Open(path)
-//		if e != nil {
-//			log.Debug("processMultipart|e", e)
-//			return nil
-//		}
-//		defer fh.Close()
-//
-//		fw, e := writer.CreateFormFile("media", path)
-//		if e != nil {
-//			log.Debug("processMultipart|e", e)
-//			return nil
-//		}
-//
-//		if _, e = io.Copy(fw, fh); e != nil {
-//			log.Debug("processMultipart|e", e)
-//			return nil
-//		}
-//		des := v.GetMap("description")
-//		if des != nil {
-//			writer.WriteField("description", string(des.ToJSON()))
-//		}
-//	}
-//	request, err := http.NewRequest(r.method, r.url, &buf)
-//	if err != nil {
-//		return nil
-//	}
-//	request.Header.Set("Content-Type", writer.FormDataContentType())
-//	return request
-//}
 
 func processMultipart(method, url string, i interface{}) *http.Request {
 	buf := bytes.Buffer{}
@@ -336,12 +267,12 @@ func processForm(method, url string, i interface{}) *http.Request {
 	return request
 }
 
-func buildRequester(method, url string, m util.Map) Requester {
+func buildRequester(client *Client, m util.Map) Requester {
 	request := &request{
-		client:   buildClient(m),
+		client:   buildHTTPClient(client),
 		function: processNothing,
-		method:   method,
-		url:      buildRequestURL(url, m),
+		method:   client.Method,
+		url:      buildRequestURL(client.URL, client.Query),
 		body:     nil,
 	}
 	switch {

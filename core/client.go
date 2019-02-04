@@ -4,8 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -47,13 +45,46 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
+// ClientOption ...
+type ClientOption struct {
+	RequestType string
+	UseSafe     bool
+	Cert        []byte
+	Key         []byte
+	RootCA      []byte
+	Timeout     int64
+	KeepAlive   int64
+}
+
+// Body ...
+type RequestBody struct {
+	BodyType string
+	BodyInst interface{}
+}
+
 // Client ...
 type Client struct {
-	context.Context
 	Method string
 	URL    string
 	Query  url.Values
-	Body   io.Reader
+	Body   interface{}
+	Option *ClientOption
+}
+
+// Request ...
+func (client *Client) Request() Responder {
+	return (client).Do(context.Background())
+}
+
+// NewClient ...
+func NewClient(opts ...*ClientOption) *Client {
+	return &Client{
+		Method: "",
+		URL:    "",
+		Query:  nil,
+		Body:   nil,
+		Option: nil,
+	}
 }
 
 // PostForm post form request
@@ -117,7 +148,7 @@ func Post(url string, maps util.Map) Responder {
 func Get(url string, query util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := &request{
-		client:   buildTransport(NilConfig()),
+		client:   buildTransport(),
 		function: processNothing,
 		method:   GET,
 		url:      url,
@@ -149,27 +180,30 @@ func RequestRaw(method, url string, option util.Map) []byte {
 	return RequestWithContext(context.Background(), method, url, option).Bytes()
 }
 
-func buildTransport(config *Config, option ...util.Map) *http.Client {
-	m := util.MapsToMap(util.Map{
-		"time_out":   30,
-		"keep_alive": 30,
-	}, option)
-	timeOut, _ := m.GetInt64("time_out")
-	keepAlive, _ := m.GetInt64("keep_alive")
+// TimeOut ...
+func TimeOut(src int64) time.Duration {
+	return time.Duration(util.MustInt64(src, 30)) * time.Second
+}
 
+// KeepAlive ...
+func KeepAlive(src int64) time.Duration {
+	return time.Duration(util.MustInt64(src, 30)) * time.Second
+}
+
+func buildTransport(client *Client) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
 			Proxy: nil,
 			DialContext: (&net.Dialer{
-				Timeout:   time.Duration(timeOut) * time.Second,
-				KeepAlive: time.Duration(keepAlive) * time.Second,
-				//DualStack: true,
+				Timeout:   TimeOut(client.Option.Timeout),
+				KeepAlive: KeepAlive(client.Option.KeepAlive),
 			}).DialContext,
 			//Dial:        nil,
 			//DialTLS:     nil,
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
 			},
+
 			//TLSHandshakeTimeout:    0,
 			//DisableKeepAlives:      false,
 			//DisableCompression:     false,
@@ -190,24 +224,13 @@ func buildTransport(config *Config, option ...util.Map) *http.Client {
 
 }
 
-func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
-	if config == nil {
-		panic("safe request must set config before use")
-	}
-
-	m := util.MapsToMap(util.Map{
-		"time_out":   30,
-		"keep_alive": 30,
-	}, option)
-	timeOut, _ := m.GetInt64("time_out")
-	keepAlive, _ := m.GetInt64("keep_alive")
-
-	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
+func buildSafeTransport(client *Client) *http.Client {
+	cert, err := tls.X509KeyPair(client.Option.Key, client.Option.Cert)
 	if err != nil {
 		panic(err)
 	}
 
-	caFile, err := ioutil.ReadFile(config.GetString("rootca_path"))
+	caFile := client.Option.RootCA
 	if err != nil {
 		caFile = []byte(defaultCa)
 	}
@@ -222,8 +245,8 @@ func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
 			DialContext: (&net.Dialer{
-				Timeout:   time.Duration(timeOut) * time.Second,
-				KeepAlive: time.Duration(keepAlive) * time.Second,
+				Timeout:   TimeOut(client.Option.Timeout),
+				KeepAlive: KeepAlive(client.Option.KeepAlive),
 				//DualStack: true,
 			}).DialContext,
 			TLSClientConfig: tlsConfig,
@@ -235,23 +258,14 @@ func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
 	}
 }
 
-func buildClient(maps util.Map) *http.Client {
+func buildHTTPClient(client *Client) *http.Client {
 	//检查是否包含security
-
-	if maps.Has(DataTypeSecurity) {
+	if client.Option.UseSafe {
 		//判断能否创建safe client
-		v, b := maps.Get(DataTypeSecurity).(*Config)
-		//log.Debug("build client \n", v)
-		if b && v.Check("cert_path", "key_path") == -1 {
-			return buildSafeTransport(v)
-		}
-		return buildTransport(NilConfig())
-
+		return buildSafeTransport(client)
 	}
-	//默认输出未配置client
-	log.Debug("default client")
+	return buildTransport(client)
 
-	return buildTransport(NilConfig())
 }
 
 func do(ctx context.Context, c *http.Client, r *http.Request) Responder {
