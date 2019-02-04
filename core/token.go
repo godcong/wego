@@ -1,8 +1,8 @@
 package core
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/json-iterator/go"
 	"strings"
 	"time"
 
@@ -68,11 +68,12 @@ func KeyMap(at *AccessToken) (util.Map, error) {
 
 /*KeyMap get accessToken's key,value with map */
 func (t *Token) KeyMap() util.Map {
-	m := make(util.Map)
-	if t.AccessToken != "" {
-		m.Set(accessTokenKey, t.AccessToken)
+	if t.AccessToken == "" {
+		return nil
 	}
-	return m
+	return util.Map{
+		accessTokenKey: t.AccessToken,
+	}
 }
 
 /*SetExpiresIn set expires time */
@@ -88,7 +89,7 @@ func (t *Token) GetExpiresIn() time.Time {
 
 /*ToJSON transfer accessToken to json*/
 func (t *Token) ToJSON() string {
-	v, e := json.Marshal(t)
+	v, e := jsoniter.Marshal(t)
 	if e != nil {
 		return ""
 	}
@@ -107,11 +108,11 @@ func (t *Token) SetScopes(s []string) *Token {
 }
 
 /*ParseToken parse accessToken from string*/
-func ParseToken(j string) (*Token, error) {
-	t := new(Token)
-	e := json.Unmarshal([]byte(j), t)
+func ParseToken(src string) (*Token, error) {
+	var t Token
+	e := jsoniter.Unmarshal([]byte(src), &t)
 	if e != nil {
 		return nil, e
 	}
-	return t, nil
+	return &t, nil
 }
