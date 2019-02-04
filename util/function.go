@@ -416,8 +416,8 @@ func SHA1(s string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
 
-// HmacSha256 ...
-func HmacSha256(data []byte, key string) string {
+// SHA256 ...
+func SHA256(data []byte, key string) string {
 	m := hmac.New(sha256.New, []byte(key))
 	m.Write(data)
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
