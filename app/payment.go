@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
@@ -67,7 +66,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (obj *Payment) Pay(maps util.Map) core.Responder {
+func (obj *Payment) Pay(maps util.Map) Responder {
 	maps.Set("appid", obj.AppID)
 
 	//set notify callback
@@ -82,20 +81,22 @@ func (obj *Payment) Pay(maps util.Map) core.Responder {
 }
 
 // Request 默认请求
-func (obj *Payment) Request(s string, maps util.Map) core.Responder {
-	m := util.Map{
-		core.DataTypeXML: obj.initRequest(maps),
-	}
-	return core.Post(obj.Link(s), m)
+func (obj *Payment) Request(s string, maps util.Map) Responder {
+	//m := util.Map{
+	//	core.DataTypeXML: obj.initRequest(maps),
+	//}
+	//return Post(obj.Link(s), m)
+	return nil
 }
 
 // SafeRequest 安全请求
-func (obj *Payment) SafeRequest(s string, maps util.Map) core.Responder {
-	m := util.Map{
-		core.DataTypeXML:      obj.initRequest(maps),
-		core.DataTypeSecurity: obj.Config,
-	}
-	return core.Request(core.POST, obj.Link(s), m)
+func (obj *Payment) SafeRequest(s string, maps util.Map) Responder {
+	//m := util.Map{
+	//	core.DataTypeXML:      obj.initRequest(maps),
+	//	core.DataTypeSecurity: obj.Config,
+	//}
+	//return core.Request(core.POST, obj.Link(s), m)
+	return nil
 }
 
 // IsSandbox ...
@@ -137,13 +138,13 @@ func (obj *Payment) getCacheKey() string {
 }
 
 /*SandboxSignKey 沙箱key */
-func (obj *Payment) SandboxSignKey() core.Responder {
+func (obj *Payment) SandboxSignKey() Responder {
 	m := make(util.Map)
 	m.Set("mch_id", obj.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := util.GenSign(m, obj.option.Sandbox.Key, util.SignMD5)
 	m.Set("sign", sign)
-	resp := core.PostXML(util.URL(obj.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
+	resp := PostXML(util.URL(obj.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 

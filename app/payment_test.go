@@ -3,13 +3,6 @@ package app
 import "testing"
 
 var p = Property{
-	Sandbox: &SandboxProperty{
-		UseSandbox: false,
-		AppID:      "",
-		Secret:     "",
-		MchID:      "",
-		Key:        "",
-	},
 	OAuth:           nil,
 	OpenPlatform:    nil,
 	OfficialAccount: nil,
@@ -29,7 +22,9 @@ var p = Property{
 // TestPayment_SandboxSignKey ...
 func TestPayment_SandboxSignKey(t *testing.T) {
 	payment := NewPayment(&p, &PaymentOption{
-		Sandbox: SandboxProperty{UseSandbox: true},
+		Sandbox: SandboxProperty{
+			UseSandbox: true,
+		},
 	})
 	key := payment.SandboxSignKey().ToMap()
 	t.Log(key)

@@ -174,7 +174,7 @@ func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
 }
 
 func (obj *AccessToken) getCredentials() string {
-	c := md5.Sum(obj.credentials.ToJSON())
+	c := md5.Sum(obj.option.Credential.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 

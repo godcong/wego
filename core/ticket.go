@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/godcong/wego/log"
+	"github.com/godcong/wego/util"
 )
 
 /*Ticket Ticket */
@@ -43,8 +44,6 @@ func (t *Ticket) Get(typ string) Responder {
 	log.Debug("Ticket|Get", typ)
 	p := t.accessToken.GetToken().KeyMap()
 	p.Set("type", typ)
-	resp := Get(
-		Splice(APIWeixin, ticketGetTicket),
-		p)
+	resp := Get(util.URL(APIWeixin, ticketGetTicket), p)
 	return resp
 }

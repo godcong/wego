@@ -28,11 +28,12 @@ type RequestBuildFunc func(url, method string, i interface{}) *http.Request
 // ErrNilRequestBody ...
 var ErrNilRequestBody = errors.New("nil request body")
 
-func buildRequestURL(url string, val url.Values) string {
-	if val != nil {
-		return strings.Join([]string{url, val.Encode()}, "?")
+func buildRequestURL(url string, p util.Map) string {
+	query := buildRequestQuery(p)
+	if query == "" {
+		return url
 	}
-	return url
+	return url + "?" + query
 }
 
 // RequestToMap ...
@@ -266,13 +267,12 @@ func processForm(method, url string, i interface{}) *http.Request {
 	request.Header["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
 	return request
 }
-
-func buildRequester(client *Client, m util.Map) Requester {
+func buildRequester(method, url string, m util.Map) Requester {
 	request := &request{
-		client:   buildHTTPClient(client),
+		client:   buildClient(m),
 		function: processNothing,
-		method:   client.Method,
-		url:      buildRequestURL(client.URL, client.Query),
+		method:   method,
+		url:      buildRequestURL(url, m),
 		body:     nil,
 	}
 	switch {

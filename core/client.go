@@ -4,13 +4,12 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"net"
-	"net/http"
-	"net/url"
-	"time"
-
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"io/ioutil"
+	"net"
+	"net/http"
+	"time"
 )
 
 /*data types*/
@@ -49,11 +48,6 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 type RequestBody struct {
 	BodyType string
 	BodyInst interface{}
-}
-
-// Request ...
-func (client *Client) Request() Responder {
-	return (client).Do(context.Background())
 }
 
 // PostForm post form request
@@ -117,7 +111,7 @@ func Post(url string, maps util.Map) Responder {
 func Get(url string, query util.Map) Responder {
 	url = url + "?" + query.URLEncode()
 	request := &request{
-		client:   buildTransport(),
+		client:   buildTransport(NilConfig()),
 		function: processNothing,
 		method:   GET,
 		url:      url,
@@ -129,6 +123,111 @@ func Get(url string, query util.Map) Responder {
 // GetRaw get请求 返回[]byte
 func GetRaw(url string, query util.Map) []byte {
 	return Get(url, query).Bytes()
+}
+
+func buildTransport(config *Config, option ...util.Map) *http.Client {
+	m := util.MapsToMap(util.Map{
+		"time_out":   30,
+		"keep_alive": 30,
+	}, option)
+	timeOut, _ := m.GetInt64("time_out")
+	keepAlive, _ := m.GetInt64("keep_alive")
+
+	return &http.Client{
+		Transport: &http.Transport{
+			Proxy: nil,
+			DialContext: (&net.Dialer{
+				Timeout:   time.Duration(timeOut) * time.Second,
+				KeepAlive: time.Duration(keepAlive) * time.Second,
+				//DualStack: true,
+			}).DialContext,
+			//Dial:        nil,
+			//DialTLS:     nil,
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+			//TLSHandshakeTimeout:    0,
+			//DisableKeepAlives:      false,
+			//DisableCompression:     false,
+			//MaxIdleConns:           0,
+			//MaxIdleConnsPerHost:    0,
+			//MaxConnsPerHost:        0,
+			//IdleConnTimeout:        0,
+			//ResponseHeaderTimeout:  0,
+			//ExpectContinueTimeout:  0,
+			//TLSNextProto:           nil,
+			//ProxyConnectHeader:     nil,
+			//MaxResponseHeaderBytes: 0,
+		},
+		//CheckRedirect: nil,
+		//Jar:           nil,
+		//Timeout:       0,
+	}
+
+}
+
+func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
+	if config == nil {
+		panic("safe request must set config before use")
+	}
+
+	m := util.MapsToMap(util.Map{
+		"time_out":   30,
+		"keep_alive": 30,
+	}, option)
+	timeOut, _ := m.GetInt64("time_out")
+	keepAlive, _ := m.GetInt64("keep_alive")
+
+	cert, err := tls.LoadX509KeyPair(config.GetString("cert_path"), config.GetString("key_path"))
+	if err != nil {
+		panic(err)
+	}
+
+	caFile, err := ioutil.ReadFile(config.GetString("rootca_path"))
+	if err != nil {
+		caFile = []byte(defaultCa)
+	}
+	certPool := x509.NewCertPool()
+	certPool.AppendCertsFromPEM(caFile)
+	tlsConfig := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            certPool,
+		InsecureSkipVerify: true, //client端略过对证书的校验
+	}
+	tlsConfig.BuildNameToCertificate()
+	return &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   time.Duration(timeOut) * time.Second,
+				KeepAlive: time.Duration(keepAlive) * time.Second,
+				//DualStack: true,
+			}).DialContext,
+			TLSClientConfig: tlsConfig,
+			Proxy:           nil,
+			//TLSHandshakeTimeout:   10 * time.Second,
+			//ResponseHeaderTimeout: 10 * time.Second,
+			//ExpectContinueTimeout: 1 * time.Second,
+		},
+	}
+}
+
+func buildClient(maps util.Map) *http.Client {
+	//检查是否包含security
+
+	if maps.Has(DataTypeSecurity) {
+		//判断能否创建safe client
+		v, b := maps.Get(DataTypeSecurity).(*Config)
+		//log.Debug("build client \n", v)
+		if b && v.Check("cert_path", "key_path") == -1 {
+			return buildSafeTransport(v)
+		}
+		return buildTransport(NilConfig())
+
+	}
+	//默认输出未配置client
+	log.Debug("default client")
+
+	return buildTransport(NilConfig())
 }
 
 // Request ...
