@@ -11,7 +11,6 @@ import (
 
 //Payment ...
 type Payment struct {
-	DomainHost  string
 	accessToken *AccessToken
 	property    *PaymentProperty
 	option      *PaymentOption
@@ -19,10 +18,10 @@ type Payment struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	Host      string
-	Sandbox   SandboxProperty
-	NotifyURL string
-	RefundURL string
+	RemoteHost string
+	Sandbox    SandboxProperty
+	NotifyURL  string
+	RefundURL  string
 }
 
 // NewPayment ...
@@ -32,7 +31,6 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 		opt = opts[0]
 	}
 	return &Payment{
-		DomainHost:  BaseDomain,
 		accessToken: nil,
 		property:    property.Payment,
 		option:      opt,
@@ -97,7 +95,6 @@ func (p *Payment) GetKey() string {
 		}
 
 		response := p.SandboxSignKey().ToMap()
-
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
 			cache.SetWithTTL(p.getCacheKey(), key, 3*24*3600)
@@ -125,16 +122,27 @@ func (p *Payment) SandboxSignKey() core.Responder {
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := util.GenerateSignature(m, p.option.Sandbox.Key, util.MakeSignMD5)
 	m.Set("sign", sign)
-	resp := core.PostXML(util.URL(p.Host(), sandboxSignKeyURLSuffix), nil, m)
+	resp := core.PostXML(util.URL(p.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 
 }
 
-// Host ...
-func (p *Payment) Host() string {
-	if p.option.Host != "" {
-		return p.option.Host
+func (p *Payment) RemoteHost() string {
+	if p.option.RemoteHost != "" {
+		return p.option.RemoteHost
 	}
-	return p.DomainHost
+	return BaseDomain
+}
+
+func (p *Payment) LocalHost() string {
+	return ""
+}
+
+// NotifyURL ...
+func (p *Payment) NotifyURL() string {
+	if p.option.NotifyURL != "" {
+		return p.option.NotifyURL
+	}
+	return p.
 }
