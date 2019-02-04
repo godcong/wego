@@ -11,3 +11,9 @@ const localAddress = "http://localhost"
 const paidCB = "paid_cb"
 const refunedCB = "refunded_cb"
 const scannedCB = "scanned_cb"
+
+// POST ...
+const POST = "POST"
+
+// GET ...
+const GET = "GET"

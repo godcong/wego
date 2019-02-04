@@ -7,7 +7,6 @@ import (
 	"github.com/godcong/wego/util"
 	"net"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -49,10 +48,10 @@ type SafeCert struct {
 
 // ClientOption ...
 type ClientOption struct {
-	UseSafe   bool
-	SafeCert  *SafeCert
-	Body      *RequestBody
-	Query     url.Values
+	UseSafe  bool
+	SafeCert *SafeCert
+	//Body      *RequestBody
+	Query     util.Map
 	Timeout   int64
 	KeepAlive int64
 }
@@ -96,6 +95,40 @@ func (c *Client) RemoteURL() string {
 		return c.URL + "?" + c.Option.Query.Encode()
 	}
 	return c.URL
+}
+
+// PostForm post form request
+func PostForm(url string, query util.Map, form interface{}) Responder {
+	client := NewClient(POST, url, NewBody(form, BodyTypeForm), &ClientOption{
+		Query: query,
+	})
+	return client.Do(context.Background())
+}
+
+// PostJSON json post请求
+func PostJSON(url string, query util.Map, json interface{}) Responder {
+	url = url + "?" + query.URLEncode()
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processJSON,
+		method:   POST,
+		url:      url,
+		body:     json,
+	}
+	return request.Do(context.Background())
+}
+
+// PostXML  xml post请求
+func PostXML(url string, query util.Map, xml interface{}) Responder {
+	url = url + "?" + query.URLEncode()
+	request := &request{
+		client:   buildTransport(NilConfig()),
+		function: processXML,
+		method:   POST,
+		url:      url,
+		body:     xml,
+	}
+	return request.Do(context.Background())
 }
 
 // TimeOut ...
