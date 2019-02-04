@@ -56,8 +56,8 @@ type ClientOption struct {
 	KeepAlive int64
 }
 
-// buildClient ...
-func buildClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
+// NewClient ...
+func NewClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
 	var opt *ClientOption
 	bt := BodyTypeNone
 	if opts != nil {
@@ -101,7 +101,7 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
-	client := buildClient(POST, url, form, &ClientOption{
+	client := NewClient(POST, url, form, &ClientOption{
 		BodyType: BodyTypeForm,
 		Query:    query,
 	})
@@ -110,7 +110,7 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
-	client := buildClient(POST, url, json, &ClientOption{
+	client := NewClient(POST, url, json, &ClientOption{
 		BodyType: BodyTypeJSON,
 		Query:    query,
 	})
@@ -119,8 +119,25 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
-	client := buildClient(POST, url, xml, &ClientOption{
+	client := NewClient(POST, url, xml, &ClientOption{
 		BodyType: BodyTypeXML,
+		Query:    query,
+	})
+	return client.Do(context.Background())
+}
+
+// Get get请求
+func Get(url string, query util.Map) Responder {
+	client := NewClient(POST, url, nil, &ClientOption{
+		Query: query,
+	})
+	return client.Do(context.Background())
+}
+
+// Upload upload请求
+func Upload(url string, query, multi util.Map) Responder {
+	client := NewClient(POST, url, multi, &ClientOption{
+		BodyType: BodyTypeMultipart,
 		Query:    query,
 	})
 	return client.Do(context.Background())
