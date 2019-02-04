@@ -51,10 +51,17 @@ type MiniProgramProperty struct {
 	AesKey string
 }
 
+// LocalProperty ...
+type LocalProperty struct {
+	Address     string `toml:"address"`
+	PaidURL     string `toml:"paid_url"`
+	RefundedURL string `toml:"refunded_url"`
+	ScannedURL  string `toml:"scanned_url"`
+}
+
 // Property ...
 type Property struct {
-	//Sandbox         *SandboxProperty
-	Local           *LocalHost
+	Local           *LocalProperty
 	OAuth           *OAuthProperty
 	OpenPlatform    *OpenPlatformProperty
 	OfficialAccount *OfficialAccountProperty

@@ -11,8 +11,9 @@ import (
 
 //Payment ...
 type Payment struct {
+	*PaymentProperty
+	property    *Property
 	accessToken *AccessToken
-	property    *PaymentProperty
 	option      *PaymentOption
 }
 
@@ -20,7 +21,7 @@ type Payment struct {
 type PaymentOption struct {
 	RemoteHost string
 	Sandbox    SandboxProperty
-	NotifyURL  string
+	PaidURL    string
 	RefundURL  string
 }
 
@@ -31,9 +32,10 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 		opt = opts[0]
 	}
 	return &Payment{
-		accessToken: nil,
-		property:    property.Payment,
-		option:      opt,
+		PaymentProperty: property.Payment,
+		accessToken:     nil,
+		property:        property,
+		option:          opt,
 	}
 }
 
@@ -65,41 +67,41 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (p *Payment) Pay(maps util.Map) core.Responder {
-	maps.Set("appid", p.property.AppID)
+func (obj *Payment) Pay(maps util.Map) core.Responder {
+	maps.Set("appid", obj.AppID)
 
 	//set notify callback
-	notify := p.option.NotifyURL
+	notify := obj.option.PaidURL
 	if !maps.Has("notify_url") {
 		maps.Set("notify_url", notify)
 	}
 
 	return nil
 	//TODO
-	//return p.Request(payMicroPay, maps)
+	//return obj.Request(payMicroPay, maps)
 }
 
 // IsSandbox ...
-func (p *Payment) IsSandbox() bool {
-	if p.option != nil {
-		return p.option.Sandbox.UseSandbox
+func (obj *Payment) IsSandbox() bool {
+	if obj.option != nil {
+		return obj.option.Sandbox.UseSandbox
 	}
 	return false
 }
 
 /*GetKey 沙箱key(string类型) */
-func (p *Payment) GetKey() string {
-	key := p.property.Key
-	if p.IsSandbox() {
-		cachedKey := cache.Get(p.getCacheKey())
+func (obj *Payment) GetKey() string {
+	key := obj.Key
+	if obj.IsSandbox() {
+		cachedKey := cache.Get(obj.getCacheKey())
 		if cachedKey != nil {
 			key = cachedKey.(string)
 		}
 
-		response := p.SandboxSignKey().ToMap()
+		response := obj.SandboxSignKey().ToMap()
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
-			cache.SetWithTTL(p.getCacheKey(), key, 3*24*3600)
+			cache.SetWithTTL(obj.getCacheKey(), key, 3*24*3600)
 		}
 	}
 
@@ -112,49 +114,51 @@ func (p *Payment) GetKey() string {
 
 }
 
-func (p *Payment) getCacheKey() string {
-	name := p.option.Sandbox.AppID + "." + p.option.Sandbox.MchID
+func (obj *Payment) getCacheKey() string {
+	name := obj.option.Sandbox.AppID + "." + obj.option.Sandbox.MchID
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
 /*SandboxSignKey 沙箱key */
-func (p *Payment) SandboxSignKey() core.Responder {
+func (obj *Payment) SandboxSignKey() core.Responder {
 	m := make(util.Map)
-	m.Set("mch_id", p.option.Sandbox.MchID)
+	m.Set("mch_id", obj.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := util.GenerateSignature(m, p.option.Sandbox.Key, util.MakeSignMD5)
+	sign := util.GenerateSignature(m, obj.option.Sandbox.Key, util.MakeSignMD5)
 	m.Set("sign", sign)
-	resp := core.PostXML(util.URL(p.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
+	resp := core.PostXML(util.URL(obj.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 
 }
 
 // RemoteHost ...
-func (p *Payment) RemoteHost() string {
-	if p.option.RemoteHost != "" {
-		return p.option.RemoteHost
+func (obj *Payment) RemoteHost() string {
+	if obj.option.RemoteHost != "" {
+		return obj.option.RemoteHost
 	}
 	return BaseDomain
 }
 
-// LocalHost ...
-func (p *Payment) LocalHost() string {
-	return ""
+// LocalAddress ...
+func (obj *Payment) LocalAddress() string {
+	return obj.property.Local.Address
 }
 
-// NotifyURL ...
-func (p *Payment) NotifyURL() string {
-	if p.option.NotifyURL != "" {
-		return p.option.NotifyURL
+// PaidURL ...
+func (obj *Payment) PaidURL() string {
+	uri := obj.property.Local.PaidURL
+	if obj.option.PaidURL != "" {
+		uri = obj.option.PaidURL
 	}
-	return ""
+	return util.URL(obj.LocalAddress(), uri)
 }
 
 // RefundURL ...
-func (p *Payment) RefundURL() string {
-	if p.option.RefundURL != "" {
-		return p.option.RefundURL
+func (obj *Payment) RefundURL() string {
+	uri := obj.property.Local.RefundedURL
+	if obj.option.RefundURL != "" {
+		uri = obj.option.RefundURL
 	}
-	return ""
+	return util.URL(obj.LocalAddress(), uri)
 }

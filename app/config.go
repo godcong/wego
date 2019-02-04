@@ -5,23 +5,15 @@ import (
 	"log"
 )
 
-// LocalHost ...
-type LocalHost struct {
-	Address     string `toml:"address"`
-	PaidURL     string `toml:"paid_url"`
-	RefundedURL string `toml:"refunded_url"`
-	ScannedURL  string `toml:"scanned_url"`
-}
-
 // Configure ...
 type Configure struct {
-	LocalHost LocalHost `toml:"localhost"`
+	Local LocalProperty `toml:"local"`
 }
 
 // Config ...
 func Config() *Configure {
 	return &Configure{
-		LocalHost: LocalHost{
+		Local: LocalProperty{
 			Address:     "http://localhost",
 			PaidURL:     "paid_cb",
 			RefundedURL: "refunded_cb",
