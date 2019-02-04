@@ -14,11 +14,9 @@ type PaymentProperty struct {
 	AppID      string
 	MchID      string
 	Key        string
-	NotifyURL  string
-	RefundURL  string
-	CertPath   string
-	KeyPath    string
-	RootCaPath string
+	CertPEM    string
+	KeyPEM     string
+	RootCaPEM  string
 	PublicKey  string
 	PrivateKey string
 }

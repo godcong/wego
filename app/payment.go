@@ -19,8 +19,10 @@ type Payment struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	Host    string
-	Sandbox SandboxProperty
+	Host      string
+	Sandbox   SandboxProperty
+	NotifyURL string
+	RefundURL string
 }
 
 // NewPayment ...
@@ -69,7 +71,7 @@ func (p *Payment) Pay(maps util.Map) core.Responder {
 	maps.Set("appid", p.Get("app_id"))
 
 	//set notify callback
-	notify := p.Get("notify_url")
+	notify := p.option.NotifyURL
 	if !maps.Has("notify_url") {
 		maps.Set("notify_url", notify)
 	}
