@@ -137,7 +137,7 @@ func (obj *Payment) RemoteHost() string {
 	if obj.option.RemoteHost != "" {
 		return obj.option.RemoteHost
 	}
-	return BaseDomain
+	return apiMCHWeixin
 }
 
 // LocalAddress ...

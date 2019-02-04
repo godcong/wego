@@ -51,6 +51,13 @@ type MiniProgramProperty struct {
 	AesKey string
 }
 
+// AccessTokenProperty ...
+type AccessTokenProperty struct {
+	GrantType string
+	AppID     string
+	Secret    string
+}
+
 // LocalProperty ...
 type LocalProperty struct {
 	Address     string `toml:"address"`
@@ -62,6 +69,7 @@ type LocalProperty struct {
 // Property ...
 type Property struct {
 	Local           *LocalProperty
+	AccessToken     *AccessTokenProperty
 	OAuth           *OAuthProperty
 	OpenPlatform    *OpenPlatformProperty
 	OfficialAccount *OfficialAccountProperty

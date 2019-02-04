@@ -35,13 +35,6 @@ type AccessTokenOption struct {
 	TokenURL   string
 }
 
-// AccessTokenProperty ...
-type AccessTokenProperty struct {
-	GrantType string
-	AppID     string
-	Secret    string
-}
-
 /*AccessToken AccessToken */
 type AccessToken struct {
 	*AccessTokenProperty
@@ -56,16 +49,28 @@ const accessTokenURLSuffix = "/cgi-bin/token"
 /*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500
 
-func (a *AccessToken) sendRequest(s string) []byte {
-	//return core.Get(core.Splice(a.prefix, a.URL), a.credentials).Bytes()
+// RemoteHost ...
+func (obj *AccessToken) RemoteHost() string {
+	if obj.option.RemoteHost != "" {
+		return obj.option.RemoteHost
+	}
+	return apiWeixin
+}
+
+func (obj *AccessToken) sendRequest(s string) []byte {
+	//return core.Get(core.Splice(obj.prefix, obj.URL), obj.credentials).Bytes()
 	return nil
 }
 
-func newAccessToken(v *AccessTokenCredential, url, key string) *AccessToken {
+func newAccessToken(property *Property, opts ...*AccessTokenOption) *AccessToken {
+	var opt *AccessTokenOption
+	if opts != nil {
+		opt = opts[0]
+	}
 	return &AccessToken{
-		URL:         url,
-		TokenKey:    key,
-		credentials: v,
+		AccessTokenProperty: property.AccessToken,
+		property:            property,
+		option:              opt,
 	}
 }
 
@@ -79,45 +84,45 @@ func ClientCredential(config *core.Config) util.Map {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(v *AccessTokenCredential) *AccessToken {
-	accessToken := newAccessToken(v)
+func NewAccessToken(property Property, opts ...*AccessTokenCredential) *AccessToken {
+	accessToken := newAccessToken(property)
 	return accessToken
 }
 
 /*Refresh 刷新AccessToken */
-func (a *AccessToken) Refresh() *AccessToken {
+func (obj *AccessToken) Refresh() *AccessToken {
 	log.Debug("AccessToken|Refresh")
-	a.getToken(true)
-	return a
+	obj.getToken(true)
+	return obj
 }
 
 /*GetRefreshedToken 获取刷新token */
-func (a *AccessToken) GetRefreshedToken() *core.Token {
+func (obj *AccessToken) GetRefreshedToken() *core.Token {
 	log.Debug("AccessToken|GetRefreshedToken")
-	return a.getToken(true)
+	return obj.getToken(true)
 }
 
 /*GetToken 获取token */
-func (a *AccessToken) GetToken() *core.Token {
+func (obj *AccessToken) GetToken() *core.Token {
 	log.Debug("AccessToken|GetToken")
-	return a.getToken(false)
+	return obj.getToken(false)
 }
 
 // KeyMap ...
-func (a *AccessToken) KeyMap() util.Map {
+func (obj *AccessToken) KeyMap() util.Map {
 	log.Debug("AccessToken|KeyMap")
-	token := a.getToken(false)
+	token := obj.getToken(false)
 	return token.KeyMap()
 }
 
 /*GetTokenWithRefresh 重新获取token */
-func (a *AccessToken) GetTokenWithRefresh() *core.Token {
+func (obj *AccessToken) GetTokenWithRefresh() *core.Token {
 	log.Debug("AccessToken|GetTokenWithRefresh")
-	return a.getToken(true)
+	return obj.getToken(true)
 }
 
-func (a *AccessToken) getToken(refresh bool) *core.Token {
-	key := a.getCacheKey()
+func (obj *AccessToken) getToken(refresh bool) *core.Token {
+	key := obj.getCacheKey()
 
 	if !refresh && cache.Has(key) {
 		log.Debug("cached accessToken", key)
@@ -128,15 +133,15 @@ func (a *AccessToken) getToken(refresh bool) *core.Token {
 		}
 	}
 
-	token := a.RequestToken(a.getCredentials())
+	token := obj.RequestToken(obj.getCredentials())
 	if token == nil {
 		return nil
 	}
 	log.Debug("AccessToken|getToken", *token)
 	if v := token.ExpiresIn; v != 0 {
-		a.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
+		obj.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
 	} else {
-		a.SetToken(token.AccessToken)
+		obj.SetToken(token.AccessToken)
 	}
 
 	return token
@@ -144,9 +149,9 @@ func (a *AccessToken) getToken(refresh bool) *core.Token {
 }
 
 /*RequestToken 请求获取token */
-func (a *AccessToken) RequestToken(credentials string) *core.Token {
+func (obj *AccessToken) RequestToken(credentials string) *core.Token {
 	var token core.Token
-	tokenByte := a.sendRequest(credentials)
+	tokenByte := obj.sendRequest(credentials)
 	if tokenByte == nil {
 		return nil
 	}
@@ -159,28 +164,28 @@ func (a *AccessToken) RequestToken(credentials string) *core.Token {
 }
 
 /*SetTokenWithLife set string accessToken with life time */
-func (a *AccessToken) SetTokenWithLife(token string, lifeTime int64) *AccessToken {
-	return a.setToken(token, lifeTime)
+func (obj *AccessToken) SetTokenWithLife(token string, lifeTime int64) *AccessToken {
+	return obj.setToken(token, lifeTime)
 }
 
 /*SetToken set string accessToken */
-func (a *AccessToken) SetToken(token string) *AccessToken {
-	return a.setToken(token, 7200)
+func (obj *AccessToken) SetToken(token string) *AccessToken {
+	return obj.setToken(token, 7200)
 }
 
-func (a *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
-	cache.SetWithTTL(a.getCacheKey(), &core.Token{
+func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
+	cache.SetWithTTL(obj.getCacheKey(), &core.Token{
 		AccessToken: token,
 		ExpiresIn:   time.Now().Add(time.Duration(lifeTime)).Unix(),
 	}, lifeTime)
-	return a
+	return obj
 }
 
-func (a *AccessToken) getCredentials() string {
-	c := md5.Sum(a.credentials.ToJSON())
+func (obj *AccessToken) getCredentials() string {
+	c := md5.Sum(obj.credentials.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 
-func (a *AccessToken) getCacheKey() string {
-	return "godcong.wego.access_token." + a.getCredentials()
+func (obj *AccessToken) getCacheKey() string {
+	return "godcong.wego.access_token." + obj.getCredentials()
 }
