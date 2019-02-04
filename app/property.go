@@ -2,10 +2,11 @@ package app
 
 // SandboxProperty ...
 type SandboxProperty struct {
-	AppID  string
-	Secret string
-	MchID  string
-	Key    string
+	UseSandbox bool
+	AppID      string
+	Secret     string
+	MchID      string
+	Key        string
 }
 
 // PaymentProperty ...

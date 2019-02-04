@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
 
@@ -18,9 +19,8 @@ type Payment struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	UseSandbox bool
-	Sandbox    SandboxProperty
-	Host       string
+	Host    string
+	Sandbox SandboxProperty
 }
 
 // NewPayment ...
@@ -80,40 +80,48 @@ func (p *Payment) Pay(maps util.Map) core.Responder {
 // IsSandbox ...
 func (p *Payment) IsSandbox() bool {
 	if p.option != nil {
-		return p.option.UsePayment
+		return p.option.Sandbox.UseSandbox
 	}
 	return false
 }
 
 /*GetKey 沙箱key(string类型) */
 func (p *Payment) GetKey() string {
-	key := cache.Get(p.getCacheKey())
-	if key != nil {
-		return key.(string)
+	key := p.property.Key
+	if p.IsSandbox() {
+		cachedKey := cache.Get(p.getCacheKey())
+		if cachedKey != nil {
+			key = cachedKey.(string)
+		}
+
+		response := p.SandboxSignKey().ToMap()
+
+		if response.GetString("return_code") == "SUCCESS" {
+			key = response.GetString("sandbox_signkey")
+			cache.SetWithTTL(p.getCacheKey(), key, 3*24*3600)
+		}
 	}
 
-	response := p.SandboxSignKey().ToMap()
-
-	if response.GetString("return_code") == "SUCCESS" {
-		key := response.GetString("sandbox_signkey")
-		cache.SetWithTTL(p.getCacheKey(), key, 3*24*3600)
-		return key
+	if 32 != len(key) {
+		log.Error(fmt.Sprintf("%s should be 32 chars length.", key))
+		return ""
 	}
-	return ""
+
+	return key
 
 }
 
 func (p *Payment) getCacheKey() string {
-	name := p.sandbox.AppID + "." + p.sandbox.MchID
+	name := p.option.Sandbox.AppID + "." + p.option.Sandbox.MchID
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
 /*SandboxSignKey 沙箱key */
 func (p *Payment) SandboxSignKey() core.Responder {
 	m := make(util.Map)
-	m.Set("mch_id", p.sandbox.MchID)
+	m.Set("mch_id", p.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := util.GenerateSignature(m, p.sandbox.Key, util.MakeSignMD5)
+	sign := util.GenerateSignature(m, p.option.Sandbox.Key, util.MakeSignMD5)
 	m.Set("sign", sign)
 	resp := core.PostXML(util.URL(p.Host(), sandboxSignKeyURLSuffix), nil, m)
 
