@@ -93,8 +93,8 @@ func JSONReader(v interface{}) io.Reader {
 	return reader
 }
 
-// NewBody ...
-func NewBody(v interface{}, tps ...BodyType) *RequestBody {
+// buildBody ...
+func buildBody(v interface{}, tps ...BodyType) *RequestBody {
 	tp := BodyTypeNone
 	if tps != nil {
 		tp = tps[0]

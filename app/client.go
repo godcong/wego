@@ -48,24 +48,26 @@ type SafeCert struct {
 
 // ClientOption ...
 type ClientOption struct {
-	UseSafe  bool
-	SafeCert *SafeCert
-	//Body      *RequestBody
+	UseSafe   bool
+	SafeCert  *SafeCert
+	BodyType  BodyType
 	Query     util.Map
 	Timeout   int64
 	KeepAlive int64
 }
 
-// NewClient ...
-func NewClient(method string, url string, body *RequestBody, opts ...*ClientOption) *Client {
+// buildClient ...
+func buildClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
 	var opt *ClientOption
+	bt := BodyTypeNone
 	if opts != nil {
 		opt = opts[0]
+		bt = opt.BodyType
 	}
 	return &Client{
 		Method: method,
 		URL:    url,
-		Body:   body,
+		Body:   buildBody(body, bt),
 		Option: opt,
 	}
 }
@@ -99,36 +101,29 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
-	client := NewClient(POST, url, NewBody(form, BodyTypeForm), &ClientOption{
-		Query: query,
+	client := buildClient(POST, url, form, &ClientOption{
+		BodyType: BodyTypeForm,
+		Query:    query,
 	})
 	return client.Do(context.Background())
 }
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
-	url = url + "?" + query.URLEncode()
-	request := &request{
-		client:   buildTransport(NilConfig()),
-		function: processJSON,
-		method:   POST,
-		url:      url,
-		body:     json,
-	}
-	return request.Do(context.Background())
+	client := buildClient(POST, url, json, &ClientOption{
+		BodyType: BodyTypeJSON,
+		Query:    query,
+	})
+	return client.Do(context.Background())
 }
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
-	url = url + "?" + query.URLEncode()
-	request := &request{
-		client:   buildTransport(NilConfig()),
-		function: processXML,
-		method:   POST,
-		url:      url,
-		body:     xml,
-	}
-	return request.Do(context.Background())
+	client := buildClient(POST, url, xml, &ClientOption{
+		BodyType: BodyTypeXML,
+		Query:    query,
+	})
+	return client.Do(context.Background())
 }
 
 // TimeOut ...
