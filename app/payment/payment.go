@@ -105,7 +105,7 @@ func (p *Payment) Scheme(pid string) string {
 	maps.Set("time_stamp", util.Time())
 	maps.Set("nonce_str", util.GenerateNonceStr())
 	maps.Set("product_id", pid)
-	maps.Set("sign", util.GenerateSignature(maps, p.GetKey(), util.MakeSignMD5))
+	maps.Set("sign", util.GenSign(maps, p.GetKey(), util.SignMD5))
 	return BizPayURL + maps.URLEncode()
 }
 
@@ -292,7 +292,7 @@ func (p *Payment) initRequestWithIgnore(maps util.Map, ignore ...string) util.Ma
 	}
 
 	if !maps.Has("sign") {
-		maps.Set("sign", util.GenerateSignatureWithIgnore(maps, p.GetKey(), ignore))
+		maps.Set("sign", util.GenSignWithIgnore(maps, p.GetKey(), ignore))
 	}
 
 	log.Debug("initRequest end", maps)
@@ -313,7 +313,7 @@ func (p *Payment) initRequest(maps util.Map) util.Map {
 	}
 
 	if !maps.Has("sign") {
-		maps.Set("sign", util.GenerateSignatureWithIgnore(maps, p.GetKey(), []string{util.FieldSign}))
+		maps.Set("sign", util.GenSignWithIgnore(maps, p.GetKey(), []string{util.FieldSign}))
 	}
 
 	log.Debug("initRequest end", maps)
@@ -342,7 +342,7 @@ func (p *Payment) QueryExchangeRate(feeType, date string, option ...util.Map) co
 		"mch_id":   p.Get("mch_id"),
 	}, option)
 
-	m.Set("sign", util.GenerateSignatureWithIgnore(m, p.GetKey(), nil))
+	m.Set("sign", util.GenSignWithIgnore(m, p.GetKey(), nil))
 	return core.Request(p.Link(payQueryexchagerate), core.POST, util.Map{
 		core.DataTypeXML: m,
 	})

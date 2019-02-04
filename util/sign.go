@@ -28,49 +28,33 @@ const HMACSHA256 = "HMAC-SHA256"
 /*MD5 定义:MD5 */
 const MD5 = "MD5"
 
-// MakeSignHMACSHA256 make sign with hmac-sha256
-func MakeSignHMACSHA256(data, key string) string {
+// SignSHA256 make sign with hmac-sha256
+func SignSHA256(data, key string) string {
 	m := hmac.New(sha256.New, []byte(key))
 	m.Write([]byte(data))
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
-// MakeSignMD5 make sign with md5
-func MakeSignMD5(data, key string) string {
+// SignMD5 make sign with md5
+func SignMD5(data, key string) string {
 	m := md5.New()
 	_, _ = io.WriteString(m, data)
 
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
 }
 
-// GenerateSignatureWithIgnore ...
-func GenerateSignatureWithIgnore(p Map, key string, ignore []string) string {
-	m := p.Expect(ignore)
-	keys := m.SortKeys()
-	var sign []string
-	size := len(keys)
-
-	for i := 0; i < size; i++ {
-		v := strings.TrimSpace(m.GetString(keys[i]))
-		if len(v) > 0 {
-			log.Debug(keys[i], v)
-			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
-		}
-	}
-
-	sign = append(sign, strings.Join([]string{"key", key}, "="))
-	sb := strings.Join(sign, "&")
-	fn := MakeSignMD5
+// GenSignWithIgnore ...
+func GenSignWithIgnore(p Map, key string, ignore []string) string {
 	if p.GetString("sign_type") == HMACSHA256 {
-		fn = MakeSignHMACSHA256
+		return GenSign(p, key, SignSHA256, ignore...)
 	}
-
-	return fn(sb, key)
+	return GenSign(p, key, SignMD5, ignore...)
 }
 
-// GenerateSignature make sign from map data
-func GenerateSignature(p Map, key string, fn SignFunc) string {
-	m := p.Expect([]string{FieldSign})
+// GenSign make sign from map data
+func GenSign(p Map, key string, fn SignFunc, ignores ...string) string {
+	exp := append(ignores[:], FieldSign)
+	m := p.Expect(exp)
 	keys := m.SortKeys()
 	var sign []string
 	size := len(keys)
@@ -94,17 +78,15 @@ func ValidateSign(maps Map, key string) bool {
 		return false
 	}
 	sign := maps.GetString("sign")
-	newSign := ""
-	switch maps.GetString("sign_type") {
-	case HMACSHA256:
-		newSign = GenerateSignature(maps, key, MakeSignHMACSHA256)
-	default:
-		newSign = GenerateSignature(maps, key, MakeSignMD5)
+	fn := SignMD5
+	if maps.GetString("sign_type") == HMACSHA256 {
+		fn = SignSHA256
 	}
+	newSign := GenSign(maps, key, fn)
 	log.Debug(sign, newSign)
+
 	if strings.Compare(sign, newSign) == 0 {
 		return true
 	}
-
 	return false
 }

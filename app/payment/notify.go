@@ -31,7 +31,7 @@ type refundedNotify struct {
 func DecodeReqInfo(key, info string) util.Map {
 	maps := util.Map{}
 	ecb := cipher.CryptAES256ECB()
-	key = strings.ToLower(util.MakeSignMD5(key, ""))
+	key = strings.ToLower(util.SignMD5(key, ""))
 	ecb.SetParameter("key", []byte(key))
 	dec, _ := ecb.Decrypt([]byte(info))
 	_ = xml.Unmarshal(dec, &maps)
@@ -115,7 +115,7 @@ func (n *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				rlt.Set("mch_id", n.Get("mch_id"))
 				rlt.Set("nonce_str", util.GenerateNonceStr())
 				rlt.Set("prepay_id", p.Get("prepay_id"))
-				rlt.Set("sign", util.GenerateSignatureWithIgnore(maps, n.GetKey(), []string{util.FieldSign}))
+				rlt.Set("sign", util.GenSignWithIgnore(maps, n.GetKey(), []string{util.FieldSign}))
 
 			}
 

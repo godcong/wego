@@ -32,7 +32,7 @@ func (d *OpenData) RemoveUserStorage(openID string, sessionKey string, keys []st
 		"secret":     d.Get("secret"),
 		"openid":     openID,
 		"sig_method": "hmac_sha256",
-		"signature":  util.MakeSignHMACSHA256(string(maps.ToJSON()), sessionKey),
+		"signature":  util.SignSHA256(string(maps.ToJSON()), sessionKey),
 	}
 	return core.PostJSON(Link(wxaRemoveUserStorage), query, maps)
 }
@@ -48,7 +48,7 @@ func (d *OpenData) SetUserStorage(openID string, sessionKey string, list util.Ma
 		"secret":     d.Get("secret"),
 		"openid":     openID,
 		"sig_method": "hmac_sha256",
-		"signature":  util.MakeSignHMACSHA256(string(maps.ToJSON()), sessionKey),
+		"signature":  util.SignSHA256(string(maps.ToJSON()), sessionKey),
 	}
 	return core.PostJSON(Link(wxaSetUserStorage), query, maps)
 }

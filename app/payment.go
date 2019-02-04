@@ -141,7 +141,7 @@ func (obj *Payment) SandboxSignKey() core.Responder {
 	m := make(util.Map)
 	m.Set("mch_id", obj.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := util.GenerateSignature(m, obj.option.Sandbox.Key, util.MakeSignMD5)
+	sign := util.GenSign(m, obj.option.Sandbox.Key, util.SignMD5)
 	m.Set("sign", sign)
 	resp := core.PostXML(util.URL(obj.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
 
