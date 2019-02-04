@@ -53,7 +53,8 @@ type MiniProgramProperty struct {
 
 // Property ...
 type Property struct {
-	Sandbox         *SandboxProperty
+	//Sandbox         *SandboxProperty
+	Local           *LocalHost
 	OAuth           *OAuthProperty
 	OpenPlatform    *OpenPlatformProperty
 	OfficialAccount *OfficialAccountProperty
