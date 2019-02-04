@@ -2,8 +2,8 @@ package core
 
 /* domain defines */
 const (
-	MPDomain = "https://mp.weixin.qq.com"
-
+	MPDomain   = "https://mp.weixin.qq.com"
+	BaseDomain = "https://api.mch.weixin.qq.com"
 	APIWeixin  = "https://api.weixin.qq.com"
 	API2Domain = "https://api2.mch.weixin.qq.com"
 	HKDomain   = "https://apihk.mch.weixin.qq.com"

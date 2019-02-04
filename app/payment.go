@@ -66,7 +66,7 @@ https://api.mch.weixin.qq.com/pay/micropay
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
 func (p *Payment) Pay(maps util.Map) core.Responder {
-	maps.Set("appid", p.Get("app_id"))
+	maps.Set("appid", p.property.AppID)
 
 	//set notify callback
 	notify := p.option.NotifyURL
@@ -74,7 +74,9 @@ func (p *Payment) Pay(maps util.Map) core.Responder {
 		maps.Set("notify_url", notify)
 	}
 
-	return p.Request(payMicroPay, maps)
+	return nil
+	//TODO
+	//return p.Request(payMicroPay, maps)
 }
 
 // IsSandbox ...

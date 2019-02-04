@@ -4,12 +4,12 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"github.com/godcong/wego/core"
-	"time"
-
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"github.com/json-iterator/go"
+	"time"
 )
 
 // AccessTokenCredential ...
@@ -17,6 +17,15 @@ type AccessTokenCredential struct {
 	GrantType string
 	AppID     string
 	Secret    string
+}
+
+// ToJSON ...
+func (c *AccessTokenCredential) ToJSON() []byte {
+	bytes, err := jsoniter.Marshal(c)
+	if err != nil {
+		return nil
+	}
+	return bytes
 }
 
 /*AccessToken AccessToken */
@@ -35,15 +44,16 @@ const accessTokenURLSuffix = "/cgi-bin/token"
 const AccessTokenSafeSeconds = 500
 
 func (a *AccessToken) sendRequest(s string) []byte {
-	return core.Get(core.Splice(a.prefix, a.URL), a.credentials).Bytes()
+	//return core.Get(core.Splice(a.prefix, a.URL), a.credentials).Bytes()
+	return nil
 }
 
 func newAccessToken(p util.Map) *AccessToken {
 	return &AccessToken{
-		URL:         accessTokenURLSuffix,
-		TokenKey:    accessTokenKey,
-		credentials: p,
-		prefix:      core.APIWeixin,
+		URL:      accessTokenURLSuffix,
+		TokenKey: accessTokenKey,
+		//credentials: p,
+		prefix: core.APIWeixin,
 	}
 }
 
