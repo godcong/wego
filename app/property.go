@@ -54,7 +54,7 @@ type MiniProgramProperty struct {
 // LocalProperty ...
 type LocalProperty struct {
 	Address     string `toml:"address"`
-	PaidURL     string `toml:"paid_url"`
+	NotifyURL   string `toml:"paid_url"`
 	RefundedURL string `toml:"refunded_url"`
 	ScannedURL  string `toml:"scanned_url"`
 }

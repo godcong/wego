@@ -28,12 +28,25 @@ func (c *AccessTokenCredential) ToJSON() []byte {
 	return bytes
 }
 
+// AccessTokenOption ...
+type AccessTokenOption struct {
+	RemoteHost string
+	TokenKey   string
+	TokenURL   string
+}
+
+// AccessTokenProperty ...
+type AccessTokenProperty struct {
+	GrantType string
+	AppID     string
+	Secret    string
+}
+
 /*AccessToken AccessToken */
 type AccessToken struct {
-	URL         string
-	TokenKey    string
-	credentials *AccessTokenCredential
-	prefix      string
+	*AccessTokenProperty
+	property *Property
+	option   *AccessTokenOption
 }
 
 /*accessTokenKey 键值 */
@@ -48,12 +61,11 @@ func (a *AccessToken) sendRequest(s string) []byte {
 	return nil
 }
 
-func newAccessToken(p util.Map) *AccessToken {
+func newAccessToken(v *AccessTokenCredential, url, key string) *AccessToken {
 	return &AccessToken{
-		URL:      accessTokenURLSuffix,
-		TokenKey: accessTokenKey,
-		//credentials: p,
-		prefix: core.APIWeixin,
+		URL:         url,
+		TokenKey:    key,
+		credentials: v,
 	}
 }
 
@@ -66,36 +78,10 @@ func ClientCredential(config *core.Config) util.Map {
 	}
 }
 
-// CredentialGet ...
-func CredentialGet(v []interface{}) util.Map {
-	size := len(v)
-	for i := 0; i < size; i++ {
-		switch vv := v[i].(type) {
-		case util.Map:
-			return vv
-		case map[string]interface{}:
-			return (util.Map)(vv)
-		}
-	}
-
-	return nil
-}
-
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(v ...interface{}) *AccessToken {
-	accessToken := newAccessToken(CredentialGet(v))
+func NewAccessToken(v *AccessTokenCredential) *AccessToken {
+	accessToken := newAccessToken(v)
 	return accessToken
-}
-
-// Credentials ...
-func (a *AccessToken) Credentials() *AccessTokenCredential {
-	return a.credentials
-}
-
-//SetCredentials set request credential
-func (a *AccessToken) SetCredentials(c *AccessTokenCredential) *AccessToken {
-	a.credentials = c
-	return a
 }
 
 /*Refresh 刷新AccessToken */
@@ -148,7 +134,7 @@ func (a *AccessToken) getToken(refresh bool) *core.Token {
 	}
 	log.Debug("AccessToken|getToken", *token)
 	if v := token.ExpiresIn; v != 0 {
-		a.SetTokenWithLife(token.AccessToken, v)
+		a.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
 	} else {
 		a.SetToken(token.AccessToken)
 	}

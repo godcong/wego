@@ -15,7 +15,7 @@ func Config() *Configure {
 	return &Configure{
 		Local: LocalProperty{
 			Address:     "http://localhost",
-			PaidURL:     "paid_cb",
+			NotifyURL:   "paid_cb",
 			RefundedURL: "refunded_cb",
 			ScannedURL:  "scanned_cb",
 		},

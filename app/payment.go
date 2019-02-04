@@ -21,7 +21,7 @@ type Payment struct {
 type PaymentOption struct {
 	RemoteHost string
 	Sandbox    SandboxProperty
-	PaidURL    string
+	NotifyURL  string
 	RefundURL  string
 }
 
@@ -71,7 +71,7 @@ func (obj *Payment) Pay(maps util.Map) core.Responder {
 	maps.Set("appid", obj.AppID)
 
 	//set notify callback
-	notify := obj.option.PaidURL
+	notify := obj.option.NotifyURL
 	if !maps.Has("notify_url") {
 		maps.Set("notify_url", notify)
 	}
@@ -145,11 +145,11 @@ func (obj *Payment) LocalAddress() string {
 	return obj.property.Local.Address
 }
 
-// PaidURL ...
-func (obj *Payment) PaidURL() string {
-	uri := obj.property.Local.PaidURL
-	if obj.option.PaidURL != "" {
-		uri = obj.option.PaidURL
+// NotifyURL ...
+func (obj *Payment) NotifyURL() string {
+	uri := obj.property.Local.NotifyURL
+	if obj.option.NotifyURL != "" {
+		uri = obj.option.NotifyURL
 	}
 	return util.URL(obj.LocalAddress(), uri)
 }
