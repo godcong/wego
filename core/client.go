@@ -45,46 +45,15 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
-// ClientOption ...
-type ClientOption struct {
-	RequestType string
-	UseSafe     bool
-	Cert        []byte
-	Key         []byte
-	RootCA      []byte
-	Timeout     int64
-	KeepAlive   int64
-}
-
-// Body ...
+// RequestBody ...
 type RequestBody struct {
 	BodyType string
 	BodyInst interface{}
 }
 
-// Client ...
-type Client struct {
-	Method string
-	URL    string
-	Query  url.Values
-	Body   interface{}
-	Option *ClientOption
-}
-
 // Request ...
 func (client *Client) Request() Responder {
 	return (client).Do(context.Background())
-}
-
-// NewClient ...
-func NewClient(opts ...*ClientOption) *Client {
-	return &Client{
-		Method: "",
-		URL:    "",
-		Query:  nil,
-		Body:   nil,
-		Option: nil,
-	}
 }
 
 // PostForm post form request
@@ -178,94 +147,6 @@ func RequestWithContext(ctx context.Context, method string, url string, option u
 func RequestRaw(method, url string, option util.Map) []byte {
 	log.Debug("RequestRaw|httpClient", url, method, option)
 	return RequestWithContext(context.Background(), method, url, option).Bytes()
-}
-
-// TimeOut ...
-func TimeOut(src int64) time.Duration {
-	return time.Duration(util.MustInt64(src, 30)) * time.Second
-}
-
-// KeepAlive ...
-func KeepAlive(src int64) time.Duration {
-	return time.Duration(util.MustInt64(src, 30)) * time.Second
-}
-
-func buildTransport(client *Client) *http.Client {
-	return &http.Client{
-		Transport: &http.Transport{
-			Proxy: nil,
-			DialContext: (&net.Dialer{
-				Timeout:   TimeOut(client.Option.Timeout),
-				KeepAlive: KeepAlive(client.Option.KeepAlive),
-			}).DialContext,
-			//Dial:        nil,
-			//DialTLS:     nil,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-
-			//TLSHandshakeTimeout:    0,
-			//DisableKeepAlives:      false,
-			//DisableCompression:     false,
-			//MaxIdleConns:           0,
-			//MaxIdleConnsPerHost:    0,
-			//MaxConnsPerHost:        0,
-			//IdleConnTimeout:        0,
-			//ResponseHeaderTimeout:  0,
-			//ExpectContinueTimeout:  0,
-			//TLSNextProto:           nil,
-			//ProxyConnectHeader:     nil,
-			//MaxResponseHeaderBytes: 0,
-		},
-		//CheckRedirect: nil,
-		//Jar:           nil,
-		//Timeout:       0,
-	}
-
-}
-
-func buildSafeTransport(client *Client) *http.Client {
-	cert, err := tls.X509KeyPair(client.Option.Key, client.Option.Cert)
-	if err != nil {
-		panic(err)
-	}
-
-	caFile := client.Option.RootCA
-	if err != nil {
-		caFile = []byte(defaultCa)
-	}
-	certPool := x509.NewCertPool()
-	certPool.AppendCertsFromPEM(caFile)
-	tlsConfig := &tls.Config{
-		Certificates:       []tls.Certificate{cert},
-		RootCAs:            certPool,
-		InsecureSkipVerify: true, //client端略过对证书的校验
-	}
-	tlsConfig.BuildNameToCertificate()
-	return &http.Client{
-		Transport: &http.Transport{
-			DialContext: (&net.Dialer{
-				Timeout:   TimeOut(client.Option.Timeout),
-				KeepAlive: KeepAlive(client.Option.KeepAlive),
-				//DualStack: true,
-			}).DialContext,
-			TLSClientConfig: tlsConfig,
-			Proxy:           nil,
-			//TLSHandshakeTimeout:   10 * time.Second,
-			//ResponseHeaderTimeout: 10 * time.Second,
-			//ExpectContinueTimeout: 1 * time.Second,
-		},
-	}
-}
-
-func buildHTTPClient(client *Client) *http.Client {
-	//检查是否包含security
-	if client.Option.UseSafe {
-		//判断能否创建safe client
-		return buildSafeTransport(client)
-	}
-	return buildTransport(client)
-
 }
 
 func do(ctx context.Context, c *http.Client, r *http.Request) Responder {

@@ -1,111 +1,187 @@
 package app
 
 import (
-	"bytes"
-	"github.com/godcong/wego/log"
+	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"github.com/godcong/wego/util"
-	"github.com/json-iterator/go"
-	"io"
+	"net"
 	"net/http"
-	"strings"
+	"net/url"
+	"time"
 )
 
-// BodyType ...
-type BodyType string
+const defaultCa = `
+-----BEGIN CERTIFICATE-----
+MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV
+UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy
+dGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1
+MVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx
+dWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B
+AQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f
+BeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A
+cJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC
+AwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ
+MA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm
+aWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw
+ODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj
+IBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF
+MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA
+A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
+7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh
+1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
+-----END CERTIFICATE-----`
 
-// BodyTypeJSON ...
-const BodyTypeJSON BodyType = "json"
-
-// BodyTypeXML ...
-const BodyTypeXML BodyType = "xml"
-
-// BodyTypeNone ...
-const BodyTypeNone BodyType = "none"
-
-// BodyTypeMultipart ...
-const BodyTypeMultipart BodyType = "multipart"
-
-// BodyTypeForm ...
-const BodyTypeForm BodyType = "form"
-
-// Body ...
-type Body struct {
-	BodyType     BodyType
-	BodyInstance interface{}
-	Builder      RequestBuilder
+// Client ...
+type Client struct {
+	Method string
+	URL    string
+	Body   *RequestBody
+	Option *ClientOption
 }
 
-// RequestBuilder ...
-type RequestBuilder func(url, method string, i interface{}) *http.Request
-
-var buildXML = buildNothing
-var buildMultipart = buildNothing
-
-var buildForm = buildNothing
-
-var builder = map[BodyType]RequestBuilder{
-	BodyTypeXML:       buildXML,
-	BodyTypeJSON:      buildJSON,
-	BodyTypeForm:      buildForm,
-	BodyTypeMultipart: buildMultipart,
-	BodyTypeNone:      buildNothing,
+// SafeCert ...
+type SafeCert struct {
+	Cert   []byte
+	Key    []byte
+	RootCA []byte
 }
 
-func buildJSON(method, url string, i interface{}) *http.Request {
-	request, e := http.NewRequest(method, url, JSONReader(i))
-	if e != nil {
-		log.Error(e)
-		return nil
+// ClientOption ...
+type ClientOption struct {
+	UseSafe   bool
+	SafeCert  *SafeCert
+	Body      *RequestBody
+	Query     url.Values
+	Timeout   int64
+	KeepAlive int64
+}
+
+// NewClient ...
+func NewClient(method string, url string, body *RequestBody, opts ...*ClientOption) *Client {
+	var opt *ClientOption
+	if opts != nil {
+		opt = opts[0]
 	}
-	request.Header.Set("Content-Type", "application/json; charset=utf-8")
-	return request
-}
-
-func buildNothing(method, url string, i interface{}) *http.Request {
-	request, e := http.NewRequest(method, url, JSONReader(i))
-	if e != nil {
-		log.Error(e)
-		return nil
+	return &Client{
+		Method: method,
+		URL:    url,
+		Body:   body,
+		Option: opt,
 	}
-	request.Header.Set("Content-Type", "application/json; charset=utf-8")
-	return request
 }
 
-// JSONReader ...
-func JSONReader(v interface{}) io.Reader {
-	var reader io.Reader
-	switch v := v.(type) {
-	case string:
-		log.Debug("JSONReader|string", v)
-		reader = strings.NewReader(v)
-	case []byte:
-		log.Debug("JSONReader|[]byte", string(v))
-		reader = bytes.NewReader(v)
-	case util.Map:
-		log.Debug("JSONReader|util.Map", v.String())
-		reader = bytes.NewReader(v.ToJSON())
-	default:
-		log.Debug("JSONReader|default", v)
-		if v0, e := jsoniter.Marshal(v); e == nil {
-			reader = bytes.NewReader(v0)
+// Do ...
+func (c *Client) Do(ctx context.Context) Responder {
+	client := buildHTTPClient(c)
+	var request *http.Request
+	var e error
+	if c.Body == nil {
+		request, e = http.NewRequest(c.Method, c.RemoteURL(), nil)
+		if e != nil {
+			return ErrResponse(e)
 		}
 	}
-	return reader
+	request = c.Body.RequestBuilder(c.Method, c.RemoteURL(), c.Body.BodyInstance)
+	response, e := client.Do(request.WithContext(ctx))
+	if e != nil {
+		return ErrResponse(e)
+	}
+	return buildResponder(response)
 }
 
-// NewBody ...
-func NewBody(v interface{}, tps ...BodyType) *Body {
-	tp := BodyTypeNone
-	if tps != nil {
-		tp = tps[0]
+// RemoteURL ...
+func (c *Client) RemoteURL() string {
+	if c.Option != nil && c.Option.Query != nil {
+		return c.URL + "?" + c.Option.Query.Encode()
 	}
-	build, b := builder[tp]
-	if !b {
-		build = buildNothing
+	return c.URL
+}
+
+// TimeOut ...
+func TimeOut(src int64) time.Duration {
+	return time.Duration(util.MustInt64(src, 30)) * time.Second
+}
+
+// KeepAlive ...
+func KeepAlive(src int64) time.Duration {
+	return time.Duration(util.MustInt64(src, 30)) * time.Second
+}
+
+func buildTransport(client *Client) *http.Client {
+	return &http.Client{
+		Transport: &http.Transport{
+			Proxy: nil,
+			DialContext: (&net.Dialer{
+				Timeout:   TimeOut(client.Option.Timeout),
+				KeepAlive: KeepAlive(client.Option.KeepAlive),
+			}).DialContext,
+			//Dial:        nil,
+			//DialTLS:     nil,
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+
+			//TLSHandshakeTimeout:    0,
+			//DisableKeepAlives:      false,
+			//DisableCompression:     false,
+			//MaxIdleConns:           0,
+			//MaxIdleConnsPerHost:    0,
+			//MaxConnsPerHost:        0,
+			//IdleConnTimeout:        0,
+			//ResponseHeaderTimeout:  0,
+			//ExpectContinueTimeout:  0,
+			//TLSNextProto:           nil,
+			//ProxyConnectHeader:     nil,
+			//MaxResponseHeaderBytes: 0,
+		},
+		//CheckRedirect: nil,
+		//Jar:           nil,
+		//Timeout:       0,
 	}
-	return &Body{
-		BodyType:     tp,
-		Builder:      build,
-		BodyInstance: v,
+
+}
+
+func buildSafeTransport(client *Client) *http.Client {
+	cert, err := tls.X509KeyPair(client.Option.SafeCert.Key, client.Option.SafeCert.Cert)
+	if err != nil {
+		panic(err)
 	}
+
+	caFile := client.Option.SafeCert.RootCA
+	if err != nil {
+		caFile = []byte(defaultCa)
+	}
+	certPool := x509.NewCertPool()
+	certPool.AppendCertsFromPEM(caFile)
+	tlsConfig := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            certPool,
+		InsecureSkipVerify: true, //client端略过对证书的校验
+	}
+	tlsConfig.BuildNameToCertificate()
+	return &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   TimeOut(client.Option.Timeout),
+				KeepAlive: KeepAlive(client.Option.KeepAlive),
+				//DualStack: true,
+			}).DialContext,
+			TLSClientConfig: tlsConfig,
+			Proxy:           nil,
+			//TLSHandshakeTimeout:   10 * time.Second,
+			//ResponseHeaderTimeout: 10 * time.Second,
+			//ExpectContinueTimeout: 1 * time.Second,
+		},
+	}
+}
+
+func buildHTTPClient(client *Client) *http.Client {
+	//检查是否包含security
+	if client.Option.UseSafe {
+		//判断能否创建safe client
+		return buildSafeTransport(client)
+	}
+	return buildTransport(client)
+
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/godcong/wego/util"
 	"io"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"strings"
 )
@@ -178,7 +179,7 @@ func Err(data []byte, err error) Responder {
 
 /*ParseResponse get response data */
 func ParseResponse(r *http.Response) ([]byte, error) {
-	return ioutil.ReadAll(io.LimitReader(r.Body, 1<<20))
+	return ioutil.ReadAll(io.LimitReader(r.Body, math.MaxUint32))
 }
 
 // CastToResponse ...

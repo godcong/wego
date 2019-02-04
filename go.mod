@@ -16,6 +16,7 @@ require (
 	github.com/pelletier/go-toml v1.2.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.3.0 // indirect
+	golang.org/x/exp/xerrors v0.0.0-20190125153040-c74c464bbbf2
 	golang.org/x/text v0.3.0
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
