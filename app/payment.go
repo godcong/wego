@@ -128,6 +128,7 @@ func (p *Payment) SandboxSignKey() core.Responder {
 
 }
 
+// RemoteHost ...
 func (p *Payment) RemoteHost() string {
 	if p.option.RemoteHost != "" {
 		return p.option.RemoteHost
@@ -135,6 +136,7 @@ func (p *Payment) RemoteHost() string {
 	return BaseDomain
 }
 
+// LocalHost ...
 func (p *Payment) LocalHost() string {
 	return ""
 }
@@ -144,5 +146,13 @@ func (p *Payment) NotifyURL() string {
 	if p.option.NotifyURL != "" {
 		return p.option.NotifyURL
 	}
-	return p.
+	return ""
+}
+
+// RefundURL ...
+func (p *Payment) RefundURL() string {
+	if p.option.RefundURL != "" {
+		return p.option.RefundURL
+	}
+	return ""
 }
