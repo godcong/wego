@@ -23,32 +23,32 @@ type PaymentProperty struct {
 
 // OAuthProperty ...
 type OAuthProperty struct {
-	Scopes      []string `xorm:"scopes"`
-	RedirectURI string   `xorm:"redirect_uri"`
+	Scopes      []string
+	RedirectURI string
 }
 
 // OpenPlatformProperty ...
 type OpenPlatformProperty struct {
-	AppID  string `xorm:"app_id"`
-	Secret string `xorm:"secret"`
-	Token  string `xorm:"token"`
-	AesKey string `xorm:"aes_key"`
+	AppID  string
+	Secret string
+	Token  string
+	AesKey string
 }
 
 // OfficialAccountProperty ...
 type OfficialAccountProperty struct {
-	AppID  string `xorm:"app_id"`
-	Secret string `xorm:"secret"`
-	Token  string `xorm:"token"`
-	AesKey string `xorm:"aes_key"`
+	AppID  string
+	Secret string
+	Token  string
+	AesKey string
 }
 
 // MiniProgramProperty ...
 type MiniProgramProperty struct {
-	AppID  string `xorm:"app_id"`
-	Secret string `xorm:"secret"`
-	Token  string `xorm:"token"`
-	AesKey string `xorm:"aes_key"`
+	AppID  string
+	Secret string
+	Token  string
+	AesKey string
 }
 
 // Property ...
