@@ -9,6 +9,7 @@ import (
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
+	"golang.org/x/exp/xerrors"
 	"time"
 )
 
@@ -179,4 +180,27 @@ func (obj *AccessToken) getCredentials() string {
 
 func (obj *AccessToken) getCacheKey() string {
 	return "godcong.wego.access_token." + obj.getCredentials()
+}
+
+const accessTokenNil = "nil point  accessToken"
+const tokenNil = "nil point token"
+
+/*MustKeyMap get accessToken's key,value with map when nil or error return nil map */
+func MustKeyMap(at *AccessToken) util.Map {
+	m := util.Map{}
+	if m, e := KeyMap(at); e != nil {
+		return m
+	}
+	return m
+}
+
+/*KeyMap get accessToken's key,value with map */
+func KeyMap(at *AccessToken) (util.Map, error) {
+	if at == nil {
+		return nil, xerrors.New(accessTokenNil)
+	}
+	if token := at.GetToken(); token != nil {
+		return token.KeyMap(), nil
+	}
+	return nil, xerrors.New(tokenNil)
 }

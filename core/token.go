@@ -1,7 +1,6 @@
 package core
 
 import (
-	"errors"
 	"github.com/json-iterator/go"
 	"strings"
 	"time"
@@ -43,29 +42,6 @@ type Token struct {
 	Raw interface{}
 }
 
-const accessTokenNil = "nil point access accessToken"
-const tokenNil = "nil point accessToken"
-
-/*MustKeyMap get accessToken's key,value with map when nil or error return nil map */
-func MustKeyMap(at *AccessToken) util.Map {
-	m := util.Map{}
-	if m, e := KeyMap(at); e != nil {
-		return m
-	}
-	return m
-}
-
-/*KeyMap get accessToken's key,value with map */
-func KeyMap(at *AccessToken) (util.Map, error) {
-	if at == nil {
-		return nil, errors.New(accessTokenNil)
-	}
-	if token := at.GetToken(); token != nil {
-		return token.KeyMap(), nil
-	}
-	return nil, errors.New(tokenNil)
-}
-
 /*KeyMap get accessToken's key,value with map */
 func (t *Token) KeyMap() util.Map {
 	if t.AccessToken == "" {
@@ -87,15 +63,6 @@ func (t *Token) GetExpiresIn() time.Time {
 	return time.Unix(t.ExpiresIn, 0)
 }
 
-/*ToJSON transfer accessToken to json*/
-func (t *Token) ToJSON() string {
-	v, e := jsoniter.Marshal(t)
-	if e != nil {
-		return ""
-	}
-	return string(v)
-}
-
 /*GetScopes get accessToken scopes for get accessToken*/
 func (t *Token) GetScopes() []string {
 	return strings.Split(t.Scope, ",")
@@ -105,6 +72,15 @@ func (t *Token) GetScopes() []string {
 func (t *Token) SetScopes(s []string) *Token {
 	strings.Join(s, ",")
 	return t
+}
+
+/*ToJSON transfer accessToken to json*/
+func (t *Token) ToJSON() string {
+	v, e := jsoniter.Marshal(t)
+	if e != nil {
+		return ""
+	}
+	return string(v)
 }
 
 /*ParseToken parse accessToken from string*/
