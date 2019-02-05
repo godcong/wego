@@ -101,8 +101,8 @@ func (obj *AccessToken) Refresh() *AccessToken {
 	return obj
 }
 
-/*GetRefreshedToken 获取刷新token */
-func (obj *AccessToken) GetRefreshedToken() *core.Token {
+/*GetRefreshToken 获取刷新token */
+func (obj *AccessToken) GetRefreshToken() *core.Token {
 	log.Debug("AccessToken|GetRefreshedToken")
 	return obj.getToken(true)
 }
@@ -118,12 +118,6 @@ func (obj *AccessToken) KeyMap() util.Map {
 	log.Debug("AccessToken|KeyMap")
 	token := obj.getToken(false)
 	return token.KeyMap()
-}
-
-/*GetTokenWithRefresh 重新获取token */
-func (obj *AccessToken) GetTokenWithRefresh() *core.Token {
-	log.Debug("AccessToken|GetTokenWithRefresh")
-	return obj.getToken(true)
 }
 
 func (obj *AccessToken) getToken(refresh bool) *core.Token {
