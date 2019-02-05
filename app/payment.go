@@ -32,22 +32,11 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 	if opts != nil {
 		opt = opts[0]
 	}
+	bt := BodyTypeXML
 	return &Payment{
 		client: NewClient(&ClientOption{
-			UseSafe:  false,
-			UseToken: false,
-			SafeCert: nil,
-			AccessToken: NewAccessToken(property, &AccessTokenOption{
-				Credential: &AccessTokenCredential{
-					GrantType: "",
-					AppID:     "",
-					Secret:    "",
-				},
-			}),
-			BodyType:  nil,
-			Query:     nil,
-			Timeout:   0,
-			KeepAlive: 0,
+			AccessToken: NewAccessToken(property.AccessToken.Credential()),
+			BodyType:    &bt,
 		}),
 		PaymentProperty: property.Payment,
 		property:        property,

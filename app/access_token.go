@@ -12,9 +12,15 @@ import (
 	"time"
 )
 
+// GrantType ...
+type GrantType string
+
+// GrantTypeClient ...
+const GrantTypeClient GrantType = "client_credential"
+
 // AccessTokenCredential ...
 type AccessTokenCredential struct {
-	GrantType string
+	GrantType GrantType
 	AppID     string
 	Secret    string
 }
@@ -30,7 +36,7 @@ func (obj *AccessTokenCredential) ToMap() util.Map {
 
 // ToJSON ...
 func (obj *AccessTokenCredential) ToJSON() []byte {
-	bytes, err := jsoniter.Marshal(c)
+	bytes, err := jsoniter.Marshal(obj)
 	if err != nil {
 		return nil
 	}

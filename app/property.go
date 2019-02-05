@@ -51,6 +51,22 @@ type MiniProgramProperty struct {
 	AesKey string
 }
 
+// AccessTokenProperty ...
+type AccessTokenProperty struct {
+	GrantType string `toml:"grant_type"`
+	AppID     string `toml:"app_id"`
+	Secret    string `toml:"secret"`
+}
+
+// Credential ...
+func (obj *AccessTokenProperty) Credential() *AccessTokenCredential {
+	return &AccessTokenCredential{
+		GrantType: GrantType(obj.GrantType),
+		AppID:     obj.AppID,
+		Secret:    obj.Secret,
+	}
+}
+
 // LocalProperty ...
 type LocalProperty struct {
 	Address     string `toml:"address"`
@@ -61,8 +77,8 @@ type LocalProperty struct {
 
 // Property ...
 type Property struct {
-	Local *LocalProperty
-	//AccessToken     *AccessTokenProperty
+	Local           *LocalProperty
+	AccessToken     *AccessTokenProperty
 	OAuth           *OAuthProperty
 	OpenPlatform    *OpenPlatformProperty
 	OfficialAccount *OfficialAccountProperty
