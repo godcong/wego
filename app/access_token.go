@@ -145,9 +145,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	} else {
 		obj.SetToken(token.AccessToken)
 	}
-
 	return token
-
 }
 
 func requestToken(url string, credentials *AccessTokenCredential) *core.Token {
