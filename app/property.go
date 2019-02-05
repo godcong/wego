@@ -61,7 +61,7 @@ type AccessTokenProperty struct {
 // Credential ...
 func (obj *AccessTokenProperty) Credential() *AccessTokenCredential {
 	return &AccessTokenCredential{
-		GrantType: GrantType(obj.GrantType),
+		GrantType: obj.GrantType,
 		AppID:     obj.AppID,
 		Secret:    obj.Secret,
 	}

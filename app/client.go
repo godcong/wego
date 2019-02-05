@@ -161,7 +161,7 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 
 // Get get请求
 func Get(url string, query util.Map) Responder {
-	client := makeClient(POST, url, nil, &ClientOption{
+	client := makeClient(GET, url, nil, &ClientOption{
 		Query: query,
 	})
 	return client.Do(context.Background())

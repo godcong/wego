@@ -192,7 +192,7 @@ func paymentNotifyURL(obj *Payment) string {
 
 // RefundURL ...
 func (obj *Payment) RefundURL() string {
-	return util.URL(obj.LocalAddress(), paymentRefundURL(obj))
+	return util.URL(obj.LocalAddressURL(), paymentRefundURL(obj))
 }
 func paymentRefundURL(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.RefundURL != "" {

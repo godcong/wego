@@ -12,15 +12,12 @@ import (
 	"time"
 )
 
-// GrantType ...
-type GrantType string
-
 // GrantTypeClient ...
-const GrantTypeClient GrantType = "client_credential"
+const GrantTypeClient string = "client_credential"
 
 // AccessTokenCredential ...
 type AccessTokenCredential struct {
-	GrantType GrantType
+	GrantType string
 	AppID     string
 	Secret    string
 }
