@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"net"
 	"net/http"
@@ -104,9 +105,11 @@ func makeClient(method string, url string, body interface{}, opts ...*ClientOpti
 
 // Do ...
 func (c *Client) Do(ctx context.Context) Responder {
+	log.Printf("%+v\n", c)
 	client := buildHTTPClient(c)
 	var request *http.Request
 	var e error
+
 	if c.Body == nil {
 		request, e = http.NewRequest(c.Method, c.RemoteURL(), nil)
 		if e != nil {
@@ -131,6 +134,7 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
+	log.Println("post form:", url, query, form)
 	bt := BodyTypeForm
 	client := makeClient(POST, url, form, &ClientOption{
 		BodyType: &bt,
@@ -141,6 +145,7 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
+	log.Println("post json:", url, query, json)
 	bt := BodyTypeJSON
 	client := makeClient(POST, url, json, &ClientOption{
 		BodyType: &bt,
@@ -151,6 +156,7 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
+	log.Println("post xml:", url, query, xml)
 	bt := BodyTypeXML
 	client := makeClient(POST, url, xml, &ClientOption{
 		BodyType: &bt,
@@ -161,6 +167,7 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 
 // Get get请求
 func Get(url string, query util.Map) Responder {
+	log.Println("get request:", url, query)
 	client := makeClient(GET, url, nil, &ClientOption{
 		Query: query,
 	})

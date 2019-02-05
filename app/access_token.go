@@ -26,7 +26,7 @@ type AccessTokenCredential struct {
 func (obj *AccessTokenCredential) ToMap() util.Map {
 	return util.Map{
 		"grant_type": obj.GrantType,
-		"app_id":     obj.AppID,
+		"appid":      obj.AppID,
 		"secret":     obj.Secret,
 	}
 }
