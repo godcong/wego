@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 )
@@ -12,15 +13,15 @@ import (
 type Payment struct {
 	client *Client
 	*PaymentProperty
-	property    *Property
-	accessToken *AccessToken
-	option      *PaymentOption
+	property *Property
+	option   *PaymentOption
 }
 
 // PaymentOption ...
 type PaymentOption struct {
 	RemoteHost   string
 	LocalAddress string
+	UseSandbox   bool
 	Sandbox      *SandboxProperty
 	NotifyURL    string
 	RefundURL    string
@@ -35,12 +36,11 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 	bt := BodyTypeXML
 	return &Payment{
 		client: NewClient(&ClientOption{
-			AccessToken: NewAccessToken(property.AccessToken.Credential()),
-			BodyType:    &bt,
+			//AccessToken: NewAccessToken(property.AccessToken.Credential()),
+			BodyType: &bt,
 		}),
 		PaymentProperty: property.Payment,
 		property:        property,
-		accessToken:     nil,
 		option:          opt,
 	}
 }
@@ -82,34 +82,76 @@ func (obj *Payment) Pay(p util.Map) Responder {
 		p.Set("notify_url", notify)
 	}
 
-	return nil
-	//TODO
-	//return obj.Request(payMicroPay, p)
+	return obj.Request(payMicroPay, p)
+}
+
+/*Unify 统一下单
+字段名	变量名	必填	类型	示例值	描述
+商品描述	body	是	String(128)	Ipad mini  16G  白色	商品或支付单简要描述
+商户订单号	out_trade_no	是	String(32)	20150806125346	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*且在同一个商户号下唯一。 其他说明见商户订单号
+标价金额	total_fee	是	Int	888	标价金额，单位为该币种最小计算单位，只能为整数，详见标价金额
+交易类型	trade_type	是	String(16)	JSAPI	取值如下:JSAPI，NATIVE，APP，详细说明见参数规定
+用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
+*/
+func (obj *Payment) Unify(m util.Map) core.Responder {
+	if !m.Has("spbill_create_ip") {
+		if m.Get("trade_type") == "NATIVE" {
+			m.Set("spbill_create_ip", core.GetServerIP())
+		}
+		//TODO: getclientip with request
+		//if obj.request != nil {
+		//	m.Set("spbill_create_ip", core.GetClientIP(obj.request))
+		//}
+	}
+
+	m.Set("appid", obj.AppID)
+
+	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
+	if !m.Has("notify_url") {
+		m.Set("notify_url", obj.NotifyURL())
+	}
+
+	return obj.Request(payUnifiedOrder, m)
 }
 
 // Request 默认请求
-func (obj *Payment) Request(s string, p util.Map) Responder {
-	//m := util.Map{
-	//	core.DataTypeXML: obj.initRequest(maps),
-	//}
-	//return Post(obj.Link(s), m)
-	return nil
+func (obj *Payment) Request(uri string, p util.Map) Responder {
+	p.Join(initPay(obj))
+	return PostXML(obj.RemoteHost(uri), nil, p)
 }
 
 // SafeRequest 安全请求
 func (obj *Payment) SafeRequest(s string, p util.Map) Responder {
 	//m := util.Map{
-	//	core.DataTypeXML:      obj.initRequest(maps),
+	//	core.DataTypeXML:      obj.initRequest(p),
 	//	core.DataTypeSecurity: obj.Config,
 	//}
 	//return core.Request(core.POST, obj.Link(s), m)
 	return nil
 }
 
+func initPay(obj *Payment) util.Map {
+	p := make(util.Map)
+	p.Set("mch_id", obj.MchID)
+	p.Set("nonce_str", util.GenerateUUID())
+	if obj.SubMchID != "" {
+		p.Set("sub_mch_id", obj.SubMchID)
+	}
+	if obj.SubAppID != "" {
+		p.Set("sub_appid", obj.SubAppID)
+	}
+
+	if !p.Has("sign") {
+		p.Set("sign", util.GenSign(p, obj.GetKey(), util.SignMD5))
+	}
+	log.Debug("initPay end", p)
+	return p
+}
+
 // IsSandbox ...
 func (obj *Payment) IsSandbox() bool {
 	if obj.option != nil {
-		return obj.option.Sandbox.UseSandbox
+		return obj.option.UseSandbox
 	}
 	return false
 }
@@ -123,7 +165,7 @@ func (obj *Payment) GetKey() string {
 			key = cachedKey.(string)
 		}
 
-		response := obj.SandboxSignKey().ToMap()
+		response := obj.sandboxSignKey().ToMap()
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
 			cache.SetWithTTL(obj.getCacheKey(), key, 3*24*3600)
@@ -144,22 +186,21 @@ func (obj *Payment) getCacheKey() string {
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
-/*SandboxSignKey 沙箱key */
-func (obj *Payment) SandboxSignKey() Responder {
+func (obj *Payment) sandboxSignKey() Responder {
 	m := make(util.Map)
 	m.Set("mch_id", obj.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := util.GenSign(m, obj.option.Sandbox.Key, util.SignMD5)
 	m.Set("sign", sign)
-	resp := PostXML(util.URL(obj.RemoteHost(), sandboxSignKeyURLSuffix), nil, m)
+	resp := PostXML(obj.RemoteHost(sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 
 }
 
 // RemoteHost ...
-func (obj *Payment) RemoteHost() string {
-	return remoteHost(obj)
+func (obj *Payment) RemoteHost(uri string) string {
+	return util.URL(remoteHost(obj), uri)
 }
 func remoteHost(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.RemoteHost != "" {

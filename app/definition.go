@@ -7,10 +7,13 @@ const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
 
 const apiMCHWeixin = "https://api.mch.weixin.qq.com"
 const apiWeixin = "https://api.weixin.qq.com"
+const payMicroPay = "/pay/micropay"
 const localAddress = "http://localhost"
 const notifyCB = "notify_cb"
 const refundedCB = "refunded_cb"
 const scannedCB = "scanned_cb"
+
+const payUnifiedOrder = "/pay/unifiedorder"
 
 /*accessTokenKey 键值 */
 const accessTokenKey = "access_token"
