@@ -7,38 +7,9 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"github.com/json-iterator/go"
 	"golang.org/x/exp/xerrors"
 	"time"
 )
-
-// GrantTypeClient ...
-const GrantTypeClient string = "client_credential"
-
-// AccessTokenCredential ...
-type AccessTokenCredential struct {
-	GrantType string
-	AppID     string
-	Secret    string
-}
-
-// ToMap ...
-func (obj *AccessTokenCredential) ToMap() util.Map {
-	return util.Map{
-		"grant_type": obj.GrantType,
-		"appid":      obj.AppID,
-		"secret":     obj.Secret,
-	}
-}
-
-// ToJSON ...
-func (obj *AccessTokenCredential) ToJSON() []byte {
-	bytes, err := jsoniter.Marshal(obj)
-	if err != nil {
-		return nil
-	}
-	return bytes
-}
 
 // AccessTokenOption ...
 type AccessTokenOption struct {
@@ -49,8 +20,8 @@ type AccessTokenOption struct {
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	credential *AccessTokenCredential
-	option     *AccessTokenOption
+	*AccessTokenProperty
+	option *AccessTokenOption
 }
 
 /*AccessTokenSafeSeconds token安全时间 */
@@ -78,20 +49,20 @@ func tokenURL(obj *AccessToken) string {
 	return accessTokenURLSuffix
 }
 
-func newAccessToken(credential *AccessTokenCredential, opts ...*AccessTokenOption) *AccessToken {
+func newAccessToken(property *AccessTokenProperty, opts ...*AccessTokenOption) *AccessToken {
 	var opt *AccessTokenOption
 	if opts != nil {
 		opt = opts[0]
 	}
 	return &AccessToken{
-		credential: credential,
-		option:     opt,
+		AccessTokenProperty: property,
+		option:              opt,
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(credential *AccessTokenCredential, opts ...*AccessTokenOption) *AccessToken {
-	return newAccessToken(credential, opts...)
+func NewAccessToken(property *AccessTokenProperty, opts ...*AccessTokenOption) *AccessToken {
+	return newAccessToken(property, opts...)
 }
 
 /*Refresh 刷新AccessToken */
@@ -132,7 +103,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 		}
 	}
 
-	token := requestToken(obj.TokenURL(), obj.credential)
+	token := requestToken(obj.TokenURL(), obj.AccessTokenProperty)
 	if token == nil {
 		return nil
 	}
@@ -145,7 +116,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	return token
 }
 
-func requestToken(url string, credentials *AccessTokenCredential) *core.Token {
+func requestToken(url string, credentials *AccessTokenProperty) *core.Token {
 	var token core.Token
 	e := Get(url, credentials.ToMap()).Unmarshal(&token)
 	if e != nil {
@@ -174,7 +145,7 @@ func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
 }
 
 func (obj *AccessToken) getCredentials() string {
-	c := md5.Sum(obj.credential.ToJSON())
+	c := md5.Sum(obj.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 

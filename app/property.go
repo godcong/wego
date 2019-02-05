@@ -1,24 +1,30 @@
 package app
 
+import (
+	"github.com/godcong/wego/util"
+	"github.com/json-iterator/go"
+)
+
 // SandboxProperty ...
 type SandboxProperty struct {
-	UseSandbox bool
-	AppID      string
-	Secret     string
-	MchID      string
-	Key        string
+	AppID  string
+	Secret string
+	MchID  string
+	Key    string
 }
 
 // PaymentProperty ...
 type PaymentProperty struct {
-	AppID      string
-	MchID      string
-	Key        string
-	CertPEM    string
-	KeyPEM     string
-	RootCaPEM  string
-	PublicKey  string
-	PrivateKey string
+	AppID      string `json:"app_id"`
+	MchID      string `json:"mch_id"`
+	SubMchID   string `json:"sub_mch_id"`
+	SubAppID   string `json:"sub_app_id"`
+	Key        string `json:"key"`
+	CertPEM    string `json:"cert_pem"`
+	KeyPEM     string `json:"key_pem"`
+	RootCaPEM  string `json:"root_ca_pem"`
+	PublicKey  string `json:"public_key"`
+	PrivateKey string `json:"private_key"`
 }
 
 // OAuthProperty ...
@@ -51,6 +57,9 @@ type MiniProgramProperty struct {
 	AesKey string
 }
 
+// GrantTypeClient ...
+const GrantTypeClient string = "client_credential"
+
 // AccessTokenProperty ...
 type AccessTokenProperty struct {
 	GrantType string `toml:"grant_type"`
@@ -58,13 +67,22 @@ type AccessTokenProperty struct {
 	Secret    string `toml:"secret"`
 }
 
-// Credential ...
-func (obj *AccessTokenProperty) Credential() *AccessTokenCredential {
-	return &AccessTokenCredential{
-		GrantType: obj.GrantType,
-		AppID:     obj.AppID,
-		Secret:    obj.Secret,
+// ToMap ...
+func (obj *AccessTokenProperty) ToMap() util.Map {
+	return util.Map{
+		"grant_type": obj.GrantType,
+		"appid":      obj.AppID,
+		"secret":     obj.Secret,
 	}
+}
+
+// ToJSON ...
+func (obj *AccessTokenProperty) ToJSON() []byte {
+	bytes, err := jsoniter.Marshal(obj)
+	if err != nil {
+		return nil
+	}
+	return bytes
 }
 
 // LocalProperty ...
