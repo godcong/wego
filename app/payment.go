@@ -10,6 +10,7 @@ import (
 
 //Payment ...
 type Payment struct {
+	client *Client
 	*PaymentProperty
 	property    *Property
 	accessToken *AccessToken
@@ -18,10 +19,11 @@ type Payment struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	RemoteHost string
-	Sandbox    SandboxProperty
-	NotifyURL  string
-	RefundURL  string
+	RemoteHost   string
+	LocalAddress string
+	Sandbox      *SandboxProperty
+	NotifyURL    string
+	RefundURL    string
 }
 
 // NewPayment ...
@@ -31,9 +33,25 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 		opt = opts[0]
 	}
 	return &Payment{
+		client: NewClient(&ClientOption{
+			UseSafe:  false,
+			UseToken: false,
+			SafeCert: nil,
+			AccessToken: NewAccessToken(property, &AccessTokenOption{
+				Credential: &AccessTokenCredential{
+					GrantType: "",
+					AppID:     "",
+					Secret:    "",
+				},
+			}),
+			BodyType:  nil,
+			Query:     nil,
+			Timeout:   0,
+			KeepAlive: 0,
+		}),
 		PaymentProperty: property.Payment,
-		accessToken:     nil,
 		property:        property,
+		accessToken:     nil,
 		option:          opt,
 	}
 }
@@ -152,31 +170,44 @@ func (obj *Payment) SandboxSignKey() Responder {
 
 // RemoteHost ...
 func (obj *Payment) RemoteHost() string {
-	if obj.option.RemoteHost != "" {
+	return remoteHost(obj)
+}
+func remoteHost(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.RemoteHost != "" {
 		return obj.option.RemoteHost
 	}
 	return apiMCHWeixin
 }
 
-// LocalAddress ...
-func (obj *Payment) LocalAddress() string {
-	return obj.property.Local.Address
+// LocalAddressURL ...
+func (obj *Payment) LocalAddressURL() string {
+	return localAddressURL(obj)
+}
+func localAddressURL(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.LocalAddress != "" {
+		return obj.option.LocalAddress
+	}
+	return localAddress
 }
 
 // NotifyURL ...
 func (obj *Payment) NotifyURL() string {
-	uri := obj.property.Local.NotifyURL
-	if obj.option.NotifyURL != "" {
-		uri = obj.option.NotifyURL
+	return util.URL(obj.LocalAddressURL(), paymentNotifyURL(obj))
+}
+func paymentNotifyURL(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.NotifyURL != "" {
+		return obj.option.NotifyURL
 	}
-	return util.URL(obj.LocalAddress(), uri)
+	return notifyCB
 }
 
 // RefundURL ...
 func (obj *Payment) RefundURL() string {
-	uri := obj.property.Local.RefundedURL
-	if obj.option.RefundURL != "" {
-		uri = obj.option.RefundURL
+	return util.URL(obj.LocalAddress(), paymentRefundURL(obj))
+}
+func paymentRefundURL(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.RefundURL != "" {
+		return obj.option.RefundURL
 	}
-	return util.URL(obj.LocalAddress(), uri)
+	return refundedCB
 }

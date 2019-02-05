@@ -20,8 +20,17 @@ type AccessTokenCredential struct {
 	Secret    string
 }
 
+// ToMap ...
+func (obj *AccessTokenCredential) ToMap() util.Map {
+	return util.Map{
+		"grant_type": obj.GrantType,
+		"app_id":     obj.AppID,
+		"secret":     obj.Secret,
+	}
+}
+
 // ToJSON ...
-func (c *AccessTokenCredential) ToJSON() []byte {
+func (obj *AccessTokenCredential) ToJSON() []byte {
 	bytes, err := jsoniter.Marshal(c)
 	if err != nil {
 		return nil
@@ -31,7 +40,6 @@ func (c *AccessTokenCredential) ToJSON() []byte {
 
 // AccessTokenOption ...
 type AccessTokenOption struct {
-	Credential *AccessTokenCredential
 	RemoteHost string
 	TokenKey   string
 	TokenURL   string
@@ -39,46 +47,53 @@ type AccessTokenOption struct {
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	*AccessTokenProperty
-	property *Property
-	option   *AccessTokenOption
+	credential *AccessTokenCredential
+	option     *AccessTokenOption
 }
-
-/*accessTokenKey 键值 */
-const accessTokenKey = "access_token"
-const accessTokenURLSuffix = "/cgi-bin/token"
 
 /*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500
 
 // RemoteHost ...
 func (obj *AccessToken) RemoteHost() string {
-	if obj.option.RemoteHost != "" {
+	return accessTokenRemoteHost(obj)
+}
+func accessTokenRemoteHost(obj *AccessToken) string {
+	if obj != nil && obj.option != nil && obj.option.RemoteHost != "" {
 		return obj.option.RemoteHost
 	}
 	return apiWeixin
 }
 
-func (obj *AccessToken) sendRequest(s string) []byte {
-	//return core.Get(core.Splice(obj.prefix, obj.URL), obj.credentials).Bytes()
-	return nil
+// TokenURL ...
+func (obj *AccessToken) TokenURL() string {
+	return tokenURL(obj)
+}
+func tokenURL(obj *AccessToken) string {
+	if obj != nil && obj.option != nil && obj.option.TokenURL != "" {
+		return obj.option.TokenURL
+	}
+	return accessTokenURLSuffix
 }
 
-func newAccessToken(property *Property, opts ...*AccessTokenOption) *AccessToken {
+func (obj *AccessToken) sendRequest(s string) []byte {
+	return Get(util.URL(obj.RemoteHost(), obj.TokenURL()), obj.credential.ToMap()).Bytes()
+}
+
+func newAccessToken(credential *AccessTokenCredential, opts ...*AccessTokenOption) *AccessToken {
 	var opt *AccessTokenOption
 	if opts != nil {
 		opt = opts[0]
 	}
 	return &AccessToken{
-		AccessTokenProperty: property.AccessToken,
-		property:            property,
-		option:              opt,
+		credential: credential,
+		option:     opt,
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property *Property, opts ...*AccessTokenOption) *AccessToken {
-	return newAccessToken(property, opts...)
+func NewAccessToken(credential *AccessTokenCredential, opts ...*AccessTokenOption) *AccessToken {
+	return newAccessToken(credential, opts...)
 }
 
 /*Refresh 刷新AccessToken */
@@ -174,7 +189,7 @@ func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
 }
 
 func (obj *AccessToken) getCredentials() string {
-	c := md5.Sum(obj.option.Credential.ToJSON())
+	c := md5.Sum(obj.credential.ToJSON())
 	return fmt.Sprintf("%x", c[:])
 }
 
