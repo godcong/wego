@@ -49,9 +49,10 @@ type SafeCert struct {
 // ClientOption ...
 type ClientOption struct {
 	UseSafe     bool
+	UseToken    bool
 	SafeCert    *SafeCert
 	AccessToken *AccessToken
-	BodyType    BodyType
+	BodyType    *BodyType
 	Query       util.Map
 	Timeout     int64
 	KeepAlive   int64
@@ -68,18 +69,35 @@ func NewClient(opts ...*ClientOption) *Client {
 	}
 }
 
+// Post ...
+func (c *Client) Post(ctx context.Context, method string, url string, body interface{}) Responder {
+	c.Method = method
+	c.URL = url
+	c.Body = buildBody(body, c.BodyType())
+	return c.Do(ctx)
+}
+
+// BodyType ...
+func (c *Client) BodyType() BodyType {
+	return bodyType(c.Option)
+}
+func bodyType(opt *ClientOption) BodyType {
+	if opt != nil && opt.BodyType != nil {
+		return *opt.BodyType
+	}
+	return BodyTypeNone
+}
+
 // makeClient ...
 func makeClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
 	var opt *ClientOption
-	bt := BodyTypeNone
 	if opts != nil {
 		opt = opts[0]
-		bt = opt.BodyType
 	}
 	return &Client{
 		Method: method,
 		URL:    url,
-		Body:   buildBody(body, bt),
+		Body:   buildBody(body, bodyType(opt)),
 		Option: opt,
 	}
 }
@@ -113,8 +131,9 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
+	bt := BodyTypeForm
 	client := makeClient(POST, url, form, &ClientOption{
-		BodyType: BodyTypeForm,
+		BodyType: &bt,
 		Query:    query,
 	})
 	return client.Do(context.Background())
@@ -122,8 +141,9 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
+	bt := BodyTypeJSON
 	client := makeClient(POST, url, json, &ClientOption{
-		BodyType: BodyTypeJSON,
+		BodyType: &bt,
 		Query:    query,
 	})
 	return client.Do(context.Background())
@@ -131,8 +151,9 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
+	bt := BodyTypeXML
 	client := makeClient(POST, url, xml, &ClientOption{
-		BodyType: BodyTypeXML,
+		BodyType: &bt,
 		Query:    query,
 	})
 	return client.Do(context.Background())
@@ -148,8 +169,9 @@ func Get(url string, query util.Map) Responder {
 
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
+	bt := BodyTypeMultipart
 	client := makeClient(POST, url, multi, &ClientOption{
-		BodyType: BodyTypeMultipart,
+		BodyType: &bt,
 		Query:    query,
 	})
 	return client.Do(context.Background())
