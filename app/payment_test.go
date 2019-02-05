@@ -22,9 +22,7 @@ var p = Property{
 // TestPayment_SandboxSignKey ...
 func TestPayment_SandboxSignKey(t *testing.T) {
 	payment := NewPayment(&p, &PaymentOption{
-		Sandbox: SandboxProperty{
-			UseSandbox: true,
-		},
+		Sandbox: SandboxProperty{},
 	})
 	key := payment.SandboxSignKey().ToMap()
 	t.Log(key)

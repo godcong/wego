@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"encoding/xml"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
@@ -39,7 +40,6 @@ type RequestBody struct {
 type RequestBuilderFunc func(method, url string, i interface{}) *http.Request
 
 //TODO
-var buildXML = buildNothing
 var buildMultipart = buildNothing
 var buildForm = buildNothing
 
@@ -51,8 +51,41 @@ var builder = map[BodyType]RequestBuilderFunc{
 	BodyTypeNone:      buildNothing,
 }
 
+func buildXML(method, url string, i interface{}) *http.Request {
+	request, e := http.NewRequest(method, url, xmlReader(i))
+	if e != nil {
+		log.Error(e)
+		return nil
+	}
+	request.Header.Set("Content-Type", "application/json; charset=utf-8")
+	return request
+}
+
+// xmlReader ...
+func xmlReader(v interface{}) io.Reader {
+	var reader io.Reader
+	switch v := v.(type) {
+	case string:
+		log.Debug("toXMLReader|string", v)
+		reader = strings.NewReader(v)
+	case []byte:
+		log.Debug("toXMLReader|[]byte", v)
+		reader = bytes.NewReader(v)
+	case util.Map:
+		log.Debug("toXMLReader|util.Map", string(v.ToXML()))
+		reader = bytes.NewReader(v.ToXML())
+	default:
+		log.Debug("toXMLReader|default", v)
+		if v0, e := xml.Marshal(v); e == nil {
+			log.Debug("toXMLReader|v0", v0, e)
+			reader = bytes.NewReader(v0)
+		}
+	}
+	return reader
+}
+
 func buildJSON(method, url string, i interface{}) *http.Request {
-	request, e := http.NewRequest(method, url, JSONReader(i))
+	request, e := http.NewRequest(method, url, jsonReader(i))
 	if e != nil {
 		log.Error(e)
 		return nil
@@ -62,30 +95,29 @@ func buildJSON(method, url string, i interface{}) *http.Request {
 }
 
 func buildNothing(method, url string, i interface{}) *http.Request {
-	request, e := http.NewRequest(method, url, JSONReader(i))
+	request, e := http.NewRequest(method, url, nil)
 	if e != nil {
 		log.Error(e)
 		return nil
 	}
-	request.Header.Set("Content-Type", "application/json; charset=utf-8")
 	return request
 }
 
-// JSONReader ...
-func JSONReader(v interface{}) io.Reader {
+// jsonReader ...
+func jsonReader(v interface{}) io.Reader {
 	var reader io.Reader
 	switch v := v.(type) {
 	case string:
-		log.Debug("JSONReader|string", v)
+		log.Debug("jsonReader|string", v)
 		reader = strings.NewReader(v)
 	case []byte:
-		log.Debug("JSONReader|[]byte", string(v))
+		log.Debug("jsonReader|[]byte", string(v))
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("JSONReader|util.Map", v.String())
+		log.Debug("jsonReader|util.Map", v.String())
 		reader = bytes.NewReader(v.ToJSON())
 	default:
-		log.Debug("JSONReader|default", v)
+		log.Debug("jsonReader|default", v)
 		if v0, e := jsoniter.Marshal(v); e == nil {
 			reader = bytes.NewReader(v0)
 		}
