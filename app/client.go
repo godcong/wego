@@ -58,7 +58,18 @@ type ClientOption struct {
 }
 
 // NewClient ...
-func NewClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
+func NewClient(opts ...*ClientOption) *Client {
+	var opt *ClientOption
+	if opts != nil {
+		opt = opts[0]
+	}
+	return &Client{
+		Option: opt,
+	}
+}
+
+// makeClient ...
+func makeClient(method string, url string, body interface{}, opts ...*ClientOption) *Client {
 	var opt *ClientOption
 	bt := BodyTypeNone
 	if opts != nil {
@@ -102,7 +113,7 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
-	client := NewClient(POST, url, form, &ClientOption{
+	client := makeClient(POST, url, form, &ClientOption{
 		BodyType: BodyTypeForm,
 		Query:    query,
 	})
@@ -111,7 +122,7 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
-	client := NewClient(POST, url, json, &ClientOption{
+	client := makeClient(POST, url, json, &ClientOption{
 		BodyType: BodyTypeJSON,
 		Query:    query,
 	})
@@ -120,7 +131,7 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
-	client := NewClient(POST, url, xml, &ClientOption{
+	client := makeClient(POST, url, xml, &ClientOption{
 		BodyType: BodyTypeXML,
 		Query:    query,
 	})
@@ -129,7 +140,7 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 
 // Get get请求
 func Get(url string, query util.Map) Responder {
-	client := NewClient(POST, url, nil, &ClientOption{
+	client := makeClient(POST, url, nil, &ClientOption{
 		Query: query,
 	})
 	return client.Do(context.Background())
@@ -137,7 +148,7 @@ func Get(url string, query util.Map) Responder {
 
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
-	client := NewClient(POST, url, multi, &ClientOption{
+	client := makeClient(POST, url, multi, &ClientOption{
 		BodyType: BodyTypeMultipart,
 		Query:    query,
 	})

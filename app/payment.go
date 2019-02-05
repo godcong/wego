@@ -66,22 +66,22 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (obj *Payment) Pay(maps util.Map) Responder {
-	maps.Set("appid", obj.AppID)
+func (obj *Payment) Pay(p util.Map) Responder {
+	p.Set("appid", obj.AppID)
 
 	//set notify callback
-	notify := obj.option.NotifyURL
-	if !maps.Has("notify_url") {
-		maps.Set("notify_url", notify)
+	notify := obj.NotifyURL()
+	if !p.Has("notify_url") {
+		p.Set("notify_url", notify)
 	}
 
 	return nil
 	//TODO
-	//return obj.Request(payMicroPay, maps)
+	//return obj.Request(payMicroPay, p)
 }
 
 // Request 默认请求
-func (obj *Payment) Request(s string, maps util.Map) Responder {
+func (obj *Payment) Request(s string, p util.Map) Responder {
 	//m := util.Map{
 	//	core.DataTypeXML: obj.initRequest(maps),
 	//}
@@ -90,7 +90,7 @@ func (obj *Payment) Request(s string, maps util.Map) Responder {
 }
 
 // SafeRequest 安全请求
-func (obj *Payment) SafeRequest(s string, maps util.Map) Responder {
+func (obj *Payment) SafeRequest(s string, p util.Map) Responder {
 	//m := util.Map{
 	//	core.DataTypeXML:      obj.initRequest(maps),
 	//	core.DataTypeSecurity: obj.Config,

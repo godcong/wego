@@ -34,7 +34,7 @@ type Response struct {
 // xmlResponse ...
 type xmlResponse struct {
 	Response
-	maps util.Map
+	data util.Map
 }
 
 // XMLResponse ...
@@ -62,18 +62,18 @@ func (r *xmlResponse) Unmarshal(v interface{}) error {
 
 // Result ...
 func (r *xmlResponse) Result() (util.Map, error) {
-	if r.maps != nil {
-		return r.maps, nil
+	if r.data != nil {
+		return r.data, nil
 	}
-	r.maps = make(util.Map)
-	e := r.Unmarshal(&r.maps)
-	return r.maps, e
+	r.data = make(util.Map)
+	e := r.Unmarshal(&r.data)
+	return r.data, e
 }
 
 // jsonResponse ...
 type jsonResponse struct {
 	Response
-	maps util.Map
+	data util.Map
 }
 
 // JSONResponse ...
@@ -101,9 +101,9 @@ func (r *jsonResponse) Unmarshal(v interface{}) error {
 
 // Result ...
 func (r *jsonResponse) Result() (util.Map, error) {
-	r.maps = make(util.Map)
-	e := r.Unmarshal(&r.maps)
-	return r.maps, e
+	r.data = make(util.Map)
+	e := r.Unmarshal(&r.data)
+	return r.data, e
 }
 
 // ToMap ...
