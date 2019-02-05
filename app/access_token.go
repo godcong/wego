@@ -2,7 +2,6 @@ package app
 
 import (
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
@@ -67,17 +66,13 @@ func accessTokenRemoteHost(obj *AccessToken) string {
 
 // TokenURL ...
 func (obj *AccessToken) TokenURL() string {
-	return tokenURL(obj)
+	return util.URL(obj.RemoteHost(), tokenURL(obj))
 }
 func tokenURL(obj *AccessToken) string {
 	if obj != nil && obj.option != nil && obj.option.TokenURL != "" {
 		return obj.option.TokenURL
 	}
 	return accessTokenURLSuffix
-}
-
-func (obj *AccessToken) sendRequest(s string) []byte {
-	return Get(util.URL(obj.RemoteHost(), obj.TokenURL()), obj.credential.ToMap()).Bytes()
 }
 
 func newAccessToken(credential *AccessTokenCredential, opts ...*AccessTokenOption) *AccessToken {
@@ -140,7 +135,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 		}
 	}
 
-	token := obj.RequestToken(obj.getCredentials())
+	token := requestToken(obj.TokenURL(), obj.credential)
 	if token == nil {
 		return nil
 	}
@@ -155,16 +150,11 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 
 }
 
-/*RequestToken 请求获取token */
-func (obj *AccessToken) RequestToken(credentials string) *core.Token {
+func requestToken(url string, credentials *AccessTokenCredential) *core.Token {
 	var token core.Token
-	tokenByte := obj.sendRequest(credentials)
-	if tokenByte == nil {
-		return nil
-	}
-	err := json.Unmarshal(tokenByte, &token)
-	if err != nil {
-		log.Error(err)
+	e := Get(url, credentials.ToMap()).Unmarshal(&token)
+	if e != nil {
+		log.Error("requestToken error", e)
 		return nil
 	}
 	return &token
