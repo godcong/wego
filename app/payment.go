@@ -200,6 +200,9 @@ func (obj *Payment) sandboxSignKey() Responder {
 
 // RemoteHost ...
 func (obj *Payment) RemoteHost(uri string) string {
+	if obj.IsSandbox() {
+		return util.URL(remoteHost(obj), sandboxURLSuffix, uri)
+	}
 	return util.URL(remoteHost(obj), uri)
 }
 func remoteHost(obj *Payment) string {
