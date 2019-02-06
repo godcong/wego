@@ -1,6 +1,8 @@
 package app
 
 import (
+	"crypto/md5"
+	"fmt"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 )
@@ -11,6 +13,21 @@ type SandboxProperty struct {
 	Secret string
 	MchID  string
 	Key    string
+}
+
+func (obj *SandboxProperty) getCacheKey() string {
+	name := obj.AppID + "." + obj.MchID
+	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
+}
+
+// SignKey ...
+func (obj *SandboxProperty) SignKey() Responder {
+	m := make(util.Map)
+	m.Set("mch_id", obj.MchID)
+	m.Set("nonce_str", util.GenerateNonceStr())
+	m.Set("sign", util.GenSign(m, obj.Key))
+	resp := PostXML(util.URL(apiMCHWeixin, sandboxnew, getsignkey), nil, m)
+	return resp
 }
 
 // SafeCertProperty ...

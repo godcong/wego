@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/core"
@@ -196,15 +195,19 @@ func (obj *Payment) IsSandbox() bool {
 func (obj *Payment) GetKey() string {
 	key := obj.Key
 	if obj.IsSandbox() {
-		cachedKey := cache.Get(obj.getCacheKey())
+		keyName := obj.Sandbox().getCacheKey()
+		cachedKey := cache.Get(keyName)
 		if cachedKey != nil {
+			log.Println("cached:", cachedKey.(string))
 			key = cachedKey.(string)
+			return key
 		}
 
-		response := obj.sandboxSignKey().ToMap()
+		response := obj.Sandbox().SignKey().ToMap()
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
-			cache.SetWithTTL(obj.getCacheKey(), key, 3*24*3600)
+			log.Println("cache key:", keyName)
+			cache.SetWithTTL(keyName, key, 3*24*3600)
 		}
 	}
 
@@ -216,27 +219,18 @@ func (obj *Payment) GetKey() string {
 
 }
 
-func (obj *Payment) getCacheKey() string {
-	name := obj.option.Sandbox.AppID + "." + obj.option.Sandbox.MchID
-	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
-}
-
-func (obj *Payment) sandboxSignKey() Responder {
-	m := make(util.Map)
-	m.Set("mch_id", obj.option.Sandbox.MchID)
-	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := util.GenSign(m, obj.option.Sandbox.Key)
-	m.Set("sign", sign)
-	resp := PostXML(obj.RemoteURL(sandboxSignKeyURLSuffix), nil, m)
-
-	return resp
-
+// Sandbox ...
+func (obj *Payment) Sandbox() *SandboxProperty {
+	if obj.option != nil && obj.option.Sandbox != nil {
+		return obj.option.Sandbox
+	}
+	return &SandboxProperty{}
 }
 
 // RemoteURL ...
 func (obj *Payment) RemoteURL(uri string) string {
 	if obj.IsSandbox() {
-		return util.URL(remotePayment(obj), sandboxURLSuffix, uri)
+		return util.URL(remotePayment(obj), sandboxnew, uri)
 	}
 	return util.URL(remotePayment(obj), uri)
 }

@@ -1,11 +1,9 @@
 package app
 
-const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
-const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
-const sandboxURLSuffix = "/sandboxnew"
-
-//const sandboxSignKeyURLSuffix = sandboxURLSuffix + "/pay/getsignkey"
-const sandboxSignKeyURLSuffix = "/pay/getsignkey"
+const clearQuota = "/cgi-bin/clear_quota"
+const getcallbackip = "/cgi-bin/getcallbackip"
+const sandboxnew = "sandboxnew"
+const getsignkey = "pay/getsignkey"
 
 const apiMCHWeixin = "https://api.mch.weixin.qq.com"
 const apiWeixin = "https://api.weixin.qq.com"
