@@ -228,9 +228,9 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 			}
 			ele = append(ele, token.Name.Local)
 			current = strings.Join(ele, ".")
-			log.Debug("EndElement", current)
-			log.Debug("EndElement", last)
-			log.Debug("EndElement", arrayTag)
+			//log.Debug("EndElement", current)
+			//log.Debug("EndElement", last)
+			//log.Debug("EndElement", arrayTag)
 			if current == last {
 				arrayTag = current
 				tmp := maps.Get(arrayTag)
@@ -252,12 +252,13 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 				break
 			}
 			last = strings.Join(ele, ".")
-			log.Debug("EndElement", current)
-			log.Debug("EndElement", last)
-			log.Debug("EndElement", arrayTag)
+			//log.Debug("EndElement", current)
+			//log.Debug("EndElement", last)
+			//log.Debug("EndElement", arrayTag)
 
 			if current == last {
 				if data != nil {
+					log.Debug("CharData", data)
 					maps.Set(current, data)
 				} else {
 					//m.Set(current, nil)
@@ -281,7 +282,7 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 			}
 
 			ele = ele[:len(ele)-1]
-			log.Debug("EndElement", ele)
+			//log.Debug("EndElement", ele)
 			// 处理字符数据（这里就是元素的文本）
 		case xml.CharData:
 			if needCast {
@@ -302,7 +303,7 @@ func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast boo
 			}
 
 			data = string(token)
-			log.Debug("CharData", data)
+			//log.Debug("CharData", data)
 			// 异常处理(Log输出）
 		default:
 			log.Debug(token)

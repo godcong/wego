@@ -99,7 +99,7 @@ func IsDebug() bool {
 
 // Printf ...
 func Printf(format string, v ...interface{}) {
-	log.Printf(format, v)
+	log.Output(2, fmt.Sprintf(format, v))
 }
 
 /*Println output Println log */
@@ -110,6 +110,13 @@ func Println(v ...interface{}) {
 /*Print output Print log */
 func Print(v ...interface{}) {
 	log.Output(2, fmt.Sprint(v))
+}
+
+// Debugf ...
+func Debugf(format string, v ...interface{}) {
+	if DEBUG <= logs.LevelInt() || IsDebug() {
+		log.Output(2, fmt.Sprintf("[Debug]"+format, v))
+	}
 }
 
 /*Debug output Debug log */
