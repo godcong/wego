@@ -13,6 +13,13 @@ type SandboxProperty struct {
 	Key    string
 }
 
+// SafeCertProperty ...
+type SafeCertProperty struct {
+	Cert   []byte
+	Key    []byte
+	RootCA []byte
+}
+
 // PaymentProperty ...
 type PaymentProperty struct {
 	AppID      string `json:"app_id"`
@@ -102,4 +109,5 @@ type Property struct {
 	OfficialAccount *OfficialAccountProperty
 	MiniProgram     *MiniProgramProperty
 	Payment         *PaymentProperty
+	SafeCert        *SafeCertProperty
 }

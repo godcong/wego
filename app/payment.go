@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/cache"
@@ -123,7 +124,6 @@ func (obj *Payment) Unify(m util.Map) Responder {
 
 	m.Set("appid", obj.AppID)
 
-	//$params['notify_url'] = $params['notify_url'] ?? $this->app['config']['notify_url'];
 	if !m.Has("notify_url") {
 		m.Set("notify_url", obj.NotifyURL())
 	}
@@ -132,18 +132,19 @@ func (obj *Payment) Unify(m util.Map) Responder {
 }
 
 // Request 默认请求
-func (obj *Payment) Request(uri string, p util.Map) Responder {
-	return PostXML(obj.RemoteURL(uri), nil, obj.initPay(p))
+func (obj *Payment) Request(url string, p util.Map) Responder {
+	return PostXML(obj.RemoteURL(url), nil, obj.initPay(p))
 }
 
 // SafeRequest 安全请求
-func (obj *Payment) SafeRequest(s string, p util.Map) Responder {
-	//m := util.Map{
-	//	core.DataTypeXML:      obj.initRequest(p),
-	//	core.DataTypeSecurity: obj.Config,
-	//}
-	//return core.Request(core.POST, obj.Link(s), m)
-	return nil
+func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
+	bt := BodyTypeXML
+	client := NewClient(&ClientOption{
+		UseSafe:  true,
+		SafeCert: obj.property.SafeCert,
+		BodyType: &bt,
+	})
+	return client.Post(context.Background(), url, p)
 }
 
 func (obj *Payment) initPay(p util.Map) util.Map {
@@ -215,11 +216,11 @@ func (obj *Payment) sandboxSignKey() Responder {
 // RemoteURL ...
 func (obj *Payment) RemoteURL(uri string) string {
 	if obj.IsSandbox() {
-		return util.URL(remote(obj), sandboxURLSuffix, uri)
+		return util.URL(remotePayment(obj), sandboxURLSuffix, uri)
 	}
-	return util.URL(remote(obj), uri)
+	return util.URL(remotePayment(obj), uri)
 }
-func remote(obj *Payment) string {
+func remotePayment(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.RemoteAddress != "" {
 		return obj.option.RemoteAddress
 	}
@@ -234,7 +235,7 @@ func local(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.LocalHost != "" {
 		return obj.option.LocalHost
 	}
-	return localAddress
+	return wegoLocal
 }
 
 // NotifyURL ...

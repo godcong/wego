@@ -40,18 +40,11 @@ type Client struct {
 	Option *ClientOption
 }
 
-// SafeCert ...
-type SafeCert struct {
-	Cert   []byte
-	Key    []byte
-	RootCA []byte
-}
-
 // ClientOption ...
 type ClientOption struct {
 	UseSafe     bool
 	UseToken    bool
-	SafeCert    *SafeCert
+	SafeCert    *SafeCertProperty
 	AccessToken *AccessToken
 	BodyType    *BodyType
 	Query       util.Map
@@ -71,10 +64,18 @@ func NewClient(opts ...*ClientOption) *Client {
 }
 
 // Post ...
-func (c *Client) Post(ctx context.Context, method string, url string, body interface{}) Responder {
-	c.Method = method
+func (c *Client) Post(ctx context.Context, url string, body interface{}) Responder {
+	c.Method = POST
 	c.URL = url
 	c.Body = buildBody(body, c.BodyType())
+	return c.Do(ctx)
+}
+
+// Get ...
+func (c *Client) Get(ctx context.Context, url string) Responder {
+	c.Method = POST
+	c.URL = url
+	c.Body = buildBody(nil, c.BodyType())
 	return c.Do(ctx)
 }
 
@@ -231,7 +232,8 @@ func buildTransport(client *Client) *http.Client {
 func buildSafeTransport(client *Client) *http.Client {
 	cert, err := tls.X509KeyPair(client.Option.SafeCert.Key, client.Option.SafeCert.Cert)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		return nil
 	}
 
 	caFile := client.Option.SafeCert.RootCA
