@@ -11,20 +11,20 @@ import (
 
 //Payment ...
 type Payment struct {
-	client *Client
 	*PaymentProperty
+	client   *Client
 	property *Property
 	option   *PaymentOption
 }
 
 // PaymentOption ...
 type PaymentOption struct {
-	RemoteHost   string
-	LocalAddress string
-	UseSandbox   bool
-	Sandbox      *SandboxProperty
-	NotifyURL    string
-	RefundURL    string
+	RemoteAddress string
+	LocalHost     string
+	UseSandbox    bool
+	Sandbox       *SandboxProperty
+	NotifyURL     string
+	RefundURL     string
 }
 
 // NewPayment ...
@@ -85,6 +85,23 @@ func (obj *Payment) Pay(p util.Map) Responder {
 	return obj.Request(payMicroPay, p)
 }
 
+// UnifyResponse ...
+type UnifyResponse struct {
+	AppID      string `xml:"appid"`
+	CodeURL    string `xml:"code_url"`
+	DeviceInfo string `xml:"device_info"`
+	ErrCode    string `xml:"err_code"`
+	ErrCodeDes string `xml:"err_code_des"`
+	MchID      string `xml:"mch_id"`
+	NonceStr   string `xml:"nonce_str"`
+	PrepayID   string `xml:"prepay_id"`
+	ResultCode string `xml:"result_code"`
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
+	Sign       string `xml:"sign"`
+	TradeType  string `xml:"trade_type"`
+}
+
 /*Unify 统一下单
 字段名	变量名	必填	类型	示例值	描述
 商品描述	body	是	String(128)	Ipad mini  16G  白色	商品或支付单简要描述
@@ -93,7 +110,7 @@ func (obj *Payment) Pay(p util.Map) Responder {
 交易类型	trade_type	是	String(16)	JSAPI	取值如下:JSAPI，NATIVE，APP，详细说明见参数规定
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
-func (obj *Payment) Unify(m util.Map) core.Responder {
+func (obj *Payment) Unify(m util.Map) Responder {
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIP())
@@ -116,8 +133,7 @@ func (obj *Payment) Unify(m util.Map) core.Responder {
 
 // Request 默认请求
 func (obj *Payment) Request(uri string, p util.Map) Responder {
-	p.Join(initPay(obj))
-	return PostXML(obj.RemoteHost(uri), nil, p)
+	return PostXML(obj.RemoteURL(uri), nil, obj.initPay(p))
 }
 
 // SafeRequest 安全请求
@@ -130,8 +146,7 @@ func (obj *Payment) SafeRequest(s string, p util.Map) Responder {
 	return nil
 }
 
-func initPay(obj *Payment) util.Map {
-	p := make(util.Map)
+func (obj *Payment) initPay(p util.Map) util.Map {
 	p.Set("mch_id", obj.MchID)
 	p.Set("nonce_str", util.GenerateUUID())
 	if obj.SubMchID != "" {
@@ -176,7 +191,6 @@ func (obj *Payment) GetKey() string {
 		log.Error(fmt.Sprintf("%s should be 32 chars length.", key))
 		return ""
 	}
-
 	return key
 
 }
@@ -192,40 +206,40 @@ func (obj *Payment) sandboxSignKey() Responder {
 	m.Set("nonce_str", util.GenerateNonceStr())
 	sign := util.GenSign(m, obj.option.Sandbox.Key, util.SignMD5)
 	m.Set("sign", sign)
-	resp := PostXML(obj.RemoteHost(sandboxSignKeyURLSuffix), nil, m)
+	resp := PostXML(obj.RemoteURL(sandboxSignKeyURLSuffix), nil, m)
 
 	return resp
 
 }
 
-// RemoteHost ...
-func (obj *Payment) RemoteHost(uri string) string {
+// RemoteURL ...
+func (obj *Payment) RemoteURL(uri string) string {
 	if obj.IsSandbox() {
-		return util.URL(remoteHost(obj), sandboxURLSuffix, uri)
+		return util.URL(remote(obj), sandboxURLSuffix, uri)
 	}
-	return util.URL(remoteHost(obj), uri)
+	return util.URL(remote(obj), uri)
 }
-func remoteHost(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.RemoteHost != "" {
-		return obj.option.RemoteHost
+func remote(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.RemoteAddress != "" {
+		return obj.option.RemoteAddress
 	}
 	return apiMCHWeixin
 }
 
-// LocalAddressURL ...
-func (obj *Payment) LocalAddressURL() string {
-	return localAddressURL(obj)
+// LocalURL ...
+func (obj *Payment) LocalURL() string {
+	return local(obj)
 }
-func localAddressURL(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.LocalAddress != "" {
-		return obj.option.LocalAddress
+func local(obj *Payment) string {
+	if obj != nil && obj.option != nil && obj.option.LocalHost != "" {
+		return obj.option.LocalHost
 	}
 	return localAddress
 }
 
 // NotifyURL ...
 func (obj *Payment) NotifyURL() string {
-	return util.URL(obj.LocalAddressURL(), paymentNotifyURL(obj))
+	return util.URL(obj.LocalURL(), paymentNotifyURL(obj))
 }
 func paymentNotifyURL(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.NotifyURL != "" {
@@ -236,7 +250,7 @@ func paymentNotifyURL(obj *Payment) string {
 
 // RefundURL ...
 func (obj *Payment) RefundURL() string {
-	return util.URL(obj.LocalAddressURL(), paymentRefundURL(obj))
+	return util.URL(obj.LocalURL(), paymentRefundURL(obj))
 }
 func paymentRefundURL(obj *Payment) string {
 	if obj != nil && obj.option != nil && obj.option.RefundURL != "" {

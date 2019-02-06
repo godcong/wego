@@ -105,7 +105,7 @@ func makeClient(method string, url string, body interface{}, opts ...*ClientOpti
 
 // Do ...
 func (c *Client) Do(ctx context.Context) Responder {
-	log.Printf("%+v\n", c)
+	log.Debugf("%+v\n", c)
 	client := buildHTTPClient(c)
 	var request *http.Request
 	var e error
@@ -134,7 +134,7 @@ func (c *Client) RemoteURL() string {
 
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
-	log.Println("post form:", url, query, form)
+	log.Debug("post form:", url, query, form)
 	bt := BodyTypeForm
 	client := makeClient(POST, url, form, &ClientOption{
 		BodyType: &bt,
@@ -145,7 +145,7 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
-	log.Println("post json:", url, query, json)
+	log.Debug("post json:", url, query, json)
 	bt := BodyTypeJSON
 	client := makeClient(POST, url, json, &ClientOption{
 		BodyType: &bt,
@@ -156,7 +156,7 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
-	log.Println("post xml:", url, query, xml)
+	log.Debug("post xml:", url, query, xml)
 	bt := BodyTypeXML
 	client := makeClient(POST, url, xml, &ClientOption{
 		BodyType: &bt,
