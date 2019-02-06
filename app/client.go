@@ -138,7 +138,6 @@ func (c *Client) Request() (*http.Request, error) {
 
 // do ...
 func (c *Client) do(ctx context.Context) Responder {
-	log.Debugf("%+v\n", c)
 	client, e := c.HTTPClient()
 	if e != nil {
 		return ErrResponse(xerrors.Errorf("client:%w", e))

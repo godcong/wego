@@ -177,13 +177,8 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 		p.Set("sub_appid", obj.SubAppID)
 	}
 
-	signFunc := util.SignMD5
-	if p.GetString("sign_type") == util.HMACSHA256 {
-		signFunc = util.SignSHA256
-	}
-
 	if !p.Has("sign") {
-		p.Set("sign", util.GenSign(p, obj.GetKey(), signFunc))
+		p.Set("sign", util.GenSign(p, obj.GetKey()))
 	}
 	log.Debug("initPay end", p)
 	return p
@@ -230,7 +225,7 @@ func (obj *Payment) sandboxSignKey() Responder {
 	m := make(util.Map)
 	m.Set("mch_id", obj.option.Sandbox.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
-	sign := util.GenSign(m, obj.option.Sandbox.Key, util.SignMD5)
+	sign := util.GenSign(m, obj.option.Sandbox.Key)
 	m.Set("sign", sign)
 	resp := PostXML(obj.RemoteURL(sandboxSignKeyURLSuffix), nil, m)
 
