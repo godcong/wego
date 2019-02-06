@@ -32,5 +32,5 @@ HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_T
 */
 func (a *OfficialAccount) GetCallbackIP() core.Responder {
 	token := a.accessToken.GetToken()
-	return core.Get(util.URL(apiWeixin, getcallbackip), token.KeyMap())
+	return core.Get(util.URL(apiWeixin, getCallbackIP), token.KeyMap())
 }

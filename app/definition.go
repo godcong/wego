@@ -1,16 +1,16 @@
 package app
 
 const clearQuota = "/cgi-bin/clear_quota"
-const getcallbackip = "/cgi-bin/getcallbackip"
-const sandboxnew = "sandboxnew"
-const getsignkey = "pay/getsignkey"
+const getCallbackIP = "/cgi-bin/getCallbackIP"
+const sandboxNew = "sandboxNew"
+const getSignKey = "pay/getSignKey"
 
 const apiMCHWeixin = "https://api.mch.weixin.qq.com"
 const apiWeixin = "https://api.weixin.qq.com"
 
 const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
-const payDownloadfundflow = "/pay/downloadfundflow"
+const payDownloadFundFlow = "/pay/downloadfundflow"
 const paySettlementquery = "/pay/settlementquery"
 const payQueryexchagerate = "pay/queryexchagerate"
 const payUnifiedOrder = "/pay/unifiedorder"

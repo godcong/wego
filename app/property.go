@@ -26,7 +26,7 @@ func (obj *SandboxProperty) SignKey() Responder {
 	m.Set("mch_id", obj.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("sign", util.GenSign(m, obj.Key))
-	resp := PostXML(util.URL(apiMCHWeixin, sandboxnew, getsignkey), nil, m)
+	resp := PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
 	return resp
 }
 
