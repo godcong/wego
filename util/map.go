@@ -52,13 +52,19 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
-/*MapToMap transfer to map[string]interface{} to Map  */
-func MapToMap(p map[string]interface{}) Map {
-	return Map(p)
+/*ToMap transfer to map[string]interface{} or MapAble to Map  */
+func ToMap(p interface{}) Map {
+	switch v := p.(type) {
+	case map[string]interface{}:
+		return Map(v)
+	case MapAble:
+		return v.ToMap()
+	}
+	return nil
 }
 
-// MapsToMap ...
-func MapsToMap(p Map, m []Map) Map {
+// CombineMaps ...
+func CombineMaps(p Map, m []Map) Map {
 	if m == nil {
 		return p
 	}
