@@ -66,6 +66,7 @@ func NewClient(opts ...*ClientOption) *Client {
 
 // Post ...
 func (c *Client) Post(ctx context.Context, url string, body interface{}) Responder {
+	log.Debug("post ", url, body)
 	c.Method = POST
 	c.URL = url
 	c.Body = buildBody(body, c.BodyType())
@@ -74,7 +75,8 @@ func (c *Client) Post(ctx context.Context, url string, body interface{}) Respond
 
 // Get ...
 func (c *Client) Get(ctx context.Context, url string) Responder {
-	c.Method = POST
+	log.Debug("get ", url)
+	c.Method = GET
 	c.URL = url
 	c.Body = buildBody(nil, c.BodyType())
 	return c.do(ctx)

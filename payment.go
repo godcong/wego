@@ -121,7 +121,7 @@ func (obj *Payment) DownloadFundFlow(bd string, at string, opts ...util.Map) Res
 	return obj.SafeRequest(payDownloadFundFlow, m)
 }
 
-/*ByOutTradeNumber 通过out_trade_no撤销订单
+/*ReverseByOutTradeNumber 通过out_trade_no撤销订单
 接口地址
 https://apihk.mch.weixin.qq.com/secapi/pay/reverse    （建议接入点:东南亚）
 https://apius.mch.weixin.qq.com/secapi/pay/reverse    （建议接入点:其它）
@@ -133,11 +133,11 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点:中�
 字段名	变量名	类型	必填	示例值	描述
 商户订单号	out_trade_no	String(32)	是	1217752501201407033233368018	商户系统内部的订单号,transaction_id、out_trade_no二选一，如果同时存在优先级:transaction_id> out_trade_no
 */
-func (obj *Payment) ByOutTradeNumber(num string) core.Responder {
+func (obj *Payment) ReverseByOutTradeNumber(num string) Responder {
 	return obj.reverse(util.Map{"out_trade_no": num})
 }
 
-/*ByTransactionID 通过transaction_id撤销订单
+/*ReverseByTransactionID 通过transaction_id撤销订单
 接口地址
 https://apihk.mch.weixin.qq.com/secapi/pay/reverse    （建议接入点:东南亚）
 https://apius.mch.weixin.qq.com/secapi/pay/reverse    （建议接入点:其它）
@@ -149,11 +149,11 @@ https://api.mch.weixin.qq.com/secapi/pay/reverse        （建议接入点:中�
 字段名	变量名	类型	必填	示例值	描述
 微信订单号	transaction_id	String(32)	否	1217752501201407033233368018	微信的订单号，优先使用
 */
-func (obj *Payment) ByTransactionID(id string) core.Responder {
+func (obj *Payment) ReverseByTransactionID(id string) Responder {
 	return obj.reverse(util.Map{"transaction_id": id})
 }
 
-func (obj *Payment) reverse(m util.Map) core.Responder {
+func (obj *Payment) reverse(m util.Map) Responder {
 	return obj.SafeRequest(payReverse, m)
 }
 

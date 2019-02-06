@@ -1,9 +1,9 @@
 package wego
 
 const clearQuota = "/cgi-bin/clear_quota"
-const getCallbackIP = "/cgi-bin/getCallbackIP"
-const sandboxNew = "sandboxNew"
-const getSignKey = "pay/getSignKey"
+const getCallbackIP = "/cgi-bin/getcallbackip"
+const sandboxNew = "sandboxnew"
+const getSignKey = "pay/getsignkey"
 
 const apiMCHWeixin = "https://api.mch.weixin.qq.com"
 const apiWeixin = "https://api.weixin.qq.com"
