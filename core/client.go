@@ -126,7 +126,7 @@ func GetRaw(url string, query util.Map) []byte {
 }
 
 func buildTransport(config *Config, option ...util.Map) *http.Client {
-	m := util.MapsToMap(util.Map{
+	m := util.CombineMaps(util.Map{
 		"time_out":   30,
 		"keep_alive": 30,
 	}, option)
@@ -171,7 +171,7 @@ func buildSafeTransport(config *Config, option ...util.Map) *http.Client {
 		panic("safe request must set config before use")
 	}
 
-	m := util.MapsToMap(util.Map{
+	m := util.CombineMaps(util.Map{
 		"time_out":   30,
 		"keep_alive": 30,
 	}, option)
