@@ -2,12 +2,14 @@ package cipher
 
 import (
 	"encoding/base64"
+	"github.com/godcong/wego/log"
 	"testing"
 )
 
 // TestPrpCrypt_Encrypt ...
 func TestPrpCrypt_Encrypt(t *testing.T) {
 	k, _ := base64.RawStdEncoding.DecodeString(encodingAesKey)
+	log.Println(string(k))
 	prp := NewPrp([]byte(k))
 	b, e := prp.Encrypt(text, appID)
 	t.Log(string(b), e)

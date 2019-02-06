@@ -26,6 +26,16 @@ type cryptRSA struct {
 	KeyPath []byte
 }
 
+// Encrypt ...
+func (c *cryptRSA) Encrypt(interface{}) ([]byte, error) {
+	panic("implement me")
+}
+
+// Decrypt ...
+func (c *cryptRSA) Decrypt(interface{}) ([]byte, error) {
+	panic("implement me")
+}
+
 // Type ...
 func (*cryptRSA) Type() CryptType {
 	return RSA
@@ -42,7 +52,7 @@ func (c *cryptRSA) GetParameter(key string) []byte {
 }
 
 // Encrypt ...
-func (c *cryptRSA) Encrypt(data []byte) ([]byte, error) {
+func (c *cryptRSA) Encrypt2(data []byte) ([]byte, error) {
 
 	publicKey, err := ioutil.ReadFile(string(c.KeyPath))
 	if err != nil {
@@ -66,7 +76,7 @@ func (c *cryptRSA) Encrypt(data []byte) ([]byte, error) {
 }
 
 // Decrypt ...
-func (c *cryptRSA) Decrypt(data []byte) ([]byte, error) {
+func (c *cryptRSA) Decrypt2(data []byte) ([]byte, error) {
 	privateKey, err := ioutil.ReadFile(string(c.KeyPath))
 	if err != nil {
 		return nil, err
@@ -195,4 +205,9 @@ func Base64Decode(b []byte) ([]byte, error) {
 	buf := make([]byte, base64.StdEncoding.DecodedLen(len(b)))
 	n, err := base64.StdEncoding.Decode(buf, b)
 	return buf[:n], err
+}
+
+/*Base64DecodeString Base64DecodeString */
+func Base64DecodeString(s string) ([]byte, error) {
+	return base64.StdEncoding.DecodeString(s)
 }

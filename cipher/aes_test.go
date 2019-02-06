@@ -2,6 +2,7 @@ package cipher
 
 import (
 	"encoding/xml"
+	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"strings"
 	"testing"
@@ -29,8 +30,9 @@ func TestRefundedNotify_ServeHTTP(t *testing.T) {
 	payKey := "aTKnSUcTkbEnhwQNdutWkQxAjnhAz2jK"
 
 	key := strings.ToLower(string(util.SignMD5(payKey, "")))
+	log.Println(key)
 	ecb := CryptAES256ECB()
-	ecb.SetParameter("key", []byte(key))
+	//ecb.SetParameter("key", []byte(key))
 	d, err := ecb.Decrypt([]byte(reqInfo))
 	t.Error(err)
 	t.Log(string(d))

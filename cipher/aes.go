@@ -3,6 +3,8 @@ package cipher
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"encoding/base64"
+	"golang.org/x/exp/xerrors"
 )
 
 /*DataCrypt DataCrypt */
@@ -19,67 +21,61 @@ func NewDataCrypt(id string) *DataCrypt {
 
 // CryptAES128CBC ...
 type cryptAES128CBC struct {
-	Iv, Key []byte
-}
-
-// Type ...
-func (c *cryptAES128CBC) Type() CryptType {
-	return AES128CBC
-}
-
-// Set ...
-func (c *cryptAES128CBC) SetParameter(key string, val []byte) {
-	switch key {
-	case "key":
-		c.Key = val
-	case "iv":
-		c.Iv = val
-	}
-}
-
-// Get ...
-func (c *cryptAES128CBC) GetParameter(key string) []byte {
-	switch key {
-	case "key":
-		return c.Key
-	case "iv":
-		return c.Iv
-	}
-	return nil
+	iv, key string
 }
 
 // Encrypt ...
-func (c *cryptAES128CBC) Encrypt([]byte) ([]byte, error) {
+func (c *cryptAES128CBC) Encrypt(interface{}) ([]byte, error) {
 	panic("implement me")
 }
 
 // Decrypt ...
-func (c *cryptAES128CBC) Decrypt(data []byte) ([]byte, error) {
-	key, e := Base64Decode(c.Key)
+func (c *cryptAES128CBC) Decrypt(v interface{}) ([]byte, error) {
+	key, e := base64.StdEncoding.DecodeString(c.key)
 	if e != nil {
-		return nil, e
+		return nil, xerrors.Errorf("wrong key:%w", e)
 	}
 
-	iv, e := Base64Decode(c.Iv)
+	iv, e := base64.StdEncoding.DecodeString(c.iv)
 	if e != nil {
-		return nil, e
+		return nil, xerrors.Errorf("wrong iv:%w", e)
+	}
+
+	var data []byte
+	switch sv := v.(type) {
+	case []byte:
+		data = sv
+	case string:
+		data = []byte(sv)
+	default:
+		return nil, xerrors.New("wrong input data")
 	}
 
 	decodeData, e := Base64Decode(data)
 	if e != nil {
-		return nil, e
+		return nil, xerrors.Errorf("wrong data:%w", e)
 	}
 
 	block, e := aes.NewCipher(key)
 	if e != nil {
 		return nil, e
 	}
-
 	mode := cipher.NewCBCDecrypter(block, iv)
-
 	mode.CryptBlocks(decodeData, decodeData)
-
 	return PKCS7UnPadding(decodeData), nil
+}
+
+// NewAES128CBC ...
+func NewAES128CBC(option Option) Cipher {
+	return &cryptAES128CBC{
+		iv:  option.IV,
+		key: option.Key,
+	}
+}
+
+// Type ...
+func (c *cryptAES128CBC) Type() CryptType {
+	return AES128CBC
 }
 
 // CryptAES128CBC ...
@@ -89,6 +85,16 @@ func CryptAES128CBC() Cipher {
 
 type cryptAES256ECB struct {
 	Key []byte
+}
+
+// Encrypt ...
+func (c *cryptAES256ECB) Encrypt(interface{}) ([]byte, error) {
+	panic("implement me")
+}
+
+// Decrypt ...
+func (c *cryptAES256ECB) Decrypt(interface{}) ([]byte, error) {
+	panic("implement me")
 }
 
 // Type ...
@@ -107,12 +113,12 @@ func (c *cryptAES256ECB) GetParameter(key string) []byte {
 }
 
 // Encrypt ...
-func (c *cryptAES256ECB) Encrypt([]byte) ([]byte, error) {
+func (c *cryptAES256ECB) Encrypt2([]byte) ([]byte, error) {
 	panic("implement me")
 }
 
 // Decrypt ...
-func (c *cryptAES256ECB) Decrypt(data []byte) ([]byte, error) {
+func (c *cryptAES256ECB) Decrypt2(data []byte) ([]byte, error) {
 	decodeData, e := Base64Decode(data)
 	if e != nil {
 		return nil, e

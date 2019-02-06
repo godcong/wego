@@ -6,8 +6,8 @@ import (
 	"crypto/cipher"
 	"crypto/sha1"
 	"encoding/binary"
-	"errors"
 	"fmt"
+	"golang.org/x/exp/xerrors"
 	"sort"
 	"strings"
 
@@ -15,37 +15,37 @@ import (
 	"github.com/godcong/wego/util"
 )
 
-/*PrpCrypt PrpCrypt */
-type PrpCrypt struct {
+/*AESCrypt AESCrypt */
+type AESCrypt struct {
 	key []byte
 }
 
 /*NewPrp NewPrp */
-func NewPrp(key []byte) *PrpCrypt {
-	return &PrpCrypt{
+func NewPrp(key []byte) *AESCrypt {
+	return &AESCrypt{
 		key: key,
 	}
 }
 
 /*Random Random */
-func (c *PrpCrypt) Random() string {
+func (c *AESCrypt) Random() string {
 	return util.GenerateRandomString(16, util.RandomAll)
 }
 
 /*LengthBytes LengthBytes */
-func (c *PrpCrypt) LengthBytes(s string) []byte {
+func (c *AESCrypt) LengthBytes(s string) []byte {
 	var buf = make([]byte, 4)
 	binary.BigEndian.PutUint32(buf, uint32(len(s)))
 	return buf
 }
 
 /*BytesLength BytesLength */
-func (c *PrpCrypt) BytesLength(b []byte) uint32 {
+func (c *AESCrypt) BytesLength(b []byte) uint32 {
 	return binary.BigEndian.Uint32(b)
 }
 
 // Encrypt ...
-func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
+func (c *AESCrypt) Encrypt(text string, appid string) ([]byte, error) {
 	buf := bytes.Buffer{}
 
 	buf.WriteString(c.Random())
@@ -68,7 +68,7 @@ func (c *PrpCrypt) Encrypt(text string, appid string) ([]byte, error) {
 }
 
 // Decrypt ...
-func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
+func (c *AESCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	ciphertext, err := Base64Decode(ciphertext)
 	if err != nil {
 		return nil, err
@@ -87,9 +87,8 @@ func (c *PrpCrypt) Decrypt(ciphertext []byte, appid string) ([]byte, error) {
 	xmlContent := content[4 : xmlLen+4]
 	fromAppID := content[xmlLen+4:]
 	if string(fromAppID) != appid {
-		return nil, errors.New("ValidateAppidError")
+		return nil, xerrors.New("ValidateAppidError")
 	}
-
 	return xmlContent, nil
 }
 

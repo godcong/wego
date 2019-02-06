@@ -11,27 +11,34 @@ const (
 )
 
 // InstanceFunc ...
-type InstanceFunc func() Cipher
+type InstanceFunc func(option Option) Cipher
 
 // Cipher ...
 type Cipher interface {
 	Type() CryptType
-	SetParameter(key string, val []byte)
-	GetParameter(key string) []byte
-	Encrypt([]byte) ([]byte, error)
-	Decrypt(data []byte) ([]byte, error)
+	Encrypt(interface{}) ([]byte, error)
+	Decrypt(interface{}) ([]byte, error)
 }
 
 var cipherList []InstanceFunc
 
 func init() {
 	cipherList = []InstanceFunc{
-		CryptAES128CBC,
-		CryptRSA,
+		AES128CBC: NewAES128CBC,
+		//CryptAES128CBC,
+		//CryptRSA,
 	}
 }
 
+// Option ...
+type Option struct {
+	IV    string
+	Key   string
+	Token string
+	AppID string
+}
+
 // New create a new cipher
-func New(cryptType CryptType) Cipher {
-	return cipherList[cryptType]()
+func New(cryptType CryptType, option Option) Cipher {
+	return cipherList[cryptType](option)
 }

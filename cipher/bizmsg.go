@@ -2,9 +2,8 @@ package cipher
 
 import (
 	"encoding/base64"
-	"errors"
-
 	"github.com/godcong/wego/util"
+	"golang.org/x/exp/xerrors"
 )
 
 /*BizMsg BizMsg */
@@ -60,7 +59,7 @@ func NewBizMsg(token, key, id string) *BizMsg {
 }
 
 // Encrypt ...
-func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
+func (m *BizMsg) Encrypt(text, ts, nonce string) (string, error) {
 	prp := NewPrp(m.encodingAESKey)
 	b, err := prp.Encrypt(text, m.appID)
 	if err != nil {
@@ -69,8 +68,8 @@ func (m *BizMsg) Encrypt(text, timeStamp, nonce string) (string, error) {
 
 	p := util.Map{
 		"RSAEncrypt":   string(b),
-		"MsgSignature": SHA1(m.token, timeStamp, nonce, string(b)),
-		"TimeStamp":    timeStamp,
+		"MsgSignature": SHA1(m.token, ts, nonce, string(b)),
+		"TimeStamp":    ts,
 		"Nonce":        nonce,
 	}
 	return string(p.ToXML()), nil
@@ -82,7 +81,7 @@ func (m *BizMsg) Decrypt(text string, msgSignature, timeStamp, nonce string) ([]
 	enpt := p.GetString("RSAEncrypt")
 	tSign := SHA1(m.token, timeStamp, nonce, enpt)
 	if msgSignature != tSign {
-		return nil, errors.New("ValidateSignatureError")
+		return nil, xerrors.New("ValidateSignatureError")
 	}
 	prp := NewPrp(m.encodingAESKey)
 	b, err := prp.Decrypt([]byte(enpt), m.appID)
