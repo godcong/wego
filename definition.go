@@ -1,4 +1,4 @@
-package app
+package wego
 
 const clearQuota = "/cgi-bin/clear_quota"
 const getCallbackIP = "/cgi-bin/getCallbackIP"

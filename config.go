@@ -1,4 +1,4 @@
-package app
+package wego
 
 import (
 	"github.com/pelletier/go-toml"

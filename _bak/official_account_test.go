@@ -1,4 +1,4 @@
-package wego_test
+package _bak_test
 
 import (
 	"testing"

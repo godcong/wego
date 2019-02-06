@@ -1,4 +1,4 @@
-package wego
+package _bak
 
 import "github.com/godcong/wego/core"
 

@@ -1,16 +1,9 @@
-package wego_test
+package wego
 
-import (
-	"testing"
+import "testing"
 
-	"github.com/godcong/wego/log"
-)
-
-func TestConfig(t *testing.T) {
-	t.Log(log.IsDebug())
-	log.Debug("test")
-	log.Error("test")
-	log.Info("test")
-	log.Warn("test")
-	log.Fatal("test")
+// TestLoadConfig ...
+func TestLoadConfig(t *testing.T) {
+	config := LoadConfig("config.toml")
+	t.Log(config)
 }
