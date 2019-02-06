@@ -1,14 +1,30 @@
 package util
 
+import "strings"
+
 /*URL 拼接地址 */
-func URL(prefix string, uri string) string {
+func URL(prefix string, uris ...string) string {
 	end := len(prefix)
 	if end > 1 && prefix[end-1] == '/' {
 		prefix = prefix[:end-1]
 	}
-	uend := len(uri)
-	if uend > 1 && uri[0] == '/' {
-		uri = uri[1:]
+
+	var url = []string{prefix}
+	for _, v := range uris {
+		url = append(url, TrimSlash(v))
 	}
-	return prefix + "/" + uri
+	return strings.Join(url, "/")
+}
+
+// TrimSlash ...
+func TrimSlash(s string) string {
+	if size := len(s); size > 1 {
+		if s[size-1] == '/' {
+			s = s[:size-1]
+		}
+		if s[0] == '/' {
+			s = s[1:]
+		}
+	}
+	return s
 }
