@@ -45,14 +45,20 @@ func SignMD5(data, key string) string {
 
 // GenSignWithIgnore ...
 func GenSignWithIgnore(p Map, key string, ignore []string) string {
+	return GenSign(p, key, ignore...)
+}
+
+// MapSignFunc ...
+func MapSignFunc(p Map) SignFunc {
 	if p.GetString("sign_type") == HMACSHA256 {
-		return GenSign(p, key, SignSHA256, ignore...)
+		return SignSHA256
 	}
-	return GenSign(p, key, SignMD5, ignore...)
+	return SignMD5
 }
 
 // GenSign make sign from map data
-func GenSign(p Map, key string, fn SignFunc, ignores ...string) string {
+func GenSign(p Map, key string, ignores ...string) string {
+	log.Debug("sign:", p, key, ignores)
 	exp := append(ignores[:], FieldSign)
 	m := p.Expect(exp)
 	keys := m.SortKeys()
@@ -60,29 +66,23 @@ func GenSign(p Map, key string, fn SignFunc, ignores ...string) string {
 	size := len(keys)
 	for i := 0; i < size; i++ {
 		v := strings.TrimSpace(m.GetString(keys[i]))
-
 		if len(v) > 0 {
-			log.Debug(keys[i], v)
 			sign = append(sign, strings.Join([]string{keys[i], v}, "="))
 		}
 	}
 
 	sign = append(sign, strings.Join([]string{"key", key}, "="))
 	sb := strings.Join(sign, "&")
-	return fn(sb, key)
+	return MapSignFunc(p)(sb, key)
 }
 
 // ValidateSign check the sign validate
-func ValidateSign(maps Map, key string) bool {
-	if !maps.Has("sign") {
+func ValidateSign(p Map, key string) bool {
+	if !p.Has("sign") {
 		return false
 	}
-	sign := maps.GetString("sign")
-	fn := SignMD5
-	if maps.GetString("sign_type") == HMACSHA256 {
-		fn = SignSHA256
-	}
-	newSign := GenSign(maps, key, fn)
+	sign := p.GetString("sign")
+	newSign := GenSign(p, key)
 	log.Debug(sign, newSign)
 
 	if strings.Compare(sign, newSign) == 0 {
