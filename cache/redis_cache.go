@@ -29,7 +29,7 @@ func (r *RedisCache) Set(key string, val interface{}) Cache {
 
 // SetWithTTL ...
 func (r *RedisCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
-	r.client.Set(key, val, time.Duration(ttl))
+	r.client.Set(key, val, time.Duration(ttl)*time.Second)
 	return r
 }
 
