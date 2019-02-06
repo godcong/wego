@@ -2,6 +2,7 @@ package cache
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/godcong/wego/log"
 	"time"
 )
 
@@ -92,5 +93,10 @@ type Options struct {
 // NewRedisCache ...
 func NewRedisCache(op *redis.Options) *RedisCache {
 	client := redis.NewClient(op)
+	result, e := client.Ping().Result()
+	if e != nil {
+		panic(e)
+	}
+	log.Debug(result)
 	return &RedisCache{client: client}
 }

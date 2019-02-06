@@ -17,6 +17,10 @@ type Cache interface {
 //var cache sync.Map
 var cache Cache
 
+func init() {
+	RegisterCache(NewMapCache())
+}
+
 /*RegisterCache register cache to map */
 func RegisterCache(c Cache) {
 	cache = c

@@ -15,10 +15,6 @@ type mapCacheData struct {
 	life  *time.Time
 }
 
-func init() {
-	RegisterCache(NewMapCache())
-}
-
 // NewMapCache ...
 func NewMapCache() *MapCache {
 	return &MapCache{}
