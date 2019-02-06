@@ -103,6 +103,25 @@ type UnifyResponse struct {
 	TradeType  string `xml:"trade_type"`
 }
 
+//DownloadFundFlow 下载资金账单
+//资金账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式：20140603
+//资金账户类型	account_type	是	String(8)	Basic
+//账单的资金来源账户：
+//Basic  基本账户
+//Operation 运营账户
+//Fees 手续费账户
+//压缩账单	tar_type	否	String(8)	GZIP	非必传参数，固定值：GZIP，返回格式为.gzip的压缩包账单。不传则默认为数据流形式。
+func (obj *Payment) DownloadFundFlow(bd string, at string, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"appid":        obj.AppID,
+		"bill_date":    bd,
+		"sign_type":    util.HMACSHA256,
+		"account_type": at,
+	}, opts)
+
+	return obj.SafeRequest(payDownloadfundflow, m)
+}
+
 /*Unify 统一下单
 字段名	变量名	必填	类型	示例值	描述
 商品描述	body	是	String(128)	Ipad mini  16G  白色	商品或支付单简要描述
@@ -111,7 +130,8 @@ type UnifyResponse struct {
 交易类型	trade_type	是	String(16)	JSAPI	取值如下:JSAPI，NATIVE，APP，详细说明见参数规定
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
-func (obj *Payment) Unify(m util.Map) Responder {
+func (obj *Payment) Unify(m util.Map, opts ...util.Map) Responder {
+	m = util.CombineMaps(m, opts)
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", core.GetServerIP())
@@ -144,7 +164,7 @@ func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
 		SafeCert: obj.property.SafeCert,
 		BodyType: &bt,
 	})
-	return client.Post(context.Background(), url, p)
+	return client.Post(context.Background(), obj.RemoteURL(url), obj.initPay(p))
 }
 
 func (obj *Payment) initPay(p util.Map) util.Map {
@@ -157,8 +177,13 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 		p.Set("sub_appid", obj.SubAppID)
 	}
 
+	signFunc := util.SignMD5
+	if p.GetString("sign_type") == util.HMACSHA256 {
+		signFunc = util.SignSHA256
+	}
+
 	if !p.Has("sign") {
-		p.Set("sign", util.GenSign(p, obj.GetKey(), util.SignMD5))
+		p.Set("sign", util.GenSign(p, obj.GetKey(), signFunc))
 	}
 	log.Debug("initPay end", p)
 	return p

@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	"golang.org/x/exp/xerrors"
 	"net"
 	"net/http"
 	"time"
@@ -68,7 +69,7 @@ func (c *Client) Post(ctx context.Context, url string, body interface{}) Respond
 	c.Method = POST
 	c.URL = url
 	c.Body = buildBody(body, c.BodyType())
-	return c.Do(ctx)
+	return c.do(ctx)
 }
 
 // Get ...
@@ -76,7 +77,7 @@ func (c *Client) Get(ctx context.Context, url string) Responder {
 	c.Method = POST
 	c.URL = url
 	c.Body = buildBody(nil, c.BodyType())
-	return c.Do(ctx)
+	return c.do(ctx)
 }
 
 // BodyType ...
@@ -88,6 +89,29 @@ func bodyType(opt *ClientOption) BodyType {
 		return *opt.BodyType
 	}
 	return BodyTypeNone
+}
+
+// CA ...
+func (c *Client) CA() []byte {
+	if c.Option != nil && c.Option.SafeCert != nil && c.Option.SafeCert.RootCA != nil {
+		return c.Option.SafeCert.RootCA
+	}
+	return []byte(defaultCa)
+}
+
+func (c *Client) certKey() ([]byte, []byte) {
+	if c.Option != nil &&
+		c.Option.SafeCert != nil &&
+		c.Option.SafeCert.Key != nil &&
+		c.Option.SafeCert.Cert != nil {
+		return c.Option.SafeCert.Cert, c.Option.SafeCert.Key
+	}
+	return nil, nil
+}
+
+// HTTPClient ...
+func (c *Client) HTTPClient() (*http.Client, error) {
+	return buildHTTPClient(c)
 }
 
 // makeClient ...
@@ -104,23 +128,28 @@ func makeClient(method string, url string, body interface{}, opts ...*ClientOpti
 	}
 }
 
-// Do ...
-func (c *Client) Do(ctx context.Context) Responder {
-	log.Debugf("%+v\n", c)
-	client := buildHTTPClient(c)
-	var request *http.Request
-	var e error
-
+// Request ...
+func (c *Client) Request() (*http.Request, error) {
 	if c.Body == nil {
-		request, e = http.NewRequest(c.Method, c.RemoteURL(), nil)
-		if e != nil {
-			return ErrResponse(e)
-		}
+		return http.NewRequest(c.Method, c.RemoteURL(), nil)
 	}
-	request = c.Body.RequestBuilder(c.Method, c.RemoteURL(), c.Body.BodyInstance)
+	return c.Body.RequestBuilder(c.Method, c.RemoteURL(), c.Body.BodyInstance)
+}
+
+// do ...
+func (c *Client) do(ctx context.Context) Responder {
+	log.Debugf("%+v\n", c)
+	client, e := c.HTTPClient()
+	if e != nil {
+		return ErrResponse(xerrors.Errorf("client:%w", e))
+	}
+	request, e := c.Request()
+	if e != nil {
+		return ErrResponse(xerrors.Errorf("request:%w", e))
+	}
 	response, e := client.Do(request.WithContext(ctx))
 	if e != nil {
-		return ErrResponse(e)
+		return ErrResponse(xerrors.Errorf("response:%w", e))
 	}
 	return buildResponder(response)
 }
@@ -141,7 +170,7 @@ func PostForm(url string, query util.Map, form interface{}) Responder {
 		BodyType: &bt,
 		Query:    query,
 	})
-	return client.Do(context.Background())
+	return client.do(context.Background())
 }
 
 // PostJSON json post请求
@@ -152,7 +181,7 @@ func PostJSON(url string, query util.Map, json interface{}) Responder {
 		BodyType: &bt,
 		Query:    query,
 	})
-	return client.Do(context.Background())
+	return client.do(context.Background())
 }
 
 // PostXML  xml post请求
@@ -163,7 +192,7 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 		BodyType: &bt,
 		Query:    query,
 	})
-	return client.Do(context.Background())
+	return client.do(context.Background())
 }
 
 // Get get请求
@@ -172,7 +201,7 @@ func Get(url string, query util.Map) Responder {
 	client := makeClient(GET, url, nil, &ClientOption{
 		Query: query,
 	})
-	return client.Do(context.Background())
+	return client.do(context.Background())
 }
 
 // Upload upload请求
@@ -182,7 +211,7 @@ func Upload(url string, query, multi util.Map) Responder {
 		BodyType: &bt,
 		Query:    query,
 	})
-	return client.Do(context.Background())
+	return client.do(context.Background())
 }
 
 // TimeOut ...
@@ -195,7 +224,7 @@ func KeepAlive(src int64) time.Duration {
 	return time.Duration(util.MustInt64(src, 30)) * time.Second
 }
 
-func buildTransport(client *Client) *http.Client {
+func buildTransport(client *Client) (*http.Client, error) {
 	return &http.Client{
 		Transport: &http.Transport{
 			Proxy: nil,
@@ -225,23 +254,19 @@ func buildTransport(client *Client) *http.Client {
 		//CheckRedirect: nil,
 		//Jar:           nil,
 		//Timeout:       0,
-	}
+	}, nil
 
 }
 
-func buildSafeTransport(client *Client) *http.Client {
-	cert, err := tls.X509KeyPair(client.Option.SafeCert.Key, client.Option.SafeCert.Cert)
-	if err != nil {
-		log.Error(err)
-		return nil
+func buildSafeTransport(client *Client) (*http.Client, error) {
+	cert, e := tls.X509KeyPair(client.certKey())
+	if e != nil {
+		log.Error(e)
+		return nil, e
 	}
 
-	caFile := client.Option.SafeCert.RootCA
-	if err != nil {
-		caFile = []byte(defaultCa)
-	}
 	certPool := x509.NewCertPool()
-	certPool.AppendCertsFromPEM(caFile)
+	certPool.AppendCertsFromPEM(client.CA())
 	tlsConfig := &tls.Config{
 		Certificates:       []tls.Certificate{cert},
 		RootCAs:            certPool,
@@ -261,10 +286,10 @@ func buildSafeTransport(client *Client) *http.Client {
 			//ResponseHeaderTimeout: 10 * time.Second,
 			//ExpectContinueTimeout: 1 * time.Second,
 		},
-	}
+	}, nil
 }
 
-func buildHTTPClient(client *Client) *http.Client {
+func buildHTTPClient(client *Client) (*http.Client, error) {
 	//检查是否包含security
 	if client.Option.UseSafe {
 		//判断能否创建safe client

@@ -37,7 +37,7 @@ type RequestBody struct {
 }
 
 // RequestBuilderFunc ...
-type RequestBuilderFunc func(method, url string, i interface{}) *http.Request
+type RequestBuilderFunc func(method, url string, i interface{}) (*http.Request, error)
 
 //TODO
 var buildMultipart = buildNothing
@@ -51,14 +51,13 @@ var builder = map[BodyType]RequestBuilderFunc{
 	BodyTypeNone:      buildNothing,
 }
 
-func buildXML(method, url string, i interface{}) *http.Request {
+func buildXML(method, url string, i interface{}) (*http.Request, error) {
 	request, e := http.NewRequest(method, url, xmlReader(i))
 	if e != nil {
-		log.Error(e)
-		return nil
+		return nil, e
 	}
 	request.Header.Set("Content-Type", "application/json; charset=utf-8")
-	return request
+	return request, nil
 }
 
 // xmlReader ...
@@ -84,23 +83,21 @@ func xmlReader(v interface{}) io.Reader {
 	return reader
 }
 
-func buildJSON(method, url string, i interface{}) *http.Request {
+func buildJSON(method, url string, i interface{}) (*http.Request, error) {
 	request, e := http.NewRequest(method, url, jsonReader(i))
 	if e != nil {
-		log.Error(e)
-		return nil
+		return nil, e
 	}
 	request.Header.Set("Content-Type", "application/json; charset=utf-8")
-	return request
+	return request, nil
 }
 
-func buildNothing(method, url string, i interface{}) *http.Request {
+func buildNothing(method, url string, i interface{}) (*http.Request, error) {
 	request, e := http.NewRequest(method, url, nil)
 	if e != nil {
-		log.Error(e)
-		return nil
+		return nil, e
 	}
-	return request
+	return request, nil
 }
 
 // jsonReader ...
@@ -126,11 +123,7 @@ func jsonReader(v interface{}) io.Reader {
 }
 
 // buildBody ...
-func buildBody(v interface{}, tps ...BodyType) *RequestBody {
-	tp := BodyTypeNone
-	if tps != nil {
-		tp = tps[0]
-	}
+func buildBody(v interface{}, tp BodyType) *RequestBody {
 	build, b := builder[tp]
 	if !b {
 		build = buildNothing
