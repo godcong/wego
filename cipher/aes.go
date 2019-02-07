@@ -3,6 +3,7 @@ package cipher
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"github.com/godcong/wego/log"
 	"golang.org/x/exp/xerrors"
 )
 
@@ -12,41 +13,51 @@ type cryptAES128CBC struct {
 }
 
 // Encrypt ...
-func (c *cryptAES128CBC) Encrypt(interface{}) ([]byte, error) {
-	panic("aes 128 cbc encrypt was not support")
+func (c *cryptAES128CBC) Encrypt(data interface{}) ([]byte, error) {
+	block, err := aes.NewCipher(c.key) //选择加密算法
+	if err != nil {
+		return nil, err
+	}
+	plantText := PKCS7Padding(parseBytes(data), block.BlockSize())
+	mode := cipher.NewCBCEncrypter(block, c.iv)
+	cipherText := make([]byte, len(plantText))
+	mode.CryptBlocks(cipherText, plantText)
+
+	return Base64Encode(cipherText), nil
 }
 
 // Decrypt ...
 func (c *cryptAES128CBC) Decrypt(data interface{}) ([]byte, error) {
-	key, e := Base64Decode(c.key)
-	if e != nil {
-		return nil, xerrors.Errorf("wrong key:%w", e)
-	}
-
-	iv, e := Base64Decode(c.iv)
-	if e != nil {
-		return nil, xerrors.Errorf("wrong iv:%w", e)
-	}
-
-	decoded, e := Base64Decode(parseBytes(data))
+	cipherText, e := Base64Decode(parseBytes(data))
 	if e != nil {
 		return nil, xerrors.Errorf("wrong data:%w", e)
 	}
-
-	block, e := aes.NewCipher(key)
+	block, e := aes.NewCipher(c.key)
 	if e != nil {
 		return nil, e
 	}
-	mode := cipher.NewCBCDecrypter(block, iv)
-	mode.CryptBlocks(decoded, decoded)
-	return PKCS7UnPadding(decoded), nil
+	mode := cipher.NewCBCDecrypter(block, c.iv)
+	plantText := make([]byte, len(cipherText))
+	mode.CryptBlocks(plantText, cipherText)
+
+	return PKCS7UnPadding(plantText), nil
 }
 
 // NewAES128CBC ...
-func NewAES128CBC(option Option) Cipher {
+func NewAES128CBC(option *Option) Cipher {
+	key, e := Base64DecodeString(option.Key)
+	if e != nil {
+		log.Error("wrong key:%w", e)
+		return nil
+	}
+	iv, e := Base64DecodeString(option.IV)
+	if e != nil {
+		log.Error("wrong iv:%w", e)
+		return nil
+	}
 	return &cryptAES128CBC{
-		iv:  []byte(option.IV),
-		key: []byte(option.Key),
+		iv:  iv,
+		key: key,
 	}
 }
 
@@ -60,7 +71,7 @@ type cryptAES256ECB struct {
 }
 
 // NewAES256ECB ...
-func NewAES256ECB(option Option) Cipher {
+func NewAES256ECB(option *Option) Cipher {
 	return &cryptAES256ECB{
 		key: []byte(option.Key),
 	}

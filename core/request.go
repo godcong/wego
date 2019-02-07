@@ -181,7 +181,7 @@ func toXMLReader(v interface{}) io.Reader {
 		log.Debug("toXMLReader|[]byte", v)
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("toXMLReader|util.Map", string(v.ToXML()))
+		log.Debug("toXMLReader|util.GMap", string(v.ToXML()))
 		reader = bytes.NewReader(v.ToXML())
 	default:
 		log.Debug("toXMLReader|default", v)
@@ -214,7 +214,7 @@ func toJSONReader(v interface{}) io.Reader {
 		log.Debug("toJSONReader|[]byte", string(v))
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("toJSONReader|util.Map", v.String())
+		log.Debug("toJSONReader|util.GMap", v.String())
 		reader = bytes.NewReader(v.ToJSON())
 	default:
 		log.Debug("toJSONReader|default", v)
@@ -246,10 +246,10 @@ func toFormReader(v interface{}) io.Reader {
 		log.Debug("toFormReader|[]byte", string(v))
 		reader = bytes.NewReader(v)
 	case util.Map:
-		log.Debug("toFormReader|util.Map", v.URLEncode())
+		log.Debug("toFormReader|util.GMap", v.URLEncode())
 		reader = strings.NewReader(v.URLEncode())
 	case url.Values:
-		log.Debug("toFormReader|util.Map", v.Encode())
+		log.Debug("toFormReader|util.GMap", v.Encode())
 		reader = strings.NewReader(v.Encode())
 	default:
 		//do nothing

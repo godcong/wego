@@ -13,10 +13,10 @@ func TestNewDataCrypt(t *testing.T) {
 	//{"openid":"oE_gl0Yr54fUjBhU5nBlP4hS2efo","session_key":"v4Hn+ZHjpCD9wjU53cP0hw=="}
 	//encrypted pLpcOaA1Z1nWaka2JkchrbAekCCWiU6+iSxHCFer8SM4nHEhOQMwinxx8lAOmg12tHu9hW1Ah3ghiT0ULjqU+/X2maXSiYUWBMyc36QX4BZB29JMnAzm2zycaGwmUX90WKv/ZmGh6UW4YU8/kj6WALNYlM7KpEJib6I3zSqP1irgCkKYoM1Bn7IWqJI+FNlCguPPXMoPoXDdycrfOR2CGDKN6gKCFAf4OHzv0lCggH12jCy0USRoAxZRcEGo2nhBmQBwi0jePRQEoBQ3H0Cn5sOQD5SGjZWsS/2pg0k6ABUXUZI/QRt1Gi5DSMG48W/Az75b3cui5lkxN4Tq0kwXs2UV0h3qR+66qlqJIQQjYKBbdKnZhw9CQnWg4k/3Ft28uiTa4LERRYHvMwzGBLsb6wQjGXXhkN9U8CR0XvpBbbQ9Jk2OYU0JDrkG8Jwx0KY/j2jYWPWu1I0ppDJXsRAyvrpUy4AqEOIst4gjpoMWvQ0=
 	//iv u+SFMW4Rifsg3MwQ+KnNRA==
-	c := NewDataCrypt("wx1ad61aeef1903b93")
-	m, e := c.Decrypt("pLpcOaA1Z1nWaka2JkchrbAekCCWiU6+iSxHCFer8SM4nHEhOQMwinxx8lAOmg12tHu9hW1Ah3ghiT0ULjqU+/X2maXSiYUWBMyc36QX4BZB29JMnAzm2zycaGwmUX90WKv/ZmGh6UW4YU8/kj6WALNYlM7KpEJib6I3zSqP1irgCkKYoM1Bn7IWqJI+FNlCguPPXMoPoXDdycrfOR2CGDKN6gKCFAf4OHzv0lCggH12jCy0USRoAxZRcEGo2nhBmQBwi0jePRQEoBQ3H0Cn5sOQD5SGjZWsS/2pg0k6ABUXUZI/QRt1Gi5DSMG48W/Az75b3cui5lkxN4Tq0kwXs2UV0h3qR+66qlqJIQQjYKBbdKnZhw9CQnWg4k/3Ft28uiTa4LERRYHvMwzGBLsb6wQjGXXhkN9U8CR0XvpBbbQ9Jk2OYU0JDrkG8Jwx0KY/j2jYWPWu1I0ppDJXsRAyvrpUy4AqEOIst4gjpoMWvQ0=", "u+SFMW4Rifsg3MwQ+KnNRA==", "v4Hn+ZHjpCD9wjU53cP0hw==")
-	t.Log(string(m), e)
-
+	//c := NewDataCrypt("wx1ad61aeef1903b93")
+	//m, e := c.Decrypt("pLpcOaA1Z1nWaka2JkchrbAekCCWiU6+iSxHCFer8SM4nHEhOQMwinxx8lAOmg12tHu9hW1Ah3ghiT0ULjqU+/X2maXSiYUWBMyc36QX4BZB29JMnAzm2zycaGwmUX90WKv/ZmGh6UW4YU8/kj6WALNYlM7KpEJib6I3zSqP1irgCkKYoM1Bn7IWqJI+FNlCguPPXMoPoXDdycrfOR2CGDKN6gKCFAf4OHzv0lCggH12jCy0USRoAxZRcEGo2nhBmQBwi0jePRQEoBQ3H0Cn5sOQD5SGjZWsS/2pg0k6ABUXUZI/QRt1Gi5DSMG48W/Az75b3cui5lkxN4Tq0kwXs2UV0h3qR+66qlqJIQQjYKBbdKnZhw9CQnWg4k/3Ft28uiTa4LERRYHvMwzGBLsb6wQjGXXhkN9U8CR0XvpBbbQ9Jk2OYU0JDrkG8Jwx0KY/j2jYWPWu1I0ppDJXsRAyvrpUy4AqEOIst4gjpoMWvQ0=", "u+SFMW4Rifsg3MwQ+KnNRA==", "v4Hn+ZHjpCD9wjU53cP0hw==")
+	//t.Log(string(m), e)
+	return
 }
 
 // TestRefundedNotify_ServeHTTP ...
@@ -31,12 +31,16 @@ func TestRefundedNotify_ServeHTTP(t *testing.T) {
 
 	key := strings.ToLower(string(util.SignMD5(payKey, "")))
 	log.Println(key)
-	ecb := CryptAES256ECB()
-	//ecb.SetParameter("key", []byte(key))
+
+	ecb := New(AES256ECB, &Option{
+		Key: key,
+	})
+
 	d, err := ecb.Decrypt([]byte(reqInfo))
 	t.Error(err)
 	t.Log(string(d))
 	err = xml.Unmarshal(d, &maps)
 	t.Log(maps)
 	t.Log(err)
+	return
 }
