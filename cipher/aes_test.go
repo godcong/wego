@@ -1,6 +1,8 @@
 package cipher
 
 import (
+	"bytes"
+	"encoding/base64"
 	"encoding/xml"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
@@ -43,4 +45,38 @@ func TestRefundedNotify_ServeHTTP(t *testing.T) {
 	t.Log(maps)
 	t.Log(err)
 	return
+}
+
+var validateEncryptCryptAES128CBC = []byte(`vuuUEGrIilcZMRvbNkRaV3wtRE4guDjo4TGiXYDt9wPNfaHxtXLIB3qipjxmJSstK3WFm32Lu/whd4+XkDcQBu5cZy0D2WwJLJY/4jrNczrRVFIxpRshAVoIDY88rPdEec51Qc+UMqKBBytGf8KXm3vXvBdq1taf2ZwF7rlEtcPdCCL0uG5qL3LByQm7OnsIPi/iBsOt+CxcwH4eNUAACvQCZmhEj89LznO6zAWvloqrL1pXmt1mIVRIq7lyTxEbgo5OMcsKlbyVFGU1WKhTfkX2pCVLUrsXu+dJrh3BheCoBIq0GkouyZ+cUZr3JpcI02tGaCcX2j4L29QFKGgquL6/w5Qn0hW4frpUuWTaY9hkpLOfVSpWDxe2i2cLdgTv2bbbkMx9kShRuNcFAQoB9bbaUurY/hwGaY6ybnYvt/OgqBHATrswbaF/7YdxDMaM`)
+var validateDecryptCryptAES128CBC = []byte(`<xml>
+            <ToUserName><![CDATA[gh_56870ffd193b]]></ToUserName>
+            <FromUserName><![CDATA[oLyBi0hSYhggnD-kOIms0IzZFqrc]]></FromUserName>
+            <CreateTime>1524409354</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[你好啊你好啊你好啊]]></Content>
+            <MsgID>6547288321577417974</MsgID>
+        </xml>`)
+
+// TestPrpCrypt_Encrypt ...
+func TestCryptAES128CBC(t *testing.T) {
+	k, _ := base64.RawStdEncoding.DecodeString(encodingAesKey)
+	log.Println(string(k))
+	prp := &cryptAES128CBC{
+		iv:  k[:16],
+		key: k,
+	}
+	b, e := prp.Encrypt(text)
+	if bytes.Compare(b, validateEncryptCryptAES128CBC) != 0 || e != nil {
+		t.Error(string(b), e)
+		return
+	}
+	t.Log(string(b))
+
+	b, e = prp.Decrypt(b)
+	if e != nil {
+		t.Error(string(b), e)
+		return
+	}
+	t.Log(string(b))
+
 }

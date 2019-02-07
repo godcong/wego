@@ -9,11 +9,12 @@ type CryptType int
 const (
 	AES128CBC CryptType = iota
 	AES256ECB           = iota
-	RSA                 = iota
+	BizMsg              = iota
+	RSA
 )
 
 // InstanceFunc ...
-type InstanceFunc func(option Option) Cipher
+type InstanceFunc func(option *Option) Cipher
 
 // Cipher ...
 type Cipher interface {
@@ -22,14 +23,11 @@ type Cipher interface {
 	Decrypt(interface{}) ([]byte, error)
 }
 
-var cipherList []InstanceFunc
-
-func init() {
-	cipherList = []InstanceFunc{
-		AES128CBC: NewAES128CBC,
-		AES256ECB: NewAES256ECB,
-		//CryptRSA,
-	}
+var cipherList = []InstanceFunc{
+	AES128CBC: NewAES128CBC,
+	AES256ECB: NewAES256ECB,
+	BizMsg:    NewBizMsg,
+	RSA:       NewRSA,
 }
 
 // Option ...
@@ -39,11 +37,11 @@ type Option struct {
 	RSAPrivate string
 	RSAPublic  string
 	Token      string
-	AppID      string
+	ID         string
 }
 
 // New create a new cipher
-func New(cryptType CryptType, option Option) Cipher {
+func New(cryptType CryptType, option *Option) Cipher {
 	return cipherList[cryptType](option)
 }
 
@@ -55,6 +53,17 @@ func parseBytes(data interface{}) []byte {
 		return []byte(tmp)
 	default:
 		return nil
+	}
+}
+
+func parseBizMsg(data interface{}) *BizMsgData {
+	switch tmp := data.(type) {
+	case *BizMsgData:
+		return tmp
+	case BizMsgData:
+		return &tmp
+	default:
+		return &BizMsgData{}
 	}
 }
 
