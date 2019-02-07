@@ -15,6 +15,16 @@ type MapAble interface {
 	ToMap() Map
 }
 
+// XMLAble ...
+type XMLAble interface {
+	ToXML() []byte
+}
+
+// JSONAble ...
+type JSONAble interface {
+	ToJSON() []byte
+}
+
 // ErrNilMap ...
 var ErrNilMap = errors.New("nil map")
 

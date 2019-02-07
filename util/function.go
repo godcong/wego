@@ -13,6 +13,7 @@ import (
 	"github.com/satori/go.uuid"
 	"golang.org/x/exp/xerrors"
 	"math/rand"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -412,8 +413,10 @@ func CurrentTimeStampString() string {
 	return strconv.FormatInt(CurrentTimeStamp(), 10)
 }
 
-// SHA1 transfer string to sha1
-func SHA1(s string) string {
+// SHA1 transfer strings to sha1
+func SHA1(text ...string) string {
+	sort.Strings(text)
+	s := strings.Join(text, "")
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
 
