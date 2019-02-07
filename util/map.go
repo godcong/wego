@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/log"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -46,7 +47,7 @@ func ToString(s string) String {
 	return String(s)
 }
 
-/*Map Map */
+/*GMap GMap */
 type Map map[string]interface{}
 
 /*String transfer map to JSON string */
@@ -62,7 +63,7 @@ func MapNilMake(m Map) Map {
 	return m
 }
 
-/*ToMap transfer to map[string]interface{} or MapAble to Map  */
+/*ToMap transfer to map[string]interface{} or MapAble to GMap  */
 func ToMap(p interface{}) Map {
 	switch v := p.(type) {
 	case map[string]interface{}:
@@ -545,12 +546,12 @@ func (m Map) Check(s ...string) int {
 	return -1
 }
 
-// Map trans Map to map[string]interface
-func (m Map) Map() map[string]interface{} {
+// GMap trans return a map[string]interface from Map
+func (m Map) GMap() map[string]interface{} {
 	return (map[string]interface{})(m)
 }
 
-// ToMap return self map
+// ToMap implements MapAble
 func (m Map) ToMap() Map {
 	return m
 }
@@ -574,11 +575,165 @@ func (m Map) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	return unmarshalXML(m, d, xml.StartElement{Name: xml.Name{Local: "xml"}}, false)
 }
 
-// InterfaceToMap ...
-func InterfaceToMap(v interface{}, m *Map) error {
-	b, err := json.Marshal(v)
+func marshalXML(maps Map, e *xml.Encoder, start xml.StartElement) error {
+	if maps == nil {
+		return errors.New("map is nil")
+	}
+	err := e.EncodeToken(start)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(b, m)
+	for k, v := range maps {
+		err := convertXML(k, v, e, xml.StartElement{Name: xml.Name{Local: k}})
+		if err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
+func unmarshalXML(maps Map, d *xml.Decoder, start xml.StartElement, needCast bool) error {
+	current := ""
+	var data interface{}
+	last := ""
+	arrayTmp := make(Map)
+	arrayTag := ""
+	var ele []string
+
+	for t, err := d.Token(); err == nil; t, err = d.Token() {
+		switch token := t.(type) {
+		// 处理元素开始（标签）
+		case xml.StartElement:
+			if strings.ToLower(token.Name.Local) == "xml" ||
+				strings.ToLower(token.Name.Local) == "root" {
+				continue
+			}
+			ele = append(ele, token.Name.Local)
+			current = strings.Join(ele, ".")
+			//log.Debug("EndElement", current)
+			//log.Debug("EndElement", last)
+			//log.Debug("EndElement", arrayTag)
+			if current == last {
+				arrayTag = current
+				tmp := maps.Get(arrayTag)
+				switch tmp.(type) {
+				case []interface{}:
+					arrayTmp.Set(arrayTag, tmp)
+				default:
+					arrayTmp.Set(arrayTag, []interface{}{tmp})
+				}
+				maps.Delete(arrayTag)
+			}
+			log.Debug("StartElement", ele)
+			// 处理元素结束（标签）
+		case xml.EndElement:
+			name := token.Name.Local
+			// fmt.Printf("This is the end: %s\n", name)
+			if strings.ToLower(name) == "xml" ||
+				strings.ToLower(name) == "root" {
+				break
+			}
+			last = strings.Join(ele, ".")
+			//log.Debug("EndElement", current)
+			//log.Debug("EndElement", last)
+			//log.Debug("EndElement", arrayTag)
+
+			if current == last {
+				if data != nil {
+					log.Debug("CharData", data)
+					maps.Set(current, data)
+				} else {
+					//m.Set(current, nil)
+				}
+				data = nil
+			}
+			if last == arrayTag {
+				arr := arrayTmp.GetArray(arrayTag)
+				if arr != nil {
+					if v := maps.Get(arrayTag); v != nil {
+						maps.Set(arrayTag, append(arr, v))
+					} else {
+						maps.Set(arrayTag, arr)
+					}
+				} else {
+					//exception doing
+					maps.Set(arrayTag, []interface{}{maps.Get(arrayTag)})
+				}
+				arrayTmp.Delete(arrayTag)
+				arrayTag = ""
+			}
+
+			ele = ele[:len(ele)-1]
+			//log.Debug("EndElement", ele)
+			// 处理字符数据（这里就是元素的文本）
+		case xml.CharData:
+			if needCast {
+				data, err = strconv.Atoi(string(token))
+				if err == nil {
+					continue
+				}
+
+				data, err = strconv.ParseFloat(string(token), 64)
+				if err == nil {
+					continue
+				}
+
+				data, err = strconv.ParseBool(string(token))
+				if err == nil {
+					continue
+				}
+			}
+
+			data = string(token)
+			//log.Debug("CharData", data)
+			// 异常处理(Log输出）
+		default:
+			log.Debug(token)
+		}
+
+	}
+
+	return nil
+}
+
+func convertXML(k string, v interface{}, e *xml.Encoder, start xml.StartElement) error {
+	var err error
+	switch v1 := v.(type) {
+	case Map:
+		return marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+	case map[string]interface{}:
+		return marshalXML(v1, e, xml.StartElement{Name: xml.Name{Local: k}})
+	case string:
+		if _, err := strconv.ParseInt(v1, 10, 0); err != nil {
+			err = e.EncodeElement(
+				CDATA{Value: v1}, xml.StartElement{Name: xml.Name{Local: k}})
+			return err
+		}
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
+	case float64:
+		if v1 == float64(int64(v1)) {
+			err = e.EncodeElement(int64(v1), xml.StartElement{Name: xml.Name{Local: k}})
+			return err
+		}
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
+	case bool:
+		err = e.EncodeElement(v1, xml.StartElement{Name: xml.Name{Local: k}})
+		return err
+	case []interface{}:
+		size := len(v1)
+		for i := 0; i < size; i++ {
+			err := convertXML(k, v1[i], e, xml.StartElement{Name: xml.Name{Local: k}})
+			if err != nil {
+				return err
+			}
+		}
+		if len(v1) == 1 {
+			return convertXML(k, "", e, xml.StartElement{Name: xml.Name{Local: k}})
+		}
+	default:
+		log.Error(v1)
+	}
+	return nil
 }
