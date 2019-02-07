@@ -3,7 +3,6 @@ package cipher
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"encoding/base64"
 	"golang.org/x/exp/xerrors"
 )
 
@@ -21,37 +20,35 @@ func NewDataCrypt(id string) *DataCrypt {
 
 // CryptAES128CBC ...
 type cryptAES128CBC struct {
-	iv, key string
+	iv, key []byte
 }
 
 // Encrypt ...
 func (c *cryptAES128CBC) Encrypt(interface{}) ([]byte, error) {
-	panic("implement me")
+	panic("aes 128 cbc encrypt was not support")
 }
 
 // Decrypt ...
-func (c *cryptAES128CBC) Decrypt(v interface{}) ([]byte, error) {
-	key, e := base64.StdEncoding.DecodeString(c.key)
+func (c *cryptAES128CBC) Decrypt(data interface{}) ([]byte, error) {
+	key, e := Base64Decode(c.key)
 	if e != nil {
 		return nil, xerrors.Errorf("wrong key:%w", e)
 	}
 
-	iv, e := base64.StdEncoding.DecodeString(c.iv)
+	iv, e := Base64Decode(c.iv)
 	if e != nil {
 		return nil, xerrors.Errorf("wrong iv:%w", e)
 	}
 
-	var data []byte
-	switch sv := v.(type) {
+	var decoded []byte
+	switch tmp := data.(type) {
 	case []byte:
-		data = sv
+		decoded, e = Base64Decode(tmp)
 	case string:
-		data = []byte(sv)
+		decoded, e = Base64Decode([]byte(decoded))
 	default:
 		return nil, xerrors.New("wrong input data")
 	}
-
-	decodeData, e := Base64Decode(data)
 	if e != nil {
 		return nil, xerrors.Errorf("wrong data:%w", e)
 	}
@@ -61,15 +58,15 @@ func (c *cryptAES128CBC) Decrypt(v interface{}) ([]byte, error) {
 		return nil, e
 	}
 	mode := cipher.NewCBCDecrypter(block, iv)
-	mode.CryptBlocks(decodeData, decodeData)
-	return PKCS7UnPadding(decodeData), nil
+	mode.CryptBlocks(decoded, decoded)
+	return PKCS7UnPadding(decoded), nil
 }
 
 // NewAES128CBC ...
 func NewAES128CBC(option Option) Cipher {
 	return &cryptAES128CBC{
-		iv:  option.IV,
-		key: option.Key,
+		iv:  []byte(option.IV),
+		key: []byte(option.Key),
 	}
 }
 
