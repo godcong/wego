@@ -7,6 +7,9 @@ import (
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"golang.org/x/exp/xerrors"
+	"io"
+	"io/ioutil"
+	"math"
 	"net"
 	"net/http"
 	"time"
@@ -152,7 +155,7 @@ func (c *Client) do(ctx context.Context) Responder {
 	if e != nil {
 		return ErrResponse(xerrors.Errorf("response:%w", e))
 	}
-	return buildResponder(response)
+	return BuildResponder(response)
 }
 
 // RemoteURL ...
@@ -298,4 +301,17 @@ func buildHTTPClient(client *Client) (*http.Client, error) {
 	}
 	return buildTransport(client)
 
+}
+
+type bodyReader interface {
+	ToMap() util.Map
+	Bytes() []byte
+	Error() error
+	Unmarshal(v interface{}) error
+	Result() (util.Map, error)
+}
+
+/*readBody get response data */
+func readBody(r io.ReadCloser) ([]byte, error) {
+	return ioutil.ReadAll(io.LimitReader(r, math.MaxUint32))
 }

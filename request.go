@@ -7,8 +7,6 @@ import (
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"io"
-	"io/ioutil"
-	"math"
 	"net/http"
 	"strings"
 )
@@ -139,11 +137,7 @@ func buildBody(v interface{}, tp BodyType) *RequestBody {
 
 /*Requester Requester */
 type Requester interface {
-	ToMap() util.Map
-	Bytes() []byte
-	Error() error
-	Unmarshal(v interface{}) error
-	Result() (util.Map, error)
+	bodyReader
 }
 
 // Request ...
@@ -260,25 +254,20 @@ func (r *Request) Error() error {
 	return r.err
 }
 
-// ReadRequest ...
-func ReadRequest(r *http.Request) ([]byte, error) {
-	return ioutil.ReadAll(io.LimitReader(r.Body, math.MaxUint32))
-}
-
-// buildRequester ...
-func buildRequester(req *http.Request) Requester {
+// BuildRequester ...
+func BuildRequester(req *http.Request) Requester {
 	ct := req.Header.Get("Content-Type")
-	body, err := ReadRequest(req)
+	body, err := readBody(req.Body)
 	if err != nil {
 		log.Error(body, err)
-		return ErrResponse(err)
+		return ErrRequest(err)
 	}
 
 	log.Debug("request:", string(body[:128]), len(body)) //max 128 char
 	if strings.Index(ct, "xml") != -1 ||
 		bytes.Index(body, []byte("<xml")) != -1 {
-		return XMLResponse(body)
+		return XMLRequest(body)
 	}
-	return JSONResponse(body)
+	return JSONRequest(body)
 	//return ErrResponse(xerrors.New("error with code " + req.Status))
 }

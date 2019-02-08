@@ -8,9 +8,6 @@ import (
 	"github.com/json-iterator/go"
 	"golang.org/x/exp/xerrors"
 	"golang.org/x/text/transform"
-	"io"
-	"io/ioutil"
-	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -18,11 +15,7 @@ import (
 
 /*Responder Responder */
 type Responder interface {
-	ToMap() util.Map
-	Bytes() []byte
-	Error() error
-	Unmarshal(v interface{}) error
-	Result() (util.Map, error)
+	bodyReader
 }
 
 // Response ...
@@ -139,15 +132,10 @@ func (r *Response) Error() error {
 	return r.err
 }
 
-/*ReadResponse get response data */
-func ReadResponse(r *http.Response) ([]byte, error) {
-	return ioutil.ReadAll(io.LimitReader(r.Body, math.MaxUint32))
-}
-
-// buildResponder ...
-func buildResponder(resp *http.Response) Responder {
+// BuildResponder ...
+func BuildResponder(resp *http.Response) Responder {
 	ct := resp.Header.Get("Content-Type")
-	body, err := ReadResponse(resp)
+	body, err := readBody(resp.Body)
 	if err != nil {
 		log.Error(body, err)
 		return ErrResponse(err)
