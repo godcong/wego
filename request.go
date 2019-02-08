@@ -7,6 +7,8 @@ import (
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"io"
+	"io/ioutil"
+	"math"
 	"net/http"
 	"strings"
 )
@@ -133,4 +135,150 @@ func buildBody(v interface{}, tp BodyType) *RequestBody {
 		RequestBuilder: build,
 		BodyInstance:   v,
 	}
+}
+
+/*Requester Requester */
+type Requester interface {
+	ToMap() util.Map
+	Bytes() []byte
+	Error() error
+	Unmarshal(v interface{}) error
+	Result() (util.Map, error)
+}
+
+// Request ...
+type Request struct {
+	bytes []byte
+	err   error
+}
+
+// xmlResponse ...
+type xmlRequest struct {
+	Request
+	data util.Map
+}
+
+// XMLRequest ...
+func XMLRequest(bytes []byte) Requester {
+	return &xmlRequest{
+		Request: Request{
+			bytes: bytes,
+		},
+	}
+}
+
+// ToMap ...
+func (r *xmlRequest) ToMap() util.Map {
+	maps, e := r.Result()
+	if e != nil {
+		return nil
+	}
+	return maps
+}
+
+// Unmarshal ...
+func (r *xmlRequest) Unmarshal(v interface{}) error {
+	return xml.Unmarshal(r.bytes, v)
+}
+
+// Result ...
+func (r *xmlRequest) Result() (util.Map, error) {
+	if r.data != nil {
+		return r.data, nil
+	}
+	r.data = make(util.Map)
+	e := r.Unmarshal(&r.data)
+	return r.data, e
+}
+
+// jsonResponse ...
+type jsonRequest struct {
+	Request
+	data util.Map
+}
+
+// JSONRequest ...
+func JSONRequest(bytes []byte) Requester {
+	return &jsonRequest{
+		Request: Request{
+			bytes: bytes,
+		},
+	}
+}
+
+// ToMap ...
+func (r *jsonRequest) ToMap() util.Map {
+	maps, e := r.Result()
+	if e != nil {
+		return nil
+	}
+	return maps
+}
+
+// Unmarshal ...
+func (r *jsonRequest) Unmarshal(v interface{}) error {
+	return jsoniter.Unmarshal(r.bytes, v)
+}
+
+// Result ...
+func (r *jsonRequest) Result() (util.Map, error) {
+	r.data = make(util.Map)
+	e := r.Unmarshal(&r.data)
+	return r.data, e
+}
+
+// ToMap ...
+func (r *Request) ToMap() util.Map {
+	return nil
+}
+
+// Unmarshal ...
+func (r *Request) Unmarshal(v interface{}) error {
+	return r.err
+}
+
+// Result ...
+func (r *Request) Result() (util.Map, error) {
+	return nil, r.err
+}
+
+// ErrRequest ...
+func ErrRequest(err error) Requester {
+	return &Request{
+		bytes: nil,
+		err:   err,
+	}
+}
+
+// Bytes ...
+func (r *Request) Bytes() []byte {
+	return r.bytes
+}
+
+// Error ...
+func (r *Request) Error() error {
+	return r.err
+}
+
+// ReadRequest ...
+func ReadRequest(r *http.Request) ([]byte, error) {
+	return ioutil.ReadAll(io.LimitReader(r.Body, math.MaxUint32))
+}
+
+// buildRequester ...
+func buildRequester(req *http.Request) Requester {
+	ct := req.Header.Get("Content-Type")
+	body, err := ReadRequest(req)
+	if err != nil {
+		log.Error(body, err)
+		return ErrResponse(err)
+	}
+
+	log.Debug("request:", string(body[:128]), len(body)) //max 128 char
+	if strings.Index(ct, "xml") != -1 ||
+		bytes.Index(body, []byte("<xml")) != -1 {
+		return XMLResponse(body)
+	}
+	return JSONResponse(body)
+	//return ErrResponse(xerrors.New("error with code " + req.Status))
 }
