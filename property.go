@@ -39,16 +39,16 @@ type SafeCertProperty struct {
 
 // PaymentProperty ...
 type PaymentProperty struct {
-	AppID      string `json:"app_id"`
-	MchID      string `json:"mch_id"`
-	SubMchID   string `json:"sub_mch_id"`
-	SubAppID   string `json:"sub_app_id"`
-	Key        string `json:"key"`
-	CertPEM    string `json:"cert_pem"`
-	KeyPEM     string `json:"key_pem"`
-	RootCaPEM  string `json:"root_ca_pem"`
-	PublicKey  string `json:"public_key"`
-	PrivateKey string `json:"private_key"`
+	AppID     string `json:"app_id"`
+	AppSecret string `json:"app_secret"`
+	MchID     string `json:"mch_id"`
+	//CertPEM    string `json:"cert_pem"`
+	//KeyPEM     string `json:"key_pem"`
+	//RootCaPEM  string `json:"root_ca_pem"`
+	//PublicKey  string `json:"public_key"`
+	//PrivateKey string `json:"private_key"`
+	SubMchID string `json:"sub_mch_id"`
+	SubAppID string `json:"sub_app_id"`
 }
 
 // OAuthProperty ...
@@ -59,26 +59,26 @@ type OAuthProperty struct {
 
 // OpenPlatformProperty ...
 type OpenPlatformProperty struct {
-	AppID  string
-	Secret string
-	Token  string
-	AesKey string
+	AppID     string
+	AppSecret string
+	Token     string
+	AesKey    string
 }
 
 // OfficialAccountProperty ...
 type OfficialAccountProperty struct {
-	AppID  string
-	Secret string
-	Token  string
-	AesKey string
+	AppID     string
+	AppSecret string
+	Token     string
+	AesKey    string
 }
 
 // MiniProgramProperty ...
 type MiniProgramProperty struct {
-	AppID  string
-	Secret string
-	Token  string
-	AesKey string
+	AppID     string
+	AppSecret string
+	Token     string
+	AesKey    string
 }
 
 // GrantTypeClient ...
@@ -88,7 +88,7 @@ const GrantTypeClient string = "client_credential"
 type AccessTokenProperty struct {
 	GrantType string `toml:"grant_type"`
 	AppID     string `toml:"app_id"`
-	Secret    string `toml:"secret"`
+	AppSecret string `toml:"app_secret"`
 }
 
 // ToMap ...
