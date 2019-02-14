@@ -228,7 +228,7 @@ func (obj *Payment) IsSandbox() bool {
 
 /*GetKey 沙箱key(string类型) */
 func (obj *Payment) GetKey() string {
-	key := obj.k
+	key := obj.Key
 	if obj.IsSandbox() {
 		keyName := obj.Sandbox().getCacheKey()
 		cachedKey := cache.Get(keyName)

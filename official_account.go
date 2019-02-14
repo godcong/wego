@@ -3,9 +3,9 @@ package wego
 // OfficialAccount ...
 type OfficialAccount struct {
 	*OfficialAccountProperty
-	client   *Client
-	property *Property
-	option   *OfficialAccountOption
+	client *Client
+	config *Config
+	option *OfficialAccountOption
 }
 
 // OfficialAccountOption ...
@@ -31,7 +31,7 @@ func NewOfficialAccount(config *Config, opts ...*OfficialAccountOption) *Officia
 			BodyType: &bt,
 		}),
 		OfficialAccountProperty: config.OfficialAccount,
-		property:                config,
+		config:                  config,
 		option:                  opt,
 	}
 }
