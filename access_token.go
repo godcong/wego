@@ -20,7 +20,7 @@ type AccessTokenOption struct {
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	*AccessTokenProperty
+	*AccessTokenConfig
 	option *AccessTokenOption
 }
 
@@ -49,19 +49,19 @@ func tokenURL(obj *AccessToken) string {
 	return accessTokenURLSuffix
 }
 
-func newAccessToken(property *AccessTokenProperty, opts ...*AccessTokenOption) *AccessToken {
+func newAccessToken(property *AccessTokenConfig, opts ...*AccessTokenOption) *AccessToken {
 	var opt *AccessTokenOption
 	if opts != nil {
 		opt = opts[0]
 	}
 	return &AccessToken{
-		AccessTokenProperty: property,
-		option:              opt,
+		AccessTokenConfig: property,
+		option:            opt,
 	}
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property *AccessTokenProperty, opts ...*AccessTokenOption) *AccessToken {
+func NewAccessToken(property *AccessTokenConfig, opts ...*AccessTokenOption) *AccessToken {
 	return newAccessToken(property, opts...)
 }
 
@@ -103,7 +103,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 		}
 	}
 
-	token := requestToken(obj.TokenURL(), obj.AccessTokenProperty)
+	token := requestToken(obj.TokenURL(), obj.AccessTokenConfig)
 	if token == nil {
 		return nil
 	}
@@ -116,7 +116,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	return token
 }
 
-func requestToken(url string, credentials *AccessTokenProperty) *core.Token {
+func requestToken(url string, credentials *AccessTokenConfig) *core.Token {
 	var token core.Token
 	e := Get(url, credentials.ToMap()).Unmarshal(&token)
 	if e != nil {

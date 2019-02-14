@@ -11,10 +11,10 @@ import (
 
 //Payment ...
 type Payment struct {
-	*PaymentProperty
-	client   *Client
-	property *Property
-	option   *PaymentOption
+	*PaymentConfig
+	client *Client
+	config *Config
+	option *PaymentOption
 }
 
 // PaymentOption ...
@@ -28,7 +28,7 @@ type PaymentOption struct {
 }
 
 // NewPayment ...
-func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
+func NewPayment(config *Config, opts ...*PaymentOption) *Payment {
 	var opt *PaymentOption
 	if opts != nil {
 		opt = opts[0]
@@ -36,12 +36,12 @@ func NewPayment(property *Property, opts ...*PaymentOption) *Payment {
 	bt := BodyTypeXML
 	return &Payment{
 		client: NewClient(&ClientOption{
-			//AccessToken: NewAccessToken(property.AccessToken.Credential()),
+			//AccessToken: NewAccessToken(config.AccessToken.Credential()),
 			BodyType: &bt,
 		}),
-		PaymentProperty: property.Payment,
-		property:        property,
-		option:          opt,
+		PaymentConfig: config.Payment,
+		config:        config,
+		option:        opt,
 	}
 }
 
@@ -194,7 +194,7 @@ func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
 	bt := BodyTypeXML
 	client := NewClient(&ClientOption{
 		UseSafe:  true,
-		SafeCert: obj.property.SafeCert,
+		SafeCert: obj.config.SafeCert,
 		BodyType: &bt,
 	})
 	return client.Post(context.Background(), obj.RemoteURL(url), obj.initPay(p))
@@ -228,7 +228,7 @@ func (obj *Payment) IsSandbox() bool {
 
 /*GetKey 沙箱key(string类型) */
 func (obj *Payment) GetKey() string {
-	key := obj.Key
+	key := obj.k
 	if obj.IsSandbox() {
 		keyName := obj.Sandbox().getCacheKey()
 		cachedKey := cache.Get(keyName)
