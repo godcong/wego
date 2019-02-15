@@ -14,14 +14,12 @@ type Payment struct {
 	*PaymentConfig
 	client     *Client
 	config     *Config
-	sandbox    *SandboxConfig
+	sandbox    *Sandbox
+	subMchID   string
+	subAppID   string
 	useSandbox bool
 	remoteHost string
 	localHost  string
-}
-
-func parsePayment(payment *Payment, opts []*PaymentOption) *Payment {
-
 }
 
 // NewPayment ...
@@ -34,14 +32,7 @@ func NewPayment(config *Config, opts ...*PaymentOption) *Payment {
 		PaymentConfig: config.Payment,
 		config:        config,
 	}
-	payment = parsePayment(payment, opts)
-	return &Payment{
-		client: NewClient(&ClientOption{
-			BodyType: &bt,
-		}),
-		PaymentConfig: config.Payment,
-		config:        config,
-	}
+	return payment
 }
 
 /*Pay 支付
@@ -204,11 +195,11 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 	p.Set("appid", obj.AppID)
 	p.Set("mch_id", obj.MchID)
 	p.Set("nonce_str", util.GenerateUUID())
-	if obj.SubMchID != "" {
-		p.Set("sub_mch_id", obj.SubMchID)
+	if obj.subMchID != "" {
+		p.Set("sub_mch_id", obj.subMchID)
 	}
-	if obj.SubAppID != "" {
-		p.Set("sub_appid", obj.SubAppID)
+	if obj.subAppID != "" {
+		p.Set("sub_appid", obj.subAppID)
 	}
 
 	if !p.Has("sign") {
@@ -252,7 +243,7 @@ func (obj *Payment) GetKey() string {
 }
 
 // Sandbox ...
-func (obj *Payment) Sandbox() *SandboxConfig {
+func (obj *Payment) Sandbox() *Sandbox {
 	if obj.sandbox != nil {
 		return obj.sandbox
 	}
@@ -267,8 +258,8 @@ func (obj *Payment) RemoteURL(uri string) string {
 	return util.URL(remotePayment(obj), uri)
 }
 func remotePayment(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.RemoteAddress != "" {
-		return obj.option.RemoteAddress
+	if obj != nil && obj.remoteHost != "" {
+		return obj.remoteHost
 	}
 	return apiMCHWeixin
 }
@@ -278,8 +269,8 @@ func (obj *Payment) LocalURL() string {
 	return local(obj)
 }
 func local(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.LocalHost != "" {
-		return obj.option.LocalHost
+	if obj != nil && obj.localHost != "" {
+		return obj.localHost
 	}
 	return wegoLocal
 }
@@ -300,8 +291,8 @@ func (obj *Payment) RefundURL() string {
 	return util.URL(obj.LocalURL(), paymentRefundURL(obj))
 }
 func paymentRefundURL(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.RefundURL != "" {
-		return obj.option.RefundURL
+	if obj != nil && obj.option != nil && obj.option.RefundedURL != "" {
+		return obj.option.RefundedURL
 	}
 	return refundedCB
 }
