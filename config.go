@@ -1,35 +1,25 @@
 package wego
 
 import (
-	"crypto/md5"
-	"fmt"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"github.com/pelletier/go-toml"
 	"log"
 )
 
-// SandboxProperty ...
-type SandboxProperty struct {
+// SandboxOption ...
+type SandboxOption struct {
+	SubMchID string `xml:"sub_mch_id"`
+	SubAppID string `xml:"sub_app_id"`
+}
+
+// SandboxConfig ...
+type SandboxConfig struct {
 	AppID  string
 	Secret string
 	MchID  string
 	Key    string
-}
-
-func (obj *SandboxProperty) getCacheKey() string {
-	name := obj.AppID + "." + obj.MchID
-	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
-}
-
-// SignKey ...
-func (obj *SandboxProperty) SignKey() Responder {
-	m := make(util.Map)
-	m.Set("mch_id", obj.MchID)
-	m.Set("nonce_str", util.GenerateNonceStr())
-	m.Set("sign", util.GenSign(m, obj.Key))
-	resp := PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
-	return resp
+	option *SandboxOption
 }
 
 // SafeCertProperty ...
@@ -39,22 +29,31 @@ type SafeCertProperty struct {
 	RootCA []byte
 }
 
+// PaymentOption ...
+type PaymentOption struct {
+	SubMchID    string         `xml:"sub_mch_id"`
+	SubAppID    string         `xml:"sub_app_id"`
+	PublicKey   string         `xml:"public_key"`
+	PrivateKey  string         `xml:"private_key"`
+	RemoteHost  string         `xml:"remote_host"`
+	LocalHost   string         `xml:"local_host"`
+	UseSandbox  bool           `xml:"use_sandbox"`
+	Sandbox     *SandboxConfig `xml:"sandbox"`
+	NotifyURL   string         `xml:"notify_url"`
+	RefundedURL string         `xml:"refunded_url"`
+	ScannedURL  string         `xml:"scanned_url"`
+}
+
 // PaymentConfig ...
 type PaymentConfig struct {
-	AppID     string `json:"app_id"`
-	AppSecret string `json:"app_secret"`
-	MchID     string `json:"mch_id"`
-	Key       string `json:"key"`
-	//CertPEM    string `json:"cert_pem"`
-	//KeyPEM     string `json:"key_pem"`
-	//RootCaPEM  string `json:"root_ca_pem"`
-	//PublicKey  string `json:"public_key"`
-	//PrivateKey string `json:"private_key"`
-	SubMchID    string `json:"sub_mch_id"`
-	SubAppID    string `json:"sub_app_id"`
-	NotifyURL   string `json:"notify_url"`
-	RefundedURL string `json:"refunded_url"`
-	ScannedURL  string `json:"scanned_url"`
+	AppID     string `xml:"app_id"`
+	AppSecret string `xml:"app_secret"`
+	MchID     string `xml:"mch_id"`
+	Key       string `xml:"key"`
+	CertPEM   string `xml:"cert_pem"`
+	KeyPEM    string `xml:"key_pem"`
+	RootCaPEM string `xml:"root_ca_pem"`
+	option    *PaymentOption
 }
 
 // OAuthConfig ...

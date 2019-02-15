@@ -13,7 +13,7 @@ type OfficialAccountOption struct {
 	RemoteAddress string
 	LocalHost     string
 	UseSandbox    bool
-	Sandbox       *SandboxProperty
+	Sandbox       *SandboxConfig
 	NotifyURL     string
 	RefundURL     string
 }

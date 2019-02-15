@@ -12,36 +12,35 @@ import (
 //Payment ...
 type Payment struct {
 	*PaymentConfig
-	client *Client
-	config *Config
-	option *PaymentOption
+	client     *Client
+	config     *Config
+	sandbox    *SandboxConfig
+	useSandbox bool
+	remoteHost string
+	localHost  string
 }
 
-// PaymentOption ...
-type PaymentOption struct {
-	RemoteAddress string
-	LocalHost     string
-	UseSandbox    bool
-	Sandbox       *SandboxProperty
-	NotifyURL     string
-	RefundURL     string
+func parsePayment(payment *Payment, opts []*PaymentOption) *Payment {
+
 }
 
 // NewPayment ...
 func NewPayment(config *Config, opts ...*PaymentOption) *Payment {
-	var opt *PaymentOption
-	if opts != nil {
-		opt = opts[0]
-	}
 	bt := BodyTypeXML
-	return &Payment{
+	payment := &Payment{
 		client: NewClient(&ClientOption{
-			//AccessToken: NewAccessToken(config.AccessToken.Credential()),
 			BodyType: &bt,
 		}),
 		PaymentConfig: config.Payment,
 		config:        config,
-		option:        opt,
+	}
+	payment = parsePayment(payment, opts)
+	return &Payment{
+		client: NewClient(&ClientOption{
+			BodyType: &bt,
+		}),
+		PaymentConfig: config.Payment,
+		config:        config,
 	}
 }
 
@@ -73,7 +72,8 @@ https://api.mch.weixin.qq.com/pay/micropay
 +场景信息	scene_info	否	String(256)
 该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 */
-func (obj *Payment) Pay(p util.Map) Responder {
+func (obj *Payment) Pay(able util.MapAble) Responder {
+	p := able.ToMap()
 	p.Set("appid", obj.AppID)
 
 	//set notify callback
@@ -220,10 +220,7 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 
 // IsSandbox ...
 func (obj *Payment) IsSandbox() bool {
-	if obj.option != nil {
-		return obj.option.UseSandbox
-	}
-	return false
+	return obj.useSandbox
 }
 
 /*GetKey 沙箱key(string类型) */
@@ -242,7 +239,7 @@ func (obj *Payment) GetKey() string {
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
 			log.Println("cache key:", keyName)
-			cache.SetWithTTL(keyName, key, 3*24*3600)
+			cache.SetWithTTL(keyName, key, 24*3600)
 		}
 	}
 
@@ -255,11 +252,11 @@ func (obj *Payment) GetKey() string {
 }
 
 // Sandbox ...
-func (obj *Payment) Sandbox() *SandboxProperty {
-	if obj.option != nil && obj.option.Sandbox != nil {
-		return obj.option.Sandbox
+func (obj *Payment) Sandbox() *SandboxConfig {
+	if obj.sandbox != nil {
+		return obj.sandbox
 	}
-	return &SandboxProperty{}
+	return nil
 }
 
 // RemoteURL ...
