@@ -19,11 +19,11 @@ type SandboxConfig struct {
 	Secret string
 	MchID  string
 	Key    string
-	option *SandboxOption
+	//option *SandboxOption
 }
 
-// SafeCertProperty ...
-type SafeCertProperty struct {
+// SafeCertConfig ...
+type SafeCertConfig struct {
 	Cert   []byte
 	Key    []byte
 	RootCA []byte
@@ -31,17 +31,19 @@ type SafeCertProperty struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	SubMchID    string         `xml:"sub_mch_id"`
-	SubAppID    string         `xml:"sub_app_id"`
-	PublicKey   string         `xml:"public_key"`
-	PrivateKey  string         `xml:"private_key"`
-	RemoteHost  string         `xml:"remote_host"`
-	LocalHost   string         `xml:"local_host"`
-	UseSandbox  bool           `xml:"use_sandbox"`
-	Sandbox     *SandboxConfig `xml:"sandbox"`
-	NotifyURL   string         `xml:"notify_url"`
-	RefundedURL string         `xml:"refunded_url"`
-	ScannedURL  string         `xml:"scanned_url"`
+	BodyType    *BodyType       `xml:"body_type"`
+	SubMchID    string          `xml:"sub_mch_id"`
+	SubAppID    string          `xml:"sub_app_id"`
+	PublicKey   string          `xml:"public_key"`
+	PrivateKey  string          `xml:"private_key"`
+	RemoteHost  string          `xml:"remote_host"`
+	LocalHost   string          `xml:"local_host"`
+	UseSandbox  bool            `xml:"use_sandbox"`
+	Sandbox     *SandboxConfig  `xml:"sandbox"`
+	SafeCert    *SafeCertConfig `xml:"safe_cert"`
+	NotifyURL   string          `xml:"notify_url"`
+	RefundedURL string          `xml:"refunded_url"`
+	ScannedURL  string          `xml:"scanned_url"`
 }
 
 // PaymentConfig ...
@@ -53,7 +55,6 @@ type PaymentConfig struct {
 	CertPEM   string `xml:"cert_pem"`
 	KeyPEM    string `xml:"key_pem"`
 	RootCaPEM string `xml:"root_ca_pem"`
-	option    *PaymentOption
 }
 
 // OAuthConfig ...
@@ -122,7 +123,8 @@ type Config struct {
 	OfficialAccount *OfficialAccountProperty
 	MiniProgram     *MiniProgramProperty
 	Payment         *PaymentConfig
-	SafeCert        *SafeCertProperty
+	PaymentOption   *PaymentOption
+	SafeCert        *SafeCertConfig
 }
 
 // LocalConfig ...

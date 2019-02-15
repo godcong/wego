@@ -14,20 +14,14 @@ import (
 // BodyType ...
 type BodyType string
 
-// BodyTypeJSON ...
-const BodyTypeJSON BodyType = "json"
-
-// BodyTypeXML ...
-const BodyTypeXML BodyType = "xml"
-
 // BodyTypeNone ...
-const BodyTypeNone BodyType = "none"
-
-// BodyTypeMultipart ...
-const BodyTypeMultipart BodyType = "multipart"
-
-// BodyTypeForm ...
-const BodyTypeForm BodyType = "form"
+const (
+	BodyTypeNone      BodyType = "none"
+	BodyTypeJSON      BodyType = "json"
+	BodyTypeXML       BodyType = "xml"
+	BodyTypeMultipart BodyType = "multipart"
+	BodyTypeForm      BodyType = "form"
+)
 
 // RequestBody ...
 type RequestBody struct {

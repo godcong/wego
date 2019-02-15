@@ -12,27 +12,48 @@ import (
 //Payment ...
 type Payment struct {
 	*PaymentConfig
-	client     *Client
-	config     *Config
-	sandbox    *Sandbox
-	subMchID   string
-	subAppID   string
-	useSandbox bool
-	remoteHost string
-	localHost  string
+	BodyType    BodyType
+	sandbox     *Sandbox
+	subMchID    string
+	subAppID    string
+	useSandbox  bool
+	remoteHost  string
+	localHost   string
+	notifyURL   string
+	refundedURL string
+	scannedURL  string
 }
 
 // NewPayment ...
-func NewPayment(config *Config, opts ...*PaymentOption) *Payment {
-	bt := BodyTypeXML
+func NewPayment(config *PaymentConfig, opts ...*PaymentOption) *Payment {
 	payment := &Payment{
-		client: NewClient(&ClientOption{
-			BodyType: &bt,
-		}),
-		PaymentConfig: config.Payment,
-		config:        config,
+		PaymentConfig: config,
+		BodyType:      BodyTypeXML,
 	}
+	payment.BodyType = BodyTypeXML
+	payment.parse(opts)
+
 	return payment
+}
+
+func (obj *Payment) parse(opts []*PaymentOption) {
+	if opts == nil {
+		return
+	}
+	if opts[0].BodyType != nil {
+		obj.BodyType = *opts[0].BodyType
+	}
+	obj.useSandbox = opts[0].UseSandbox
+	if obj.useSandbox {
+		obj.sandbox = NewSandbox(opts[0].Sandbox)
+	}
+	obj.subMchID = opts[0].SubMchID
+	obj.subAppID = opts[0].SubAppID
+	obj.remoteHost = opts[0].RemoteHost
+	obj.localHost = opts[0].LocalHost
+	obj.notifyURL = opts[0].NotifyURL
+	obj.refundedURL = opts[0].RefundedURL
+	obj.scannedURL = opts[0].ScannedURL
 }
 
 /*Pay 支付
@@ -184,8 +205,7 @@ func (obj *Payment) Request(url string, p util.Map) Responder {
 func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
 	bt := BodyTypeXML
 	client := NewClient(&ClientOption{
-		UseSafe:  true,
-		SafeCert: obj.config.SafeCert,
+		SafeCert: obj.SafeCert,
 		BodyType: &bt,
 	})
 	return client.Post(context.Background(), obj.RemoteURL(url), obj.initPay(p))
@@ -280,8 +300,8 @@ func (obj *Payment) NotifyURL() string {
 	return util.URL(obj.LocalURL(), paymentNotifyURL(obj))
 }
 func paymentNotifyURL(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.NotifyURL != "" {
-		return obj.option.NotifyURL
+	if obj != nil && obj.notifyURL != "" {
+		return obj.notifyURL
 	}
 	return notifyCB
 }
@@ -290,9 +310,22 @@ func paymentNotifyURL(obj *Payment) string {
 func (obj *Payment) RefundURL() string {
 	return util.URL(obj.LocalURL(), paymentRefundURL(obj))
 }
+
 func paymentRefundURL(obj *Payment) string {
-	if obj != nil && obj.option != nil && obj.option.RefundedURL != "" {
-		return obj.option.RefundedURL
+	if obj != nil && obj.refundedURL != "" {
+		return obj.refundedURL
 	}
 	return refundedCB
+}
+
+// ScannedURL ...
+func (obj *Payment) ScannedURL() string {
+	return util.URL(obj.LocalURL(), paymentScannedURL(obj))
+}
+
+func paymentScannedURL(obj *Payment) string {
+	if obj != nil && obj.scannedURL != "" {
+		return obj.scannedURL
+	}
+	return scannedCB
 }

@@ -9,16 +9,24 @@ import (
 // Sandbox ...
 type Sandbox struct {
 	*SandboxConfig
-	SubMchID string
-	SubAppID string
+	subMchID string
+	subAppID string
 }
 
 // NewSandbox ...
-func NewSandbox(config *SandboxConfig) *Sandbox {
+func NewSandbox(config *SandboxConfig, opts ...SandboxOption) *Sandbox {
 	sandbox := &Sandbox{
 		SandboxConfig: config,
 	}
 	return sandbox
+}
+
+func (obj *Sandbox) parse(opts []SandboxOption) {
+	if opts == nil {
+		return
+	}
+	obj.subAppID = opts[0].SubAppID
+	obj.subMchID = opts[0].SubMchID
 }
 
 func (obj *Sandbox) getCacheKey() string {
@@ -32,11 +40,11 @@ func (obj *Sandbox) SignKey() Responder {
 	m.Set("mch_id", obj.MchID)
 	m.Set("nonce_str", util.GenerateNonceStr())
 	m.Set("sign", util.GenSign(m, obj.Key))
-	if obj.SubMchID != "" {
-		m.Set("sub_mch_id", obj.SubMchID)
+	if obj.subMchID != "" {
+		m.Set("sub_mch_id", obj.subMchID)
 	}
-	if obj.SubAppID != "" {
-		m.Set("sub_appid", obj.SubAppID)
+	if obj.subAppID != "" {
+		m.Set("sub_appid", obj.subAppID)
 	}
 	resp := PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
 	return resp
