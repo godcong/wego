@@ -15,7 +15,7 @@ import (
 
 /*Responder Responder */
 type Responder interface {
-	bodyReader
+	BodyReader
 }
 
 // Response ...

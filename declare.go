@@ -26,6 +26,8 @@ const wegoLocal = "http://localhost"
 const notifyCB = "notify_cb"
 const refundedCB = "refunded_cb"
 const scannedCB = "scanned_cb"
+const defaultKeepAlive = 30
+const defaultTimeout = 30
 
 /*accessTokenKey 键值 */
 const accessTokenKey = "access_token"

@@ -31,30 +31,28 @@ type SafeCertConfig struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	BodyType    *BodyType       `xml:"body_type"`
-	SubMchID    string          `xml:"sub_mch_id"`
-	SubAppID    string          `xml:"sub_app_id"`
-	PublicKey   string          `xml:"public_key"`
-	PrivateKey  string          `xml:"private_key"`
-	RemoteHost  string          `xml:"remote_host"`
-	LocalHost   string          `xml:"local_host"`
-	UseSandbox  bool            `xml:"use_sandbox"`
-	Sandbox     *SandboxConfig  `xml:"sandbox"`
-	SafeCert    *SafeCertConfig `xml:"safe_cert"`
-	NotifyURL   string          `xml:"notify_url"`
-	RefundedURL string          `xml:"refunded_url"`
-	ScannedURL  string          `xml:"scanned_url"`
+	BodyType   *BodyType      `xml:"body_type"`
+	SubMchID   string         `xml:"sub_mch_id"`
+	SubAppID   string         `xml:"sub_app_id"`
+	PublicKey  string         `xml:"public_key"`
+	PrivateKey string         `xml:"private_key"`
+	RemoteHost string         `xml:"remote_host"`
+	LocalHost  string         `xml:"local_host"`
+	UseSandbox bool           `xml:"use_sandbox"`
+	Sandbox    *SandboxConfig `xml:"sandbox"`
+
+	NotifyURL   string `xml:"notify_url"`
+	RefundedURL string `xml:"refunded_url"`
+	ScannedURL  string `xml:"scanned_url"`
 }
 
 // PaymentConfig ...
 type PaymentConfig struct {
-	AppID     string `xml:"app_id"`
-	AppSecret string `xml:"app_secret"`
-	MchID     string `xml:"mch_id"`
-	Key       string `xml:"key"`
-	CertPEM   string `xml:"cert_pem"`
-	KeyPEM    string `xml:"key_pem"`
-	RootCaPEM string `xml:"root_ca_pem"`
+	AppID     string          `xml:"app_id"`
+	AppSecret string          `xml:"app_secret"`
+	MchID     string          `xml:"mch_id"`
+	Key       string          `xml:"key"`
+	SafeCert  *SafeCertConfig `xml:"safe_cert"`
 }
 
 // OAuthConfig ...

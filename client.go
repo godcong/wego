@@ -38,12 +38,12 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 
 // Client ...
 type Client struct {
-	Method string
-	URL    string
-	Query  util.Map
-	Body   *RequestBody
-	//Option      *ClientOption
+	Method      string
+	URL         string
+	Query       util.Map
+	Body        *RequestBody
 	BodyType    BodyType
+	safe        bool
 	safeCert    *SafeCertConfig
 	accessToken *AccessToken
 	timeout     int64
@@ -52,6 +52,7 @@ type Client struct {
 
 // ClientOption ...
 type ClientOption struct {
+	UseSafe     bool
 	SafeCert    *SafeCertConfig
 	AccessToken *AccessToken
 	BodyType    *BodyType
@@ -62,7 +63,7 @@ type ClientOption struct {
 // NewClient ...
 func NewClient(opts ...*ClientOption) *Client {
 	client := &Client{
-		bodyType: BodyTypeXML,
+		BodyType: BodyTypeXML,
 	}
 	client.parse(opts)
 	return client
@@ -74,7 +75,7 @@ func (obj *Client) parse(opts []*ClientOption) {
 	}
 	obj.safeCert = opts[0].SafeCert
 	if opts[0].BodyType != nil {
-		obj.bodyType = *opts[0].BodyType
+		obj.BodyType = *opts[0].BodyType
 	}
 	obj.accessToken = opts[0].AccessToken
 	obj.accessToken = opts[0].AccessToken
@@ -82,19 +83,31 @@ func (obj *Client) parse(opts []*ClientOption) {
 	obj.keepAlive = opts[0].KeepAlive
 }
 
+// IsSafe ...
+func (obj *Client) IsSafe() bool {
+	return obj.safe
+}
+
+// SetSafe ...
+func (obj *Client) SetSafe(b bool) {
+	obj.safe = b
+}
+
 // Post ...
-func (obj *Client) Post(ctx context.Context, url string, body interface{}) Responder {
+func (obj *Client) Post(ctx context.Context, url string, query util.Map, body interface{}) Responder {
 	log.Debug("post ", url, body)
 	obj.Method = POST
+	obj.Query = query
 	obj.URL = url
-	obj.Body = buildBody(body, obj.BodyType())
+	obj.Body = buildBody(body, obj.BodyType)
 	return obj.do(ctx)
 }
 
 // Get ...
-func (obj *Client) Get(ctx context.Context, url string) Responder {
+func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responder {
 	log.Debug("get ", url)
 	obj.Method = GET
+	obj.Query = query
 	obj.URL = url
 	obj.Body = buildBody(nil, obj.BodyType)
 	return obj.do(ctx)
@@ -124,17 +137,18 @@ func (obj *Client) HTTPClient() (*http.Client, error) {
 
 // makeClient ...
 func makeClient(method string, url string, query util.Map, body interface{}, opts ...*ClientOption) *Client {
-	var opt *ClientOption
-	if opts != nil {
-		opt = opts[0]
-	}
-	return &Client{
-		Method: method,
-		URL:    url,
-		Query:  query,
-		Body:   buildBody(body, bodyType(opt)),
-		Option: opt,
-	}
+	client := NewClient(opts...)
+	client.Method = method
+	client.URL = url
+	client.Query = query
+	//buildBody must after parse
+	client.BuildBody(body)
+	return client
+}
+
+// BuildBody ...
+func (obj *Client) BuildBody(body interface{}) {
+	obj.Body = buildBody(body, obj.BodyType)
 }
 
 // Request ...
@@ -214,21 +228,20 @@ func Get(url string, query util.Map) Responder {
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
 	bt := BodyTypeMultipart
-	client := makeClient(POST, url, multi, &ClientOption{
+	client := makeClient(POST, url, query, multi, &ClientOption{
 		BodyType: &bt,
-		Query:    query,
 	})
 	return client.do(context.Background())
 }
 
 // TimeOut ...
-func TimeOut(src int64) time.Duration {
-	return time.Duration(util.MustInt64(src, 30)) * time.Second
+func (obj *Client) TimeOut() time.Duration {
+	return time.Duration(util.MustInt64(obj.timeout, defaultTimeout)) * time.Second
 }
 
 // KeepAlive ...
-func KeepAlive(src int64) time.Duration {
-	return time.Duration(util.MustInt64(src, 30)) * time.Second
+func (obj *Client) KeepAlive() time.Duration {
+	return time.Duration(util.MustInt64(obj.keepAlive, defaultKeepAlive)) * time.Second
 }
 
 func buildTransport(client *Client) (*http.Client, error) {
@@ -236,8 +249,8 @@ func buildTransport(client *Client) (*http.Client, error) {
 		Transport: &http.Transport{
 			Proxy: nil,
 			DialContext: (&net.Dialer{
-				Timeout:   TimeOut(client.Option.Timeout),
-				KeepAlive: KeepAlive(client.Option.KeepAlive),
+				Timeout:   client.TimeOut(),
+				KeepAlive: client.KeepAlive(),
 			}).DialContext,
 			//Dial:        nil,
 			//DialTLS:     nil,
@@ -283,8 +296,8 @@ func buildSafeTransport(client *Client) (*http.Client, error) {
 	return &http.Client{
 		Transport: &http.Transport{
 			DialContext: (&net.Dialer{
-				Timeout:   TimeOut(client.Option.Timeout),
-				KeepAlive: KeepAlive(client.Option.KeepAlive),
+				Timeout:   client.TimeOut(),
+				KeepAlive: client.KeepAlive(),
 				//DualStack: true,
 			}).DialContext,
 			TLSClientConfig: tlsConfig,
@@ -298,7 +311,7 @@ func buildSafeTransport(client *Client) (*http.Client, error) {
 
 func buildHTTPClient(client *Client) (*http.Client, error) {
 	//检查是否包含security
-	if client.Option.UseSafe {
+	if client.IsSafe() {
 		//判断能否创建safe client
 		return buildSafeTransport(client)
 	}
@@ -306,7 +319,8 @@ func buildHTTPClient(client *Client) (*http.Client, error) {
 
 }
 
-type bodyReader interface {
+// BodyReader ...
+type BodyReader interface {
 	ToMap() util.Map
 	Bytes() []byte
 	Error() error

@@ -8,6 +8,7 @@ import (
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"golang.org/x/exp/xerrors"
+	"strings"
 	"time"
 )
 
@@ -145,7 +146,8 @@ func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
 }
 
 func (obj *AccessToken) getCredentials() string {
-	c := md5.Sum(obj.ToJSON())
+	cred := strings.Join([]string{obj.GrantType, obj.AppID, obj.AppSecret}, ".")
+	c := md5.Sum([]byte(cred))
 	return fmt.Sprintf("%x", c[:])
 }
 

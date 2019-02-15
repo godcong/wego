@@ -131,7 +131,7 @@ func buildBody(v interface{}, tp BodyType) *RequestBody {
 
 /*Requester Requester */
 type Requester interface {
-	bodyReader
+	BodyReader
 }
 
 // Request ...

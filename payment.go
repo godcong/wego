@@ -13,6 +13,7 @@ import (
 type Payment struct {
 	*PaymentConfig
 	BodyType    BodyType
+	client      *Client
 	sandbox     *Sandbox
 	subMchID    string
 	subAppID    string
@@ -30,9 +31,11 @@ func NewPayment(config *PaymentConfig, opts ...*PaymentOption) *Payment {
 		PaymentConfig: config,
 		BodyType:      BodyTypeXML,
 	}
-	payment.BodyType = BodyTypeXML
 	payment.parse(opts)
-
+	payment.client = NewClient(&ClientOption{
+		BodyType: &payment.BodyType,
+		SafeCert: payment.SafeCert,
+	})
 	return payment
 }
 
@@ -203,12 +206,8 @@ func (obj *Payment) Request(url string, p util.Map) Responder {
 
 // SafeRequest 安全请求
 func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
-	bt := BodyTypeXML
-	client := NewClient(&ClientOption{
-		SafeCert: obj.SafeCert,
-		BodyType: &bt,
-	})
-	return client.Post(context.Background(), obj.RemoteURL(url), obj.initPay(p))
+	obj.client.SetSafe(true)
+	return obj.client.Post(context.Background(), obj.RemoteURL(url), nil, obj.initPay(p))
 }
 
 func (obj *Payment) initPay(p util.Map) util.Map {
@@ -238,7 +237,7 @@ func (obj *Payment) IsSandbox() bool {
 func (obj *Payment) GetKey() string {
 	key := obj.Key
 	if obj.IsSandbox() {
-		keyName := obj.Sandbox().getCacheKey()
+		keyName := obj.sandbox.getCacheKey()
 		cachedKey := cache.Get(keyName)
 		if cachedKey != nil {
 			log.Println("cached:", cachedKey.(string))
@@ -246,7 +245,7 @@ func (obj *Payment) GetKey() string {
 			return key
 		}
 
-		response := obj.Sandbox().SignKey().ToMap()
+		response := obj.sandbox.SignKey().ToMap()
 		if response.GetString("return_code") == "SUCCESS" {
 			key = response.GetString("sandbox_signkey")
 			log.Println("cache key:", keyName)
@@ -260,14 +259,6 @@ func (obj *Payment) GetKey() string {
 	}
 	return key
 
-}
-
-// Sandbox ...
-func (obj *Payment) Sandbox() *Sandbox {
-	if obj.sandbox != nil {
-		return obj.sandbox
-	}
-	return nil
 }
 
 // RemoteURL ...
