@@ -201,7 +201,8 @@ func (obj *Payment) Unify(m util.Map, opts ...util.Map) Responder {
 
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
-	return PostXML(obj.RemoteURL(url), nil, obj.initPay(p))
+	obj.client.SetSafe(false)
+	return obj.client.Post(context.Background(), obj.RemoteURL(url), nil, obj.initPay(p))
 }
 
 // SafeRequest 安全请求

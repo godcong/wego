@@ -15,10 +15,10 @@ type SandboxOption struct {
 
 // SandboxConfig ...
 type SandboxConfig struct {
-	AppID  string
-	Secret string
-	MchID  string
-	Key    string
+	AppID     string
+	AppSecret string
+	MchID     string
+	Key       string
 	//option *SandboxOption
 }
 

@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/util"
+	"strings"
 )
 
 // Sandbox ...
@@ -14,14 +15,14 @@ type Sandbox struct {
 }
 
 // NewSandbox ...
-func NewSandbox(config *SandboxConfig, opts ...SandboxOption) *Sandbox {
+func NewSandbox(config *SandboxConfig, opts ...*SandboxOption) *Sandbox {
 	sandbox := &Sandbox{
 		SandboxConfig: config,
 	}
 	return sandbox
 }
 
-func (obj *Sandbox) parse(opts []SandboxOption) {
+func (obj *Sandbox) parse(opts []*SandboxOption) {
 	if opts == nil {
 		return
 	}
@@ -30,7 +31,7 @@ func (obj *Sandbox) parse(opts []SandboxOption) {
 }
 
 func (obj *Sandbox) getCacheKey() string {
-	name := obj.AppID + "." + obj.MchID
+	name := strings.Join([]string{obj.AppID, obj.MchID}, ".")
 	return "godcong.wego.payment.sandbox." + fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
@@ -46,6 +47,5 @@ func (obj *Sandbox) SignKey() Responder {
 	if obj.subAppID != "" {
 		m.Set("sub_appid", obj.subAppID)
 	}
-	resp := PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
-	return resp
+	return PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
 }

@@ -73,6 +73,7 @@ func (obj *Client) parse(opts []*ClientOption) {
 	if opts == nil {
 		return
 	}
+
 	obj.safeCert = opts[0].SafeCert
 	if opts[0].BodyType != nil {
 		obj.BodyType = *opts[0].BodyType
