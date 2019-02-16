@@ -281,3 +281,15 @@ func BuildRequester(req *http.Request) Requester {
 	return JSONRequest(body)
 	//return ErrResponse(xerrors.New("error with code " + req.Status))
 }
+
+// RebuildRequester ...
+func RebuildRequester(req Requester, data util.Map) Requester {
+	switch req.Type() {
+	case BodyTypeXML:
+		return XMLRequest(data.ToXML())
+	case BodyTypeJSON:
+	default:
+
+	}
+	return JSONRequest(data.ToJSON())
+}

@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"net/http"
+	"net/url"
 )
 
 // NotifyResult ...
@@ -34,6 +35,12 @@ type ServeNotify func(req Requester) (util.Map, error)
 // ServeHTTPFunc ...
 type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 
+/*authorizeNotify 监听 */
+type authorizeNotify struct {
+	*OfficialAccount
+	ServeNotify
+}
+
 /*messageNotify 监听 */
 type messageNotify struct {
 	*OfficialAccount
@@ -42,9 +49,97 @@ type messageNotify struct {
 	//bizMsg *cipher.BizMsg
 }
 
+// DecodeReqInfo ...
+func (n *messageNotify) decodeInfo(query url.Values, requester Requester) (util.Map, error) {
+	var bodies []byte
+	var e error
+	encryptType := query.Get("encrypt_type")
+	timeStamp := query.Get("timestamp")
+	nonce := query.Get("nonce")
+	msgSignature := query.Get("msg_signature")
+	if encryptType != "aes" {
+		p := util.Map{}
+		e = xml.Unmarshal(bodies, &p)
+		if e != nil {
+			log.Error(e)
+			return nil, e
+		}
+
+		bodies, e = n.cipher.Decrypt(&cipher.BizMsgData{
+			RSAEncrypt:   p.GetString("RSAEncrypt"),
+			TimeStamp:    timeStamp,
+			Nonce:        nonce,
+			MsgSignature: msgSignature,
+		})
+
+		//错误返回,并记录log
+		if e != nil {
+			log.Error(e)
+			return nil, e
+		}
+	}
+	p := util.Map{}
+	e = xml.Unmarshal(bodies, &p)
+	if e != nil {
+		log.Error(e)
+		return nil, e
+	}
+	return p, e
+}
+
+// DecodeReqInfo ...
+func (n *messageNotify) encodeInfo(p util.Map, ts, nonce string) ([]byte, error) {
+	var e error
+	bodies, e := n.cipher.Encrypt(&cipher.BizMsgData{
+		Text:      string(p.ToXML()),
+		TimeStamp: ts,
+		Nonce:     nonce,
+	})
+	//错误返回,并记录log
+	if e != nil {
+		log.Error(e)
+		return nil, e
+	}
+	return bodies, nil
+}
+
 // ServeHTTP ...
-func (*messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	panic("implement me")
+func (n *messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var e error
+
+	if n.ServeNotify == nil {
+		log.Error(xerrors.New("null notify callback "))
+		return
+	}
+	requester := BuildRequester(req)
+	if e = requester.Error(); e != nil {
+		log.Error(e)
+		return
+	}
+
+	query, e := url.ParseQuery(req.URL.RawQuery)
+	if e != nil {
+		log.Error(e)
+		return
+	}
+	maps, e := n.decodeInfo(query, requester)
+	if e != nil {
+		log.Error(e)
+		return
+	}
+
+	r, e := n.ServeNotify(RebuildRequester(requester, maps))
+	if e != nil {
+		log.Error(e)
+		return
+	}
+
+	_, e = w.Write(r.ToXML())
+
+	if e != nil {
+		log.Error(e)
+		return
+	}
 }
 
 /*Notifier 监听 */
@@ -92,6 +187,11 @@ type refundedNotify struct {
 // ServeHTTP ...
 func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
+	if obj.ServeNotify == nil {
+		log.Error(xerrors.New("null notify callback"))
+		return
+	}
+
 	requester := BuildRequester(req)
 	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
 	defer func() {
@@ -107,10 +207,7 @@ func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	reqData := requester.ToMap()
 	reqInfo := reqData.GetString("req_info")
 	reqData.Set("reqInfo", obj.DecodeReqInfo(reqInfo))
-	if obj.ServeNotify == nil {
-		log.Error(xerrors.New("null notify callback"))
-		return
-	}
+
 	_, e = obj.ServeNotify(requester)
 	if e != nil {
 		log.Error(e.Error())
@@ -139,6 +236,11 @@ type scannedNotify struct {
 func (obj *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	var p util.Map
+
+	if obj.ServeNotify == nil {
+		log.Error(xerrors.New("null notify callback"))
+		return
+	}
 	requester := BuildRequester(req)
 	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
 	defer func() {
@@ -153,10 +255,7 @@ func (obj *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	reqData := requester.ToMap()
 	if util.ValidateSign(reqData, obj.GetKey()) {
-		if obj.ServeNotify == nil {
-			log.Error(xerrors.New("null notify callback"))
-			return
-		}
+
 		p, e = obj.ServeNotify(requester)
 		if e != nil {
 			log.Error(e.Error())
