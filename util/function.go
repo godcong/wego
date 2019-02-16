@@ -11,7 +11,7 @@ import (
 	"github.com/json-iterator/go"
 	"github.com/juju/errors"
 	"github.com/satori/go.uuid"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 	"math/rand"
 	"sort"
 	"strconv"
