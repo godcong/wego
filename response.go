@@ -15,6 +15,7 @@ import (
 
 /*Responder Responder */
 type Responder interface {
+	Type() BodyType
 	BodyReader
 }
 
@@ -24,10 +25,20 @@ type Response struct {
 	err   error
 }
 
+// Type ...
+func (r *Response) Type() BodyType {
+	return BodyTypeNone
+}
+
 // xmlResponse ...
 type xmlResponse struct {
 	Response
 	data util.Map
+}
+
+// Type ...
+func (r *xmlResponse) Type() BodyType {
+	return BodyTypeXML
 }
 
 // XMLResponse ...
@@ -67,6 +78,11 @@ func (r *xmlResponse) Result() (util.Map, error) {
 type jsonResponse struct {
 	Response
 	data util.Map
+}
+
+// Type ...
+func (r *jsonResponse) Type() BodyType {
+	return BodyTypeJSON
 }
 
 // JSONResponse ...

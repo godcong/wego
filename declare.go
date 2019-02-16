@@ -7,7 +7,7 @@ const getSignKey = "pay/getsignkey"
 
 const apiMCHWeixin = "https://api.mch.weixin.qq.com"
 const apiWeixin = "https://api.weixin.qq.com"
-
+const oauth2Authorize = "https://open.weixin.qq.com/connect/oauth2/authorize"
 const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
 const payDownloadFundFlow = "/pay/downloadfundflow"

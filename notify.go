@@ -3,12 +3,14 @@ package wego
 import (
 	"encoding/xml"
 	"github.com/godcong/wego/cipher"
+	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // NotifyResult ...
@@ -35,10 +37,125 @@ type ServeNotify func(req Requester) (util.Map, error)
 // ServeHTTPFunc ...
 type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 
+// TokenHook ...
+type TokenHook func(token *core.Token) []byte
+
 /*authorizeNotify 监听 */
 type authorizeNotify struct {
 	*OfficialAccount
 	ServeNotify
+	TokenHook
+	redirectURI string
+}
+
+// ServeHTTP ...
+func (n *authorizeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var e error
+	if n.ServeNotify == nil {
+		log.Error(xerrors.New("null notify callback "))
+		return
+	}
+	requester := BuildRequester(req)
+	if e = requester.Error(); e != nil {
+		log.Error(e)
+		return
+	}
+	AuthorizeToken
+
+}
+
+func (n *authorizeNotify) hookState(w http.ResponseWriter, r *http.Request) string {
+	v := CallbackValue{Type: "info", Value: nil}
+
+	if f, b := n.callback["state"]; b {
+		if rlt := f(w, r, &v); rlt != nil {
+			return n.AuthCodeURL(string(rlt))
+		}
+	}
+	return n.AuthCodeURL("")
+}
+
+func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, r *http.Request, token *core.Token) *core.UserInfo {
+	info := n.UserInfo(token)
+	v := CallbackValue{Type: "info", Value: info}
+	if a, b := n.callback["all"]; b {
+		if rlt := a(w, r, &v); rlt != nil {
+			w.Write(rlt)
+		}
+	}
+	if a, b := n.callback["info"]; b {
+		if rlt := a(w, r, &v); rlt != nil {
+			w.Write(rlt)
+		}
+	}
+	return info
+}
+
+// AuthorizeToken ...
+func (n *authorizeNotify) AuthorizeToken(code string) *core.Token {
+	v := util.Map{
+		"appid":      n.AppID,
+		"secret":     n.AppSecret,
+		"code":       code,
+		"grant_type": "authorization_code",
+	}
+	if n.redirectURI != "" {
+		log.Println(n.redirectURI)
+		if strings.Index(n.redirectURI, "http") == 0 {
+			v.Set("redirect_uri", n.redirectURI)
+		} else {
+			//TODO:
+			v.Set("redirect_uri", util.URL(n.redirectURI))
+		}
+	}
+	responder := PostJSON(
+		oauth2Authorize,
+		v,
+		nil,
+	)
+	log.Debug("AuthorizeToken|response", string(responder.Bytes()), responder.Error())
+	if responder.Error() != nil {
+		return nil
+	}
+
+	var token core.Token
+	e := responder.Unmarshal(&token)
+	if e != nil {
+		return nil
+	}
+	return &token
+}
+
+// NotifyResult ...
+func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
+	w.WriteHeader(http.StatusOK)
+	header := w.Header()
+	if val := header["Content-Type"]; len(val) == 0 {
+		header["Content-Type"] = []string{"application/json; charset=utf-8"}
+	}
+	if bytes == nil {
+		return
+	}
+	JSONResponse()
+	_, e := w.Write(bytes)
+	if e != nil {
+		log.Error(e)
+	}
+	return
+}
+
+func (n *authorizeNotify) hookAccessToken(w http.ResponseWriter, r *http.Request) *core.Token {
+	var bytes []byte
+	defer n.responseWriter(w, bytes)
+	query := r.URL.Query()
+	if code := query.Get("code"); code != "" {
+		token := n.AuthorizeToken(code)
+		if n.TokenHook != nil {
+			bytes = n.TokenHook(token)
+		}
+		return token
+	}
+	return nil
 }
 
 /*messageNotify 监听 */
