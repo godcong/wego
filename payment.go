@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/godcong/wego/cache"
+	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
@@ -57,6 +58,42 @@ func (obj *Payment) parse(opts []*PaymentOption) {
 	obj.notifyURL = opts[0].NotifyURL
 	obj.refundedURL = opts[0].RefundedURL
 	obj.scannedURL = opts[0].ScannedURL
+}
+
+// HandleRefunded ...
+func (obj *Payment) HandleRefunded(f ServeNotify) Notifier {
+	return &refundedNotify{
+		cipher: cipher.New(cipher.AES256ECB, &cipher.Option{
+			Key: obj.Key,
+		}),
+		ServeNotify: f,
+	}
+}
+
+// HandleRefundedNotify ...
+func (obj *Payment) HandleRefundedNotify(f ServeNotify) ServeHTTPFunc {
+	return obj.HandleRefunded(f).ServeHTTP
+}
+
+// HandleScannedNotify ...
+func (obj *Payment) HandleScannedNotify(f ServeNotify) Notifier {
+	return &scannedNotify{
+		Payment:     obj,
+		ServeNotify: f,
+	}
+}
+
+// HandleScanned ...
+func (obj *Payment) HandleScanned(f ServeNotify) ServeHTTPFunc {
+	return obj.HandleScannedNotify(f).ServeHTTP
+}
+
+// HandlePaidNotify ...
+func (obj *Payment) HandlePaidNotify(f ServeNotify) Notifier {
+	return &paidNotify{
+		Payment:     obj,
+		ServeNotify: f,
+	}
 }
 
 /*Pay 支付

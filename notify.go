@@ -10,12 +10,6 @@ import (
 	"net/http"
 )
 
-// Notify ...
-type Notify struct {
-	payment *Payment
-	Key     string
-}
-
 // NotifyResult ...
 type NotifyResult struct {
 	ReturnCode string `json:"return_code" xml:"return_code"`
@@ -40,52 +34,27 @@ type ServeNotify func(req Requester) (util.Map, error)
 // ServeHTTPFunc ...
 type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 
-// NewNotify ...
-func NewNotify(payment *Payment, key string) *Notify {
-	return &Notify{
-		payment: payment,
-		Key:     key,
-	}
+/*messageNotify 监听 */
+type messageNotify struct {
+	*OfficialAccount
+	ServeNotify
+	cipher cipher.Cipher
+	//bizMsg *cipher.BizMsg
 }
 
-// HandleRefunded ...
-func (n *Notify) HandleRefunded(f ServeNotify) Notifier {
-	return &paymentRefunded{
-		cipher: cipher.New(cipher.AES256ECB, &cipher.Option{
-			Key: n.Key,
-		}),
-		ServeNotify: f,
-	}
+// ServeHTTP ...
+func (*messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	panic("implement me")
 }
 
-// HandleRefundedNotify ...
-func (n *Notify) HandleRefundedNotify(f ServeNotify) ServeHTTPFunc {
-	return n.HandleRefunded(f).ServeHTTP
-}
-
-// HandleScannedNotify ...
-func (n *Notify) HandleScannedNotify(f ServeNotify) Notifier {
-	return &paymentScanned{
-		Notify:      n,
-		ServeNotify: f,
-	}
-}
-
-// HandleScanned ...
-func (n *Notify) HandleScanned(f ServeNotify) ServeHTTPFunc {
-	return n.HandleScannedNotify(f).ServeHTTP
-}
-
-// HandlePaidNotify ...
-func (n *Notify) HandlePaidNotify(f ServeNotify) Notifier {
-	return &paymentPaid{
-		Notify:      n,
-		ServeNotify: f,
-	}
+/*Notifier 监听 */
+type paidNotify struct {
+	*Payment
+	ServeNotify
 }
 
 // ServerHttp ...
-func (n *paymentPaid) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	requester := BuildRequester(req)
 	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
@@ -100,7 +69,7 @@ func (n *paymentPaid) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	reqData := requester.ToMap()
-	if util.ValidateSign(reqData, n.payment.GetKey()) {
+	if util.ValidateSign(reqData, n.GetKey()) {
 		if n.ServeNotify == nil {
 			log.Error(xerrors.New("null notify callback "))
 			return
@@ -115,13 +84,13 @@ func (n *paymentPaid) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 /*Notifier 监听 */
-type paymentRefunded struct {
+type refundedNotify struct {
 	cipher cipher.Cipher
 	ServeNotify
 }
 
 // ServeHTTP ...
-func (obj *paymentRefunded) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	requester := BuildRequester(req)
 	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
@@ -150,7 +119,7 @@ func (obj *paymentRefunded) ServeHTTP(w http.ResponseWriter, req *http.Request) 
 }
 
 // DecodeReqInfo ...
-func (obj *paymentRefunded) DecodeReqInfo(info string) util.Map {
+func (obj *refundedNotify) DecodeReqInfo(info string) util.Map {
 	maps := util.Map{}
 	dec, _ := obj.cipher.Decrypt(info)
 	e := xml.Unmarshal(dec, &maps)
@@ -161,13 +130,13 @@ func (obj *paymentRefunded) DecodeReqInfo(info string) util.Map {
 }
 
 /*Notifier 监听 */
-type paymentScanned struct {
-	*Notify
+type scannedNotify struct {
+	*Payment
 	ServeNotify
 }
 
 // ServeHTTP ...
-func (obj *paymentScanned) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (obj *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	var p util.Map
 	requester := BuildRequester(req)
@@ -183,7 +152,7 @@ func (obj *paymentScanned) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	reqData := requester.ToMap()
-	if util.ValidateSign(reqData, obj.payment.GetKey()) {
+	if util.ValidateSign(reqData, obj.GetKey()) {
 		if obj.ServeNotify == nil {
 			log.Error(xerrors.New("null notify callback"))
 			return
@@ -205,21 +174,15 @@ func (obj *paymentScanned) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			//错误描述	err_code_des	String(128)	否		当result_code为FAIL时，商户展示给用户的错误提
 			//签名	sign	String(32)	是	C380BEC2BFD727A4B6845133519F3AD6	返回数据签名，签名生成算法
 			res := resp.NotifyResult()
-			res.AppID = obj.payment.AppID
-			res.MchID = obj.payment.MchID
+			res.AppID = obj.AppID
+			res.MchID = obj.MchID
 			res.NonceStr = util.GenerateNonceStr()
 			res.PrepayID = p.GetString("prepay_id")
-			res.Sign = util.GenSign(reqData, obj.payment.GetKey())
+			res.Sign = util.GenSign(reqData, obj.GetKey())
 		}
 
 	}
 
-}
-
-/*Notifier 监听 */
-type paymentPaid struct {
-	*Notify
-	ServeNotify
 }
 
 // NotifyResponder ...
