@@ -12,12 +12,16 @@ type RedisCache struct {
 
 // Get ...
 func (r *RedisCache) Get(key string) interface{} {
-	return r.client.Get(key).Val()
+	return r.GetD(key, nil)
 }
 
 // GetD ...
 func (r *RedisCache) GetD(key string, v interface{}) interface{} {
-	panic("implement me")
+	s, e := r.client.Get(key).Result()
+	if e != nil || s == "" {
+		return v
+	}
+	return s
 }
 
 // Set ...
