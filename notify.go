@@ -3,7 +3,6 @@ package wego
 import (
 	"encoding/xml"
 	"github.com/godcong/wego/cipher"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
@@ -88,26 +87,28 @@ func (n *Notify) HandlePaidNotify(f ServeNotify) Notifier {
 // ServerHttp ...
 func (n *paymentPaid) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
-	rlt := NotifySuccess()
+	requester := BuildRequester(req)
+	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
 	defer func() {
-		e = NotifyXMLResult(w, rlt.ToXML())
+		e = resp.Write(w)
 		log.Error(e)
 	}()
-	maps, e := BuildRequester(req).Result()
-	if e != nil {
-		log.Error(e)
-		rlt = NotifyFail(e.Error())
-	} else {
-		if util.ValidateSign(maps, n.payment.GetKey()) {
-			if n.ServeNotify == nil {
-				log.Error(xerrors.New("null notify callback "))
-				return
-			}
-			_, e = n.ServeNotify(maps)
-			if e != nil {
-				log.Error(xerrors.Errorf(" paymentPaid ServeNotify error:%w", e))
-				rlt = NotifyFail(e.Error())
-			}
+
+	if e = requester.Error(); e != nil {
+		log.Error(e.Error())
+		resp.SetNotifyResult(NotifyFail(e.Error()))
+		return
+	}
+	reqData := requester.ToMap()
+	if util.ValidateSign(reqData, n.payment.GetKey()) {
+		if n.ServeNotify == nil {
+			log.Error(xerrors.New("null notify callback "))
+			return
+		}
+		_, e = n.ServeNotify(requester)
+		if e != nil {
+			log.Error(e.Error())
+			resp.SetNotifyResult(NotifyFail(e.Error()))
 		}
 	}
 
@@ -121,30 +122,31 @@ type paymentRefunded struct {
 
 // ServeHTTP ...
 func (obj *paymentRefunded) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	var err error
-	rlt := SUCCESS()
+	var e error
+	requester := BuildRequester(req)
+	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
 	defer func() {
-		err = XMLResponse(w, rlt.ToXML())
-		log.Error(err)
+		e = resp.Write(w)
+		log.Error(e)
 	}()
-	maps, err := core.RequestToMap(req)
-	//wrong request will do nothing
-	if err != nil {
-		log.Error(err)
-		rlt = FAIL(err.Error())
-	} else {
-		reqInfo := maps.GetString("req_info")
-		maps.Set("reqInfo", obj.DecodeReqInfo(reqInfo))
-		if obj.ServeNotify == nil {
-			log.Error(xerrors.New("null notify callback"))
-			return
-		}
-		_, err = obj.ServeNotify(maps)
-		if err != nil {
-			rlt = FAIL(err.Error())
-		}
-	}
 
+	if e = requester.Error(); e != nil {
+		log.Error(e.Error())
+		resp.SetNotifyResult(NotifyFail(e.Error()))
+		return
+	}
+	reqData := requester.ToMap()
+	reqInfo := reqData.GetString("req_info")
+	reqData.Set("reqInfo", obj.DecodeReqInfo(reqInfo))
+	if obj.ServeNotify == nil {
+		log.Error(xerrors.New("null notify callback"))
+		return
+	}
+	_, e = obj.ServeNotify(requester)
+	if e != nil {
+		log.Error(e.Error())
+		resp.SetNotifyResult(NotifyFail(e.Error()))
+	}
 }
 
 // DecodeReqInfo ...
@@ -175,8 +177,8 @@ func (obj *paymentScanned) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		log.Error(e)
 	}()
 
-	if requester.Error() != nil {
-		log.Error(requester.Error())
+	if e = requester.Error(); e != nil {
+		log.Error(e.Error())
 		resp.SetNotifyResult(NotifyFail(e.Error()))
 		return
 	}
