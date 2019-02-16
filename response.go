@@ -153,9 +153,19 @@ func ResponseWriter(w http.ResponseWriter, responder Responder) error {
 	w.WriteHeader(http.StatusOK)
 	header := w.Header()
 	if val := header["Content-Type"]; len(val) == 0 {
-		header["Content-Type"] = []string{"application/xml; charset=utf-8"}
+		switch responder.Type() {
+		case BodyTypeXML:
+			header["Content-Type"] = []string{"application/xml; charset=utf-8"}
+		case BodyTypeJSON:
+			header["Content-Type"] = []string{"application/json; charset=utf-8"}
+		}
 	}
-	_, err := w.Write(responder.Bytes())
+	b := responder.Bytes()
+	if b == nil {
+		return nil
+	}
+
+	_, err := w.Write(b)
 	if err != nil {
 		log.Error(err)
 		return err

@@ -128,16 +128,7 @@ func (n *authorizeNotify) AuthorizeToken(code string) *core.Token {
 
 // NotifyResult ...
 func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
-	w.WriteHeader(http.StatusOK)
-	header := w.Header()
-	if val := header["Content-Type"]; len(val) == 0 {
-		header["Content-Type"] = []string{"application/json; charset=utf-8"}
-	}
-	if bytes == nil {
-		return
-	}
-	JSONResponse()
-	_, e := w.Write(bytes)
+	e := ResponseWriter(w, JSONResponse(bytes))
 	if e != nil {
 		log.Error(e)
 	}
@@ -147,6 +138,7 @@ func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
 func (n *authorizeNotify) hookAccessToken(w http.ResponseWriter, r *http.Request) *core.Token {
 	var bytes []byte
 	defer n.responseWriter(w, bytes)
+
 	query := r.URL.Query()
 	if code := query.Get("code"); code != "" {
 		token := n.AuthorizeToken(code)
