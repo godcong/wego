@@ -142,7 +142,6 @@ func makeClient(method string, url string, query util.Map, body interface{}, opt
 	client.Method = method
 	client.URL = url
 	client.Query = query
-	//buildBody must after parse
 	client.BuildBody(body)
 	return client
 }
