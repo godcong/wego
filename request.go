@@ -129,8 +129,18 @@ func buildBody(v interface{}, tp BodyType) *RequestBody {
 	}
 }
 
+// RequestTypeUnknown ...
+const RequestTypeUnknown = "unknown"
+
+// RequestTypeJSON ...
+const RequestTypeJSON = "json"
+
+// RequestTypeXML ...
+const RequestTypeXML = "xml"
+
 /*Requester Requester */
 type Requester interface {
+	Type() string
 	BodyReader
 }
 
@@ -140,10 +150,20 @@ type Request struct {
 	err   error
 }
 
+// Type ...
+func (r *Request) Type() string {
+	return RequestTypeUnknown
+}
+
 // xmlResponse ...
 type xmlRequest struct {
 	Request
 	data util.Map
+}
+
+// Type ...
+func (r *xmlRequest) Type() string {
+	return RequestTypeXML
 }
 
 // XMLRequest ...
@@ -183,6 +203,11 @@ func (r *xmlRequest) Result() (util.Map, error) {
 type jsonRequest struct {
 	Request
 	data util.Map
+}
+
+// Type ...
+func (r *jsonRequest) Type() string {
+	return RequestTypeJSON
 }
 
 // JSONRequest ...
