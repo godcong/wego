@@ -6,8 +6,8 @@ import (
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
-	"golang.org/x/exp/xerrors"
 	"golang.org/x/text/transform"
+	"golang.org/x/xerrors"
 	"net/http"
 	"os"
 	"strings"
@@ -130,6 +130,21 @@ func (r *Response) Bytes() []byte {
 // Error ...
 func (r *Response) Error() error {
 	return r.err
+}
+
+// ResponseWriter ...
+func ResponseWriter(w http.ResponseWriter, responder Responder) error {
+	w.WriteHeader(http.StatusOK)
+	header := w.Header()
+	if val := header["Content-Type"]; len(val) == 0 {
+		header["Content-Type"] = []string{"application/xml; charset=utf-8"}
+	}
+	_, err := w.Write(responder.Bytes())
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 // BuildResponder ...

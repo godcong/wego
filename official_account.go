@@ -27,7 +27,6 @@ func NewOfficialAccount(config *Config, opts ...*OfficialAccountOption) *Officia
 	bt := BodyTypeJSON
 	return &OfficialAccount{
 		client: NewClient(&ClientOption{
-			//AccessToken: NewAccessToken(config.AccessToken.Credential()),
 			BodyType: &bt,
 		}),
 		OfficialAccountProperty: config.OfficialAccount,

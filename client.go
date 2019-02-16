@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 	"io"
 	"io/ioutil"
 	"math"

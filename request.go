@@ -129,18 +129,9 @@ func buildBody(v interface{}, tp BodyType) *RequestBody {
 	}
 }
 
-// RequestTypeUnknown ...
-const RequestTypeUnknown = "unknown"
-
-// RequestTypeJSON ...
-const RequestTypeJSON = "json"
-
-// RequestTypeXML ...
-const RequestTypeXML = "xml"
-
 /*Requester Requester */
 type Requester interface {
-	Type() string
+	Type() BodyType
 	BodyReader
 }
 
@@ -151,8 +142,8 @@ type Request struct {
 }
 
 // Type ...
-func (r *Request) Type() string {
-	return RequestTypeUnknown
+func (r *Request) Type() BodyType {
+	return BodyTypeNone
 }
 
 // xmlResponse ...
@@ -162,8 +153,8 @@ type xmlRequest struct {
 }
 
 // Type ...
-func (r *xmlRequest) Type() string {
-	return RequestTypeXML
+func (r *xmlRequest) Type() BodyType {
+	return BodyTypeXML
 }
 
 // XMLRequest ...
@@ -206,8 +197,8 @@ type jsonRequest struct {
 }
 
 // Type ...
-func (r *jsonRequest) Type() string {
-	return RequestTypeJSON
+func (r *jsonRequest) Type() BodyType {
+	return BodyTypeJSON
 }
 
 // JSONRequest ...

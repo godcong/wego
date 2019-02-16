@@ -7,7 +7,7 @@ import (
 	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 	"strings"
 	"time"
 )
