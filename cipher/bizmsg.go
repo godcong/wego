@@ -7,7 +7,7 @@ import (
 	"encoding/xml"
 	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 )
 
 /*ErrorCodeType ErrorCodeType */

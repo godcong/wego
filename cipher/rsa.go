@@ -8,7 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"errors"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 )
 
 /* all defined errors */

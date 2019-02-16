@@ -4,7 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"github.com/godcong/wego/log"
-	"golang.org/x/exp/xerrors"
+	"golang.org/x/xerrors"
 )
 
 // CryptAES128CBC ...
