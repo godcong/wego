@@ -330,3 +330,20 @@ func xmlToMap(contentXML []byte, hasHeader bool) (Map, error) {
 
 	return m, nil
 }
+
+// MustString ...
+func MustString(v, def string) string {
+	if v == "" {
+		return def
+	}
+	return v
+}
+
+// MustInt ...
+func MustInt(v string, def int) int {
+	i, err := strconv.Atoi(v)
+	if err == nil {
+		return i
+	}
+	return def
+}
