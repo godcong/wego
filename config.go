@@ -19,7 +19,6 @@ type SandboxConfig struct {
 	AppSecret string
 	MchID     string
 	Key       string
-	//option *SandboxOption
 }
 
 // SafeCertConfig ...
@@ -71,11 +70,12 @@ type OpenPlatformProperty struct {
 
 // OfficialAccountConfig ...
 type OfficialAccountConfig struct {
-	AppID     string
-	AppSecret string
-	Token     string
-	AesKey    string
-	Scopes    []string
+	AppID       string
+	AppSecret   string
+	Token       string
+	AesKey      string
+	accessToken *AccessTokenConfig
+	OAuth       *OAuthConfig
 }
 
 // MiniProgramProperty ...
