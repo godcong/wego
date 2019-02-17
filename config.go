@@ -74,7 +74,7 @@ type OfficialAccountConfig struct {
 	AppSecret   string
 	Token       string
 	AesKey      string
-	accessToken *AccessTokenConfig
+	AccessToken *AccessTokenConfig
 	OAuth       *OAuthConfig
 }
 

@@ -20,10 +20,9 @@ type OfficialAccount struct {
 
 // OfficialAccountOption ...
 type OfficialAccountOption struct {
-	BodyType    *BodyType
-	RemoteHost  string
-	RedirectURI string
-	LocalHost   string
+	BodyType   *BodyType
+	RemoteHost string
+	LocalHost  string
 }
 
 // NewOfficialAccount ...
