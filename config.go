@@ -69,8 +69,8 @@ type OpenPlatformProperty struct {
 	AesKey    string
 }
 
-// OfficialAccountProperty ...
-type OfficialAccountProperty struct {
+// OfficialAccountConfig ...
+type OfficialAccountConfig struct {
 	AppID     string
 	AppSecret string
 	Token     string
@@ -118,7 +118,7 @@ type Config struct {
 	AccessToken     *AccessTokenConfig
 	OAuth           *OAuthConfig
 	OpenPlatform    *OpenPlatformProperty
-	OfficialAccount *OfficialAccountProperty
+	OfficialAccount *OfficialAccountConfig
 	MiniProgram     *MiniProgramProperty
 	Payment         *PaymentConfig
 	PaymentOption   *PaymentOption

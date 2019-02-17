@@ -10,7 +10,6 @@ import (
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 // NotifyResult ...
@@ -40,90 +39,60 @@ type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 // TokenHook ...
 type TokenHook func(token *core.Token) []byte
 
+// UserHook ...
+type UserHook func(user *core.WechatUserInfo) []byte
+
+// StateHook ...
+type StateHook func() []byte
+
 /*authorizeNotify 监听 */
 type authorizeNotify struct {
 	*OfficialAccount
-	ServeNotify
 	TokenHook
+	UserHook
+	StateHook
 	redirectURI string
 }
 
 // ServeHTTP ...
 func (n *authorizeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	var e error
-	if n.ServeNotify == nil {
-		log.Error(xerrors.New("null notify callback "))
-		return
-	}
-	requester := BuildRequester(req)
-	if e = requester.Error(); e != nil {
-		log.Error(e)
-		return
-	}
-	AuthorizeToken
+	log.Debug("authorizeNotify")
+	query := req.URL.Query()
+	if code := query.Get("code"); code != "" {
+		token := n.hookAuthorizeToken(w, code)
+		if token != nil {
+			info := n.hookUserInfo(w, token)
+			if info != nil {
 
+			}
+		}
+		return
+	}
+
+	u := n.hookState(w)
+	log.Debug("hookState|url", u)
+	http.Redirect(w, req, u, http.StatusFound)
 }
 
-func (n *authorizeNotify) hookState(w http.ResponseWriter, r *http.Request) string {
-	v := CallbackValue{Type: "info", Value: nil}
-
-	if f, b := n.callback["state"]; b {
-		if rlt := f(w, r, &v); rlt != nil {
-			return n.AuthCodeURL(string(rlt))
-		}
+func (n *authorizeNotify) hookState(w http.ResponseWriter) string {
+	if n.StateHook != nil {
+		bytes := n.StateHook()
+		return n.AuthCodeURL(string(bytes))
 	}
 	return n.AuthCodeURL("")
 }
 
-func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, r *http.Request, token *core.Token) *core.UserInfo {
-	info := n.UserInfo(token)
-	v := CallbackValue{Type: "info", Value: info}
-	if a, b := n.callback["all"]; b {
-		if rlt := a(w, r, &v); rlt != nil {
-			w.Write(rlt)
-		}
-	}
-	if a, b := n.callback["info"]; b {
-		if rlt := a(w, r, &v); rlt != nil {
-			w.Write(rlt)
-		}
-	}
-	return info
-}
-
-// AuthorizeToken ...
-func (n *authorizeNotify) AuthorizeToken(code string) *core.Token {
-	v := util.Map{
-		"appid":      n.AppID,
-		"secret":     n.AppSecret,
-		"code":       code,
-		"grant_type": "authorization_code",
-	}
-	if n.redirectURI != "" {
-		log.Println(n.redirectURI)
-		if strings.Index(n.redirectURI, "http") == 0 {
-			v.Set("redirect_uri", n.redirectURI)
-		} else {
-			//TODO:
-			v.Set("redirect_uri", util.URL(n.redirectURI))
-		}
-	}
-	responder := PostJSON(
-		oauth2Authorize,
-		v,
-		nil,
-	)
-	log.Debug("AuthorizeToken|response", string(responder.Bytes()), responder.Error())
-	if responder.Error() != nil {
-		return nil
-	}
-
-	var token core.Token
-	e := responder.Unmarshal(&token)
+func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, token *core.Token) *core.WechatUserInfo {
+	log.Debug("hookUserInfo", token)
+	info, e := n.GetUserInfo(token)
 	if e != nil {
 		return nil
 	}
-	return &token
+	if n.UserHook != nil {
+		bytes := n.UserHook(info)
+		n.responseWriter(w, bytes)
+	}
+	return info
 }
 
 // NotifyResult ...
@@ -135,19 +104,17 @@ func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
 	return
 }
 
-func (n *authorizeNotify) hookAccessToken(w http.ResponseWriter, r *http.Request) *core.Token {
-	var bytes []byte
-	defer n.responseWriter(w, bytes)
-
-	query := r.URL.Query()
-	if code := query.Get("code"); code != "" {
-		token := n.AuthorizeToken(code)
-		if n.TokenHook != nil {
-			bytes = n.TokenHook(token)
-		}
-		return token
+func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, code string) *core.Token {
+	log.Debug("hookAuthorizeToken", code)
+	token, e := n.Oauth2AuthorizeToken(code)
+	if e != nil {
+		return nil
 	}
-	return nil
+	if n.TokenHook != nil {
+		bytes := n.TokenHook(token)
+		n.responseWriter(w, bytes)
+	}
+	return token
 }
 
 /*messageNotify 监听 */

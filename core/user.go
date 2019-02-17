@@ -1,7 +1,7 @@
 package core
 
-/*UserInfo UserInfo */
-type UserInfo struct {
+/*WechatUserInfo WechatUserInfo */
+type WechatUserInfo struct {
 	City           string   `json:"city"`
 	Country        string   `json:"country"`
 	HeadImgURL     string   `json:"headimgurl"`
@@ -22,8 +22,8 @@ type UserInfo struct {
 	QrSceneStr     string   `json:"qr_scene_str"`
 }
 
-/*UserID UserID */
-type UserID struct {
+/*WechatUserID WechatUserID */
+type WechatUserID struct {
 	OpenID string `json:"openid"`
 	Lang   string `json:"lang,omitempty"`
 }
