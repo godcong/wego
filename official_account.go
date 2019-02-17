@@ -11,11 +11,10 @@ import (
 // OfficialAccount ...
 type OfficialAccount struct {
 	*OfficialAccountConfig
-	BodyType    BodyType
-	client      *Client
-	remoteHost  string
-	redirectURI string
-	localHost   string
+	BodyType   BodyType
+	client     *Client
+	remoteHost string
+	localHost  string
 }
 
 // OfficialAccountOption ...
@@ -80,24 +79,21 @@ func (obj *OfficialAccount) Oauth2AuthorizeToken(code string) (*core.Token, erro
 	var token core.Token
 	var e error
 
-	v := util.Map{
+	p := util.Map{
 		"appid":      obj.AppID,
 		"secret":     obj.AppSecret,
 		"code":       code,
 		"grant_type": "authorization_code",
 	}
-	log.Debug(obj.redirectURI)
-	if obj.redirectURI != "" {
-		if strings.Index(obj.redirectURI, "http") == 0 {
-			v.Set("redirect_uri", obj.redirectURI)
-		} else {
-			//TODO:
-			v.Set("redirect_uri", util.URL(obj.redirectURI))
-		}
+
+	uri := obj.RedirectURI()
+	if uri != "" {
+		p.Set("redirect_uri", uri)
 	}
+
 	responder := PostJSON(
 		oauth2AccessToken,
-		v,
+		p,
 		nil,
 	)
 	e = responder.Error()
@@ -142,12 +138,12 @@ func (obj *OfficialAccount) AuthCodeURL(state string) string {
 
 // RedirectURI ...
 func (obj *OfficialAccount) RedirectURI() string {
-	log.Debug("RedirectURI", obj.redirectURI)
-	if obj.redirectURI != "" {
-		if strings.Index(obj.redirectURI, "http") == 0 {
-			return obj.redirectURI
+	log.Debug("RedirectURI", obj.OAuth.RedirectURI)
+	if obj.OAuth.RedirectURI != "" {
+		if strings.Index(obj.OAuth.RedirectURI, "http") == 0 {
+			return obj.OAuth.RedirectURI
 		}
-		return util.URL(obj.localHost, obj.redirectURI)
+		return util.URL(obj.localHost, obj.OAuth.RedirectURI)
 	}
 	return ""
 }
