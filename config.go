@@ -75,6 +75,7 @@ type OfficialAccountConfig struct {
 	AppSecret string
 	Token     string
 	AesKey    string
+	Scopes    []string
 }
 
 // MiniProgramProperty ...

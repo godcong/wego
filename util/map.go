@@ -47,7 +47,7 @@ func ToString(s string) String {
 	return String(s)
 }
 
-/*GMap GMap */
+// Map ...
 type Map map[string]interface{}
 
 /*String transfer map to JSON string */
@@ -428,13 +428,23 @@ func (m Map) URLEncode() string {
 	for i := 0; i < size; i++ {
 		vs := m[keys[i]]
 		keyEscaped := url.QueryEscape(keys[i])
-		if v, b := vs.(string); b {
+		switch val := vs.(type) {
+		case string:
 			if buf.Len() > 0 {
 				buf.WriteByte('&')
 			}
 			buf.WriteString(keyEscaped)
 			buf.WriteByte('=')
-			buf.WriteString(url.QueryEscape(v))
+			buf.WriteString(url.QueryEscape(val))
+		case []string:
+			for _, v := range val {
+				if buf.Len() > 0 {
+					buf.WriteByte('&')
+				}
+				buf.WriteString(keyEscaped)
+				buf.WriteByte('=')
+				buf.WriteString(url.QueryEscape(v))
+			}
 		}
 	}
 

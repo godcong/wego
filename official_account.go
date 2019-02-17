@@ -11,23 +11,19 @@ import (
 // OfficialAccount ...
 type OfficialAccount struct {
 	*OfficialAccountConfig
-	BodyType BodyType
-	client   *Client
-	//option      *OfficialAccountOption
+	BodyType    BodyType
+	client      *Client
+	remoteHost  string
 	redirectURI string
 	localHost   string
-	scopes      []string
 }
 
 // OfficialAccountOption ...
 type OfficialAccountOption struct {
-	BodyType      *BodyType
-	RemoteAddress string
-	LocalHost     string
-	UseSandbox    bool
-	Sandbox       *SandboxConfig
-	NotifyURL     string
-	RefundURL     string
+	BodyType    *BodyType
+	RemoteHost  string
+	RedirectURI string
+	LocalHost   string
 }
 
 // NewOfficialAccount ...
@@ -35,8 +31,6 @@ func NewOfficialAccount(config *OfficialAccountConfig, opts ...*OfficialAccountO
 	officialAccount := &OfficialAccount{
 		BodyType:              BodyTypeJSON,
 		OfficialAccountConfig: config,
-		//config:                officialAccount,
-		//option: opt,
 	}
 	officialAccount.parse(opts)
 	officialAccount.client = NewClient(&ClientOption{
@@ -52,17 +46,9 @@ func (obj *OfficialAccount) parse(opts []*OfficialAccountOption) {
 	if opts[0].BodyType != nil {
 		obj.BodyType = *opts[0].BodyType
 	}
-	//obj.useSandbox = opts[0].UseSandbox
-	//if obj.useSandbox {
-	//	obj.sandbox = NewSandbox(opts[0].Sandbox)
-	//}
-	//obj.subMchID = opts[0].SubMchID
-	//obj.subAppID = opts[0].SubAppID
-	//obj.remoteHost = opts[0].RemoteHost
+	obj.redirectURI = opts[0].RedirectURI
+	obj.remoteHost = opts[0].RemoteHost
 	obj.localHost = opts[0].LocalHost
-	//obj.notifyURL = opts[0].NotifyURL
-	//obj.refundedURL = opts[0].RefundedURL
-	//obj.scannedURL = opts[0].ScannedURL
 }
 
 // GetUserInfo ...
@@ -144,15 +130,15 @@ func (obj *OfficialAccount) AuthCodeURL(state string) string {
 		p.Set("redirect_uri", uri)
 	}
 
-	if obj.scopes != nil {
-		p.Set("scope", obj.scopes)
+	if obj.Scopes != nil {
+		p.Set("scope", obj.Scopes)
 	}
 	if state != "" {
 		// TODO(light): Docs say never to omit state; don't allow empty.
-		v.Set("state", state)
+		p.Set("state", state)
 	}
 	buf.WriteByte('?')
-	buf.WriteString(v.Encode())
+	buf.WriteString(p.URLEncode())
 	return buf.String()
 }
 
