@@ -45,7 +45,6 @@ func (obj *OfficialAccount) parse(opts []*OfficialAccountOption) {
 	if opts[0].BodyType != nil {
 		obj.BodyType = *opts[0].BodyType
 	}
-	obj.redirectURI = opts[0].RedirectURI
 	obj.remoteHost = opts[0].RemoteHost
 	obj.localHost = opts[0].LocalHost
 }
@@ -129,8 +128,8 @@ func (obj *OfficialAccount) AuthCodeURL(state string) string {
 		p.Set("redirect_uri", uri)
 	}
 
-	if obj.Scopes != nil {
-		p.Set("scope", obj.Scopes)
+	if obj.OAuth.Scopes != nil {
+		p.Set("scope", obj.OAuth.Scopes)
 	}
 	if state != "" {
 		// TODO(light): Docs say never to omit state; don't allow empty.
