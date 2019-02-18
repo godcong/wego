@@ -48,20 +48,25 @@ func (obj *OfficialAccount) parse(opts []*OfficialAccountOption) {
 	obj.localHost = opts[0].LocalHost
 }
 
-// HandleRefundedNotify ...
-func (obj *OfficialAccount) HandleRefundedNotify(f RequestHook) ServeHTTPFunc {
-	return obj.HandleRefunded(f).ServeHTTP
+// HandleAuthorizeNotify ...
+func (obj *OfficialAccount) HandleAuthorizeNotify(hooks ...interface{}) ServeHTTPFunc {
+	return obj.HandleAuthorize(hooks...).ServeHTTP
 }
 
-// HandleScannedNotify ...
-func (obj *OfficialAccount) HandleAuthorizeNotify(f TokenHook) Notifier {
-	return &authorizeNotify{
-		OfficialAccount: nil,
-		TokenHook:       nil,
-		UserHook:        nil,
-		StateHook:       nil,
-		redirectURI:     "",
+// HandleAuthorize ...
+func (obj *OfficialAccount) HandleAuthorize(hooks ...interface{}) Notifier {
+	notify := &authorizeNotify{}
+	for _, hook := range hooks {
+		switch h := hook.(type) {
+		case TokenHook:
+			notify.TokenHook = h
+		case UserHook:
+			notify.UserHook = h
+		case StateHook:
+			notify.StateHook = h
+		}
 	}
+	return notify
 }
 
 // GetUserInfo ...
