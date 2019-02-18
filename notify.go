@@ -51,7 +51,6 @@ type authorizeNotify struct {
 	TokenHook
 	UserHook
 	StateHook
-	redirectURI string
 }
 
 // ServeHTTP ...

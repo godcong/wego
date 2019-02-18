@@ -55,7 +55,9 @@ func (obj *OfficialAccount) HandleAuthorizeNotify(hooks ...interface{}) ServeHTT
 
 // HandleAuthorize ...
 func (obj *OfficialAccount) HandleAuthorize(hooks ...interface{}) Notifier {
-	notify := &authorizeNotify{}
+	notify := &authorizeNotify{
+		OfficialAccount: obj,
+	}
 	for _, hook := range hooks {
 		switch h := hook.(type) {
 		case TokenHook:
