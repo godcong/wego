@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
-	"github.com/godcong/wego/log"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"strings"
 )

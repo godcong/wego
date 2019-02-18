@@ -2,8 +2,8 @@ package util_test
 
 import (
 	"encoding/xml"
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	log "github.com/sirupsen/logrus"
 	"testing"
 )
 

@@ -2,9 +2,9 @@ package core
 
 import (
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/pelletier/go-toml"
+	log "github.com/sirupsen/logrus"
 )
 
 const configPath = "config.toml"

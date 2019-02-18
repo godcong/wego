@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	log "github.com/sirupsen/logrus"
 )
 
 /*URL URL */

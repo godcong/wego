@@ -3,9 +3,9 @@ package wego
 import (
 	"bytes"
 	"encoding/xml"
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"strings"

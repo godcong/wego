@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/godcong/wego/log"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/text/transform"
 	"os"
 )

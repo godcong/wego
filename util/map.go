@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"github.com/godcong/wego/log"
+	log "github.com/sirupsen/logrus"
 	"net/url"
 	"sort"
 	"strconv"

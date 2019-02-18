@@ -3,8 +3,8 @@ package wego
 import (
 	"bytes"
 	"github.com/godcong/wego/core"
-	"github.com/godcong/wego/log"
 	"github.com/godcong/wego/util"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
