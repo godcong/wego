@@ -7,7 +7,7 @@ type WechatUserInfo struct {
 	HeadImgURL     string   `json:"headimgurl"`
 	Language       string   `json:"language"`
 	Nickname       string   `json:"nickname"`
-	Openid         string   `json:"openid"`
+	OpenID         string   `json:"openid"`
 	Privilege      []string `json:"privilege"`
 	Province       string   `json:"province"`
 	Sex            uint     `json:"sex"`

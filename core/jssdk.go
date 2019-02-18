@@ -116,7 +116,7 @@ func (j *JSSDK) ShareAddressConfig(v interface{}) util.Map {
 		"accesstoken": token,
 	}
 
-	m.Set("addrSign", util.SHA1(signMsg.URLEncode()))
+	m.Set("addrSign", util.GenSHA1(signMsg.URLEncode()))
 
 	return m
 }
@@ -167,5 +167,5 @@ func (j *JSSDK) getCacheKey() string {
 }
 
 func getTicketSignature(ticket, nonce, ts, url string) string {
-	return util.SHA1(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket, nonce, ts, url))
+	return util.GenSHA1(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket, nonce, ts, url))
 }
