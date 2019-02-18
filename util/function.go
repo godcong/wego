@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"crypto/hmac"
+	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/xml"
@@ -12,6 +13,7 @@ import (
 	"github.com/juju/errors"
 	"github.com/satori/go.uuid"
 	"golang.org/x/xerrors"
+	"io"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -162,15 +164,22 @@ func CurrentTimeStampString() string {
 	return strconv.FormatInt(CurrentTimeStamp(), 10)
 }
 
-// SHA1 transfer strings to sha1
-func SHA1(text ...string) string {
+// GenSHA1 transfer strings to sha1
+func GenSHA1(text ...string) string {
 	sort.Strings(text)
 	s := strings.Join(text, "")
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
 
-// SHA256 ...
-func SHA256(data []byte, key string) string {
+// GenMD5 transfer strings to md5
+func GenMD5(data string) string {
+	m := md5.New()
+	_, _ = io.WriteString(m, data)
+	return fmt.Sprintf("%x", m.Sum(nil))
+}
+
+// GenSHA256 ...
+func GenSHA256(data []byte, key string) string {
 	m := hmac.New(sha256.New, []byte(key))
 	m.Write(data)
 	return strings.ToUpper(fmt.Sprintf("%x", m.Sum(nil)))
@@ -191,7 +200,7 @@ func signatureSHA1(m Map) string {
 	}
 
 	sb := strings.Join(sign, "&")
-	return SHA1(sb)
+	return GenSHA1(sb)
 }
 
 //GenerateRandomString2 随机字符串

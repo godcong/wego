@@ -87,7 +87,7 @@ func (obj *cryptBizMsg) Encrypt(data interface{}) ([]byte, error) {
 		RSAEncrypt:   string(encrypt),
 		TimeStamp:    bizMsg.TimeStamp,
 		Nonce:        bizMsg.Nonce,
-		MsgSignature: util.SHA1(obj.token, bizMsg.TimeStamp, bizMsg.Nonce, string(encrypt)),
+		MsgSignature: util.GenSHA1(obj.token, bizMsg.TimeStamp, bizMsg.Nonce, string(encrypt)),
 	}
 
 	return xml.Marshal(r)
@@ -101,7 +101,7 @@ func (obj *cryptBizMsg) Decrypt(data interface{}) ([]byte, error) {
 		log.Error(e)
 		return nil, xerrors.Errorf("biz msg unmarshal:%w", e)
 	}
-	newSign := util.SHA1(obj.token, bizMsg.TimeStamp, bizMsg.Nonce, bizMsg.RSAEncrypt)
+	newSign := util.GenSHA1(obj.token, bizMsg.TimeStamp, bizMsg.Nonce, bizMsg.RSAEncrypt)
 	if bizMsg.MsgSignature != newSign {
 		log.Error(bizMsg.MsgSignature, newSign)
 		return nil, xerrors.New("ValidateSignatureError")
