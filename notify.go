@@ -30,11 +30,11 @@ type Notifier interface {
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
 }
 
-// ServeNotify ...
-type ServeNotify func(req Requester) (util.Map, error)
-
 // ServeHTTPFunc ...
 type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
+
+// RequestHook ...
+type RequestHook func(req Requester) (util.Map, error)
 
 // TokenHook ...
 type TokenHook func(token *core.Token) []byte
@@ -120,7 +120,7 @@ func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, code string)
 /*messageNotify 监听 */
 type messageNotify struct {
 	*OfficialAccount
-	ServeNotify
+	RequestHook
 	cipher cipher.Cipher
 	//bizMsg *cipher.BizMsg
 }
@@ -183,7 +183,7 @@ func (n *messageNotify) encodeInfo(p util.Map, ts, nonce string) ([]byte, error)
 func (n *messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 
-	if n.ServeNotify == nil {
+	if n.RequestHook == nil {
 		log.Error(xerrors.New("null notify callback "))
 		return
 	}
@@ -204,7 +204,7 @@ func (n *messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	r, e := n.ServeNotify(RebuildRequester(requester, maps))
+	r, e := n.RequestHook(RebuildRequester(requester, maps))
 	if e != nil {
 		log.Error(e)
 		return
@@ -219,13 +219,13 @@ func (n *messageNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 /*Notifier 监听 */
-type paidNotify struct {
+type paymentPaidNotify struct {
 	*Payment
-	ServeNotify
+	RequestHook
 }
 
 // ServerHttp ...
-func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (n *paymentPaidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	requester := BuildRequester(req)
 	resp := NotifyTypeResponder(requester.Type(), NotifySuccess())
@@ -241,11 +241,11 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	reqData := requester.ToMap()
 	if util.ValidateSign(reqData, n.GetKey()) {
-		if n.ServeNotify == nil {
+		if n.RequestHook == nil {
 			log.Error(xerrors.New("null notify callback "))
 			return
 		}
-		_, e = n.ServeNotify(requester)
+		_, e = n.RequestHook(requester)
 		if e != nil {
 			log.Error(e.Error())
 			resp.SetNotifyResult(NotifyFail(e.Error()))
@@ -255,15 +255,15 @@ func (n *paidNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 /*Notifier 监听 */
-type refundedNotify struct {
+type paymentRefundedNotify struct {
 	cipher cipher.Cipher
-	ServeNotify
+	RequestHook
 }
 
 // ServeHTTP ...
-func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (obj *paymentRefundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
-	if obj.ServeNotify == nil {
+	if obj.RequestHook == nil {
 		log.Error(xerrors.New("null notify callback"))
 		return
 	}
@@ -284,7 +284,7 @@ func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	reqInfo := reqData.GetString("req_info")
 	reqData.Set("reqInfo", obj.DecodeReqInfo(reqInfo))
 
-	_, e = obj.ServeNotify(requester)
+	_, e = obj.RequestHook(requester)
 	if e != nil {
 		log.Error(e.Error())
 		resp.SetNotifyResult(NotifyFail(e.Error()))
@@ -292,7 +292,7 @@ func (obj *refundedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // DecodeReqInfo ...
-func (obj *refundedNotify) DecodeReqInfo(info string) util.Map {
+func (obj *paymentRefundedNotify) DecodeReqInfo(info string) util.Map {
 	maps := util.Map{}
 	dec, _ := obj.cipher.Decrypt(info)
 	e := xml.Unmarshal(dec, &maps)
@@ -303,17 +303,17 @@ func (obj *refundedNotify) DecodeReqInfo(info string) util.Map {
 }
 
 /*Notifier 监听 */
-type scannedNotify struct {
+type paymentScannedNotify struct {
 	*Payment
-	ServeNotify
+	RequestHook
 }
 
 // ServeHTTP ...
-func (obj *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (obj *paymentScannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var e error
 	var p util.Map
 
-	if obj.ServeNotify == nil {
+	if obj.RequestHook == nil {
 		log.Error(xerrors.New("null notify callback"))
 		return
 	}
@@ -332,7 +332,7 @@ func (obj *scannedNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	reqData := requester.ToMap()
 	if util.ValidateSign(reqData, obj.GetKey()) {
 
-		p, e = obj.ServeNotify(requester)
+		p, e = obj.RequestHook(requester)
 		if e != nil {
 			log.Error(e.Error())
 			resp.SetNotifyResult(NotifyFailDes(resp.NotifyResult(), e.Error()))

@@ -61,39 +61,44 @@ func (obj *Payment) parse(opts []*PaymentOption) {
 }
 
 // HandleRefunded ...
-func (obj *Payment) HandleRefunded(f ServeNotify) Notifier {
-	return &refundedNotify{
+func (obj *Payment) HandleRefunded(hook RequestHook) Notifier {
+	return &paymentRefundedNotify{
 		cipher: cipher.New(cipher.AES256ECB, &cipher.Option{
 			Key: obj.Key,
 		}),
-		ServeNotify: f,
+		RequestHook: hook,
 	}
 }
 
 // HandleRefundedNotify ...
-func (obj *Payment) HandleRefundedNotify(f ServeNotify) ServeHTTPFunc {
-	return obj.HandleRefunded(f).ServeHTTP
+func (obj *Payment) HandleRefundedNotify(hook RequestHook) ServeHTTPFunc {
+	return obj.HandleRefunded(hook).ServeHTTP
 }
 
 // HandleScannedNotify ...
-func (obj *Payment) HandleScannedNotify(f ServeNotify) Notifier {
-	return &scannedNotify{
+func (obj *Payment) HandleScannedNotify(hook RequestHook) Notifier {
+	return &paymentScannedNotify{
 		Payment:     obj,
-		ServeNotify: f,
+		RequestHook: hook,
 	}
 }
 
 // HandleScanned ...
-func (obj *Payment) HandleScanned(f ServeNotify) ServeHTTPFunc {
-	return obj.HandleScannedNotify(f).ServeHTTP
+func (obj *Payment) HandleScanned(hook RequestHook) ServeHTTPFunc {
+	return obj.HandleScannedNotify(hook).ServeHTTP
 }
 
 // HandlePaidNotify ...
-func (obj *Payment) HandlePaidNotify(f ServeNotify) Notifier {
-	return &paidNotify{
+func (obj *Payment) HandlePaidNotify(hook RequestHook) Notifier {
+	return &paymentPaidNotify{
 		Payment:     obj,
-		ServeNotify: f,
+		RequestHook: hook,
 	}
+}
+
+// HandlePaid ...
+func (obj *Payment) HandlePaid(hook RequestHook) ServeHTTPFunc {
+	return obj.HandlePaidNotify(hook).ServeHTTP
 }
 
 /*Pay 支付

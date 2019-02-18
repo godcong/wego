@@ -48,6 +48,22 @@ func (obj *OfficialAccount) parse(opts []*OfficialAccountOption) {
 	obj.localHost = opts[0].LocalHost
 }
 
+// HandleRefundedNotify ...
+func (obj *OfficialAccount) HandleRefundedNotify(f RequestHook) ServeHTTPFunc {
+	return obj.HandleRefunded(f).ServeHTTP
+}
+
+// HandleScannedNotify ...
+func (obj *OfficialAccount) HandleAuthorizeNotify(f TokenHook) Notifier {
+	return &authorizeNotify{
+		OfficialAccount: nil,
+		TokenHook:       nil,
+		UserHook:        nil,
+		StateHook:       nil,
+		redirectURI:     "",
+	}
+}
+
 // GetUserInfo ...
 func (obj *OfficialAccount) GetUserInfo(token *core.Token) (*core.WechatUserInfo, error) {
 	var info core.WechatUserInfo
