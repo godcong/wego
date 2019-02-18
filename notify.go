@@ -110,7 +110,7 @@ func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, code string,
 		return nil
 	}
 	if n.TokenHook != nil {
-		bytes := n.TokenHook(token)
+		bytes := n.TokenHook(token, state)
 		n.responseWriter(w, bytes)
 	}
 	return token
