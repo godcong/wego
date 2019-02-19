@@ -13,6 +13,7 @@ import (
 	"github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
+	"hash/crc32"
 	"io"
 	"math/rand"
 	"sort"
@@ -169,6 +170,13 @@ func GenSHA1(text ...string) string {
 	sort.Strings(text)
 	s := strings.Join(text, "")
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
+}
+
+// CRC32 ...
+func CRC32(data string) string {
+	ieee := crc32.NewIEEE()
+	_, _ = io.WriteString(ieee, data)
+	return fmt.Sprintf("%X", ieee.Sum32())
 }
 
 // GenMD5 transfer strings to md5
