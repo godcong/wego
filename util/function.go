@@ -176,7 +176,7 @@ func GenSHA1(text ...string) string {
 func CRC32(data string) string {
 	ieee := crc32.NewIEEE()
 	_, _ = io.WriteString(ieee, data)
-	return fmt.Sprintf("%X", ieee.Sum32())
+	return fmt.Sprintf("%X", ieee.Sum(nil))
 }
 
 // GenMD5 transfer strings to md5
