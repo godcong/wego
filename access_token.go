@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/godcong/wego/cache"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
@@ -75,13 +74,13 @@ func (obj *AccessToken) Refresh() *AccessToken {
 }
 
 /*GetRefreshToken 获取刷新token */
-func (obj *AccessToken) GetRefreshToken() *core.Token {
+func (obj *AccessToken) GetRefreshToken() *Token {
 	log.Debug("AccessToken|GetRefreshedToken")
 	return obj.getToken(true)
 }
 
 /*GetToken 获取token */
-func (obj *AccessToken) GetToken() *core.Token {
+func (obj *AccessToken) GetToken() *Token {
 	return obj.getToken(false)
 }
 
@@ -90,13 +89,13 @@ func (obj *AccessToken) KeyMap() util.Map {
 	return MustKeyMap(obj)
 }
 
-func (obj *AccessToken) getToken(refresh bool) *core.Token {
+func (obj *AccessToken) getToken(refresh bool) *Token {
 	key := obj.getCacheKey()
 
 	if !refresh && cache.Has(key) {
-		if v, b := cache.Get(key).(*core.Token); b {
+		if v, b := cache.Get(key).(*Token); b {
 			if v.ExpiresIn > time.Now().Unix() {
-				log.Debugf("cached accessToken found:%+v", v)
+				log.Infof("cached accessToken:%+v", v)
 				return v
 			}
 		}
@@ -108,7 +107,7 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 		return nil
 	}
 
-	log.Debug("getToken:%+v", *token)
+	log.Infof("accessToken:%+v", *token)
 	if v := token.ExpiresIn; v != 0 {
 		obj.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
 	} else {
@@ -117,8 +116,8 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	return token
 }
 
-func requestToken(url string, credentials *AccessTokenConfig) (*core.Token, error) {
-	var token core.Token
+func requestToken(url string, credentials *AccessTokenConfig) (*Token, error) {
+	var token Token
 	e := Get(url, credentials.ToMap()).Unmarshal(&token)
 	if e != nil {
 		return nil, e
@@ -137,7 +136,7 @@ func (obj *AccessToken) SetToken(token string) *AccessToken {
 }
 
 func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
-	cache.SetWithTTL(obj.getCacheKey(), &core.Token{
+	cache.SetWithTTL(obj.getCacheKey(), &Token{
 		AccessToken: token,
 		ExpiresIn:   time.Now().Add(time.Duration(lifeTime)).Unix(),
 	}, lifeTime)
@@ -175,4 +174,16 @@ func KeyMap(at *AccessToken) (util.Map, error) {
 		return token.KeyMap(), nil
 	}
 	return nil, xerrors.New(tokenNil)
+}
+
+func parseAccessToken(token interface{}) string {
+	switch v := token.(type) {
+	case AccessToken:
+		return v.GetToken().AccessToken
+	case *AccessToken:
+		return v.GetToken().AccessToken
+	case string:
+		return v
+	}
+	return ""
 }

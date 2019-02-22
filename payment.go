@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/godcong/wego/cache"
 	"github.com/godcong/wego/cipher"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 )
@@ -226,7 +225,7 @@ func (obj *Payment) Unify(m util.Map, options ...util.Map) Responder {
 	m = util.CombineMaps(m, options)
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
-			m.Set("spbill_create_ip", core.GetServerIP())
+			m.Set("spbill_create_ip", util.GetServerIP())
 		}
 		//TODO: getclientip with request
 		//if obj.request != nil {
@@ -283,15 +282,15 @@ func (obj *Payment) GetKey() string {
 		keyName := obj.sandbox.getCacheKey()
 		cachedKey := cache.Get(keyName)
 		if cachedKey != nil {
-			log.Println("cached:", cachedKey.(string))
+			log.Println("cached key:", keyName, cachedKey.(string))
 			key = cachedKey.(string)
 			return key
 		}
 
-		response := obj.sandbox.SignKey().ToMap()
-		if response.GetString("return_code") == "SUCCESS" {
-			key = response.GetString("sandbox_signkey")
-			log.Println("cache key:", keyName)
+		resp := obj.sandbox.SignKey().ToMap()
+		if resp.GetString("return_code") == "SUCCESS" {
+			key = resp.GetString("sandbox_signkey")
+			log.Info("key:", keyName, key)
 			cache.SetWithTTL(keyName, key, 24*3600)
 		}
 	}

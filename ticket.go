@@ -5,6 +5,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// TicketRes ...
+type TicketRes struct {
+	ErrCode   int    `json:"errcode"`
+	ErrMsg    string `json:"errmsg"`
+	Ticket    string `json:"ticket"`
+	ExpiresIn int64  `json:"expires_in"`
+}
+
 /*Ticket Ticket */
 type Ticket struct {
 	*AccessToken
@@ -25,6 +33,17 @@ func (t *Ticket) Get(s string) Responder {
 	log.Debug("Ticket|Get", s)
 	p := t.KeyMap().Set("type", s)
 	return Get(util.URL(apiWeixin, ticketGetTicket), p)
+}
+
+// GetTicketRes ...
+func (t *Ticket) GetTicketRes(s string) (*TicketRes, error) {
+	var tr TicketRes
+	ticket := t.Get(s)
+	e := ticket.Unmarshal(&tr)
+	if e != nil {
+		return nil, e
+	}
+	return &tr, nil
 }
 
 // GetTicket ...
