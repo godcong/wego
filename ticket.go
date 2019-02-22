@@ -21,10 +21,9 @@ func NewTicket(accessToken *AccessToken) *Ticket {
 // http请求方式: GET
 // https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=wx_card
 // type: jsapi,wx_card
-func (t *Ticket) Get(typ string) Responder {
-	log.Debug("Ticket|Get", typ)
-	p := t.GetToken().KeyMap()
-	p.Set("type", typ)
+func (t *Ticket) Get(s string) Responder {
+	log.Debug("Ticket|Get", s)
+	p := t.KeyMap().Set("type", s)
 	return Get(util.URL(apiWeixin, ticketGetTicket), p)
 }
 

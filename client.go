@@ -61,27 +61,27 @@ type ClientOption struct {
 }
 
 // NewClient ...
-func NewClient(opts ...*ClientOption) *Client {
+func NewClient(options ...*ClientOption) *Client {
 	client := &Client{
 		BodyType: BodyTypeXML,
 	}
-	client.parse(opts)
+	client.parse(options)
 	return client
 }
 
-func (obj *Client) parse(opts []*ClientOption) {
-	if opts == nil {
+func (obj *Client) parse(options []*ClientOption) {
+	if options == nil {
 		return
 	}
 
-	obj.safeCert = opts[0].SafeCert
-	if opts[0].BodyType != nil {
-		obj.BodyType = *opts[0].BodyType
+	obj.safeCert = options[0].SafeCert
+	if options[0].BodyType != nil {
+		obj.BodyType = *options[0].BodyType
 	}
-	obj.accessToken = opts[0].AccessToken
-	obj.accessToken = opts[0].AccessToken
-	obj.timeout = opts[0].Timeout
-	obj.keepAlive = opts[0].KeepAlive
+	obj.accessToken = options[0].AccessToken
+	obj.accessToken = options[0].AccessToken
+	obj.timeout = options[0].Timeout
+	obj.keepAlive = options[0].KeepAlive
 }
 
 // IsSafe ...
@@ -137,8 +137,8 @@ func (obj *Client) HTTPClient() (*http.Client, error) {
 }
 
 // makeClient ...
-func makeClient(method string, url string, query util.Map, body interface{}, opts ...*ClientOption) *Client {
-	client := NewClient(opts...)
+func makeClient(method string, url string, query util.Map, body interface{}, options ...*ClientOption) *Client {
+	client := NewClient(options...)
 	client.Method = method
 	client.URL = url
 	client.Query = query

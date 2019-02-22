@@ -12,40 +12,22 @@ type JSSDK struct {
 	*JSSDKConfig
 	accessToken *AccessToken
 	ticket      *Ticket
-	URL         string
-	CacheKey    func() string
-}
-
-// Ticket ...
-func (j *JSSDK) Ticket() *Ticket {
-	return j.ticket
-}
-
-// SetTicket ...
-func (j *JSSDK) SetTicket(ticket *Ticket) {
-	j.ticket = ticket
-}
-
-func newJSSDK(config *Config) interface{} {
-	jssdk := &JSSDK{
-		Config: config,
-		ticket: nil,
-	}
-	jssdk.CacheKey = jssdk.getCacheKey
-	return jssdk
+	//URL         string
+	//CacheKey    func() string
 }
 
 /*NewJSSDK NewJSSDK */
-func NewJSSDK(config *JSSDKConfig) *JSSDK {
+func NewJSSDK(config *JSSDKConfig, options ...JSSDKConfigOption) *JSSDK {
 	jssdk := &JSSDK{
 		JSSDKConfig: config,
 		accessToken: NewAccessToken(config.AccessToken),
-		ticket:      NewTicket(),
 	}
+	jssdk.parse(options)
+	return jssdk
 }
 
 func (j *JSSDK) getURL() string {
-	return GetServerIP()
+	return util.GetServerIP()
 }
 
 /*BridgeConfig bridge 设置 */
@@ -166,6 +148,10 @@ func (j *JSSDK) GetTicket(genre string, refresh bool) string {
 
 func (j *JSSDK) getCacheKey() string {
 	return "godcong.wego.jssdk.ticket.jsapi" + j.GetString("app_id")
+}
+
+func (j *JSSDK) parse(options []JSSDKConfigOption) {
+
 }
 
 func getTicketSignature(ticket, nonce, ts, url string) string {

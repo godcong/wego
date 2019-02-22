@@ -120,6 +120,11 @@ type JSSDKConfig struct {
 	AccessToken *AccessTokenConfig
 }
 
+// JSSDKConfigOption ...
+type JSSDKConfigOption struct {
+	SubAppID string
+}
+
 // Config ...
 type Config struct {
 	JSSDK *JSSDKConfig

@@ -50,21 +50,21 @@ func tokenURL(obj *AccessToken) string {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property *AccessTokenConfig, opts ...*AccessTokenOption) *AccessToken {
+func NewAccessToken(property *AccessTokenConfig, options ...*AccessTokenOption) *AccessToken {
 	token := &AccessToken{
 		AccessTokenConfig: property,
 	}
-	token.parse(opts)
+	token.parse(options)
 	return token
 }
 
-func (obj *AccessToken) parse(opts []*AccessTokenOption) {
-	if opts == nil {
+func (obj *AccessToken) parse(options []*AccessTokenOption) {
+	if options == nil {
 		return
 	}
-	obj.remoteHost = opts[0].RemoteHost
-	obj.tokenURL = opts[0].TokenURL
-	obj.tokenKey = opts[0].TokenKey
+	obj.remoteHost = options[0].RemoteHost
+	obj.tokenURL = options[0].TokenURL
+	obj.tokenKey = options[0].TokenKey
 }
 
 /*Refresh 刷新AccessToken */

@@ -15,19 +15,19 @@ type Sandbox struct {
 }
 
 // NewSandbox ...
-func NewSandbox(config *SandboxConfig, opts ...*SandboxOption) *Sandbox {
+func NewSandbox(config *SandboxConfig, options ...*SandboxOption) *Sandbox {
 	sandbox := &Sandbox{
 		SandboxConfig: config,
 	}
 	return sandbox
 }
 
-func (obj *Sandbox) parse(opts []*SandboxOption) {
-	if opts == nil {
+func (obj *Sandbox) parse(options []*SandboxOption) {
+	if options == nil {
 		return
 	}
-	obj.subAppID = opts[0].SubAppID
-	obj.subMchID = opts[0].SubMchID
+	obj.subAppID = options[0].SubAppID
+	obj.subMchID = options[0].SubMchID
 }
 
 func (obj *Sandbox) getCacheKey() string {

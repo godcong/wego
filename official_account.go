@@ -25,27 +25,27 @@ type OfficialAccountOption struct {
 }
 
 // NewOfficialAccount ...
-func NewOfficialAccount(config *OfficialAccountConfig, opts ...*OfficialAccountOption) *OfficialAccount {
+func NewOfficialAccount(config *OfficialAccountConfig, options ...*OfficialAccountOption) *OfficialAccount {
 	officialAccount := &OfficialAccount{
 		BodyType:              BodyTypeJSON,
 		OfficialAccountConfig: config,
 	}
-	officialAccount.parse(opts)
+	officialAccount.parse(options)
 	officialAccount.client = NewClient(&ClientOption{
 		BodyType: &officialAccount.BodyType,
 	})
 	return officialAccount
 }
 
-func (obj *OfficialAccount) parse(opts []*OfficialAccountOption) {
-	if opts == nil {
+func (obj *OfficialAccount) parse(options []*OfficialAccountOption) {
+	if options == nil {
 		return
 	}
-	if opts[0].BodyType != nil {
-		obj.BodyType = *opts[0].BodyType
+	if options[0].BodyType != nil {
+		obj.BodyType = *options[0].BodyType
 	}
-	obj.remoteHost = opts[0].RemoteHost
-	obj.localHost = opts[0].LocalHost
+	obj.remoteHost = options[0].RemoteHost
+	obj.localHost = options[0].LocalHost
 }
 
 // HandleAuthorizeNotify ...
