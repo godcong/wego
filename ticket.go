@@ -39,6 +39,9 @@ func (t *Ticket) Get(s string) Responder {
 func (t *Ticket) GetTicketRes(s string) (*TicketRes, error) {
 	var tr TicketRes
 	ticket := t.Get(s)
+	if e := ticket.Error(); e != nil {
+		return nil, e
+	}
 	e := ticket.Unmarshal(&tr)
 	if e != nil {
 		return nil, e

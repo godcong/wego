@@ -74,6 +74,19 @@ func (r *xmlResponse) Result() (util.Map, error) {
 	return r.data, e
 }
 
+// Error ...
+func (r *xmlResponse) Error() error {
+	var e ErrRes
+	if r.err != nil {
+		return r.err
+	}
+	_ = jsoniter.Unmarshal(r.bytes, &e)
+	if e.ErrCode != 0 || e.ErrMsg != "" {
+		return xerrors.Errorf("code:%d,msg:%s", e.ErrCode, e.ErrMsg)
+	}
+	return nil
+}
+
 // jsonResponse ...
 type jsonResponse struct {
 	Response
@@ -115,6 +128,19 @@ func (r *jsonResponse) Result() (util.Map, error) {
 	return r.data, e
 }
 
+// Error ...
+func (r *jsonResponse) Error() error {
+	var e ErrRes
+	if r.err != nil {
+		return r.err
+	}
+	_ = jsoniter.Unmarshal(r.bytes, &e)
+	if e.ErrCode != 0 || e.ErrMsg != "" {
+		return xerrors.Errorf("code:%d,msg:%s", e.ErrCode, e.ErrMsg)
+	}
+	return nil
+}
+
 // ToMap ...
 func (r *Response) ToMap() util.Map {
 	return nil
@@ -141,6 +167,12 @@ func ErrResponse(err error) Responder {
 // Bytes ...
 func (r *Response) Bytes() []byte {
 	return r.bytes
+}
+
+// ErrRes ...
+type ErrRes struct {
+	ErrCode int64
+	ErrMsg  string
 }
 
 // Error ...
@@ -182,7 +214,7 @@ func BuildResponder(resp *http.Response) Responder {
 		return ErrResponse(err)
 	}
 
-	log.Debug("response:", string(body[:128]), len(body)) //max 128 char
+	log.Info("response:", string(body[:128]), len(body)) //max 128 char
 	if resp.StatusCode == 200 {
 		if strings.Index(ct, "xml") != -1 ||
 			bytes.Index(body, []byte("<xml")) != -1 {

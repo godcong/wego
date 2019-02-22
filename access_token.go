@@ -117,12 +117,17 @@ func (obj *AccessToken) getToken(refresh bool) *Token {
 }
 
 func requestToken(url string, credentials *AccessTokenConfig) (*Token, error) {
-	var token Token
-	e := Get(url, credentials.ToMap()).Unmarshal(&token)
+	var t Token
+	var e error
+	token := Get(url, credentials.ToMap())
+	if e := token.Error(); e != nil {
+		return nil, e
+	}
+	e = token.Unmarshal(&t)
 	if e != nil {
 		return nil, e
 	}
-	return &token, nil
+	return &t, nil
 }
 
 /*SetTokenWithLife set string accessToken with life time */
