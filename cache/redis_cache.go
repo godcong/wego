@@ -39,7 +39,7 @@ func (r *RedisCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
 // Has ...
 func (r *RedisCache) Has(key string) bool {
 	_, err := r.client.Get(key).Result()
-	if err == redis.Nil {
+	if err != nil {
 		return false
 	}
 	return true

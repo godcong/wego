@@ -81,7 +81,7 @@ func (r *xmlResponse) Error() error {
 		return r.err
 	}
 	_ = jsoniter.Unmarshal(r.bytes, &e)
-	if e.ErrCode != 0 || e.ErrMsg != "" {
+	if e.ErrCode != 0 {
 		return xerrors.Errorf("code:%d,msg:%s", e.ErrCode, e.ErrMsg)
 	}
 	return nil
@@ -135,7 +135,7 @@ func (r *jsonResponse) Error() error {
 		return r.err
 	}
 	_ = jsoniter.Unmarshal(r.bytes, &e)
-	if e.ErrCode != 0 || e.ErrMsg != "" {
+	if e.ErrCode != 0 {
 		return xerrors.Errorf("code:%d,msg:%s", e.ErrCode, e.ErrMsg)
 	}
 	return nil

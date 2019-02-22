@@ -122,16 +122,12 @@ func (obj *JSSDK) BuildConfig(p util.Map) util.Map {
 // GetTicket ...
 func (obj *JSSDK) GetTicket(s string, refresh bool) string {
 	key := obj.getCacheKey()
-
+	log.Info("key:", key)
 	if !refresh && cache.Has(key) {
 		if v, b := cache.Get(key).(string); b {
 			log.Infof("cached ticket:%+v", v)
 			return v
 		}
-	}
-
-	if !refresh && cache.Has(obj.getCacheKey()) {
-		return cache.Get(obj.getCacheKey()).(string)
 	}
 
 	tr, e := NewTicket(obj.accessToken).GetTicketRes(s)

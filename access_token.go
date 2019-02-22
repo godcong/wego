@@ -8,7 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"strings"
-	"time"
 )
 
 // AccessTokenOption ...
@@ -91,13 +90,16 @@ func (obj *AccessToken) KeyMap() util.Map {
 
 func (obj *AccessToken) getToken(refresh bool) *Token {
 	key := obj.getCacheKey()
-
+	log.Infof("cached key:%t,%s", cache.Has(key), key)
 	if !refresh && cache.Has(key) {
-		if v, b := cache.Get(key).(*Token); b {
-			if v.ExpiresIn > time.Now().Unix() {
-				log.Infof("cached accessToken:%+v", v)
-				return v
+		if v, b := cache.Get(key).(string); b {
+			token, e := ParseToken(v)
+			if e != nil {
+				log.Error("parse token error")
+				return nil
 			}
+			log.Infof("cached accessToken:%+v", v)
+			return token
 		}
 	}
 
@@ -109,9 +111,9 @@ func (obj *AccessToken) getToken(refresh bool) *Token {
 
 	log.Infof("accessToken:%+v", *token)
 	if v := token.ExpiresIn; v != 0 {
-		obj.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
+		obj.SetTokenWithLife(token.ToJSON(), v-AccessTokenSafeSeconds)
 	} else {
-		obj.SetToken(token.AccessToken)
+		obj.SetToken(token.ToJSON())
 	}
 	return token
 }
@@ -141,10 +143,7 @@ func (obj *AccessToken) SetToken(token string) *AccessToken {
 }
 
 func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
-	cache.SetWithTTL(obj.getCacheKey(), &Token{
-		AccessToken: token,
-		ExpiresIn:   time.Now().Add(time.Duration(lifeTime)).Unix(),
-	}, lifeTime)
+	cache.SetWithTTL(obj.getCacheKey(), token, lifeTime)
 	return obj
 }
 
