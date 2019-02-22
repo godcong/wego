@@ -163,11 +163,10 @@ const tokenNil = "nil point token"
 
 /*MustKeyMap get accessToken's key,value with map when nil or error return nil map */
 func MustKeyMap(at *AccessToken) util.Map {
-	m := util.Map{}
-	if m, e := KeyMap(at); e != nil {
+	if m, e := KeyMap(at); e == nil {
 		return m
 	}
-	return m
+	return util.Map{}
 }
 
 /*KeyMap get accessToken's key,value with map */
