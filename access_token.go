@@ -22,7 +22,9 @@ type AccessTokenOption struct {
 /*AccessToken AccessToken */
 type AccessToken struct {
 	*AccessTokenConfig
-	option *AccessTokenOption
+	remoteHost string
+	tokenKey   string
+	tokenURL   string
 }
 
 /*AccessTokenSafeSeconds token安全时间 */
@@ -30,11 +32,8 @@ const AccessTokenSafeSeconds = 500
 
 // RemoteHost ...
 func (obj *AccessToken) RemoteHost() string {
-	return accessTokenRemoteHost(obj)
-}
-func accessTokenRemoteHost(obj *AccessToken) string {
-	if obj != nil && obj.option != nil && obj.option.RemoteHost != "" {
-		return obj.option.RemoteHost
+	if obj != nil && obj.remoteHost != "" {
+		return obj.remoteHost
 	}
 	return apiWeixin
 }
@@ -44,26 +43,28 @@ func (obj *AccessToken) TokenURL() string {
 	return util.URL(obj.RemoteHost(), tokenURL(obj))
 }
 func tokenURL(obj *AccessToken) string {
-	if obj != nil && obj.option != nil && obj.option.TokenURL != "" {
-		return obj.option.TokenURL
+	if obj != nil && obj.tokenURL != "" {
+		return obj.tokenURL
 	}
 	return accessTokenURLSuffix
 }
 
-func newAccessToken(property *AccessTokenConfig, opts ...*AccessTokenOption) *AccessToken {
-	var opt *AccessTokenOption
-	if opts != nil {
-		opt = opts[0]
-	}
-	return &AccessToken{
-		AccessTokenConfig: property,
-		option:            opt,
-	}
-}
-
 /*NewAccessToken NewAccessToken*/
 func NewAccessToken(property *AccessTokenConfig, opts ...*AccessTokenOption) *AccessToken {
-	return newAccessToken(property, opts...)
+	token := &AccessToken{
+		AccessTokenConfig: property,
+	}
+	token.parse(opts)
+	return token
+}
+
+func (obj *AccessToken) parse(opts []*AccessTokenOption) {
+	if opts == nil {
+		return
+	}
+	obj.remoteHost = opts[0].RemoteHost
+	obj.tokenURL = opts[0].TokenURL
+	obj.tokenKey = opts[0].TokenKey
 }
 
 /*Refresh 刷新AccessToken */
@@ -81,34 +82,33 @@ func (obj *AccessToken) GetRefreshToken() *core.Token {
 
 /*GetToken 获取token */
 func (obj *AccessToken) GetToken() *core.Token {
-	log.Debug("AccessToken|GetToken")
 	return obj.getToken(false)
 }
 
 // KeyMap ...
 func (obj *AccessToken) KeyMap() util.Map {
-	log.Debug("AccessToken|KeyMap")
-	token := obj.getToken(false)
-	return token.KeyMap()
+	return MustKeyMap(obj)
 }
 
 func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	key := obj.getCacheKey()
 
 	if !refresh && cache.Has(key) {
-		log.Debug("cached accessToken", key)
 		if v, b := cache.Get(key).(*core.Token); b {
 			if v.ExpiresIn > time.Now().Unix() {
+				log.Debugf("cached accessToken found:%+v", v)
 				return v
 			}
 		}
 	}
 
-	token := requestToken(obj.TokenURL(), obj.AccessTokenConfig)
-	if token == nil {
+	token, e := requestToken(obj.TokenURL(), obj.AccessTokenConfig)
+	if e != nil {
+		log.Error(e)
 		return nil
 	}
-	log.Debug("AccessToken|getToken", *token)
+
+	log.Debug("getToken:%+v", *token)
 	if v := token.ExpiresIn; v != 0 {
 		obj.SetTokenWithLife(token.AccessToken, v-AccessTokenSafeSeconds)
 	} else {
@@ -117,14 +117,13 @@ func (obj *AccessToken) getToken(refresh bool) *core.Token {
 	return token
 }
 
-func requestToken(url string, credentials *AccessTokenConfig) *core.Token {
+func requestToken(url string, credentials *AccessTokenConfig) (*core.Token, error) {
 	var token core.Token
 	e := Get(url, credentials.ToMap()).Unmarshal(&token)
 	if e != nil {
-		log.Error("requestToken error", e)
-		return nil
+		return nil, e
 	}
-	return &token
+	return &token, nil
 }
 
 /*SetTokenWithLife set string accessToken with life time */
@@ -134,7 +133,7 @@ func (obj *AccessToken) SetTokenWithLife(token string, lifeTime int64) *AccessTo
 
 /*SetToken set string accessToken */
 func (obj *AccessToken) SetToken(token string) *AccessToken {
-	return obj.setToken(token, 7200)
+	return obj.setToken(token, 7200-AccessTokenSafeSeconds)
 }
 
 func (obj *AccessToken) setToken(token string, lifeTime int64) *AccessToken {
@@ -155,7 +154,7 @@ func (obj *AccessToken) getCacheKey() string {
 	return "godcong.wego.access_token." + obj.getCredentials()
 }
 
-const accessTokenNil = "nil point  accessToken"
+const accessTokenNil = "nil point accessToken"
 const tokenNil = "nil point token"
 
 /*MustKeyMap get accessToken's key,value with map when nil or error return nil map */

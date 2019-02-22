@@ -218,10 +218,7 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 // Get get请求
 func Get(url string, query util.Map) Responder {
 	log.Println("get request:", url, query)
-	bt := BodyTypeXML
-	client := makeClient(GET, url, query, nil, &ClientOption{
-		BodyType: &bt,
-	})
+	client := makeClient(GET, url, query, nil)
 	return client.do(context.Background())
 }
 

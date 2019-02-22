@@ -114,10 +114,17 @@ func (obj *AccessTokenConfig) ToJSON() []byte {
 	return bytes
 }
 
+// JSSDKConfig ...
+type JSSDKConfig struct {
+	AppID       string
+	AccessToken *AccessTokenConfig
+}
+
 // Config ...
 type Config struct {
-	AccessToken     *AccessTokenConfig
-	OAuth           *OAuthConfig
+	JSSDK *JSSDKConfig
+	//AccessToken *AccessTokenConfig
+	//OAuth           *OAuthConfig
 	OpenPlatform    *OpenPlatformProperty
 	OfficialAccount *OfficialAccountConfig
 	MiniProgram     *MiniProgramProperty

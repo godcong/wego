@@ -25,6 +25,9 @@ const payRefundQuery = "/pay/refundquery"
 const payReverse = "/secapi/pay/reverse"
 const payRefund = "/secapi/pay/refund"
 
+//ticketGetTicket api address suffix
+const ticketGetTicket = "/cgi-bin/ticket/getticket"
+
 const wegoLocal = "http://localhost"
 const notifyCB = "notify_cb"
 const refundedCB = "refunded_cb"
