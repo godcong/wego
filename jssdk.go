@@ -143,6 +143,9 @@ func (obj *JSSDK) ShareAddressConfig(token interface{}) *ShareAddressConfig {
 		TimeStamp: util.Time(),
 	}
 
+	if token == nil {
+		token = obj.accessToken.GetToken()
+	}
 	signMsg := util.Map{
 		"appid":       config.AppID,
 		"url":         obj.getURL(),

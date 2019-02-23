@@ -181,10 +181,10 @@ func KeyMap(at *AccessToken) (util.Map, error) {
 
 func parseAccessToken(token interface{}) string {
 	switch v := token.(type) {
-	case AccessToken:
-		return v.GetToken().AccessToken
-	case *AccessToken:
-		return v.GetToken().AccessToken
+	case Token:
+		return v.AccessToken
+	case *Token:
+		return v.AccessToken
 	case string:
 		return v
 	}
