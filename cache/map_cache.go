@@ -7,7 +7,7 @@ import (
 
 /*MapCache MapCache */
 type MapCache struct {
-	sync.Map
+	cache sync.Map
 }
 
 type mapCacheData struct {
@@ -32,10 +32,11 @@ func (m *MapCache) Set(key string, val interface{}) Cache {
 
 /*GetD get interface with default */
 func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
-	if v, b := m.Load(key); b {
+	if v, b := m.cache.Load(key); b {
 		switch vv := v.(type) {
 		case *mapCacheData:
 			if vv.life != nil && vv.life.Before(time.Now()) {
+				m.cache.Delete(key)
 				return nil
 			}
 			return vv.value
@@ -47,7 +48,7 @@ func (m *MapCache) GetD(key string, v0 interface{}) interface{} {
 /*SetWithTTL set interface with ttl */
 func (m *MapCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
 	t := time.Now().Add(time.Duration(ttl))
-	m.Store(key, &mapCacheData{
+	m.cache.Store(key, &mapCacheData{
 		value: val,
 		life:  &t,
 	})
@@ -56,7 +57,7 @@ func (m *MapCache) SetWithTTL(key string, val interface{}, ttl int64) Cache {
 
 /*Has check exist */
 func (m *MapCache) Has(key string) bool {
-	if v, b := m.Load(key); b {
+	if v, b := m.cache.Load(key); b {
 		switch vv := v.(type) {
 		case *mapCacheData:
 			if vv.life != nil && vv.life.Before(time.Now()) {
