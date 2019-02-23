@@ -172,8 +172,8 @@ func GenSHA1(text ...string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
 }
 
-// CRC32 ...
-func CRC32(data string) string {
+// GenCRC32 ...
+func GenCRC32(data string) string {
 	ieee := crc32.NewIEEE()
 	_, _ = io.WriteString(ieee, data)
 	return fmt.Sprintf("%X", ieee.Sum(nil))
