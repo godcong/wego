@@ -12,8 +12,6 @@ import (
 /*JSSDK JSSDK */
 type JSSDK struct {
 	*JSSDKConfig
-	ID string
-
 	accessToken *AccessToken
 	ticket      *Ticket
 	subAppID    string
@@ -35,88 +33,151 @@ func (obj *JSSDK) getURL() string {
 	if obj.url != "" {
 		return obj.url
 	}
-	return util.GetServerIP()
+	return "http://localhost"
+}
+
+// BridgeConfig ...
+type BridgeConfig struct {
+	AppID     string `json:"appId"`
+	NonceStr  string `json:"nonceStr"`
+	Package   string `json:"package"`
+	PaySign   string `json:"paySign"`
+	SignType  string `json:"signType"`
+	TimeStamp string `json:"timeStamp"`
 }
 
 /*BridgeConfig bridge 设置 */
-func (obj *JSSDK) BridgeConfig(pid string) util.Map {
-	m := util.Map{
-		"appId":     obj.getID(),
-		"timeStamp": util.Time(),
-		"nonceStr":  util.GenerateNonceStr(),
-		"package":   strings.Join([]string{"prepay_id", pid}, "="),
-		"signType":  "MD5",
+func (obj *JSSDK) BridgeConfig(pid string) *BridgeConfig {
+	config := &BridgeConfig{
+		AppID:     obj.getID(),
+		NonceStr:  util.GenerateNonceStr(),
+		Package:   strings.Join([]string{"prepay_id", pid}, "="),
+		SignType:  "MD5",
+		TimeStamp: util.Time(),
 	}
-
-	m.Set("paySign", util.GenSign(m, obj.Key))
-	return m
-}
-
-/*SDKConfig sdk 设置 */
-func (obj *JSSDK) SDKConfig(pid string) util.Map {
-	config := obj.BridgeConfig(pid)
-	config.Set("timestamp", config.Get("timeStamp"))
-	config.Delete("timeStamp")
-
+	config.PaySign = util.GenSign(util.Map{
+		"appId":     config.AppID,
+		"timeStamp": config.TimeStamp,
+		"nonceStr":  config.NonceStr,
+		"package":   config.Package,
+		"signType":  config.SignType,
+	}, obj.Key)
 	return config
 }
 
+// SDKConfig ...
+type SDKConfig struct {
+	AppID     string `json:"appId"`
+	NonceStr  string `json:"nonceStr"`
+	Package   string `json:"package"`
+	PaySign   string `json:"paySign"`
+	SignType  string `json:"signType"`
+	TimeStamp string `json:"timestamp"`
+}
+
+/*SDKConfig sdk 设置 */
+func (obj *JSSDK) SDKConfig(pid string) *SDKConfig {
+	config := obj.BridgeConfig(pid)
+	return &SDKConfig{
+		AppID:     config.AppID,
+		NonceStr:  config.NonceStr,
+		Package:   config.PaySign,
+		PaySign:   config.PaySign,
+		SignType:  config.SignType,
+		TimeStamp: config.TimeStamp,
+	}
+}
+
+// AppConfig ...
+type AppConfig struct {
+	AppID     string `json:"appid"`
+	NonceStr  string `json:"noncestr"`
+	Package   string `json:"package"`
+	PartnerID string `json:"partnerid"`
+	PrepayID  string `json:"prepayid"`
+	Sign      string `json:"sign"`
+	TimeStamp string `json:"timestamp"`
+}
+
 /*AppConfig app 设置 */
-func (obj *JSSDK) AppConfig(pid string) util.Map {
-	m := util.Map{
-		"appid":     obj.ID,
-		"partnerid": obj.MchID,
-		"prepayid":  pid,
-		"noncestr":  util.GenerateNonceStr(),
-		"timestamp": util.Time(),
-		"package":   "Sign=WXPay",
+func (obj *JSSDK) AppConfig(pid string) *AppConfig {
+	config := &AppConfig{
+		AppID:     obj.getID(),
+		NonceStr:  util.GenerateNonceStr(),
+		Package:   "Sign=WXPay",
+		PartnerID: obj.MchID,
+		PrepayID:  pid,
+		TimeStamp: util.Time(),
 	}
 
-	m.Set("sign", util.GenSign(m, obj.Key))
-	return m
+	config.Sign = util.GenSign(util.Map{
+		"appid":     config.AppID,
+		"partnerid": config.PartnerID,
+		"prepayid":  config.PrepayID,
+		"noncestr":  config.NonceStr,
+		"timestamp": config.TimeStamp,
+		"package":   config.Package,
+	}, obj.Key)
+	return config
+}
+
+// ShareAddressConfig ...
+type ShareAddressConfig struct {
+	AddrSign  string `json:"addrSign"`
+	AppID     string `json:"appId"`
+	NonceStr  string `json:"nonceStr"`
+	Scope     string `json:"scope"`
+	SignType  string `json:"signType"`
+	TimeStamp string `json:"timeStamp"`
 }
 
 // ShareAddressConfig ...
 //	参数:token
 //	类型:string或*core.AccessToken
-func (obj *JSSDK) ShareAddressConfig(token interface{}) util.Map {
-
-	m := util.Map{
-		"appId":     obj.ID,
-		"scope":     "jsapi_address",
-		"timeStamp": util.Time(),
-		"nonceStr":  util.GenerateNonceStr(),
-		"signType":  "SHA1",
+func (obj *JSSDK) ShareAddressConfig(token interface{}) *ShareAddressConfig {
+	config := &ShareAddressConfig{
+		AppID:     obj.getID(),
+		NonceStr:  util.GenerateNonceStr(),
+		Scope:     "jsapi_address",
+		SignType:  "SHA1",
+		TimeStamp: util.Time(),
 	}
 
 	signMsg := util.Map{
-		"appid":       m.Get("appId"),
+		"appid":       config.AppID,
 		"url":         obj.getURL(),
-		"timestamp":   m.Get("timeStamp"),
-		"noncestr":    m.Get("nonceStr"),
+		"timestamp":   config.TimeStamp,
+		"noncestr":    config.NonceStr,
 		"accesstoken": parseAccessToken(token),
 	}
 
-	m.Set("addrSign", util.GenSHA1(signMsg.URLEncode()))
+	config.AddrSign = util.GenSHA1(signMsg.URLEncode())
 
-	return m
+	return config
 }
 
 // BuildConfig ...
-func (obj *JSSDK) BuildConfig(p util.Map) util.Map {
+type BuildConfig struct {
+	AppID     string   `json:"appID"`
+	JsAPIList []string `json:"jsApiList"`
+	NonceStr  string   `json:"nonceStr"`
+	Signature string   `json:"signature"`
+	Timestamp string   `json:"timestamp"`
+	URL       string   `json:"url"`
+}
+
+// BuildConfig ...
+func (obj *JSSDK) BuildConfig(url string, list ...string) *BuildConfig {
 	ticket := obj.GetTicket("jsapi", false)
-	nonce := util.GenerateNonceStr()
-	ts := util.Time()
-	url := p.GetStringD("url", obj.getURL())
-	m := util.Map{
-		"appID":     obj.ID,
-		"nonceStr":  nonce,
-		"timestamp": ts,
-		"url":       url,
-		"jsApiList": p.Get("jsApiList"),
-		"signature": getTicketSignature(ticket, nonce, ts, url),
+	config := &BuildConfig{
+		AppID:     obj.getID(),
+		NonceStr:  util.GenerateNonceStr(),
+		Timestamp: util.Time(),
+		URL:       util.MustString(url, obj.getURL()),
+		JsAPIList: list,
 	}
-	return m
+	config.Signature = getTicketSignature(ticket, config.NonceStr, config.Timestamp, config.URL)
+	return config
 }
 
 // GetTicket ...
@@ -159,7 +220,6 @@ func (obj *JSSDK) parse(options []JSSDKConfigOption) {
 		return
 	}
 	obj.subAppID = options[0].SubAppID
-	obj.ID = obj.getID()
 	obj.url = options[0].URL
 }
 

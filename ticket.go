@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// TicketRes ...
+// TicketRes ticket response data
 type TicketRes struct {
 	ErrCode   int    `json:"errcode"`
 	ErrMsg    string `json:"errmsg"`
