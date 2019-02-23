@@ -20,7 +20,7 @@ type JSSDK struct {
 }
 
 /*NewJSSDK NewJSSDK */
-func NewJSSDK(config *JSSDKConfig, options ...JSSDKConfigOption) *JSSDK {
+func NewJSSDK(config *JSSDKConfig, options ...JSSDKOption) *JSSDK {
 	jssdk := &JSSDK{
 		JSSDKConfig: config,
 		accessToken: NewAccessToken(config.AccessToken),
@@ -218,7 +218,7 @@ func (obj *JSSDK) getCacheKey() string {
 	return fmt.Sprintf("godcong.wego.jssdk.ticket.%x", c[:])
 }
 
-func (obj *JSSDK) parse(options []JSSDKConfigOption) {
+func (obj *JSSDK) parse(options []JSSDKOption) {
 	if options == nil {
 		return
 	}

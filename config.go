@@ -122,23 +122,26 @@ type JSSDKConfig struct {
 	AccessToken *AccessTokenConfig
 }
 
-// JSSDKConfigOption ...
-type JSSDKConfigOption struct {
+// JSSDKOption ...
+type JSSDKOption struct {
 	SubAppID string
 	URL      string
 }
 
 // Config ...
 type Config struct {
-	JSSDK           *JSSDKConfig
-	AccessToken     *AccessTokenConfig
-	OAuth           *OAuthConfig
-	OpenPlatform    *OpenPlatformProperty
-	OfficialAccount *OfficialAccountConfig
-	MiniProgram     *MiniProgramProperty
-	Payment         *PaymentConfig
-	PaymentOption   *PaymentOption
-	SafeCert        *SafeCertConfig
+	JSSDK                 *JSSDKConfig
+	JSSDKOption           *JSSDKOption
+	AccessToken           *AccessTokenConfig
+	AccessTokenOption     *AccessTokenOption
+	OAuth                 *OAuthConfig
+	OpenPlatform          *OpenPlatformProperty
+	OfficialAccount       *OfficialAccountConfig
+	OfficialAccountOption *OfficialAccountOption
+	MiniProgram           *MiniProgramProperty
+	Payment               *PaymentConfig
+	PaymentOption         *PaymentOption
+	SafeCert              *SafeCertConfig
 }
 
 // LocalConfig ...
