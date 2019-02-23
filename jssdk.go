@@ -172,6 +172,10 @@ type BuildConfig struct {
 // BuildConfig ...
 func (obj *JSSDK) BuildConfig(url string, list ...string) *BuildConfig {
 	ticket := obj.GetTicket("jsapi", false)
+	if ticket == "" {
+		return nil
+	}
+
 	config := &BuildConfig{
 		AppID:     obj.getID(),
 		NonceStr:  util.GenerateNonceStr(),
