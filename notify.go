@@ -37,13 +37,13 @@ type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 type RequestHook func(req Requester) (util.Map, error)
 
 // TokenHook ...
-type TokenHook func(token *core.Token, state string) []byte
+type TokenHook func(w http.ResponseWriter, req *http.Request, token *core.Token, state string) []byte
 
 // UserHook ...
-type UserHook func(user *core.WechatUserInfo) []byte
+type UserHook func(w http.ResponseWriter, req *http.Request, user *core.WechatUserInfo) []byte
 
 // StateHook ...
-type StateHook func() string
+type StateHook func(w http.ResponseWriter, req *http.Request) string
 
 /*authorizeNotify 监听 */
 type authorizeNotify struct {
@@ -58,9 +58,9 @@ func (n *authorizeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	log.Debug("authorizeNotify")
 	query := req.URL.Query()
 	if code := query.Get("code"); code != "" {
-		token := n.hookAuthorizeToken(w, code, query.Get("state"))
+		token := n.hookAuthorizeToken(w, req, code, query.Get("state"))
 		if token != nil {
-			info := n.hookUserInfo(w, token)
+			info := n.hookUserInfo(w, req, token)
 			if info != nil {
 
 			}
@@ -68,27 +68,27 @@ func (n *authorizeNotify) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	u := n.hookState(w)
+	u := n.hookState(w, req)
 	log.Debug("hookState|url", u)
 	http.Redirect(w, req, u, http.StatusFound)
 }
 
-func (n *authorizeNotify) hookState(w http.ResponseWriter) string {
+func (n *authorizeNotify) hookState(w http.ResponseWriter, req *http.Request) string {
 	if n.StateHook != nil {
-		s := n.StateHook()
+		s := n.StateHook(w, req)
 		return n.AuthCodeURL(s)
 	}
 	return n.AuthCodeURL("")
 }
 
-func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, token *core.Token) *core.WechatUserInfo {
+func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, req *http.Request, token *core.Token) *core.WechatUserInfo {
 	log.Debug("hookUserInfo", token)
 	info, e := n.GetUserInfo(token)
 	if e != nil {
 		return nil
 	}
 	if n.UserHook != nil {
-		bytes := n.UserHook(info)
+		bytes := n.UserHook(w, req, info)
 		n.responseWriter(w, bytes)
 	}
 	return info
@@ -103,14 +103,14 @@ func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
 	return
 }
 
-func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, code string, state string) *core.Token {
+func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, req *http.Request, code string, state string) *core.Token {
 	log.Debug("hookAuthorizeToken", code)
 	token, e := n.Oauth2AuthorizeToken(code)
 	if e != nil {
 		return nil
 	}
 	if n.TokenHook != nil {
-		bytes := n.TokenHook(token, state)
+		bytes := n.TokenHook(w, req, token, state)
 		n.responseWriter(w, bytes)
 	}
 	return token
