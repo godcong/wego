@@ -63,6 +63,22 @@ type BizMsgData struct {
 	MsgSignature string   `xml:"MsgSignature"`
 }
 
+type BizMsgInput struct {
+	Text string `xml:"-"`
+	BizMsgCommon
+}
+
+type BizMsgOutput struct {
+	MsgSignature string `xml:"MsgSignature"`
+	BizMsgCommon
+}
+
+type BizMsgCommon struct {
+	RSAEncrypt string `xml:"RSAEncrypt"`
+	TimeStamp  string `xml:"TimeStamp"`
+	Nonce      string `xml:"Nonce"`
+}
+
 // Type ...
 func (obj *cryptBizMsg) Type() CryptType {
 	return BizMsg
