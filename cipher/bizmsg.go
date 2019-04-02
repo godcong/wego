@@ -63,22 +63,6 @@ type BizMsgData struct {
 	MsgSignature string   `xml:"MsgSignature"`
 }
 
-type BizMsgInput struct {
-	Text string `xml:"-"`
-	BizMsgCommon
-}
-
-type BizMsgOutput struct {
-	MsgSignature string `xml:"MsgSignature"`
-	BizMsgCommon
-}
-
-type BizMsgCommon struct {
-	RSAEncrypt string `xml:"RSAEncrypt"`
-	TimeStamp  string `xml:"TimeStamp"`
-	Nonce      string `xml:"Nonce"`
-}
-
 // Type ...
 func (obj *cryptBizMsg) Type() CryptType {
 	return BizMsg
@@ -86,7 +70,10 @@ func (obj *cryptBizMsg) Type() CryptType {
 
 // Encrypt ...
 func (obj *cryptBizMsg) Encrypt(data interface{}) ([]byte, error) {
-	bizMsg := parseBizMsg(data)
+	bizMsg, e := parseBizMsg(data)
+	if e != nil {
+		return nil, e
+	}
 	buf := bytes.Buffer{}
 	buf.WriteString(obj.RandomString())
 	buf.Write(obj.LengthBytes(bizMsg.Text))
@@ -111,11 +98,15 @@ func (obj *cryptBizMsg) Encrypt(data interface{}) ([]byte, error) {
 
 // Decrypt ...
 func (obj *cryptBizMsg) Decrypt(data interface{}) ([]byte, error) {
-	bizMsg := parseBizMsg(data)
-	e := xml.Unmarshal([]byte(bizMsg.Text), bizMsg)
+	bizMsg, e := parseBizMsg(data)
 	if e != nil {
 		log.Error(e)
-		return nil, xerrors.Errorf("biz msg unmarshal:%w", e)
+		return nil, e
+	}
+	e = xml.Unmarshal([]byte(bizMsg.Text), bizMsg)
+	if e != nil {
+		log.Error(e)
+		return nil, e
 	}
 	newSign := util.GenSHA1(obj.token, bizMsg.TimeStamp, bizMsg.Nonce, bizMsg.RSAEncrypt)
 	if bizMsg.MsgSignature != newSign {
@@ -124,7 +115,8 @@ func (obj *cryptBizMsg) Decrypt(data interface{}) ([]byte, error) {
 	}
 	decrypt, e := obj.cipher.Decrypt(bizMsg.RSAEncrypt)
 	if e != nil {
-		return nil, xerrors.Errorf("biz msg decrypt:%w", e)
+		log.Error(e)
+		return nil, e
 	}
 
 	buf := bytes.NewBuffer(decrypt)

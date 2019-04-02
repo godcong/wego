@@ -1,6 +1,9 @@
 package cipher
 
-import "encoding/base64"
+import (
+	"encoding/base64"
+	"golang.org/x/xerrors"
+)
 
 // CryptType ...
 type CryptType int
@@ -56,15 +59,16 @@ func parseBytes(data interface{}) []byte {
 	}
 }
 
-func parseBizMsg(data interface{}) *BizMsgData {
+func parseBizMsg(data interface{}) (d *BizMsgData, e error) {
 	switch tmp := data.(type) {
 	case *BizMsgData:
-		return tmp
+		d = tmp
 	case BizMsgData:
-		return &tmp
+		d = &tmp
 	default:
-		return &BizMsgData{}
+		e = xerrors.New("wrong type inputed")
 	}
+	return
 }
 
 /*Base64Encode Base64Encode */
