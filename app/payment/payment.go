@@ -73,7 +73,7 @@ func (p *Payment) InitModuleOnly(only ...string) *Payment {
 	return subInit(p, moduleLists.Only(only))
 }
 
-//IsSandbox check is use sandbox
+//UseSandbox check is use sandbox
 func (p *Payment) IsSandbox() bool {
 	return p.GetBool("sandbox")
 }

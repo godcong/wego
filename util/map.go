@@ -55,8 +55,8 @@ func (m Map) String() string {
 	return string(m.ToJSON())
 }
 
-/*MapNilMake if m is nil result a nil map */
-func MapNilMake(m Map) Map {
+/*MapMake make new map only if m is nil result a new map with nothing */
+func MapMake(m Map) Map {
 	if m == nil {
 		return make(Map)
 	}
@@ -75,7 +75,7 @@ func ToMap(p interface{}) Map {
 }
 
 // CombineMaps ...
-func CombineMaps(p Map, m []Map) Map {
+func CombineMaps(p Map, m ...Map) Map {
 	if m == nil {
 		return p
 	}
@@ -453,7 +453,7 @@ func (m Map) URLEncode() string {
 
 func (m Map) join(source Map, replace bool) Map {
 	for k, v := range source {
-		if !m.Has(k) || replace {
+		if replace || !m.Has(k) {
 			m.Set(k, v)
 		}
 	}
@@ -528,8 +528,8 @@ func deepCopy(value interface{}) interface{} {
 	return value
 }
 
-/*URLToSHA1 make sha1 from map */
-func (m Map) URLToSHA1() string {
+/*SignatureSHA1 make sha1 from map */
+func (m Map) SignatureSHA1() string {
 	return signatureSHA1(m)
 }
 
@@ -556,8 +556,8 @@ func (m Map) Check(s ...string) int {
 	return -1
 }
 
-// GMap trans return a map[string]interface from Map
-func (m Map) GMap() map[string]interface{} {
+// GoMap trans return a map[string]interface from Map
+func (m Map) GoMap() map[string]interface{} {
 	return (map[string]interface{})(m)
 }
 

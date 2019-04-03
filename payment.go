@@ -270,15 +270,15 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 	return p
 }
 
-// IsSandbox ...
-func (obj *Payment) IsSandbox() bool {
+// UseSandbox ...
+func (obj *Payment) UseSandbox() bool {
 	return obj.useSandbox
 }
 
 /*GetKey 沙箱key(string类型) */
 func (obj *Payment) GetKey() string {
 	key := obj.Key
-	if obj.IsSandbox() {
+	if obj.UseSandbox() {
 		keyName := obj.sandbox.getCacheKey()
 		cachedKey := cache.Get(keyName)
 		if cachedKey != nil {
@@ -305,7 +305,7 @@ func (obj *Payment) GetKey() string {
 
 // RemoteURL ...
 func (obj *Payment) RemoteURL(uri string) string {
-	if obj.IsSandbox() {
+	if obj.UseSandbox() {
 		return util.URL(remotePayment(obj), sandboxNew, uri)
 	}
 	return util.URL(remotePayment(obj), uri)
