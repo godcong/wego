@@ -1,9 +1,9 @@
 package util
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"errors"
+	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
 	"net/url"
 	"sort"
@@ -394,7 +394,7 @@ func (m Map) ParseXML(b []byte) {
 
 /*ToJSON transfer map to JSON */
 func (m Map) ToJSON() []byte {
-	v, e := json.Marshal(m)
+	v, e := jsoniter.Marshal(m)
 	if e != nil {
 		log.Error(e)
 		return []byte(nil)
@@ -405,7 +405,7 @@ func (m Map) ToJSON() []byte {
 /*ParseJSON parse JSON bytes to map */
 func (m Map) ParseJSON(b []byte) Map {
 	tmp := Map{}
-	if e := json.Unmarshal(b, &tmp); e == nil {
+	if e := jsoniter.Unmarshal(b, &tmp); e == nil {
 		m.Join(tmp)
 	}
 	return m
