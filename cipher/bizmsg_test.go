@@ -31,13 +31,7 @@ var bizMsg = New(BizMsg, &Option{
 // TestBizMsg_Encrypt ...
 func TestCryptBizMsg_Encrypt(t *testing.T) {
 	var e error
-	enc, e := bizMsg.Encrypt(&BizMsgData{
-		Text:         text,
-		RSAEncrypt:   "",
-		TimeStamp:    timeStamp,
-		Nonce:        nonce,
-		MsgSignature: "",
-	})
+	enc, e := bizMsg.Encrypt(EncryptBizMsg(text, timeStamp, nonce))
 	if e != nil {
 		t.Error(string(enc), e)
 		return
