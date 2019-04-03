@@ -49,10 +49,10 @@ func TestCryptBizMsg_Encrypt(t *testing.T) {
 // TestCryptBizMsg_Decrypt ...
 func TestCryptBizMsg_Decrypt(t *testing.T) {
 	data := &BizMsgData{
-		RSAEncrypt:   "",
-		TimeStamp:    "1524421916",
-		Nonce:        "457570794",
-		MsgSignature: "8c0f8d64124367eccb5f292dad91955eb0cd12d8",
+		//RSAEncrypt:   "",
+		//TimeStamp:    "1524421916",
+		//Nonce:        "457570794",
+		//MsgSignature: "8c0f8d64124367eccb5f292dad91955eb0cd12d8",
 	}
 	data.Text = decrypt1
 	dec1, e := bizMsg.Decrypt(data)
@@ -61,11 +61,17 @@ func TestCryptBizMsg_Decrypt(t *testing.T) {
 		return
 	}
 	t.Log(string(dec1))
-	data.Text = decrypt2
-	dec2, e := bizMsg.Decrypt(data)
+	dec2, e := bizMsg.Decrypt(decrypt2)
 	if e != nil {
 		t.Error(string(dec2), e)
 		return
 	}
 	t.Log(string(dec2))
+
+	dec3, e := bizMsg.Decrypt(DecryptBizMsg(decrypt1))
+	if e != nil {
+		t.Error(string(dec3), e)
+		return
+	}
+	t.Log(string(dec3))
 }

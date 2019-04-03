@@ -65,6 +65,10 @@ func parseBizMsg(data interface{}) (d *BizMsgData, e error) {
 		d = tmp
 	case BizMsgData:
 		d = &tmp
+	case string:
+		d = &BizMsgData{
+			Text: tmp,
+		}
 	default:
 		e = xerrors.New("wrong type inputed")
 	}

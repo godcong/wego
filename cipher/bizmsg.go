@@ -63,6 +63,22 @@ type BizMsgData struct {
 	MsgSignature string   `xml:"MsgSignature"`
 }
 
+// EncryptBizMsg ...
+func EncryptBizMsg(text, ts, nonce string) interface{} {
+	return &BizMsgData{
+		Text:      text,
+		TimeStamp: ts,
+		Nonce:     nonce,
+	}
+}
+
+// DecryptBizMsg ...
+func DecryptBizMsg(text string) interface{} {
+	return &BizMsgData{
+		Text: text,
+	}
+}
+
 // Type ...
 func (obj *cryptBizMsg) Type() CryptType {
 	return BizMsg
