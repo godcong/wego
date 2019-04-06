@@ -19,8 +19,8 @@ type SandboxConfig struct {
 	Key       string
 }
 
-// SafeCertConfig ...
-type SafeCertConfig struct {
+// SafeCertProperty ...
+type SafeCertProperty struct {
 	Cert   []byte
 	Key    []byte
 	RootCA []byte
@@ -43,17 +43,17 @@ type PaymentOption struct {
 	ScannedURL  string `xml:"scanned_url"`
 }
 
-// PaymentConfig ...
-type PaymentConfig struct {
-	AppID     string          `xml:"app_id"`
-	AppSecret string          `xml:"app_secret"`
-	MchID     string          `xml:"mch_id"`
-	Key       string          `xml:"key"`
-	SafeCert  *SafeCertConfig `xml:"safe_cert"`
+// PaymentProperty ...
+type PaymentProperty struct {
+	AppID     string            `xml:"app_id"`
+	AppSecret string            `xml:"app_secret"`
+	MchID     string            `xml:"mch_id"`
+	Key       string            `xml:"key"`
+	SafeCert  *SafeCertProperty `xml:"safe_cert"`
 }
 
-// OAuthConfig ...
-type OAuthConfig struct {
+// OAuthProperty ...
+type OAuthProperty struct {
 	Scopes      []string
 	RedirectURI string
 }
@@ -66,14 +66,14 @@ type OpenPlatformProperty struct {
 	AesKey    string
 }
 
-// OfficialAccountConfig ...
-type OfficialAccountConfig struct {
+// OfficialAccountProperty ...
+type OfficialAccountProperty struct {
 	AppID       string
 	AppSecret   string
 	Token       string
 	AesKey      string
-	AccessToken *AccessTokenConfig
-	OAuth       *OAuthConfig
+	AccessToken *AccessTokenProperty
+	OAuth       *OAuthProperty
 }
 
 // MiniProgramProperty ...
@@ -87,15 +87,15 @@ type MiniProgramProperty struct {
 // GrantTypeClient ...
 const GrantTypeClient string = "client_credential"
 
-// AccessTokenConfig ...
-type AccessTokenConfig struct {
+// AccessTokenProperty ...
+type AccessTokenProperty struct {
 	GrantType string `toml:"grant_type"`
 	AppID     string `toml:"app_id"`
 	AppSecret string `toml:"app_secret"`
 }
 
 // ToMap ...
-func (obj *AccessTokenConfig) ToMap() util.Map {
+func (obj *AccessTokenProperty) ToMap() util.Map {
 	return util.Map{
 		"grant_type": obj.GrantType,
 		"appid":      obj.AppID,
@@ -104,7 +104,7 @@ func (obj *AccessTokenConfig) ToMap() util.Map {
 }
 
 // ToJSON ...
-func (obj *AccessTokenConfig) ToJSON() []byte {
+func (obj *AccessTokenProperty) ToJSON() []byte {
 	bytes, err := jsoniter.Marshal(obj)
 	if err != nil {
 		return nil
@@ -112,12 +112,12 @@ func (obj *AccessTokenConfig) ToJSON() []byte {
 	return bytes
 }
 
-// JSSDKConfig ...
-type JSSDKConfig struct {
+// JSSDKProperty ...
+type JSSDKProperty struct {
 	AppID       string
 	MchID       string
 	Key         string
-	AccessToken *AccessTokenConfig
+	AccessToken *AccessTokenProperty
 }
 
 // JSSDKOption ...
@@ -128,16 +128,16 @@ type JSSDKOption struct {
 
 // Property 属性配置，各个接口用到的参数
 type Property struct {
-	JSSDK                 *JSSDKConfig
+	JSSDK                 *JSSDKProperty
 	JSSDKOption           *JSSDKOption
-	AccessToken           *AccessTokenConfig
+	AccessToken           *AccessTokenProperty
 	AccessTokenOption     *AccessTokenOption
-	OAuth                 *OAuthConfig
+	OAuth                 *OAuthProperty
 	OpenPlatform          *OpenPlatformProperty
-	OfficialAccount       *OfficialAccountConfig
+	OfficialAccount       *OfficialAccountProperty
 	OfficialAccountOption *OfficialAccountOption
 	MiniProgram           *MiniProgramProperty
-	Payment               *PaymentConfig
+	Payment               *PaymentProperty
 	PaymentOption         *PaymentOption
-	SafeCert              *SafeCertConfig
+	SafeCert              *SafeCertProperty
 }

@@ -44,7 +44,7 @@ type Client struct {
 	Body        *RequestBody
 	BodyType    BodyType
 	safe        bool
-	safeCert    *SafeCertConfig
+	safeCert    *SafeCertProperty
 	accessToken *AccessToken
 	timeout     int64
 	keepAlive   int64
@@ -53,7 +53,7 @@ type Client struct {
 // ClientOption ...
 type ClientOption struct {
 	UseSafe     bool
-	SafeCert    *SafeCertConfig
+	SafeCert    *SafeCertProperty
 	AccessToken *AccessToken
 	BodyType    *BodyType
 	Timeout     int64

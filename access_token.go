@@ -19,7 +19,7 @@ type AccessTokenOption struct {
 
 /*AccessToken AccessToken */
 type AccessToken struct {
-	*AccessTokenConfig
+	*AccessTokenProperty
 	remoteHost string
 	tokenKey   string
 	tokenURL   string
@@ -48,9 +48,9 @@ func tokenURL(obj *AccessToken) string {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property *AccessTokenConfig, options ...*AccessTokenOption) *AccessToken {
+func NewAccessToken(property *AccessTokenProperty, options ...*AccessTokenOption) *AccessToken {
 	token := &AccessToken{
-		AccessTokenConfig: property,
+		AccessTokenProperty: property,
 	}
 	token.parse(options)
 	return token
@@ -103,7 +103,7 @@ func (obj *AccessToken) getToken(refresh bool) *Token {
 		}
 	}
 
-	token, e := requestToken(obj.TokenURL(), obj.AccessTokenConfig)
+	token, e := requestToken(obj.TokenURL(), obj.AccessTokenProperty)
 	if e != nil {
 		log.Error(e)
 		return nil
@@ -118,7 +118,7 @@ func (obj *AccessToken) getToken(refresh bool) *Token {
 	return token
 }
 
-func requestToken(url string, credentials *AccessTokenConfig) (*Token, error) {
+func requestToken(url string, credentials *AccessTokenProperty) (*Token, error) {
 	var t Token
 	var e error
 	token := Get(url, credentials.ToMap())

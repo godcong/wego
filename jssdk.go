@@ -11,7 +11,7 @@ import (
 
 /*JSSDK JSSDK */
 type JSSDK struct {
-	*JSSDKConfig
+	*JSSDKProperty
 	accessToken *AccessToken
 	ticket      *Ticket
 	subAppID    string
@@ -20,10 +20,10 @@ type JSSDK struct {
 }
 
 /*NewJSSDK NewJSSDK */
-func NewJSSDK(config *JSSDKConfig, options ...JSSDKOption) *JSSDK {
+func NewJSSDK(config *JSSDKProperty, options ...JSSDKOption) *JSSDK {
 	jssdk := &JSSDK{
-		JSSDKConfig: config,
-		accessToken: NewAccessToken(config.AccessToken),
+		JSSDKProperty: config,
+		accessToken:   NewAccessToken(config.AccessToken),
 	}
 	jssdk.parse(options)
 	return jssdk

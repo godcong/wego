@@ -11,7 +11,7 @@ import (
 
 //Payment ...
 type Payment struct {
-	*PaymentConfig
+	*PaymentProperty
 	BodyType    BodyType
 	client      *Client
 	sandbox     *Sandbox
@@ -26,10 +26,10 @@ type Payment struct {
 }
 
 // NewPayment ...
-func NewPayment(config *PaymentConfig, options ...*PaymentOption) *Payment {
+func NewPayment(config *PaymentProperty, options ...*PaymentOption) *Payment {
 	payment := &Payment{
-		PaymentConfig: config,
-		BodyType:      BodyTypeXML,
+		PaymentProperty: config,
+		BodyType:        BodyTypeXML,
 	}
 	payment.parse(options)
 	payment.client = NewClient(&ClientOption{

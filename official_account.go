@@ -10,7 +10,7 @@ import (
 
 // OfficialAccount ...
 type OfficialAccount struct {
-	*OfficialAccountConfig
+	*OfficialAccountProperty
 	BodyType   BodyType
 	client     *Client
 	remoteHost string
@@ -25,10 +25,10 @@ type OfficialAccountOption struct {
 }
 
 // NewOfficialAccount ...
-func NewOfficialAccount(config *OfficialAccountConfig, options ...*OfficialAccountOption) *OfficialAccount {
+func NewOfficialAccount(config *OfficialAccountProperty, options ...*OfficialAccountOption) *OfficialAccount {
 	officialAccount := &OfficialAccount{
-		BodyType:              BodyTypeJSON,
-		OfficialAccountConfig: config,
+		BodyType:                BodyTypeJSON,
+		OfficialAccountProperty: config,
 	}
 	officialAccount.parse(options)
 	officialAccount.client = NewClient(&ClientOption{
