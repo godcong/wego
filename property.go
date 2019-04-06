@@ -3,6 +3,7 @@ package wego
 import (
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
+	"golang.org/x/xerrors"
 )
 
 // SandboxOption ...
@@ -140,4 +141,26 @@ type Property struct {
 	Payment               *PaymentProperty
 	PaymentOption         *PaymentOption
 	SafeCert              *SafeCertProperty
+}
+
+// ParseConfig ...
+func ParseConfig(config *Config, v interface{}) (e error) {
+	if config == nil {
+		return xerrors.New("nil config")
+	}
+	switch t := v.(type) {
+	case JSSDKProperty:
+		e = xerrors.New("it's not a point")
+	case *JSSDKProperty:
+		e = parseJSSDK(config, t)
+	}
+	return
+}
+
+func parseJSSDK(config *Config, p *JSSDKProperty) error {
+	if p == nil {
+		return xerrors.New("cannot point to nil")
+	}
+
+	return nil
 }

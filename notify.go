@@ -3,7 +3,6 @@ package wego
 import (
 	"encoding/xml"
 	"github.com/godcong/wego/cipher"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
@@ -37,10 +36,10 @@ type ServeHTTPFunc func(w http.ResponseWriter, req *http.Request)
 type RequestHook func(req Requester) (util.Map, error)
 
 // TokenHook ...
-type TokenHook func(w http.ResponseWriter, req *http.Request, token *core.Token, state string) []byte
+type TokenHook func(w http.ResponseWriter, req *http.Request, token *Token, state string) []byte
 
 // UserHook ...
-type UserHook func(w http.ResponseWriter, req *http.Request, user *core.WechatUserInfo) []byte
+type UserHook func(w http.ResponseWriter, req *http.Request, user *WechatUser) []byte
 
 // StateHook ...
 type StateHook func(w http.ResponseWriter, req *http.Request) string
@@ -81,7 +80,7 @@ func (n *authorizeNotify) hookState(w http.ResponseWriter, req *http.Request) st
 	return n.AuthCodeURL("")
 }
 
-func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, req *http.Request, token *core.Token) *core.WechatUserInfo {
+func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, req *http.Request, token *Token) *WechatUser {
 	log.Debug("hookUserInfo", token)
 	info, e := n.GetUserInfo(token)
 	if e != nil {
@@ -103,7 +102,7 @@ func (n *authorizeNotify) responseWriter(w http.ResponseWriter, bytes []byte) {
 	return
 }
 
-func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, req *http.Request, code string, state string) *core.Token {
+func (n *authorizeNotify) hookAuthorizeToken(w http.ResponseWriter, req *http.Request, code string, state string) *Token {
 	log.Debug("hookAuthorizeToken", code)
 	token, e := n.Oauth2AuthorizeToken(code)
 	if e != nil {

@@ -2,7 +2,6 @@ package wego
 
 import (
 	"bytes"
-	"github.com/godcong/wego/core"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -72,8 +71,8 @@ func (obj *OfficialAccount) HandleAuthorize(hooks ...interface{}) Notifier {
 }
 
 // GetUserInfo ...
-func (obj *OfficialAccount) GetUserInfo(token *core.Token) (*core.WechatUserInfo, error) {
-	var info core.WechatUserInfo
+func (obj *OfficialAccount) GetUserInfo(token *Token) (*WechatUser, error) {
+	var info WechatUser
 	var e error
 	p := util.Map{
 		"access_token": token.AccessToken,
@@ -84,7 +83,7 @@ func (obj *OfficialAccount) GetUserInfo(token *core.Token) (*core.WechatUserInfo
 		snsUserinfo,
 		p,
 	)
-	log.Debug("WechatUserInfo|responder", string(responder.Bytes()), responder.Error())
+	log.Debug("WechatUser|responder", string(responder.Bytes()), responder.Error())
 	e = responder.Error()
 	if e != nil {
 		return &info, e
@@ -98,8 +97,8 @@ func (obj *OfficialAccount) GetUserInfo(token *core.Token) (*core.WechatUserInfo
 }
 
 // Oauth2AuthorizeToken ...
-func (obj *OfficialAccount) Oauth2AuthorizeToken(code string) (*core.Token, error) {
-	var token core.Token
+func (obj *OfficialAccount) Oauth2AuthorizeToken(code string) (*Token, error) {
+	var token Token
 	var e error
 
 	p := util.Map{
