@@ -9,15 +9,15 @@ import (
 
 // Sandbox ...
 type Sandbox struct {
-	*SandboxConfig
+	*SandboxProperty
 	subMchID string
 	subAppID string
 }
 
 // NewSandbox ...
-func NewSandbox(config *SandboxConfig, options ...*SandboxOption) *Sandbox {
+func NewSandbox(config *SandboxProperty, options ...*SandboxOption) *Sandbox {
 	sandbox := &Sandbox{
-		SandboxConfig: config,
+		SandboxProperty: config,
 	}
 	return sandbox
 }

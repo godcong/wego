@@ -12,8 +12,8 @@ type SandboxOption struct {
 	SubAppID string `xml:"sub_app_id"`
 }
 
-// SandboxConfig ...
-type SandboxConfig struct {
+// SandboxProperty ...
+type SandboxProperty struct {
 	AppID     string
 	AppSecret string
 	MchID     string
@@ -29,15 +29,15 @@ type SafeCertProperty struct {
 
 // PaymentOption ...
 type PaymentOption struct {
-	BodyType   *BodyType      `xml:"body_type"`
-	SubMchID   string         `xml:"sub_mch_id"`
-	SubAppID   string         `xml:"sub_app_id"`
-	PublicKey  string         `xml:"public_key"`
-	PrivateKey string         `xml:"private_key"`
-	RemoteHost string         `xml:"remote_host"`
-	LocalHost  string         `xml:"local_host"`
-	UseSandbox bool           `xml:"use_sandbox"`
-	Sandbox    *SandboxConfig `xml:"sandbox"`
+	BodyType   *BodyType        `xml:"body_type"`
+	SubMchID   string           `xml:"sub_mch_id"`
+	SubAppID   string           `xml:"sub_app_id"`
+	PublicKey  string           `xml:"public_key"`
+	PrivateKey string           `xml:"private_key"`
+	RemoteHost string           `xml:"remote_host"`
+	LocalHost  string           `xml:"local_host"`
+	UseSandbox bool             `xml:"use_sandbox"`
+	Sandbox    *SandboxProperty `xml:"sandbox"`
 
 	NotifyURL   string `xml:"notify_url"`
 	RefundedURL string `xml:"refunded_url"`
@@ -144,21 +144,33 @@ type Property struct {
 }
 
 // ParseConfig ...
-func ParseConfig(config *Config, v interface{}) (e error) {
+func ParseProperty(config *Config, v interface{}) (e error) {
 	if config == nil {
 		return xerrors.New("nil config")
 	}
 	switch t := v.(type) {
-	case JSSDKProperty:
-		e = xerrors.New("it's not a point")
+	//case JSSDKProperty:
 	case *JSSDKProperty:
-		e = parseJSSDK(config, t)
+		e = parseJSSDKProperty(config, t)
+	//case AccessTokenProperty:
+	case *AccessTokenProperty:
+		e = parseAccessTokenProperty(config, t)
+	default:
+		e = xerrors.Errorf("some error with %T", t)
 	}
 	return
 }
 
-func parseJSSDK(config *Config, p *JSSDKProperty) error {
-	if p == nil {
+func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) error {
+	if property == nil {
+		return xerrors.New("cannot point to nil")
+	}
+
+	return nil
+}
+
+func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
+	if property == nil {
 		return xerrors.New("cannot point to nil")
 	}
 
