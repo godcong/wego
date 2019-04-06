@@ -172,7 +172,7 @@ func (obj *Payment) DownloadFundFlow(bd string, at string, options ...util.Map) 
 		"bill_date":    bd,
 		"sign_type":    util.HMACSHA256,
 		"account_type": at,
-	}, options)
+	}, options...)
 
 	return obj.SafeRequest(payDownloadFundFlow, m)
 }
@@ -222,7 +222,7 @@ func (obj *Payment) reverse(m util.Map) Responder {
 用户标识	openid	否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
 */
 func (obj *Payment) Unify(m util.Map, options ...util.Map) Responder {
-	m = util.CombineMaps(m, options)
+	m = util.CombineMaps(m, options...)
 	if !m.Has("spbill_create_ip") {
 		if m.Get("trade_type") == "NATIVE" {
 			m.Set("spbill_create_ip", util.GetServerIP())
