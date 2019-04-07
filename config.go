@@ -7,6 +7,8 @@ import (
 
 // Config 配置文件，用来生成Property各种属性
 type Config struct {
+	AppID     string
+	AppSecret string
 }
 
 // DefaultConfig ...

@@ -149,10 +149,8 @@ func ParseProperty(config *Config, v interface{}) (e error) {
 		return xerrors.New("nil config")
 	}
 	switch t := v.(type) {
-	//case JSSDKProperty:
 	case *JSSDKProperty:
 		e = parseJSSDKProperty(config, t)
-	//case AccessTokenProperty:
 	case *AccessTokenProperty:
 		e = parseAccessTokenProperty(config, t)
 	default:
@@ -165,7 +163,11 @@ func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) err
 	if property == nil {
 		return xerrors.New("cannot point to nil")
 	}
-
+	property = &AccessTokenProperty{
+		GrantType: GrantTypeClient,
+		AppID:     config.AppID,
+		AppSecret: config.AppSecret,
+	}
 	return nil
 }
 
