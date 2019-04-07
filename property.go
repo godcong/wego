@@ -6,6 +6,9 @@ import (
 	"golang.org/x/xerrors"
 )
 
+// NilPropertyProperty ...
+const NilPropertyProperty = "%T point is null"
+
 // SandboxOption ...
 type SandboxOption struct {
 	SubMchID string `xml:"sub_mch_id"`
@@ -143,26 +146,33 @@ type Property struct {
 	SafeCert              *SafeCertProperty
 }
 
-// ParseConfig ...
+// ParseProperty ...
 func ParseProperty(config *Config, v interface{}) (e error) {
 	if config == nil {
 		return xerrors.New("nil config")
 	}
+
 	switch t := v.(type) {
 	case *JSSDKProperty:
 		e = parseJSSDKProperty(config, t)
 	case *AccessTokenProperty:
 		e = parseAccessTokenProperty(config, t)
+	case *PaymentProperty:
+		e = parsePaymentProperty(config, t)
+	case *OAuthProperty:
+		e = parseOAuthProperty(config, t)
+	case *OfficialAccountProperty:
+		e = parseOfficialAccountProperty(config, t)
 	default:
-		e = xerrors.Errorf("some error with %T", t)
+		e = xerrors.Errorf("nil property point")
 	}
 	return
 }
 
 func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) error {
-	if property == nil {
-		return xerrors.New("cannot point to nil")
-	}
+	//if property == nil {
+	//	return xerrors.Errorf(NilPropertyProperty, property)
+	//}
 	property = &AccessTokenProperty{
 		GrantType: GrantTypeClient,
 		AppID:     config.AppID,
@@ -172,9 +182,9 @@ func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) err
 }
 
 func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
-	if property == nil {
-		return xerrors.New("cannot point to nil")
-	}
+	//if property == nil {
+	//	return xerrors.Errorf(NilPropertyProperty, property)
+	//}
 
 	var token AccessTokenProperty
 	e := parseAccessTokenProperty(config, &token)
@@ -192,9 +202,9 @@ func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
 }
 
 func parsePaymentProperty(config *Config, property *PaymentProperty) error {
-	if property == nil {
-		return xerrors.New("cannot point to nil")
-	}
+	//if property == nil {
+	//	return xerrors.Errorf(NilPropertyProperty, property)
+	//}
 	var cert SafeCertProperty
 	e := parseSafeCertProperty(config, &cert)
 	if e != nil {
@@ -211,13 +221,53 @@ func parsePaymentProperty(config *Config, property *PaymentProperty) error {
 }
 
 func parseSafeCertProperty(config *Config, property *SafeCertProperty) error {
-	if property == nil {
-		return xerrors.New("cannot point to nil")
-	}
+	//if property == nil {
+	//	return xerrors.Errorf("")
+	//}
 	property = &SafeCertProperty{
 		Cert:   config.PemCert,
 		Key:    config.PemKEY,
 		RootCA: config.RootCA,
+	}
+	return nil
+}
+
+func parseOfficialAccountProperty(config *Config, property *OfficialAccountProperty) (e error) {
+	//if property == nil {
+	//	return xerrors.Errorf(NilPropertyProperty, property)
+	//}
+
+	var token AccessTokenProperty
+	e = parseAccessTokenProperty(config, &token)
+	if e != nil {
+		return e
+	}
+
+	var oauth OAuthProperty
+	e = parseOAuthProperty(config, &oauth)
+	if e != nil {
+		return e
+	}
+
+	property = &OfficialAccountProperty{
+		AppID:       config.AppID,
+		AppSecret:   config.AppSecret,
+		Token:       config.Token,
+		AesKey:      config.AesKey,
+		AccessToken: &token,
+		OAuth:       &oauth,
+	}
+	return nil
+}
+
+func parseOAuthProperty(config *Config, property *OAuthProperty) error {
+	//if property == nil {
+	//	return xerrors.Errorf(NilPropertyProperty, property)
+	//}
+
+	property = &OAuthProperty{
+		Scopes:      config.Scopes,
+		RedirectURI: config.RedirectURI,
 	}
 	return nil
 }
