@@ -9,6 +9,11 @@ import (
 type Config struct {
 	AppID     string
 	AppSecret string
+	MchID     string
+	MchKey    string
+	PemCert   []byte
+	PemKEY    []byte
+	RootCA    []byte
 }
 
 // DefaultConfig ...

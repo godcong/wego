@@ -176,5 +176,48 @@ func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
 		return xerrors.New("cannot point to nil")
 	}
 
+	var token AccessTokenProperty
+	e := parseAccessTokenProperty(config, &token)
+	if e != nil {
+		return e
+	}
+	property = &JSSDKProperty{
+		AppID:       config.AppID,
+		MchID:       config.MchID,
+		Key:         config.MchKey,
+		AccessToken: &token,
+	}
+
+	return nil
+}
+
+func parsePaymentProperty(config *Config, property *PaymentProperty) error {
+	if property == nil {
+		return xerrors.New("cannot point to nil")
+	}
+	var cert SafeCertProperty
+	e := parseSafeCertProperty(config, &cert)
+	if e != nil {
+		return e
+	}
+	property = &PaymentProperty{
+		AppID:     config.AppID,
+		AppSecret: config.AppSecret,
+		MchID:     config.MchID,
+		Key:       config.MchKey,
+		SafeCert:  &cert,
+	}
+	return nil
+}
+
+func parseSafeCertProperty(config *Config, property *SafeCertProperty) error {
+	if property == nil {
+		return xerrors.New("cannot point to nil")
+	}
+	property = &SafeCertProperty{
+		Cert:   config.PemCert,
+		Key:    config.PemKEY,
+		RootCA: config.RootCA,
+	}
 	return nil
 }
