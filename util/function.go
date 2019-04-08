@@ -229,16 +229,17 @@ func GenerateRandomString2(size int, kind int) []byte {
 
 //GenerateRandomString 随机字符串
 func GenerateRandomString(size int, kind ...RandomKind) string {
-	bytes := RandomString[RandomAll]
+	s := RandomString[RandomAll]
 	if kind != nil {
 		if k, b := RandomString[kind[0]]; b == true {
-			bytes = k
+			s = k
 		}
 	}
 	var result []byte
 	rand.Seed(time.Now().UnixNano())
+	lens := len(s)
 	for i := 0; i < size; i++ {
-		result = append(result, bytes[rand.Intn(len(bytes))])
+		result = append(result, s[rand.Intn(lens)])
 	}
 	return string(result)
 }
