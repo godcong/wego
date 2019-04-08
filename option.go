@@ -43,7 +43,29 @@ func PaymentLocal(local string) PaymentOption {
 // PaymentSandbox ...
 func PaymentSandbox(property *SandboxProperty) PaymentOption {
 	return func(obj *Payment) {
+		obj.useSandbox = true
 		obj.sandbox = NewSandbox(property)
+	}
+}
+
+// PaymentNotifyURL ...
+func PaymentNotifyURL(s string) PaymentOption {
+	return func(obj *Payment) {
+		obj.notifyURL = s
+	}
+}
+
+// PaymentRefundedURL ...
+func PaymentRefundedURL(s string) PaymentOption {
+	return func(obj *Payment) {
+		obj.refundedURL = s
+	}
+}
+
+// PaymentScannedURL ...
+func PaymentScannedURL(s string) PaymentOption {
+	return func(obj *Payment) {
+		obj.scannedURL = s
 	}
 }
 
