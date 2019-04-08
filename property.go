@@ -164,7 +164,7 @@ func ParseProperty(config *Config, v interface{}) (e error) {
 	case *OfficialAccountProperty:
 		e = parseOfficialAccountProperty(config, t)
 	default:
-		e = xerrors.Errorf("nil property point")
+		e = xerrors.Errorf("wrong property point")
 	}
 	return
 }

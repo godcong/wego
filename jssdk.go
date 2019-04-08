@@ -20,10 +20,10 @@ type JSSDK struct {
 }
 
 /*NewJSSDK NewJSSDK */
-func NewJSSDK(config *JSSDKProperty, options ...JSSDKOption) *JSSDK {
+func NewJSSDK(property *JSSDKProperty, options ...JSSDKOption) *JSSDK {
 	jssdk := &JSSDK{
-		JSSDKProperty: config,
-		accessToken:   NewAccessToken(config.AccessToken),
+		JSSDKProperty: property,
+		accessToken:   NewAccessToken(property.AccessToken),
 	}
 	jssdk.parse(options)
 	return jssdk
