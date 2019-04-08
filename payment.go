@@ -15,6 +15,8 @@ type Payment struct {
 	BodyType    BodyType
 	client      *Client
 	sandbox     *Sandbox
+	publicKey   string
+	privateKey  string
 	subMchID    string
 	subAppID    string
 	useSandbox  bool
@@ -26,12 +28,12 @@ type Payment struct {
 }
 
 // NewPayment ...
-func NewPayment(config *PaymentProperty, options ...*PaymentOption) *Payment {
+func NewPayment(config *PaymentProperty, options ...PaymentOption) *Payment {
 	payment := &Payment{
 		PaymentProperty: config,
 		BodyType:        BodyTypeXML,
 	}
-	payment.parse(options)
+	payment.parseOption(options...)
 	payment.client = NewClient(&ClientOption{
 		BodyType: &payment.BodyType,
 		SafeCert: payment.SafeCert,
@@ -39,24 +41,13 @@ func NewPayment(config *PaymentProperty, options ...*PaymentOption) *Payment {
 	return payment
 }
 
-func (obj *Payment) parse(options []*PaymentOption) {
+func (obj *Payment) parseOption(options ...PaymentOption) {
 	if options == nil {
 		return
 	}
-	if options[0].BodyType != nil {
-		obj.BodyType = *options[0].BodyType
+	for _, o := range options {
+		o(obj)
 	}
-	obj.useSandbox = options[0].UseSandbox
-	if obj.useSandbox {
-		obj.sandbox = NewSandbox(options[0].Sandbox)
-	}
-	obj.subMchID = options[0].SubMchID
-	obj.subAppID = options[0].SubAppID
-	obj.remoteHost = options[0].RemoteHost
-	obj.localHost = options[0].LocalHost
-	obj.notifyURL = options[0].NotifyURL
-	obj.refundedURL = options[0].RefundedURL
-	obj.scannedURL = options[0].ScannedURL
 }
 
 // HandleRefunded ...

@@ -30,23 +30,6 @@ type SafeCertProperty struct {
 	RootCA []byte
 }
 
-// PaymentOption ...
-type PaymentOption struct {
-	BodyType   *BodyType        `xml:"body_type"`
-	SubMchID   string           `xml:"sub_mch_id"`
-	SubAppID   string           `xml:"sub_app_id"`
-	PublicKey  string           `xml:"public_key"`
-	PrivateKey string           `xml:"private_key"`
-	RemoteHost string           `xml:"remote_host"`
-	LocalHost  string           `xml:"local_host"`
-	UseSandbox bool             `xml:"use_sandbox"`
-	Sandbox    *SandboxProperty `xml:"sandbox"`
-
-	NotifyURL   string `xml:"notify_url"`
-	RefundedURL string `xml:"refunded_url"`
-	ScannedURL  string `xml:"scanned_url"`
-}
-
 // PaymentProperty ...
 type PaymentProperty struct {
 	AppID     string            `xml:"app_id"`
