@@ -15,16 +15,16 @@ type Payment struct {
 	BodyType    BodyType
 	client      *Client
 	sandbox     *Sandbox
-	publicKey   string
-	privateKey  string
-	subMchID    string
-	subAppID    string
-	useSandbox  bool
-	remoteHost  string
-	localHost   string
-	notifyURL   string
-	refundedURL string
-	scannedURL  string
+	publicKey   string //TODO:need fix
+	privateKey  string //TODO:need fix
+	subMchID    string //TODO:need fix
+	subAppID    string //TODO:need fix
+	useSandbox  bool   //TODO:need fix
+	remoteHost  string //TODO:need fix
+	localHost   string //TODO:need fix
+	notifyURL   string //TODO:need fix
+	refundedURL string //TODO:need fix
+	scannedURL  string //TODO:need fix
 }
 
 // NewPayment ...
