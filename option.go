@@ -11,10 +11,10 @@ func PaymentBodyType(s BodyType) PaymentOption {
 }
 
 // PaymentSubID ...
-func PaymentSubID(mch, app string) PaymentOption {
+func PaymentSubID(mchid, appid string) PaymentOption {
 	return func(obj *Payment) {
-		obj.subAppID = app
-		obj.subMchID = mch
+		obj.subAppID = appid
+		obj.subMchID = mchid
 	}
 }
 
@@ -41,10 +41,10 @@ func PaymentLocal(local string) PaymentOption {
 }
 
 // PaymentSandbox ...
-func PaymentSandbox(property *SandboxProperty) PaymentOption {
+func PaymentSandbox(sandbox *Sandbox) PaymentOption {
 	return func(obj *Payment) {
 		obj.useSandbox = true
-		obj.sandbox = NewSandbox(property)
+		obj.sandbox = sandbox
 	}
 }
 
@@ -67,21 +67,4 @@ func PaymentScannedURL(s string) PaymentOption {
 	return func(obj *Payment) {
 		obj.scannedURL = s
 	}
-}
-
-// PaymentOptions ...
-type PaymentOptions struct {
-	BodyType   BodyType         `xml:"body_type"`
-	SubMchID   string           `xml:"sub_mch_id"`
-	SubAppID   string           `xml:"sub_app_id"`
-	PublicKey  string           `xml:"public_key"`
-	PrivateKey string           `xml:"private_key"`
-	RemoteHost string           `xml:"remote_host"`
-	LocalHost  string           `xml:"local_host"`
-	UseSandbox bool             `xml:"use_sandbox"`
-	Sandbox    *SandboxProperty `xml:"sandbox"`
-
-	NotifyURL   string `xml:"notify_url"`
-	RefundedURL string `xml:"refunded_url"`
-	ScannedURL  string `xml:"scanned_url"`
 }
