@@ -48,6 +48,12 @@ func (obj *Payment) parseOption(options ...PaymentOption) {
 	}
 }
 
+// SetKey ...
+func (obj *Payment) SetKey(public, private string) {
+	obj.privateKey = private
+	obj.publicKey = public
+}
+
 // HandleRefunded ...
 func (obj *Payment) HandleRefunded(hook RequestHook) Notifier {
 	return &paymentRefundedNotify{
