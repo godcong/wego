@@ -1,9 +1,11 @@
 package wego
 
 import (
+	"fmt"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"golang.org/x/xerrors"
+	"reflect"
 )
 
 // NilPropertyProperty ...
@@ -137,6 +139,7 @@ func ParseProperty(config *Config, v ...interface{}) (e error) {
 	}
 
 	for i := range v {
+		fmt.Println(reflect.TypeOf(v[i]))
 		switch t := v[i].(type) {
 		case *JSSDKProperty:
 			e = parseJSSDKProperty(config, t)
@@ -159,7 +162,7 @@ func ParseProperty(config *Config, v ...interface{}) (e error) {
 }
 
 func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) error {
-	property = &AccessTokenProperty{
+	*property = AccessTokenProperty{
 		GrantType: GrantTypeClient,
 		AppID:     config.AppID,
 		AppSecret: config.AppSecret,
@@ -168,12 +171,13 @@ func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) err
 }
 
 func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
+	fmt.Println("parseJSSDKProperty")
 	var token AccessTokenProperty
 	e := parseAccessTokenProperty(config, &token)
 	if e != nil {
 		return e
 	}
-	property = &JSSDKProperty{
+	*property = JSSDKProperty{
 		AppID:       config.AppID,
 		MchID:       config.MchID,
 		Key:         config.MchKey,
@@ -189,7 +193,7 @@ func parsePaymentProperty(config *Config, property *PaymentProperty) error {
 	if e != nil {
 		return e
 	}
-	property = &PaymentProperty{
+	*property = PaymentProperty{
 		AppID:     config.AppID,
 		AppSecret: config.AppSecret,
 		MchID:     config.MchID,
@@ -200,7 +204,7 @@ func parsePaymentProperty(config *Config, property *PaymentProperty) error {
 }
 
 func parseSafeCertProperty(config *Config, property *SafeCertProperty) error {
-	property = &SafeCertProperty{
+	*property = SafeCertProperty{
 		Cert:   config.PemCert,
 		Key:    config.PemKEY,
 		RootCA: config.RootCA,
@@ -221,7 +225,7 @@ func parseOfficialAccountProperty(config *Config, property *OfficialAccountPrope
 		return e
 	}
 
-	property = &OfficialAccountProperty{
+	*property = OfficialAccountProperty{
 		AppID:       config.AppID,
 		AppSecret:   config.AppSecret,
 		Token:       config.Token,
@@ -233,7 +237,7 @@ func parseOfficialAccountProperty(config *Config, property *OfficialAccountPrope
 }
 
 func parseOAuthProperty(config *Config, property *OAuthProperty) error {
-	property = &OAuthProperty{
+	*property = OAuthProperty{
 		Scopes:      config.Scopes,
 		RedirectURI: config.RedirectURI,
 	}
