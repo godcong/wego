@@ -54,6 +54,12 @@ func (obj *Payment) SetKey(public, private string) {
 	obj.publicKey = public
 }
 
+// SetSubID ...
+func (obj *Payment) SetSubID(mchid, appid string) {
+	obj.subMchID = mchid
+	obj.subAppID = appid
+}
+
 // HandleRefunded ...
 func (obj *Payment) HandleRefunded(hook RequestHook) Notifier {
 	return &paymentRefundedNotify{
