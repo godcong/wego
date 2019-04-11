@@ -1,11 +1,9 @@
 package wego
 
 import (
-	"fmt"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"golang.org/x/xerrors"
-	"reflect"
 )
 
 // NilPropertyProperty ...
@@ -139,7 +137,6 @@ func ParseProperty(config *Config, v ...interface{}) (e error) {
 	}
 
 	for i := range v {
-		fmt.Println(reflect.TypeOf(v[i]))
 		switch t := v[i].(type) {
 		case *JSSDKProperty:
 			e = parseJSSDKProperty(config, t)
@@ -171,7 +168,6 @@ func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) err
 }
 
 func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
-	fmt.Println("parseJSSDKProperty")
 	var token AccessTokenProperty
 	e := parseAccessTokenProperty(config, &token)
 	if e != nil {
