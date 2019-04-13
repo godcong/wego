@@ -7,6 +7,7 @@ import (
 	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 )
 
 //Payment ...
@@ -296,6 +297,27 @@ func (obj *Payment) BillDownloadFundFlow(bd string, at string, opts ...util.Map)
 	return obj.SafeRequest(payDownloadFundFlow, m)
 }
 
+//BillBatchQueryComment 拉取订单评价数据
+//接口链接
+//https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment
+//开始时间 begin_time 是 String(19) 20170724000000 按用户评论时间批量拉取的起始时间，格式为yyyyMMddHHmmss
+//结束时间 end_time 是 String(19) 20170725000000 按用户评论时间批量拉取的结束时间，格式为yyyyMMddHHmmss
+//位移 offset 是 uint(64) 0 指定从某条记录的下一条开始返回记录。接口调用成功时，会返回本次查询最后一条数据的offset。商户需要翻页时，应该把本次调用返回的offset 作为下次调用的入参。注意offset是评论数据在微信支付后台保存的索引，未必是连续的
+//条数 limit 否 uint(32) 100 一次拉取的条数, 最大值是200，默认是200
+func (obj *Payment) BillBatchQueryComment(beginTime, endTime string, offset int, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"begin_time": beginTime,
+		"end_time":   endTime,
+		"offset":     strconv.Itoa(offset),
+		"appid":      obj.AppID,
+		"sign_type":  util.HMACSHA256,
+	}, opts...)
+
+	return obj.client.Post(context.Background(), obj.RemoteURL(batchQueryComment), nil,
+		obj.initPay(m, util.FieldSign, util.FieldSignType, util.FieldLimit))
+
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
@@ -308,7 +330,7 @@ func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
 	return obj.client.Post(context.Background(), obj.RemoteURL(url), nil, obj.initPay(p))
 }
 
-func (obj *Payment) initPay(p util.Map) util.Map {
+func (obj *Payment) initPay(p util.Map, ignore ...string) util.Map {
 	p.Set("appid", obj.AppID)
 	p.Set("mch_id", obj.MchID)
 	p.Set("nonce_str", util.GenerateUUID())
@@ -320,7 +342,7 @@ func (obj *Payment) initPay(p util.Map) util.Map {
 	}
 
 	if !p.Has("sign") {
-		p.Set("sign", util.GenSign(p, obj.GetKey()))
+		p.Set("sign", util.GenSign(p, obj.GetKey(), ignore...))
 	}
 	log.Debug("initPay end", p)
 	return p
