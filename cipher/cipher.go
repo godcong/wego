@@ -17,7 +17,7 @@ const (
 )
 
 // InstanceFunc ...
-type InstanceFunc func(option *Option) Cipher
+type InstanceFunc func(opts *Options) Cipher
 
 // Cipher ...
 type Cipher interface {
@@ -33,8 +33,8 @@ var cipherList = []InstanceFunc{
 	RSA:       NewRSA,
 }
 
-// Option ...
-type Option struct {
+// Options ...
+type Options struct {
 	IV         string
 	Key        string
 	RSAPrivate string
@@ -43,9 +43,58 @@ type Option struct {
 	ID         string
 }
 
+// OptionKey ...
+func OptionKey(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.Key = s
+	}
+}
+
+// OptionIV ...
+func OptionIV(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.IV = s
+	}
+}
+
+// OptionToken ...
+func OptionToken(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.Token = s
+	}
+}
+
+// OptionID ...
+func OptionID(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.ID = s
+	}
+}
+
+// OptionPublic ...
+func OptionPublic(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.RSAPublic = s
+	}
+}
+
+// OptionPrivate ...
+func OptionPrivate(s string) func(opts *Options) {
+	return func(opts *Options) {
+		opts.RSAPrivate = s
+	}
+}
+
+// Option ...
+type Option func(opts *Options)
+
 // New create a new cipher
-func New(cryptType CryptType, option *Option) Cipher {
-	return cipherList[cryptType](option)
+func New(cryptType CryptType, opts ...Option) Cipher {
+	var options Options
+	for _, o := range opts {
+		o(&options)
+	}
+	return cipherList[cryptType](&options)
 }
 
 func parseBytes(data interface{}) []byte {

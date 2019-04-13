@@ -26,10 +26,10 @@ type cryptRSA struct {
 }
 
 // NewRSA ...
-func NewRSA(option *Option) Cipher {
+func NewRSA(opts *Options) Cipher {
 	return &cryptRSA{
-		privateKey: []byte(option.RSAPrivate),
-		publicKey:  []byte(option.RSAPublic),
+		privateKey: []byte(opts.RSAPrivate),
+		publicKey:  []byte(opts.RSAPublic),
 	}
 }
 

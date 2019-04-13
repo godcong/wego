@@ -148,15 +148,15 @@ func (obj *cryptBizMsg) Decrypt(data interface{}) ([]byte, error) {
 }
 
 /*NewBizMsg NewBizMsg */
-func NewBizMsg(option *Option) Cipher {
-	key, e := base64.RawStdEncoding.DecodeString(option.Key)
+func NewBizMsg(opts *Options) Cipher {
+	key, e := base64.RawStdEncoding.DecodeString(opts.Key)
 	if e != nil {
 		return nil
 	}
 	return &cryptBizMsg{
-		token: option.Token,
+		token: opts.Token,
 		key:   key,
-		id:    option.ID,
+		id:    opts.ID,
 		cipher: &cryptAES128CBC{
 			iv:  key[:16],
 			key: key,

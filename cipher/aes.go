@@ -44,13 +44,13 @@ func (c *cryptAES128CBC) Decrypt(data interface{}) ([]byte, error) {
 }
 
 // NewAES128CBC ...
-func NewAES128CBC(option *Option) Cipher {
-	key, e := Base64DecodeString(option.Key)
+func NewAES128CBC(opts *Options) Cipher {
+	key, e := Base64DecodeString(opts.Key)
 	if e != nil {
 		log.Error("wrong key:%w", e)
 		return nil
 	}
-	iv, e := Base64DecodeString(option.IV)
+	iv, e := Base64DecodeString(opts.IV)
 	if e != nil {
 		log.Error("wrong iv:%w", e)
 		return nil
@@ -71,9 +71,9 @@ type cryptAES256ECB struct {
 }
 
 // NewAES256ECB ...
-func NewAES256ECB(option *Option) Cipher {
+func NewAES256ECB(opts *Options) Cipher {
 	return &cryptAES256ECB{
-		key: []byte(option.Key),
+		key: []byte(opts.Key),
 	}
 }
 
