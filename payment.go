@@ -340,6 +340,65 @@ func (obj *Payment) CouponQueryInfo(opts ...util.Map) Responder {
 	return obj.SafeRequest(mmpaymkttransfersQueryCouponsInfo, m)
 }
 
+// MerchantAddSubMerchant ...
+func (obj *Payment) MerchantAddSubMerchant(maps util.Map) Responder {
+	return obj.manage("add", maps)
+}
+
+// MerchantQuerySubMerchantByMerchantID ...
+func (obj *Payment) MerchantQuerySubMerchantByMerchantID(id string) Responder {
+	return obj.manage("dummyQuery", util.Map{"micro_mch_id": id})
+}
+
+// MerchantQuerySubMerchantByWeChatID ...
+func (obj *Payment) MerchantQuerySubMerchantByWeChatID(id string) Responder {
+	return obj.manage("dummyQuery", util.Map{"recipient_wechatid": id})
+}
+
+// MerchantModifyInfo ...
+func (obj *Payment) MerchantModifyInfo(maps util.Map) Responder {
+	maps.Join(util.Map{
+		"mch_id":     obj.MchID,
+		"sub_mch_id": "",
+	})
+	return obj.SafeRequest(mchModifymchinfo, maps)
+}
+
+// MerchantAddRecommendConfBySubscribe ...
+func (obj *Payment) MerchantAddRecommendConfBySubscribe(appID string) Responder {
+	maps := util.Map{
+		"subscribe_appid": appID,
+		"mch_id":          obj.MchID,
+		"sub_mch_id":      "",
+		"sub_appid":       "",
+	}
+	return obj.SafeRequest(mktAddrecommendconf, maps)
+}
+
+// MerchantAddRecommendConfByReceipt ...
+func (obj *Payment) MerchantAddRecommendConfByReceipt(appID string) Responder {
+	maps := util.Map{
+		"receipt_appid": appID,
+		"mch_id":        obj.MchID,
+		"sub_mch_id":    "",
+		"sub_appid":     "",
+	}
+	return obj.SafeRequest(mktAddrecommendconf, maps)
+}
+
+func (obj *Payment) mchAddSubDevConfig() {
+	//TODO
+}
+
+func (obj *Payment) manage(action string, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"appid": obj.AppID,
+	}, opts...)
+
+	querty := util.Map{"action": action}
+	return obj.client.Post(context.Background(), obj.RemoteURL(mchSubMchManage), querty, obj.initPay(m))
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)

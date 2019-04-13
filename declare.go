@@ -13,7 +13,7 @@ const snsUserinfo = "https://api.weixin.qq.com/sns/userinfo"
 
 const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
 
-const mchSubmchmanage = "/secapi/mch/submchmanage"
+const mchSubMchManage = "/secapi/mch/submchmanage"
 const mchModifymchinfo = "/secapi/mch/modifymchinfo"
 const mktAddrecommendconf = "/secapi/mkt/addrecommendconf"
 const mchAddSubDevConfig = "/secapi/mch/addsubdevconfig"
