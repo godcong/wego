@@ -11,6 +11,7 @@ const oauth2Authorize = "https://open.weixin.qq.com/connect/oauth2/authorize"
 const oauth2AccessToken = "https://api.weixin.qq.com/sns/oauth2/access_token"
 const snsUserinfo = "https://api.weixin.qq.com/sns/userinfo"
 
+const authCodeToOpenidURLSuffix = "/tools/authcodetoopenid"
 const batchQueryComment = "/billcommentsp/batchquerycomment"
 const payDownloadBill = "/pay/downloadbill"
 const payDownloadFundFlow = "/pay/downloadfundflow"

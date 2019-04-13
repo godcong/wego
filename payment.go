@@ -241,6 +241,21 @@ func (obj *Payment) Unify(m util.Map, options ...util.Map) Responder {
 	return obj.Request(payUnifiedOrder, m)
 }
 
+/*AuthCodeToOpenid 通过授权码查询公众号Openid
+接口链接: https://api.mch.weixin.qq.com/tools/authcodetoopenid
+通过授权码查询公众号Openid，调用查询后，该授权码只能由此商户号发起扣款，直至授权码更新。
+参数:
+authCode - 授权码
+返回:
+openid string
+*/
+func (obj *Payment) AuthCodeToOpenid(authCode string) Responder {
+	m := make(util.Map)
+	m.Set("appid", obj.AppID)
+	m.Set("auth_code", authCode)
+	return obj.Request(authCodeToOpenidURLSuffix, m)
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)

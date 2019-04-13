@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/text/transform"
 	"golang.org/x/xerrors"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -15,19 +16,31 @@ import (
 
 /*Responder Responder */
 type Responder interface {
-	Type() BodyType
+	io.ReadCloser
 	BodyReader
+	Type() BodyType
 }
 
 // Response ...
 type Response struct {
-	bytes []byte
-	err   error
+	bytes  []byte
+	reader io.ReadCloser
+	err    error
 }
 
 // Type ...
 func (r *Response) Type() BodyType {
 	return BodyTypeNone
+}
+
+// Read ...
+func (r *Response) Read(p []byte) (n int, err error) {
+	return r.reader.Read(p)
+}
+
+// Close ...
+func (r *Response) Close() error {
+	return r.reader.Close()
 }
 
 // xmlResponse ...
@@ -39,6 +52,15 @@ type xmlResponse struct {
 // Type ...
 func (r *xmlResponse) Type() BodyType {
 	return BodyTypeXML
+}
+
+// XMLResponseReader ...
+func XMLResponseReader(reader io.ReadCloser) Responder {
+	return &xmlResponse{
+		Response: Response{
+			reader: reader,
+		},
+	}
 }
 
 // XMLResponse ...
@@ -96,6 +118,15 @@ type jsonResponse struct {
 // Type ...
 func (r *jsonResponse) Type() BodyType {
 	return BodyTypeJSON
+}
+
+// JSONResponseReader ...
+func JSONResponseReader(reader io.ReadCloser) Responder {
+	return &jsonResponse{
+		Response: Response{
+			reader: reader,
+		},
+	}
 }
 
 // JSONResponse ...
@@ -237,17 +268,22 @@ func SaveTo(response Responder, path string) error {
 	defer func() {
 		err = file.Close()
 	}()
-	_, err = file.Write(response.Bytes())
-	if err != nil {
+
+	if _, err = io.Copy(file, response); err != nil {
 		return err
 	}
+
+	//_, err = file.Write(response.Bytes())
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }
 
 // SaveEncodingTo ...
-func SaveEncodingTo(response Responder, path string, t transform.Transformer) error {
-	var err error
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
+func SaveEncodingTo(response Responder, path string, t transform.Transformer) (err error) {
+	var file *os.File
+	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_SYNC, os.ModePerm)
 	if err != nil {
 		log.Debug("Responder|ToFile", err)
 		return err
@@ -256,10 +292,14 @@ func SaveEncodingTo(response Responder, path string, t transform.Transformer) er
 		err = file.Close()
 	}()
 	writer := transform.NewWriter(file, t)
-	_, err = writer.Write(response.Bytes())
-	if err != nil {
+	if _, err = io.Copy(writer, response); err != nil {
 		return err
 	}
+
+	//_, err = writer.Write(response.Bytes())
+	//if err != nil {
+	//	return err
+	//}
 	defer func() {
 		err = writer.Close()
 	}()
