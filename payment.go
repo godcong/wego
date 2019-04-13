@@ -318,6 +318,28 @@ func (obj *Payment) BillBatchQueryComment(beginTime, endTime string, offset int,
 
 }
 
+// CouponSend ...
+func (obj *Payment) CouponSend(opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{}, opts...)
+	m.Set("appid", obj.AppID)
+	m.Set("openid_count", 1)
+	return obj.SafeRequest(mmpaymkttransfersSendCoupon, m)
+}
+
+// CouponQueryStock ...
+func (obj *Payment) CouponQueryStock(opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{}, opts...)
+	m.Set("appid", obj.AppID)
+	return obj.SafeRequest(mmpaymkttransfersQueryCouponStock, m)
+}
+
+// CouponQueryInfo ...
+func (obj *Payment) CouponQueryInfo(opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{}, opts...)
+	m.Set("appid", obj.AppID)
+	return obj.SafeRequest(mmpaymkttransfersQueryCouponsInfo, m)
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
