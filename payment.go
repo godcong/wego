@@ -608,6 +608,75 @@ func (obj *Payment) RedPackSendGroup(m util.Map) Responder {
 	return obj.SafeRequest(mmpaymkttransfersSendGroupRedPack, m)
 }
 
+/*RefundByOutTradeNumber 按照out_trade_no发起退款
+接口地址
+接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
+*/
+func (obj *Payment) RefundByOutTradeNumber(tradeNum, num string, total, refund int, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{"out_trade_no": tradeNum}, opts...)
+	return obj.refund(num, total, refund, m)
+}
+
+/*RefundByTransactionID 按照transaction_id发起退款
+接口地址
+接口链接:https://api.mch.weixin.qq.com/secapi/pay/refund
+*/
+func (obj *Payment) RefundByTransactionID(tid, num string, total, refund int, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{"transaction_id": tid}, opts...)
+	return obj.refund(num, total, refund, m)
+}
+
+func (obj *Payment) refundQuery(m util.Map) Responder {
+	return obj.Request(payRefundQuery, m)
+}
+
+/*RefundQueryByRefundID 按refund_id查找退款订单
+接口地址
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
+*/
+func (obj *Payment) RefundQueryByRefundID(id string) Responder {
+	return obj.refundQuery(util.Map{"refund_id": id})
+}
+
+/*RefundQueryByOutRefundNumber 按out_refund_no查找退款订单
+接口地址
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
+*/
+func (obj *Payment) RefundQueryByOutRefundNumber(id string) Responder {
+	return obj.refundQuery(util.Map{"out_refund_no": id})
+}
+
+/*RefundQueryByOutTradeNumber 按out_trade_no查找退款订单
+接口地址
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
+*/
+func (obj *Payment) RefundQueryByOutTradeNumber(id string) Responder {
+	return obj.refundQuery(util.Map{"out_trade_no": id})
+}
+
+/*RefundQueryByTransactionID 按transaction_id查找退款订单
+接口地址
+接口链接:https://api.mch.weixin.qq.com/pay/refundquery
+*/
+func (obj *Payment) RefundQueryByTransactionID(id string) Responder {
+	return obj.refundQuery(util.Map{"transaction_id": id})
+}
+
+func (obj *Payment) refund(num string, total, refund int, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"out_refund_no": num,
+		"total_fee":     strconv.Itoa(total),
+		"refund_fee":    strconv.Itoa(refund),
+	})
+
+	//set notify callback
+	notify := obj.RefundURL()
+	if !m.Has("notify_url") {
+		m.Set("notify_url", notify)
+	}
+	return obj.SafeRequest(payRefund, m)
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
