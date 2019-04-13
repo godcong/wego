@@ -342,17 +342,17 @@ func (obj *Payment) CouponQueryInfo(opts ...util.Map) Responder {
 
 // MerchantAddSubMerchant ...
 func (obj *Payment) MerchantAddSubMerchant(maps util.Map) Responder {
-	return obj.manage("add", maps)
+	return obj.merchantManage("add", maps)
 }
 
 // MerchantQuerySubMerchantByMerchantID ...
 func (obj *Payment) MerchantQuerySubMerchantByMerchantID(id string) Responder {
-	return obj.manage("dummyQuery", util.Map{"micro_mch_id": id})
+	return obj.merchantManage("dummyQuery", util.Map{"micro_mch_id": id})
 }
 
 // MerchantQuerySubMerchantByWeChatID ...
 func (obj *Payment) MerchantQuerySubMerchantByWeChatID(id string) Responder {
-	return obj.manage("dummyQuery", util.Map{"recipient_wechatid": id})
+	return obj.merchantManage("dummyQuery", util.Map{"recipient_wechatid": id})
 }
 
 // MerchantModifyInfo ...
@@ -390,13 +390,66 @@ func (obj *Payment) mchAddSubDevConfig() {
 	//TODO
 }
 
-func (obj *Payment) manage(action string, opts ...util.Map) Responder {
+func (obj *Payment) merchantManage(action string, opts ...util.Map) Responder {
 	m := util.CombineMaps(util.Map{
 		"appid": obj.AppID,
 	}, opts...)
 
-	querty := util.Map{"action": action}
-	return obj.client.Post(context.Background(), obj.RemoteURL(mchSubMchManage), querty, obj.initPay(m))
+	query := util.Map{"action": action}
+	return obj.client.Post(context.Background(), obj.RemoteURL(mchSubMchManage), query, obj.initPay(m))
+}
+
+/*OrderClose 关闭订单
+字段名	变量名	必填	类型	示例值	描述
+商户订单号	out_trade_no	是	String(32)	1217752501201407033233368018	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
+*/
+func (obj *Payment) OrderClose(no string) Responder {
+	m := make(util.Map)
+	m.Set("appid", obj.AppID)
+	m.Set("out_trade_no", no)
+	return obj.Request(payCloseOrder, m)
+}
+
+/** QueryOrder 查询订单
+* 场景:刷卡支付、公共号支付、扫码支付、APP支付
+接口地址
+https://apihk.mch.weixin.qq.com/pay/orderquery    （建议接入点:东南亚）
+https://apius.mch.weixin.qq.com/pay/orderquery    （建议接入点:其它）
+https://api.mch.weixin.qq.com/pay/orderquery        （建议接入点:中国国内）
+注:商户可根据实际请求情况选择最优域名进行访问，建议在接入时做好兼容，当访问其中一个域名出现异常时，可自动切换为其他域名。
+是否需要证书
+不需要
+请求参数
+字段名	变量名	必填	类型	示例值	描述
+公众账号ID	appid	是	String(32)	wxd678efh567hg6787	微信分配的公众账号ID（企业号corpid即为此appId）
+商户号	mch_id	是	String(32)	1230000109	微信支付分配的商户号
+微信订单号	transaction_id	二选一	String(32)	1009660380201506130728806387	微信的订单号，优先使用
+商户订单号	out_trade_no	String(32)	20150806125346	商户系统内部的订单号，当没提供transaction_id时需要传这个。
+随机字符串	nonce_str	是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	随机字符串，不长于32位。推荐随机数生成算法
+签名	sign	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	签名，详见签名生成算法
+签名类型	sign_type	否	String(32)	HMAC-SHA256	签名类型，目前支持HMAC-SHA256和MD5，默认为MD5
+*/
+func (obj *Payment) orderQuery(m util.Map) Responder {
+	return obj.Request(payOrderQuery, m)
+}
+
+/*OrderQueryByTransactionID 通过transaction_id查询订单
+场景:刷卡支付、公共号支付、扫码支付、APP支付
+字段名	变量名	必填	类型	示例值	描述
+微信订单号	transaction_id	String(32)	1009660380201506130728806387	微信的订单号，优先使用
+*/
+func (obj *Payment) OrderQueryByTransactionID(id string) Responder {
+	return obj.orderQuery(util.Map{"transaction_id": id})
+}
+
+/*OrderQueryByOutTradeNumber 通过out_trade_no查询订单
+场景:刷卡支付、公共号支付、扫码支付、APP支付
+字段名	变量名	必填	类型	示例值	描述
+公众账号ID	appid	是	String(32)	wxd678efh567hg6787	微信分配的公众账号ID（企业号corpid即为此appId）
+商户订单号	out_trade_no	String(32)	20150806125346	商户系统内部的订单号，当没提供transaction_id时需要传这个。
+*/
+func (obj *Payment) OrderQueryByOutTradeNumber(no string) Responder {
+	return obj.orderQuery(util.Map{"out_trade_no": no})
 }
 
 // Request 默认请求
