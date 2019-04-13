@@ -677,6 +677,24 @@ func (obj *Payment) refund(num string, total, refund int, opts ...util.Map) Resp
 	return obj.SafeRequest(payRefund, m)
 }
 
+/*GetPublicKey 获取RSA加密公钥API
+接口说明
+请求Url	https://fraud.mch.weixin.qq.com/risk/getpublickey
+是否需要证书	请求需要双向证书。 详见证书使用
+请求方式	POST
+
+PS: 可使用SaveTo保存Key.需转换成PKCS#8使用.
+RSA公钥格式PKCS#1,PKCS#8互转说明
+PKCS#1 转 PKCS#8:
+openssl rsa -RSAPublicKey_in -in <filename> -pubout
+PKCS#8 转 PKCS#1:
+openssl rsa -pubin -in <filename> -RSAPublicKey_out
+*/
+func (obj *Payment) GetPublicKey() Responder {
+	m := util.Map{"sign_type": "MD5"}
+	return obj.SafeRequest(riskGetPublicKey, obj.initPay(m))
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
