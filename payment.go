@@ -256,6 +256,27 @@ func (obj *Payment) AuthCodeToOpenid(authCode string) Responder {
 	return obj.Request(authCodeToOpenidURLSuffix, m)
 }
 
+//Download 下载对账单
+//接口链接
+//https://api.mch.weixin.qq.com/pay/downloadbill
+//是否需要证书
+//不需要。
+//请求参数
+//字段名	变量名	必填	类型	示例值	描述
+//对账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式:20140603
+func (obj *Payment) BillDownload(bd string, option ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"appid":     obj.AppID,
+		"bill_date": bd,
+	}, option...)
+
+	if !m.Has("bill_type") {
+		m.Set("bill_type", "ALL")
+	}
+
+	return obj.Request(payDownloadBill, m)
+}
+
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
