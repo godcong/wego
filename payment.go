@@ -26,6 +26,36 @@ type Payment struct {
 	scannedURL  string //TODO:need fix
 }
 
+// LocalHost ...
+func (obj *Payment) LocalHost() string {
+	return obj.localHost
+}
+
+// RemoteHost ...
+func (obj *Payment) RemoteHost() string {
+	return obj.remoteHost
+}
+
+// SubAppID ...
+func (obj *Payment) SubAppID() string {
+	return obj.subAppID
+}
+
+// SubMchID ...
+func (obj *Payment) SubMchID() string {
+	return obj.subMchID
+}
+
+// PrivateKey ...
+func (obj *Payment) PrivateKey() string {
+	return obj.privateKey
+}
+
+// PublicKey ...
+func (obj *Payment) PublicKey() string {
+	return obj.publicKey
+}
+
 // NewPayment ...
 func NewPayment(config *PaymentProperty, options ...PaymentOption) *Payment {
 	payment := &Payment{
