@@ -256,7 +256,7 @@ func (obj *Payment) AuthCodeToOpenid(authCode string) Responder {
 	return obj.Request(authCodeToOpenidURLSuffix, m)
 }
 
-//Download 下载对账单
+//BillDownload 下载对账单
 //接口链接
 //https://api.mch.weixin.qq.com/pay/downloadbill
 //是否需要证书
@@ -264,17 +264,36 @@ func (obj *Payment) AuthCodeToOpenid(authCode string) Responder {
 //请求参数
 //字段名	变量名	必填	类型	示例值	描述
 //对账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式:20140603
-func (obj *Payment) BillDownload(bd string, option ...util.Map) Responder {
+func (obj *Payment) BillDownload(bd string, opts ...util.Map) Responder {
 	m := util.CombineMaps(util.Map{
 		"appid":     obj.AppID,
 		"bill_date": bd,
-	}, option...)
+	}, opts...)
 
 	if !m.Has("bill_type") {
 		m.Set("bill_type", "ALL")
 	}
 
 	return obj.Request(payDownloadBill, m)
+}
+
+//BillDownloadFundFlow 下载资金账单
+//资金账单日期	bill_date	是	String(8)	20140603	下载对账单的日期，格式：20140603
+//资金账户类型	account_type	是	String(8)	Basic
+//账单的资金来源账户：
+//Basic  基本账户
+//Operation 运营账户
+//Fees 手续费账户
+//压缩账单	tar_type	否	String(8)	GZIP	非必传参数，固定值：GZIP，返回格式为.gzip的压缩包账单。不传则默认为数据流形式。
+func (obj *Payment) BillDownloadFundFlow(bd string, at string, opts ...util.Map) Responder {
+	m := util.CombineMaps(util.Map{
+		"appid":        obj.AppID,
+		"bill_date":    bd,
+		"sign_type":    util.HMACSHA256,
+		"account_type": at,
+	}, opts...)
+
+	return obj.SafeRequest(payDownloadFundFlow, m)
 }
 
 // Request 默认请求
