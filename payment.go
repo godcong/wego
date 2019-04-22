@@ -65,9 +65,7 @@ func (obj *Payment) SetSubID(mchid, appid string) {
 // HandleRefunded ...
 func (obj *Payment) HandleRefunded(hook RequestHook) Notifier {
 	return &paymentRefundedNotify{
-		cipher: cipher.New(cipher.AES256ECB, &cipher.Option{
-			Key: obj.Key,
-		}),
+		cipher:      cipher.New(cipher.AES256ECB, cipher.OptionKey(obj.Key)),
 		RequestHook: hook,
 	}
 }
