@@ -10,10 +10,10 @@ import (
 // OfficialAccount ...
 type OfficialAccount struct {
 	*OfficialAccountProperty
-	BodyType   BodyType
-	client     *Client
-	remoteHost string
-	localHost  string
+	BodyType  BodyType
+	client    *Client
+	remoteURL string
+	localHost string
 }
 
 // OfficialAccountOption ...
@@ -30,9 +30,7 @@ func NewOfficialAccount(config *OfficialAccountProperty, options ...*OfficialAcc
 		OfficialAccountProperty: config,
 	}
 	officialAccount.parse(options)
-	officialAccount.client = NewClient(&ClientOption{
-		BodyType: &officialAccount.BodyType,
-	})
+	officialAccount.client = NewClient(ClientBodyType(officialAccount.BodyType))
 	return officialAccount
 }
 
@@ -43,7 +41,7 @@ func (obj *OfficialAccount) parse(options []*OfficialAccountOption) {
 	if options[0].BodyType != nil {
 		obj.BodyType = *options[0].BodyType
 	}
-	obj.remoteHost = options[0].RemoteHost
+	obj.remoteURL = options[0].RemoteHost
 	obj.localHost = options[0].LocalHost
 }
 
@@ -168,4 +166,9 @@ func (obj *OfficialAccount) RedirectURI() string {
 		return util.URL(obj.localHost, obj.OAuth.RedirectURI)
 	}
 	return ""
+}
+
+// RemoteURL ...
+func (obj *OfficialAccount) RemoteURL() string {
+	return obj.remoteURL
 }

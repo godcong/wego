@@ -67,6 +67,9 @@ func xmlReader(v interface{}) io.Reader {
 	case util.Map:
 		log.Debug("toXMLReader|util.Map", string(v.ToXML()))
 		reader = bytes.NewReader(v.ToXML())
+	case io.Reader:
+		log.Debug("toXMLReader|io.Reader")
+		return v
 	default:
 		log.Debug("toXMLReader|default", v)
 		if v0, e := xml.Marshal(v); e == nil {
@@ -107,6 +110,9 @@ func jsonReader(v interface{}) io.Reader {
 	case util.Map:
 		log.Debug("jsonReader|util.Map", v.String())
 		reader = bytes.NewReader(v.ToJSON())
+	case io.Reader:
+		log.Debug("jsonReader|io.Reader")
+		return v
 	default:
 		log.Debug("jsonReader|default", v)
 		if v0, e := jsoniter.Marshal(v); e == nil {

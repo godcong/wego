@@ -34,10 +34,7 @@ func NewPayment(config *PaymentProperty, options ...PaymentOption) *Payment {
 		PaymentProperty: config,
 	}
 	payment.parseOption(options...)
-	payment.client = NewClient(&ClientOption{
-		BodyType: &payment.BodyType,
-		SafeCert: payment.SafeCert,
-	})
+	payment.client = NewClient(ClientBodyType(payment.BodyType), ClientSafeCert(payment.SafeCert))
 	return payment
 }
 

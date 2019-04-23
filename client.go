@@ -3,7 +3,6 @@ package wego
 import (
 	"context"
 	"crypto/tls"
-	"crypto/x509"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
@@ -38,20 +37,31 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 
 // Client ...
 type Client struct {
-	Method      string
-	URL         string
-	Query       util.Map
-	Body        *RequestBody
-	BodyType    BodyType
-	safe        bool
-	safeCert    *SafeCertProperty
+	context   context.Context
+	TLSConfig *tls.Config
+	Method    string
+	URL       string
+	Query     util.Map
+	Body      *RequestBody
+	BodyType  BodyType
+	safe      bool
+	//safeCert    *SafeCertProperty
 	accessToken *AccessToken
-	timeout     int64
-	keepAlive   int64
+	//timeout     int64
+	//keepAlive   int64
+}
+
+// Context ...
+func (obj *Client) Context() context.Context {
+	if obj.context == nil {
+		i, _ := Context()
+		return i
+	}
+	return obj.context
 }
 
 // ClientOption ...
-type ClientOption struct {
+type ClientOptions struct {
 	UseSafe     bool
 	SafeCert    *SafeCertProperty
 	AccessToken *AccessToken
@@ -61,27 +71,22 @@ type ClientOption struct {
 }
 
 // NewClient ...
-func NewClient(options ...*ClientOption) *Client {
+func NewClient(options ...ClientOption) *Client {
 	client := &Client{
 		BodyType: BodyTypeXML,
 	}
-	client.parse(options)
+	client.parse(options...)
 	return client
 }
 
-func (obj *Client) parse(options []*ClientOption) {
+func (obj *Client) parse(options ...ClientOption) {
 	if options == nil {
 		return
 	}
 
-	obj.safeCert = options[0].SafeCert
-	if options[0].BodyType != nil {
-		obj.BodyType = *options[0].BodyType
+	for _, o := range options {
+		o(obj)
 	}
-	obj.accessToken = options[0].AccessToken
-	obj.accessToken = options[0].AccessToken
-	obj.timeout = options[0].Timeout
-	obj.keepAlive = options[0].KeepAlive
 }
 
 // IsSafe ...
@@ -114,30 +119,13 @@ func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responde
 	return obj.do(ctx)
 }
 
-// CA ...
-func (obj *Client) CA() []byte {
-	if obj.safeCert != nil && obj.safeCert.RootCA != nil {
-		return obj.safeCert.RootCA
-	}
-	return []byte(defaultCa)
-}
-
-func (obj *Client) certKey() ([]byte, []byte) {
-	if obj.safeCert != nil &&
-		obj.safeCert.Key != nil &&
-		obj.safeCert.Cert != nil {
-		return obj.safeCert.Cert, obj.safeCert.Key
-	}
-	return nil, nil
-}
-
 // HTTPClient ...
 func (obj *Client) HTTPClient() (*http.Client, error) {
 	return buildHTTPClient(obj)
 }
 
 // makeClient ...
-func makeClient(method string, url string, query util.Map, body interface{}, options ...*ClientOption) *Client {
+func makeClient(method string, url string, query util.Map, body interface{}, options ...ClientOption) *Client {
 	client := NewClient(options...)
 	client.Method = method
 	client.URL = url
@@ -188,30 +176,21 @@ func (obj *Client) URLQuery() string {
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
 	log.Debug("post form:", url, query, form)
-	bt := BodyTypeForm
-	client := makeClient(POST, url, query, form, &ClientOption{
-		BodyType: &bt,
-	})
+	client := makeClient(POST, url, query, form, ClientBodyType(BodyTypeForm))
 	return client.do(context.Background())
 }
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
 	log.Debug("post json:", url, query, json)
-	bt := BodyTypeJSON
-	client := makeClient(POST, url, query, json, &ClientOption{
-		BodyType: &bt,
-	})
+	client := makeClient(POST, url, query, json, ClientBodyType(BodyTypeJSON))
 	return client.do(context.Background())
 }
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
 	log.Debug("post xml:", url, query, xml)
-	bt := BodyTypeXML
-	client := makeClient(POST, url, query, xml, &ClientOption{
-		BodyType: &bt,
-	})
+	client := makeClient(POST, url, query, xml, ClientBodyType(BodyTypeXML))
 	return client.do(context.Background())
 }
 
@@ -224,96 +203,77 @@ func Get(url string, query util.Map) Responder {
 
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
-	bt := BodyTypeMultipart
-	client := makeClient(POST, url, query, multi, &ClientOption{
-		BodyType: &bt,
-	})
+	client := makeClient(POST, url, query, multi, ClientBodyType(BodyTypeMultipart))
 	return client.do(context.Background())
 }
 
-// TimeOut ...
-func (obj *Client) TimeOut() time.Duration {
-	return time.Duration(util.MustInt64(obj.timeout, defaultTimeout)) * time.Second
+// Context ...
+func Context() (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), 30*time.Second)
 }
 
-// KeepAlive ...
-func (obj *Client) KeepAlive() time.Duration {
-	return time.Duration(util.MustInt64(obj.keepAlive, defaultKeepAlive)) * time.Second
-}
+//// TimeOut ...
+//func (obj *Client) TimeOut() time.Duration {
+//	return time.Duration(util.MustInt64(obj.timeout, defaultTimeout)) * time.Second
+//}
+//
+//// KeepAlive ...
+//func (obj *Client) KeepAlive() time.Duration {
+//	return time.Duration(util.MustInt64(obj.keepAlive, defaultKeepAlive)) * time.Second
+//}
 
-func buildTransport(client *Client) (*http.Client, error) {
-	return &http.Client{
-		Transport: &http.Transport{
-			Proxy: nil,
-			DialContext: (&net.Dialer{
-				Timeout:   client.TimeOut(),
-				KeepAlive: client.KeepAlive(),
-			}).DialContext,
-			//Dial:        nil,
-			//DialTLS:     nil,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-
-			//TLSHandshakeTimeout:    0,
-			//DisableKeepAlives:      false,
-			//DisableCompression:     false,
-			//MaxIdleConns:           0,
-			//MaxIdleConnsPerHost:    0,
-			//MaxConnsPerHost:        0,
-			//IdleConnTimeout:        0,
-			//ResponseHeaderTimeout:  0,
-			//ExpectContinueTimeout:  0,
-			//TLSNextProto:           nil,
-			//ProxyConnectHeader:     nil,
-			//MaxResponseHeaderBytes: 0,
+func buildTransport(client *Client) (*http.Transport, error) {
+	return &http.Transport{
+		Proxy:       nil,
+		DialContext: (&net.Dialer{
+			//Timeout:   client.TimeOut(),
+			//KeepAlive: client.KeepAlive(),
+		}).DialContext,
+		//Dial:        nil,
+		//DialTLS:     nil,
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
 		},
-		//CheckRedirect: nil,
-		//Jar:           nil,
-		//Timeout:       0,
+		//TLSHandshakeTimeout:    0,
+		//DisableKeepAlives:      false,
+		//DisableCompression:     false,
+		//MaxIdleConns:           0,
+		//MaxIdleConnsPerHost:    0,
+		//MaxConnsPerHost:        0,
+		//IdleConnTimeout:        0,
+		//ResponseHeaderTimeout:  0,
+		//ExpectContinueTimeout:  0,
+		//TLSNextProto:           nil,
+		//ProxyConnectHeader:     nil,
+		//MaxResponseHeaderBytes: 0,
 	}, nil
 
 }
 
-func buildSafeTransport(client *Client) (*http.Client, error) {
-	cert, e := tls.X509KeyPair(client.certKey())
-	if e != nil {
-		log.Error(e)
-		return nil, e
-	}
-
-	certPool := x509.NewCertPool()
-	certPool.AppendCertsFromPEM(client.CA())
-	tlsConfig := &tls.Config{
-		Certificates:       []tls.Certificate{cert},
-		RootCAs:            certPool,
-		InsecureSkipVerify: true, //client端略过对证书的校验
-	}
-	tlsConfig.BuildNameToCertificate()
-	return &http.Client{
-		Transport: &http.Transport{
-			DialContext: (&net.Dialer{
-				Timeout:   client.TimeOut(),
-				KeepAlive: client.KeepAlive(),
-				//DualStack: true,
-			}).DialContext,
-			TLSClientConfig: tlsConfig,
-			Proxy:           nil,
-			//TLSHandshakeTimeout:   10 * time.Second,
-			//ResponseHeaderTimeout: 10 * time.Second,
-			//ExpectContinueTimeout: 1 * time.Second,
-		},
+func buildSafeTransport(client *Client) (*http.Transport, error) {
+	return &http.Transport{
+		DialContext: (&net.Dialer{
+			//Timeout:   client.TimeOut(),
+			//KeepAlive: client.KeepAlive(),
+			//DualStack: true,
+		}).DialContext,
+		TLSClientConfig: client.TLSConfig,
+		Proxy:           nil,
+		//TLSHandshakeTimeout:   10 * time.Second,
+		//ResponseHeaderTimeout: 10 * time.Second,
+		//ExpectContinueTimeout: 1 * time.Second,
 	}, nil
 }
 
-func buildHTTPClient(client *Client) (*http.Client, error) {
-	//检查是否包含security
+func buildHTTPClient(client *Client) (cli *http.Client, e error) {
+	cli = new(http.Client)
+	//判断能否创建safe client
+	fun := buildTransport
 	if client.IsSafe() {
-		//判断能否创建safe client
-		return buildSafeTransport(client)
+		fun = buildSafeTransport
 	}
-	return buildTransport(client)
-
+	cli.Transport, e = fun(client)
+	return
 }
 
 // BodyReader ...

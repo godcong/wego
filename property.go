@@ -1,6 +1,8 @@
 package wego
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
 	"golang.org/x/xerrors"
@@ -28,6 +30,24 @@ type SafeCertProperty struct {
 	Cert   []byte
 	Key    []byte
 	RootCA []byte
+}
+
+// Config ...
+func (property *SafeCertProperty) Config() (config *tls.Config, e error) {
+	cert, e := tls.X509KeyPair(property.Cert, property.Key)
+	if e != nil {
+		return &tls.Config{}, e
+	}
+
+	certPool := x509.NewCertPool()
+	certPool.AppendCertsFromPEM(property.RootCA)
+	tlsConfig := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            certPool,
+		InsecureSkipVerify: true, //client端略过对证书的校验
+	}
+	tlsConfig.BuildNameToCertificate()
+	return tlsConfig, nil
 }
 
 // PaymentProperty ...

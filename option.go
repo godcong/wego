@@ -1,5 +1,11 @@
 package wego
 
+import (
+	"context"
+	"crypto/tls"
+	"github.com/sirupsen/logrus"
+)
+
 // PaymentOption ...
 type PaymentOption func(obj *Payment)
 
@@ -66,5 +72,50 @@ func PaymentRefundedURL(s string) PaymentOption {
 func PaymentScannedURL(s string) PaymentOption {
 	return func(obj *Payment) {
 		obj.scannedURL = s
+	}
+}
+
+// ClientOption ...
+type ClientOption func(obj *Client)
+
+// ClientContext ...
+func ClientContext(ctx context.Context) ClientOption {
+	return func(obj *Client) {
+		obj.context = ctx
+	}
+}
+
+// ClientSafeCert ...
+func ClientSafeCert(property *SafeCertProperty) ClientOption {
+	return func(obj *Client) {
+		cfg, e := property.Config()
+		if e != nil {
+			logrus.Errorf("ClientSafeCert err:%+v", e)
+			return
+		}
+		obj.TLSConfig = cfg
+
+	}
+}
+
+// ClientTLSConfig ...
+func ClientTLSConfig(config *tls.Config) ClientOption {
+	return func(obj *Client) {
+		obj.TLSConfig = config
+
+	}
+}
+
+// ClientBodyType ...
+func ClientBodyType(bt BodyType) ClientOption {
+	return func(obj *Client) {
+		obj.BodyType = bt
+	}
+}
+
+// ClientAccessToken ...
+func ClientAccessToken(accessToken *AccessToken) ClientOption {
+	return func(obj *Client) {
+		obj.accessToken = accessToken
 	}
 }
