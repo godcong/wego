@@ -16,16 +16,16 @@ type Payment struct {
 	*PaymentProperty
 	client      *Client
 	sandbox     *Sandbox
-	useSandbox  bool   //TODO:need fix
-	publicKey   string //TODO:need fix
-	privateKey  string //TODO:need fix
-	subMchID    string //TODO:need fix
-	subAppID    string //TODO:need fix
-	remoteURL   string //TODO:need fix
-	localHost   string //TODO:need fix
-	notifyURL   string //TODO:need fix
-	refundedURL string //TODO:need fix
-	scannedURL  string //TODO:need fix
+	useSandbox  bool
+	publicKey   string
+	privateKey  string
+	subMchID    string
+	subAppID    string
+	remoteURL   string
+	localHost   string
+	notifyURL   string
+	refundedURL string
+	scannedURL  string
 }
 
 // NewPayment ...
@@ -918,7 +918,7 @@ func (obj *Payment) GetKey() string {
 		keyName := obj.sandbox.getCacheKey()
 		cachedKey := cache.Get(keyName)
 		if cachedKey != nil {
-			log.Println("cached key:", keyName, cachedKey.(string))
+			log.Debug("cached key:", keyName, cachedKey.(string))
 			key = cachedKey.(string)
 			return key
 		}
@@ -926,7 +926,7 @@ func (obj *Payment) GetKey() string {
 		resp := obj.sandbox.SignKey().ToMap()
 		if resp.GetString("return_code") == "SUCCESS" {
 			key = resp.GetString("sandbox_signkey")
-			log.Info("key:", keyName, key)
+			log.Debug("key:", keyName, key)
 			cache.SetWithTTL(keyName, key, 24*3600)
 		}
 	}

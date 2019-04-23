@@ -4,16 +4,12 @@ import "testing"
 
 // TestSandbox_SignKey ...
 func TestSandbox_SignKey(t *testing.T) {
-	sandbox := NewSandbox(&SandboxConfig{
-		AppID:  "",
-		Secret: "",
-		MchID:  "",
-		Key:    "",
-		option: &SandboxOption{
-			SubMchID: "",
-			SubAppID: "",
-		},
-	})
+	sandbox := NewSandbox(&SandboxProperty{
+		AppID:     "",
+		AppSecret: "",
+		MchID:     "",
+		Key:       "",
+	}, SandboxSubID("mch", "app"))
 
 	key := sandbox.SignKey()
 

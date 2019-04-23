@@ -11,12 +11,6 @@ import (
 // NilPropertyProperty ...
 const NilPropertyProperty = "%T point is null"
 
-// SandboxOption ...
-type SandboxOption struct {
-	SubMchID string `xml:"sub_mch_id"`
-	SubAppID string `xml:"sub_app_id"`
-}
-
 // SandboxProperty ...
 type SandboxProperty struct {
 	AppID     string

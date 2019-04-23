@@ -119,3 +119,14 @@ func ClientAccessToken(accessToken *AccessToken) ClientOption {
 		obj.accessToken = accessToken
 	}
 }
+
+// PaymentSandboxOption ...
+type PaymentSandboxOption func(obj *Sandbox)
+
+// SandboxSubID ...
+func SandboxSubID(mch, app string) PaymentSandboxOption {
+	return func(obj *Sandbox) {
+		obj.subAppID = app
+		obj.subMchID = mch
+	}
+}
