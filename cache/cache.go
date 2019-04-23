@@ -36,7 +36,7 @@ func Get(key string) interface{} {
 	return cache.Get(key)
 }
 
-//GetD get value with default
+//GetD get value ,if not found return a default value
 func GetD(key string, v interface{}) interface{} {
 	return cache.GetD(key, v)
 }
