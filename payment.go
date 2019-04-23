@@ -21,7 +21,7 @@ type Payment struct {
 	subMchID    string //TODO:need fix
 	subAppID    string //TODO:need fix
 	useSandbox  bool   //TODO:need fix
-	remoteHost  string //TODO:need fix
+	remoteURL   string //TODO:need fix
 	localHost   string //TODO:need fix
 	notifyURL   string //TODO:need fix
 	refundedURL string //TODO:need fix
@@ -312,7 +312,7 @@ func (obj *Payment) BillBatchQueryComment(beginTime, endTime string, offset int,
 		"sign_type":  util.HMACSHA256,
 	}, opts...)
 
-	return obj.client.Post(context.Background(), obj.RemoteURL(batchQueryComment), nil,
+	return obj.client.Post(context.Background(), obj.RequestURL(batchQueryComment), nil,
 		obj.initPay(m, util.FieldSign, util.FieldSignType, util.FieldLimit))
 
 }
@@ -395,7 +395,7 @@ func (obj *Payment) merchantManage(action string, opts ...util.Map) Responder {
 	}, opts...)
 
 	query := util.Map{"action": action}
-	return obj.client.Post(context.Background(), obj.RemoteURL(mchSubMchManage), query, obj.initPay(m))
+	return obj.client.Post(context.Background(), obj.RequestURL(mchSubMchManage), query, obj.initPay(m))
 }
 
 /*OrderClose 关闭订单
@@ -877,13 +877,13 @@ func (obj *Payment) TransferToBankCard(p util.Map, opts ...util.Map) Responder {
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
 	obj.client.SetSafe(false)
-	return obj.client.Post(context.Background(), obj.RemoteURL(url), nil, obj.initPay(p))
+	return obj.client.Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
 }
 
 // SafeRequest 安全请求
 func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
 	obj.client.SetSafe(true)
-	return obj.client.Post(context.Background(), obj.RemoteURL(url), nil, obj.initPay(p))
+	return obj.client.Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
 }
 
 func (obj *Payment) initPay(p util.Map, ignore ...string) util.Map {
@@ -942,20 +942,6 @@ func (obj *Payment) GetKey() string {
 
 }
 
-// RemoteURL ...
-func (obj *Payment) RemoteURL(uri string) string {
-	if obj.UseSandbox() {
-		return util.URL(remotePayment(obj), sandboxNew, uri)
-	}
-	return util.URL(remotePayment(obj), uri)
-}
-func remotePayment(obj *Payment) string {
-	if obj != nil && obj.remoteHost != "" {
-		return obj.remoteHost
-	}
-	return apiMCHWeixin
-}
-
 // LocalURL ...
 func (obj *Payment) LocalURL() string {
 	return local(obj)
@@ -1003,14 +989,25 @@ func paymentScannedURL(obj *Payment) string {
 	return scannedCB
 }
 
+// RequestURL ...
+func (obj *Payment) RequestURL(uri string) string {
+	if obj.UseSandbox() {
+		return util.URL(obj.RemoteURL(), sandboxNew, uri)
+	}
+	return util.URL(obj.RemoteURL(), uri)
+}
+
+// RemoteURL ...
+func (obj *Payment) RemoteURL() string {
+	if obj == nil || obj.remoteURL == "" {
+		return apiMCHWeixin
+	}
+	return obj.remoteURL
+}
+
 // LocalHost ...
 func (obj *Payment) LocalHost() string {
 	return obj.localHost
-}
-
-// RemoteHost ...
-func (obj *Payment) RemoteHost() string {
-	return obj.remoteHost
 }
 
 // SubAppID ...

@@ -29,7 +29,7 @@ func PaymentKey(public, privite string) PaymentOption {
 // PaymentRemote ...
 func PaymentRemote(remote string) PaymentOption {
 	return func(obj *Payment) {
-		obj.remoteHost = remote
+		obj.remoteURL = remote
 	}
 }
 
