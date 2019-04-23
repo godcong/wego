@@ -73,9 +73,12 @@ func EncryptBizMsg(text, ts, nonce string) interface{} {
 }
 
 // DecryptBizMsg ...
-func DecryptBizMsg(text string) interface{} {
+func DecryptBizMsg(text string, ts, nonce, rsa string) interface{} {
 	return &BizMsgData{
-		Text: text,
+		Text:       text,
+		RSAEncrypt: rsa,
+		TimeStamp:  ts,
+		Nonce:      nonce,
 	}
 }
 
