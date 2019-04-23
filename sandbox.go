@@ -15,7 +15,7 @@ type Sandbox struct {
 }
 
 // NewSandbox ...
-func NewSandbox(config *SandboxProperty, options ...PaymentSandboxOption) *Sandbox {
+func NewSandbox(config *SandboxProperty, options ...SandboxOption) *Sandbox {
 	sandbox := &Sandbox{
 		SandboxProperty: config,
 	}
@@ -24,7 +24,7 @@ func NewSandbox(config *SandboxProperty, options ...PaymentSandboxOption) *Sandb
 	return sandbox
 }
 
-func (obj *Sandbox) parse(options ...PaymentSandboxOption) {
+func (obj *Sandbox) parse(options ...SandboxOption) {
 	if options == nil {
 		return
 	}

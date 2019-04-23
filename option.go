@@ -49,7 +49,6 @@ func PaymentLocal(local string) PaymentOption {
 // PaymentSandbox ...
 func PaymentSandbox(sandbox *Sandbox) PaymentOption {
 	return func(obj *Payment) {
-		obj.useSandbox = true
 		obj.sandbox = sandbox
 	}
 }
@@ -120,11 +119,11 @@ func ClientAccessToken(accessToken *AccessToken) ClientOption {
 	}
 }
 
-// PaymentSandboxOption ...
-type PaymentSandboxOption func(obj *Sandbox)
+// SandboxOption ...
+type SandboxOption func(obj *Sandbox)
 
 // SandboxSubID ...
-func SandboxSubID(mch, app string) PaymentSandboxOption {
+func SandboxSubID(mch, app string) SandboxOption {
 	return func(obj *Sandbox) {
 		obj.subAppID = app
 		obj.subMchID = mch

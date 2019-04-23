@@ -16,7 +16,6 @@ type Payment struct {
 	*PaymentProperty
 	client      *Client
 	sandbox     *Sandbox
-	useSandbox  bool
 	publicKey   string
 	privateKey  string
 	subMchID    string
@@ -908,7 +907,7 @@ func (obj *Payment) initPay(p util.Map, ignore ...string) util.Map {
 
 // UseSandbox ...
 func (obj *Payment) UseSandbox() bool {
-	return obj.useSandbox
+	return obj.sandbox != nil
 }
 
 /*GetKey 沙箱key(string类型) */
