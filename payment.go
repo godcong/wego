@@ -16,11 +16,11 @@ type Payment struct {
 	*PaymentProperty
 	client      *Client
 	sandbox     *Sandbox
+	useSandbox  bool   //TODO:need fix
 	publicKey   string //TODO:need fix
 	privateKey  string //TODO:need fix
 	subMchID    string //TODO:need fix
 	subAppID    string //TODO:need fix
-	useSandbox  bool   //TODO:need fix
 	remoteURL   string //TODO:need fix
 	localHost   string //TODO:need fix
 	notifyURL   string //TODO:need fix
@@ -939,21 +939,9 @@ func (obj *Payment) GetKey() string {
 
 }
 
-// LocalURL ...
-func (obj *Payment) LocalURL() string {
-	return local(obj)
-}
-
-func local(obj *Payment) string {
-	if obj != nil && obj.localHost != "" {
-		return obj.localHost
-	}
-	return wegoLocal
-}
-
 // NotifyURL ...
 func (obj *Payment) NotifyURL() string {
-	return util.URL(obj.LocalURL(), paymentNotifyURL(obj))
+	return util.URL(obj.LocalHost(), paymentNotifyURL(obj))
 }
 func paymentNotifyURL(obj *Payment) string {
 	if obj != nil && obj.notifyURL != "" {
@@ -964,7 +952,7 @@ func paymentNotifyURL(obj *Payment) string {
 
 // RefundURL ...
 func (obj *Payment) RefundURL() string {
-	return util.URL(obj.LocalURL(), paymentRefundURL(obj))
+	return util.URL(obj.LocalHost(), paymentRefundURL(obj))
 }
 
 func paymentRefundURL(obj *Payment) string {
@@ -976,7 +964,7 @@ func paymentRefundURL(obj *Payment) string {
 
 // ScannedURL ...
 func (obj *Payment) ScannedURL() string {
-	return util.URL(obj.LocalURL(), paymentScannedURL(obj))
+	return util.URL(obj.LocalHost(), paymentScannedURL(obj))
 }
 
 func paymentScannedURL(obj *Payment) string {
@@ -1004,7 +992,14 @@ func (obj *Payment) RemoteURL() string {
 
 // LocalHost ...
 func (obj *Payment) LocalHost() string {
-	return obj.localHost
+	return local(obj)
+}
+
+func local(obj *Payment) string {
+	if obj != nil && obj.localHost != "" {
+		return obj.localHost
+	}
+	return wegoLocal
 }
 
 // SubAppID ...
