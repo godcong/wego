@@ -60,16 +60,6 @@ func (obj *Client) Context() context.Context {
 	return obj.context
 }
 
-// ClientOption ...
-type ClientOptions struct {
-	UseSafe     bool
-	SafeCert    *SafeCertProperty
-	AccessToken *AccessToken
-	BodyType    *BodyType
-	Timeout     int64
-	KeepAlive   int64
-}
-
 // NewClient ...
 func NewClient(options ...ClientOption) *Client {
 	client := &Client{
@@ -151,15 +141,15 @@ func (obj *Client) Request() (*http.Request, error) {
 func (obj *Client) do(ctx context.Context) Responder {
 	client, e := obj.HTTPClient()
 	if e != nil {
-		return ErrResponse(xerrors.Errorf("client:%w", e))
+		return ErrResponder(xerrors.Errorf("client build err:%+v", e))
 	}
 	request, e := obj.Request()
 	if e != nil {
-		return ErrResponse(xerrors.Errorf("request:%w", e))
+		return ErrResponder(xerrors.Errorf("request build err:%+v", e))
 	}
 	response, e := client.Do(request.WithContext(ctx))
 	if e != nil {
-		return ErrResponse(xerrors.Errorf("response:%w", e))
+		return ErrResponder(xerrors.Errorf("response get err:%+v", e))
 	}
 	return BuildResponder(response)
 }

@@ -187,8 +187,8 @@ func (r *Response) Result() (util.Map, error) {
 	return nil, r.err
 }
 
-// ErrResponse ...
-func ErrResponse(err error) Responder {
+// ErrResponder ...
+func ErrResponder(err error) Responder {
 	return &Response{
 		bytes: nil,
 		err:   err,
@@ -242,7 +242,7 @@ func BuildResponder(resp *http.Response) Responder {
 	body, err := readBody(resp.Body)
 	if err != nil {
 		log.Error(body, err)
-		return ErrResponse(err)
+		return ErrResponder(err)
 	}
 
 	log.Info("response:", string(body[:128]), len(body)) //max 128 char
@@ -254,7 +254,7 @@ func BuildResponder(resp *http.Response) Responder {
 		return JSONResponse(body)
 	}
 	log.Error("error with " + resp.Status)
-	return ErrResponse(xerrors.New("error with code " + resp.Status))
+	return ErrResponder(xerrors.New("error with code " + resp.Status))
 }
 
 // SaveTo ...

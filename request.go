@@ -285,7 +285,7 @@ func BuildRequester(req *http.Request) Requester {
 		return XMLRequest(body)
 	}
 	return JSONRequest(body)
-	//return ErrResponse(xerrors.New("error with code " + req.Status))
+	//return ErrResponder(xerrors.New("error with code " + req.Status))
 }
 
 // RebuildRequester ...

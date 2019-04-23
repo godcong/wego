@@ -849,7 +849,7 @@ string(32)
 func (obj *Payment) TransferToBankCard(p util.Map, opts ...util.Map) Responder {
 	util.CombineMaps(p, opts...)
 	if v := p.Check("bank_code", "partner_trade_no", "enc_bank_no", "enc_true_name", "amount"); v != -1 {
-		return ErrResponse(xerrors.Errorf("the %d index of value is required", v))
+		return ErrResponder(xerrors.Errorf("the %d index of value is required", v))
 	}
 
 	//p.Set("nonce_str", util.GenerateUUID())
@@ -858,13 +858,13 @@ func (obj *Payment) TransferToBankCard(p util.Map, opts ...util.Map) Responder {
 
 	ebn, e := c.Encrypt(p.GetString("enc_bank_no"))
 	if e != nil {
-		return ErrResponse(e)
+		return ErrResponder(e)
 	}
 	p.Set("enc_bank_no", string(ebn))
 
 	etn, e := c.Encrypt(p.GetString("enc_true_name"))
 	if e != nil {
-		return ErrResponse(e)
+		return ErrResponder(e)
 	}
 	p.Set("enc_true_name", string(etn))
 	//p.Set("sign", util.GenSign(p, obj.Key))
