@@ -50,7 +50,7 @@ type Client struct {
 	BodyType  BodyType
 	//useSafe   bool
 	//safeCert    *SafeCertProperty
-	accessToken *AccessToken
+	//accessToken *AccessToken
 	//timeout     int64
 	//keepAlive   int64
 }

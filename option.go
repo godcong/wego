@@ -112,13 +112,6 @@ func ClientBodyType(bt BodyType) ClientOption {
 	}
 }
 
-// ClientAccessToken ...
-func ClientAccessToken(accessToken *AccessToken) ClientOption {
-	return func(obj *Client) {
-		obj.accessToken = accessToken
-	}
-}
-
 // SandboxOption ...
 type SandboxOption func(obj *Sandbox)
 
