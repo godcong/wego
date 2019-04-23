@@ -35,20 +35,29 @@ A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
 1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
 -----END CERTIFICATE-----`
 
+// RequestContent ...
+type RequestContent struct {
+	Method string
+	URL    string
+	Query  util.Map
+	Body   *RequestBody
+}
+
 // Client ...
 type Client struct {
 	context   context.Context
 	TLSConfig *tls.Config
-	Method    string
-	URL       string
-	Query     util.Map
-	Body      *RequestBody
 	BodyType  BodyType
-	safe      bool
+	//useSafe   bool
 	//safeCert    *SafeCertProperty
 	accessToken *AccessToken
 	//timeout     int64
 	//keepAlive   int64
+}
+
+// UseSafe ...
+func (obj *Client) UseSafe() bool {
+	return obj.TLSConfig != nil
 }
 
 // Context ...
@@ -79,71 +88,40 @@ func (obj *Client) parse(options ...ClientOption) {
 	}
 }
 
-// IsSafe ...
-func (obj *Client) IsSafe() bool {
-	return obj.safe
-}
-
-// SetSafe ...
-func (obj *Client) SetSafe(b bool) {
-	obj.safe = b
-}
-
 // Post ...
 func (obj *Client) Post(ctx context.Context, url string, query util.Map, body interface{}) Responder {
 	log.Debug("post ", url, body)
-	obj.Method = POST
-	obj.Query = query
-	obj.URL = url
-	obj.Body = buildBody(body, obj.BodyType)
-	return obj.do(ctx)
+	return obj.do(ctx, &RequestContent{
+		Method: POST,
+		URL:    url,
+		Query:  query,
+		Body:   buildBody(body, obj.BodyType),
+	})
 }
 
 // Get ...
 func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responder {
 	log.Debug("get ", url)
-	obj.Method = GET
-	obj.Query = query
-	obj.URL = url
-	obj.Body = buildBody(nil, obj.BodyType)
-	return obj.do(ctx)
+	return obj.do(ctx, &RequestContent{
+		Method: POST,
+		URL:    url,
+		Query:  query,
+		Body:   buildBody(nil, obj.BodyType),
+	})
 }
 
 // HTTPClient ...
 func (obj *Client) HTTPClient() (*http.Client, error) {
-	return buildHTTPClient(obj)
-}
-
-// makeClient ...
-func makeClient(method string, url string, query util.Map, body interface{}, options ...ClientOption) *Client {
-	client := NewClient(options...)
-	client.Method = method
-	client.URL = url
-	client.Query = query
-	client.BuildBody(body)
-	return client
-}
-
-// BuildBody ...
-func (obj *Client) BuildBody(body interface{}) {
-	obj.Body = buildBody(body, obj.BodyType)
-}
-
-// Request ...
-func (obj *Client) Request() (*http.Request, error) {
-	if obj.Body == nil {
-		return http.NewRequest(obj.Method, obj.URLQuery(), nil)
-	}
-	return obj.Body.RequestBuilder(obj.Method, obj.URLQuery(), obj.Body.BodyInstance)
+	return buildHTTPClient(obj, obj.UseSafe())
 }
 
 // do ...
-func (obj *Client) do(ctx context.Context) Responder {
+func (obj *Client) do(ctx context.Context, content *RequestContent) Responder {
 	client, e := obj.HTTPClient()
 	if e != nil {
 		return ErrResponder(xerrors.Errorf("client build err:%+v", e))
 	}
-	request, e := obj.Request()
+	request, e := content.BuildRequest()
 	if e != nil {
 		return ErrResponder(xerrors.Errorf("request build err:%+v", e))
 	}
@@ -154,63 +132,55 @@ func (obj *Client) do(ctx context.Context) Responder {
 	return BuildResponder(response)
 }
 
-// URLQuery ...
-func (obj *Client) URLQuery() string {
-	if obj.Query == nil {
-		return obj.URL
-	}
-	return obj.URL + "?" + obj.Query.URLEncode()
-
-}
-
 // PostForm post form request
 func PostForm(url string, query util.Map, form interface{}) Responder {
 	log.Debug("post form:", url, query, form)
-	client := makeClient(POST, url, query, form, ClientBodyType(BodyTypeForm))
-	return client.do(context.Background())
+	client := &Client{
+		BodyType: BodyTypeForm,
+	}
+	return client.Post(context.Background(), url, query, form)
 }
 
 // PostJSON json post请求
 func PostJSON(url string, query util.Map, json interface{}) Responder {
 	log.Debug("post json:", url, query, json)
-	client := makeClient(POST, url, query, json, ClientBodyType(BodyTypeJSON))
-	return client.do(context.Background())
+	client := &Client{
+		BodyType: BodyTypeJSON,
+	}
+	return client.Post(context.Background(), url, query, json)
 }
 
 // PostXML  xml post请求
 func PostXML(url string, query util.Map, xml interface{}) Responder {
 	log.Debug("post xml:", url, query, xml)
-	client := makeClient(POST, url, query, xml, ClientBodyType(BodyTypeXML))
-	return client.do(context.Background())
+	client := &Client{
+		BodyType: BodyTypeXML,
+	}
+	return client.Post(context.Background(), url, query, xml)
 }
 
 // Get get请求
 func Get(url string, query util.Map) Responder {
 	log.Println("get request:", url, query)
-	client := makeClient(GET, url, query, nil)
-	return client.do(context.Background())
+	client := NewClient()
+	return client.Get(context.Background(), url, query)
 }
 
 // Upload upload请求
 func Upload(url string, query, multi util.Map) Responder {
-	client := makeClient(POST, url, query, multi, ClientBodyType(BodyTypeMultipart))
-	return client.do(context.Background())
+	client := NewClient()
+	return client.do(context.Background(), &RequestContent{
+		Method: POST,
+		URL:    url,
+		Query:  query,
+		Body:   buildBody(multi, BodyTypeMultipart),
+	})
 }
 
 // Context ...
 func Context() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 30*time.Second)
 }
-
-//// TimeOut ...
-//func (obj *Client) TimeOut() time.Duration {
-//	return time.Duration(util.MustInt64(obj.timeout, defaultTimeout)) * time.Second
-//}
-//
-//// KeepAlive ...
-//func (obj *Client) KeepAlive() time.Duration {
-//	return time.Duration(util.MustInt64(obj.keepAlive, defaultKeepAlive)) * time.Second
-//}
 
 func buildTransport(client *Client) (*http.Transport, error) {
 	return &http.Transport{
@@ -255,11 +225,11 @@ func buildSafeTransport(client *Client) (*http.Transport, error) {
 	}, nil
 }
 
-func buildHTTPClient(client *Client) (cli *http.Client, e error) {
+func buildHTTPClient(client *Client, isSafe bool) (cli *http.Client, e error) {
 	cli = new(http.Client)
 	//判断能否创建safe client
 	fun := buildTransport
-	if client.IsSafe() {
+	if isSafe {
 		fun = buildSafeTransport
 	}
 	cli.Transport, e = fun(client)
@@ -278,4 +248,21 @@ type BodyReader interface {
 /*readBody get response data */
 func readBody(r io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(io.LimitReader(r, math.MaxUint32))
+}
+
+// BuildRequest ...
+func (c *RequestContent) BuildRequest() (*http.Request, error) {
+	if c.Body == nil {
+		return http.NewRequest(c.Method, c.URLQuery(), nil)
+	}
+	return c.Body.RequestBuilder(c.Method, c.URLQuery(), c.Body.BodyInstance)
+}
+
+// URLQuery ...
+func (c *RequestContent) URLQuery() string {
+	if c.Query == nil {
+		return c.URL
+	}
+	return c.URL + "?" + c.Query.URLEncode()
+
 }

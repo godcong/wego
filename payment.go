@@ -15,6 +15,7 @@ import (
 type Payment struct {
 	*PaymentProperty
 	client      *Client
+	safeClient  *Client
 	sandbox     *Sandbox
 	publicKey   string
 	privateKey  string
@@ -33,7 +34,7 @@ func NewPayment(config *PaymentProperty, options ...PaymentOption) *Payment {
 		PaymentProperty: config,
 	}
 	payment.parseOption(options...)
-	payment.client = NewClient(ClientBodyType(payment.BodyType), ClientSafeCert(payment.SafeCert))
+
 	return payment
 }
 
@@ -44,6 +45,22 @@ func (obj *Payment) parseOption(options ...PaymentOption) {
 	for _, o := range options {
 		o(obj)
 	}
+}
+
+// Client ...
+func (obj *Payment) Client() *Client {
+	if obj.client == nil {
+		obj.client = NewClient(ClientBodyType(obj.BodyType))
+	}
+	return obj.client
+}
+
+// SafeClient ...
+func (obj *Payment) SafeClient() *Client {
+	if obj.safeClient == nil {
+		obj.safeClient = NewClient(ClientBodyType(obj.BodyType), ClientSafeCert(obj.SafeCert))
+	}
+	return obj.safeClient
 }
 
 // SetKey ...
@@ -391,7 +408,7 @@ func (obj *Payment) merchantManage(action string, opts ...util.Map) Responder {
 	}, opts...)
 
 	query := util.Map{"action": action}
-	return obj.client.Post(context.Background(), obj.RequestURL(mchSubMchManage), query, obj.initPay(m))
+	return obj.SafeClient().Post(context.Background(), obj.RequestURL(mchSubMchManage), query, obj.initPay(m))
 }
 
 /*OrderClose 关闭订单
@@ -872,14 +889,12 @@ func (obj *Payment) TransferToBankCard(p util.Map, opts ...util.Map) Responder {
 
 // Request 默认请求
 func (obj *Payment) Request(url string, p util.Map) Responder {
-	obj.client.SetSafe(false)
-	return obj.client.Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
+	return obj.SafeClient().Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
 }
 
 // SafeRequest 安全请求
 func (obj *Payment) SafeRequest(url string, p util.Map) Responder {
-	obj.client.SetSafe(true)
-	return obj.client.Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
+	return obj.SafeClient().Post(context.Background(), obj.RequestURL(url), nil, obj.initPay(p))
 }
 
 func (obj *Payment) initPay(p util.Map, ignore ...string) util.Map {
