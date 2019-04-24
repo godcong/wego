@@ -74,7 +74,7 @@ func PaymentScannedURL(s string) PaymentOption {
 	}
 }
 
-// AccessTokenOptions ...
+// AccessTokenOption ...
 type AccessTokenOption func(obj *AccessToken)
 
 // AccessTokenRemote ...
@@ -84,14 +84,14 @@ func AccessTokenRemote(url string) AccessTokenOption {
 	}
 }
 
-// AccessTokenRemote ...
+// AccessTokenURL ...
 func AccessTokenURL(url string) AccessTokenOption {
 	return func(obj *AccessToken) {
 		obj.tokenURL = url
 	}
 }
 
-// AccessTokenRemote ...
+// AccessTokenKey ...
 func AccessTokenKey(key string) AccessTokenOption {
 	return func(obj *AccessToken) {
 		obj.tokenKey = key
@@ -111,11 +111,11 @@ func OfficialAccountOauth(oauth *OAuthProperty) OfficialAccountOption {
 // OfficialAccountAccessTokenProperty ...
 func OfficialAccountAccessTokenProperty(property *AccessTokenProperty) OfficialAccountOption {
 	return func(obj *OfficialAccount) {
-		obj.accessToken = NewAccessToken(property)
+		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessTokenURLSuffix))
 	}
 }
 
-// OfficialAccountBodyType ...
+// OfficialAccountAccessToken ...
 func OfficialAccountAccessToken(token *AccessToken) OfficialAccountOption {
 	return func(obj *OfficialAccount) {
 		obj.accessToken = token
@@ -194,6 +194,13 @@ func SandboxSubID(mch, app string) SandboxOption {
 
 // JSSDKOption ...
 type JSSDKOption func(obj *JSSDK)
+
+// JSSDKAccessTokenProperty ...
+func JSSDKAccessTokenProperty(property *AccessTokenProperty) JSSDKOption {
+	return func(obj *JSSDK) {
+		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessTokenURLSuffix))
+	}
+}
 
 // JSSDKAccessToken ...
 func JSSDKAccessToken(token *AccessToken) JSSDKOption {
