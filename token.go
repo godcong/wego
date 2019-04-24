@@ -1,7 +1,7 @@
 package wego
 
 import (
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 	"strings"
 	"time"
 
@@ -76,17 +76,18 @@ func (t *Token) SetScopes(s []string) *Token {
 
 /*ToJSON transfer accessToken to json*/
 func (t *Token) ToJSON() string {
-	v, e := jsoniter.Marshal(t)
+	s, e := jsoniter.MarshalToString(t)
 	if e != nil {
 		return ""
 	}
-	return string(v)
+	return s
 }
 
 /*ParseToken parse accessToken from string*/
 func ParseToken(src string) (*Token, error) {
 	var t Token
-	e := jsoniter.Unmarshal([]byte(src), &t)
+
+	e := jsoniter.UnmarshalFromString(src, &t)
 	if e != nil {
 		return nil, e
 	}
