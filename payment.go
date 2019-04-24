@@ -872,13 +872,13 @@ func (obj *Payment) TransferToBankCard(p util.Map, opts ...util.Map) Responder {
 
 	c := cipher.New(cipher.RSA, cipher.OptionPublic(obj.PublicKey()), cipher.OptionPrivate(obj.PrivateKey()))
 
-	ebn, e := c.Encrypt(p.GetString("enc_bank_no"))
+	ebn, e := c.Encrypt(p.Get("enc_bank_no"))
 	if e != nil {
 		return ErrResponder(e)
 	}
 	p.Set("enc_bank_no", string(ebn))
 
-	etn, e := c.Encrypt(p.GetString("enc_true_name"))
+	etn, e := c.Encrypt(p.Get("enc_true_name"))
 	if e != nil {
 		return ErrResponder(e)
 	}
