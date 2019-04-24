@@ -14,6 +14,7 @@ import (
 //Payment ...
 type Payment struct {
 	*PaymentProperty
+	BodyType    BodyType
 	client      *Client
 	safeClient  *Client
 	sandbox     *Sandbox
@@ -32,6 +33,7 @@ type Payment struct {
 func NewPayment(config *PaymentProperty, options ...PaymentOption) *Payment {
 	payment := &Payment{
 		PaymentProperty: config,
+		BodyType:        BodyTypeXML,
 	}
 	payment.parseOption(options...)
 

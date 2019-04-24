@@ -84,6 +84,20 @@ func OfficialAccountBodyType(bodyType BodyType) OfficialAccountOption {
 	}
 }
 
+// OfficialAccountRemote ...
+func OfficialAccountRemote(remote string) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.remoteURL = remote
+	}
+}
+
+// OfficialAccountLocal ...
+func OfficialAccountLocal(local string) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.localHost = local
+	}
+}
+
 // ClientOption ...
 type ClientOption func(obj *Client)
 

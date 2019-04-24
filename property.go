@@ -46,7 +46,6 @@ func (property *SafeCertProperty) Config() (config *tls.Config, e error) {
 
 // PaymentProperty ...
 type PaymentProperty struct {
-	BodyType  BodyType          `xml:"body_type"`
 	AppID     string            `xml:"app_id"`
 	AppSecret string            `xml:"app_secret"`
 	MchID     string            `xml:"mch_id"`

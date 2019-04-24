@@ -17,25 +17,22 @@ type OfficialAccount struct {
 }
 
 // NewOfficialAccount ...
-func NewOfficialAccount(config *OfficialAccountProperty, options ...*OfficialAccountOption) *OfficialAccount {
+func NewOfficialAccount(config *OfficialAccountProperty, options ...OfficialAccountOption) *OfficialAccount {
 	officialAccount := &OfficialAccount{
-		BodyType:                BodyTypeJSON,
 		OfficialAccountProperty: config,
 	}
-	officialAccount.parse(options)
+	officialAccount.parse(options...)
 	officialAccount.client = NewClient(ClientBodyType(officialAccount.BodyType))
 	return officialAccount
 }
 
-func (obj *OfficialAccount) parse(options []*OfficialAccountOption) {
+func (obj *OfficialAccount) parse(options ...OfficialAccountOption) {
 	if options == nil {
 		return
 	}
-	if options[0].BodyType != nil {
-		obj.BodyType = *options[0].BodyType
+	for _, o := range options {
+		o(obj)
 	}
-	obj.remoteURL = options[0].RemoteHost
-	obj.localHost = options[0].LocalHost
 }
 
 // HandleAuthorizeNotify ...
