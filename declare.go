@@ -20,6 +20,8 @@ const oauth2AccessToken = "https://api.weixin.qq.com/sns/oauth2/access_token"
 const snsUserinfo = "https://api.weixin.qq.com/sns/userinfo"
 
 const riskGetPublicKey = "https://fraud.mch.weixin.qq.com/risk/getpublickey"
+const clearQuotaURLSuffix = "/cgi-bin/clear_quota"
+const getCallbackIPURLSuffix = "/cgi-bin/getcallbackip"
 
 const mchSubMchManage = "/secapi/mch/submchmanage"
 const mchModifymchinfo = "/secapi/mch/modifymchinfo"
