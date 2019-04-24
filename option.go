@@ -74,8 +74,53 @@ func PaymentScannedURL(s string) PaymentOption {
 	}
 }
 
+// AccessTokenOptions ...
+type AccessTokenOption func(obj *AccessToken)
+
+// AccessTokenRemote ...
+func AccessTokenRemote(url string) AccessTokenOption {
+	return func(obj *AccessToken) {
+		obj.remoteURL = url
+	}
+}
+
+// AccessTokenRemote ...
+func AccessTokenURL(url string) AccessTokenOption {
+	return func(obj *AccessToken) {
+		obj.tokenURL = url
+	}
+}
+
+// AccessTokenRemote ...
+func AccessTokenKey(key string) AccessTokenOption {
+	return func(obj *AccessToken) {
+		obj.tokenKey = key
+	}
+}
+
 // OfficialAccountOption ...
 type OfficialAccountOption func(obj *OfficialAccount)
+
+// OfficialAccountOauth ...
+func OfficialAccountOauth(oauth *OAuthProperty) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.oauth = *oauth
+	}
+}
+
+// OfficialAccountAccessTokenProperty ...
+func OfficialAccountAccessTokenProperty(property *AccessTokenProperty) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.accessToken = NewAccessToken(property)
+	}
+}
+
+// OfficialAccountBodyType ...
+func OfficialAccountAccessToken(token *AccessToken) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.accessToken = token
+	}
+}
 
 // OfficialAccountBodyType ...
 func OfficialAccountBodyType(bodyType BodyType) OfficialAccountOption {

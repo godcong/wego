@@ -10,10 +10,12 @@ import (
 // OfficialAccount ...
 type OfficialAccount struct {
 	*OfficialAccountProperty
-	BodyType  BodyType
-	client    *Client
-	remoteURL string
-	localHost string
+	BodyType    BodyType
+	oauth       OAuthProperty
+	client      *Client
+	accessToken *AccessToken
+	remoteURL   string
+	localHost   string
 }
 
 // NewOfficialAccount ...
@@ -142,8 +144,8 @@ func (obj *OfficialAccount) AuthCodeURL(state string) string {
 		p.Set("redirect_uri", uri)
 	}
 
-	if obj.OAuth.Scopes != nil {
-		p.Set("scope", obj.OAuth.Scopes)
+	if obj.oauth.Scopes != nil {
+		p.Set("scope", obj.oauth.Scopes)
 	}
 	if state != "" {
 		// TODO(light): Docs say never to omit state; don't allow empty.
@@ -156,12 +158,12 @@ func (obj *OfficialAccount) AuthCodeURL(state string) string {
 
 // RedirectURI ...
 func (obj *OfficialAccount) RedirectURI() string {
-	log.Debug("RedirectURI", obj.OAuth.RedirectURI)
-	if obj.OAuth.RedirectURI != "" {
-		if strings.Index(obj.OAuth.RedirectURI, "http") == 0 {
-			return obj.OAuth.RedirectURI
+	log.Debug("RedirectURI", obj.oauth.RedirectURI)
+	if obj.oauth.RedirectURI != "" {
+		if strings.Index(obj.oauth.RedirectURI, "http") == 0 {
+			return obj.oauth.RedirectURI
 		}
-		return util.URL(obj.localHost, obj.OAuth.RedirectURI)
+		return util.URL(obj.localHost, obj.oauth.RedirectURI)
 	}
 	return ""
 }

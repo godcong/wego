@@ -69,12 +69,11 @@ type OpenPlatformProperty struct {
 
 // OfficialAccountProperty ...
 type OfficialAccountProperty struct {
-	AppID       string
-	AppSecret   string
-	Token       string
-	AesKey      string
-	AccessToken *AccessTokenProperty
-	OAuth       *OAuthProperty
+	AppID     string
+	AppSecret string
+	Token     string
+	AesKey    string
+	//OAuth     *OAuthProperty
 }
 
 // MiniProgramProperty ...
@@ -115,10 +114,9 @@ func (obj *AccessTokenProperty) ToJSON() []byte {
 
 // JSSDKProperty ...
 type JSSDKProperty struct {
-	AppID       string
-	MchID       string
-	Key         string
-	AccessToken *AccessTokenProperty
+	AppID string
+	MchID string
+	Key   string
 }
 
 // Property 属性配置，各个接口用到的参数
@@ -174,16 +172,15 @@ func parseAccessTokenProperty(config *Config, property *AccessTokenProperty) err
 }
 
 func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
-	var token AccessTokenProperty
-	e := parseAccessTokenProperty(config, &token)
-	if e != nil {
-		return e
-	}
+	//var token AccessTokenProperty
+	//e := parseAccessTokenProperty(config, &token)
+	//if e != nil {
+	//	return e
+	//}
 	*property = JSSDKProperty{
-		AppID:       config.AppID,
-		MchID:       config.MchID,
-		Key:         config.MchKey,
-		AccessToken: &token,
+		AppID: config.AppID,
+		MchID: config.MchID,
+		Key:   config.MchKey,
 	}
 
 	return nil
@@ -215,25 +212,25 @@ func parseSafeCertProperty(config *Config, property *SafeCertProperty) error {
 }
 
 func parseOfficialAccountProperty(config *Config, property *OfficialAccountProperty) (e error) {
-	var token AccessTokenProperty
-	e = parseAccessTokenProperty(config, &token)
-	if e != nil {
-		return e
-	}
+	//var token AccessTokenProperty
+	//e = parseAccessTokenProperty(config, &token)
+	//if e != nil {
+	//	return e
+	//}
 
-	var oauth OAuthProperty
-	e = parseOAuthProperty(config, &oauth)
-	if e != nil {
-		return e
-	}
+	//var oauth OAuthProperty
+	//e = parseOAuthProperty(config, &oauth)
+	//if e != nil {
+	//	return e
+	//}
 
 	*property = OfficialAccountProperty{
-		AppID:       config.AppID,
-		AppSecret:   config.AppSecret,
-		Token:       config.Token,
-		AesKey:      config.AesKey,
-		AccessToken: &token,
-		OAuth:       &oauth,
+		AppID:     config.AppID,
+		AppSecret: config.AppSecret,
+		Token:     config.Token,
+		AesKey:    config.AesKey,
+		//AccessToken: &token,
+		//OAuth: &oauth,
 	}
 	return nil
 }

@@ -10,35 +10,28 @@ import (
 	"strings"
 )
 
-// AccessTokenOption ...
-type AccessTokenOption struct {
-	RemoteHost string
-	TokenKey   string
-	TokenURL   string
-}
-
 /*AccessToken AccessToken */
 type AccessToken struct {
 	*AccessTokenProperty
-	remoteHost string
-	tokenKey   string
-	tokenURL   string
+	remoteURL string
+	tokenKey  string
+	tokenURL  string
 }
 
 /*AccessTokenSafeSeconds token安全时间 */
 const AccessTokenSafeSeconds = 500
 
-// RemoteHost ...
-func (obj *AccessToken) RemoteHost() string {
-	if obj != nil && obj.remoteHost != "" {
-		return obj.remoteHost
+// RemoteURL ...
+func (obj *AccessToken) RemoteURL() string {
+	if obj != nil && obj.remoteURL != "" {
+		return obj.remoteURL
 	}
 	return apiWeixin
 }
 
 // TokenURL ...
 func (obj *AccessToken) TokenURL() string {
-	return util.URL(obj.RemoteHost(), tokenURL(obj))
+	return util.URL(obj.RemoteURL(), tokenURL(obj))
 }
 func tokenURL(obj *AccessToken) string {
 	if obj != nil && obj.tokenURL != "" {
@@ -48,21 +41,21 @@ func tokenURL(obj *AccessToken) string {
 }
 
 /*NewAccessToken NewAccessToken*/
-func NewAccessToken(property *AccessTokenProperty, options ...*AccessTokenOption) *AccessToken {
+func NewAccessToken(property *AccessTokenProperty, options ...AccessTokenOption) *AccessToken {
 	token := &AccessToken{
 		AccessTokenProperty: property,
 	}
-	token.parse(options)
+	token.parse(options...)
 	return token
 }
 
-func (obj *AccessToken) parse(options []*AccessTokenOption) {
+func (obj *AccessToken) parse(options ...AccessTokenOption) {
 	if options == nil {
 		return
 	}
-	obj.remoteHost = options[0].RemoteHost
-	obj.tokenURL = options[0].TokenURL
-	obj.tokenKey = options[0].TokenKey
+	for _, o := range options {
+		o(obj)
+	}
 }
 
 /*Refresh 刷新AccessToken */
