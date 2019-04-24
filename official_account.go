@@ -22,7 +22,7 @@ func NewOfficialAccount(config *OfficialAccountProperty, options ...OfficialAcco
 		OfficialAccountProperty: config,
 	}
 	officialAccount.parse(options...)
-	officialAccount.client = NewClient(ClientBodyType(officialAccount.BodyType))
+
 	return officialAccount
 }
 
@@ -33,6 +33,14 @@ func (obj *OfficialAccount) parse(options ...OfficialAccountOption) {
 	for _, o := range options {
 		o(obj)
 	}
+}
+
+// Client ...
+func (obj *OfficialAccount) Client() *Client {
+	if obj.client == nil {
+		obj.client = NewClient(ClientBodyType(obj.BodyType))
+	}
+	return obj.client
 }
 
 // HandleAuthorizeNotify ...
