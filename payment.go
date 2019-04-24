@@ -1001,7 +1001,7 @@ func (obj *Payment) RequestURL(uri string) string {
 // RemoteURL ...
 func (obj *Payment) RemoteURL() string {
 	if obj == nil || obj.remoteURL == "" {
-		return apiMCHWeixin
+		return APIMCHDefault
 	}
 	return obj.remoteURL
 }

@@ -5,7 +5,15 @@ const getCallbackIP = "/cgi-bin/getcallbackip"
 const sandboxNew = "sandboxnew"
 const getSignKey = "pay/getsignkey"
 
-const apiMCHWeixin = "https://api.mch.weixin.qq.com"
+// APIMCHUS ...
+const APIMCHUS = "https://apius.mch.weixin.qq.com"
+
+// APIMCHHK ...
+const APIMCHHK = "https://apihk.mch.weixin.qq.com"
+
+// APIMCHDefault ...
+const APIMCHDefault = "https://api.mch.weixin.qq.com"
+
 const apiWeixin = "https://api.weixin.qq.com"
 const oauth2Authorize = "https://open.weixin.qq.com/connect/oauth2/authorize"
 const oauth2AccessToken = "https://api.weixin.qq.com/sns/oauth2/access_token"

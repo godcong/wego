@@ -50,5 +50,5 @@ func (obj *Sandbox) SignKey() Responder {
 	if obj.subAppID != "" {
 		m.Set("sub_appid", obj.subAppID)
 	}
-	return PostXML(util.URL(apiMCHWeixin, sandboxNew, getSignKey), nil, m)
+	return PostXML(util.URL(APIMCHDefault, sandboxNew, getSignKey), nil, m)
 }
