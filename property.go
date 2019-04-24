@@ -121,17 +121,14 @@ type JSSDKProperty struct {
 
 // Property 属性配置，各个接口用到的参数
 type Property struct {
-	JSSDK                 *JSSDKProperty
-	AccessToken           *AccessTokenProperty
-	AccessTokenOption     *AccessTokenOption
-	OAuth                 *OAuthProperty
-	OpenPlatform          *OpenPlatformProperty
-	OfficialAccount       *OfficialAccountProperty
-	OfficialAccountOption *OfficialAccountOption
-	MiniProgram           *MiniProgramProperty
-	Payment               *PaymentProperty
-	PaymentOption         *PaymentOption
-	SafeCert              *SafeCertProperty
+	JSSDK           *JSSDKProperty
+	AccessToken     *AccessTokenProperty
+	OAuth           *OAuthProperty
+	OpenPlatform    *OpenPlatformProperty
+	OfficialAccount *OfficialAccountProperty
+	MiniProgram     *MiniProgramProperty
+	Payment         *PaymentProperty
+	SafeCert        *SafeCertProperty
 }
 
 // ParseProperty ...
@@ -142,6 +139,10 @@ func ParseProperty(config *Config, v ...interface{}) (e error) {
 
 	for i := range v {
 		switch t := v[i].(type) {
+		case *Property:
+		//TODO:
+		case *SafeCertProperty:
+			e = parseSafeCertProperty(config, t)
 		case *JSSDKProperty:
 			e = parseJSSDKProperty(config, t)
 		case *AccessTokenProperty:
@@ -187,17 +188,11 @@ func parseJSSDKProperty(config *Config, property *JSSDKProperty) error {
 }
 
 func parsePaymentProperty(config *Config, property *PaymentProperty) error {
-	var cert SafeCertProperty
-	e := parseSafeCertProperty(config, &cert)
-	if e != nil {
-		return e
-	}
 	*property = PaymentProperty{
 		AppID:     config.AppID,
 		AppSecret: config.AppSecret,
 		MchID:     config.MchID,
 		Key:       config.MchKey,
-		SafeCert:  &cert,
 	}
 	return nil
 }
@@ -212,25 +207,11 @@ func parseSafeCertProperty(config *Config, property *SafeCertProperty) error {
 }
 
 func parseOfficialAccountProperty(config *Config, property *OfficialAccountProperty) (e error) {
-	//var token AccessTokenProperty
-	//e = parseAccessTokenProperty(config, &token)
-	//if e != nil {
-	//	return e
-	//}
-
-	//var oauth OAuthProperty
-	//e = parseOAuthProperty(config, &oauth)
-	//if e != nil {
-	//	return e
-	//}
-
 	*property = OfficialAccountProperty{
 		AppID:     config.AppID,
 		AppSecret: config.AppSecret,
 		Token:     config.Token,
 		AesKey:    config.AesKey,
-		//AccessToken: &token,
-		//OAuth: &oauth,
 	}
 	return nil
 }
