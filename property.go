@@ -122,16 +122,9 @@ type JSSDKProperty struct {
 	AccessToken *AccessTokenProperty
 }
 
-// JSSDKOption ...
-type JSSDKOption struct {
-	SubAppID string
-	URL      string
-}
-
 // Property 属性配置，各个接口用到的参数
 type Property struct {
 	JSSDK                 *JSSDKProperty
-	JSSDKOption           *JSSDKOption
 	AccessToken           *AccessTokenProperty
 	AccessTokenOption     *AccessTokenOption
 	OAuth                 *OAuthProperty

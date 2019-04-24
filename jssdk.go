@@ -23,9 +23,9 @@ type JSSDK struct {
 func NewJSSDK(property *JSSDKProperty, options ...JSSDKOption) *JSSDK {
 	jssdk := &JSSDK{
 		JSSDKProperty: property,
-		accessToken:   NewAccessToken(property.AccessToken),
+		//accessToken:   NewAccessToken(property.AccessToken),
 	}
-	jssdk.parse(options)
+	jssdk.parse(options...)
 	return jssdk
 }
 
@@ -222,12 +222,13 @@ func (obj *JSSDK) getCacheKey() string {
 	return fmt.Sprintf("godcong.wego.jssdk.ticket.%x", c[:])
 }
 
-func (obj *JSSDK) parse(options []JSSDKOption) {
+func (obj *JSSDK) parse(options ...JSSDKOption) {
 	if options == nil {
 		return
 	}
-	obj.subAppID = options[0].SubAppID
-	obj.url = options[0].URL
+	for _, o := range options {
+		o(obj)
+	}
 }
 
 func getTicketSignature(ticket, nonce, ts, url string) string {

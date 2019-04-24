@@ -122,3 +122,27 @@ func SandboxSubID(mch, app string) SandboxOption {
 		obj.subMchID = mch
 	}
 }
+
+// JSSDKOption ...
+type JSSDKOption func(obj *JSSDK)
+
+// JSSDKAccessToken ...
+func JSSDKAccessToken(token *AccessToken) JSSDKOption {
+	return func(obj *JSSDK) {
+		obj.accessToken = token
+	}
+}
+
+// JSSDKSubAppID ...
+func JSSDKSubAppID(id string) JSSDKOption {
+	return func(obj *JSSDK) {
+		obj.subAppID = id
+	}
+}
+
+// JSSDKURL ...
+func JSSDKURL(url string) JSSDKOption {
+	return func(obj *JSSDK) {
+		obj.url = url
+	}
+}
