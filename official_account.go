@@ -16,13 +16,6 @@ type OfficialAccount struct {
 	localHost string
 }
 
-// OfficialAccountOption ...
-type OfficialAccountOption struct {
-	BodyType   *BodyType
-	RemoteHost string
-	LocalHost  string
-}
-
 // NewOfficialAccount ...
 func NewOfficialAccount(config *OfficialAccountProperty, options ...*OfficialAccountOption) *OfficialAccount {
 	officialAccount := &OfficialAccount{

@@ -74,6 +74,16 @@ func PaymentScannedURL(s string) PaymentOption {
 	}
 }
 
+// OfficialAccountOption ...
+type OfficialAccountOption func(obj *OfficialAccount)
+
+// OfficialAccountBodyType ...
+func OfficialAccountBodyType(bodyType BodyType) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.BodyType = bodyType
+	}
+}
+
 // ClientOption ...
 type ClientOption func(obj *Client)
 

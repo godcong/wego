@@ -162,7 +162,7 @@ func (obj *JSSDK) ShareAddressConfig(token interface{}) *ShareAddressConfig {
 // BuildConfig ...
 type BuildConfig struct {
 	AppID     string   `json:"appID"`
-	JsAPIList []string `json:"jsApiList"`
+	JSAPIList []string `json:"jsApiList"`
 	NonceStr  string   `json:"nonceStr"`
 	Signature string   `json:"signature"`
 	Timestamp string   `json:"timestamp"`
@@ -181,7 +181,7 @@ func (obj *JSSDK) BuildConfig(url string, list ...string) *BuildConfig {
 		NonceStr:  util.GenerateNonceStr(),
 		Timestamp: util.Time(),
 		URL:       util.MustString(url, obj.getURL()),
-		JsAPIList: list,
+		JSAPIList: list,
 	}
 	config.Signature = getTicketSignature(ticket, config.NonceStr, config.Timestamp, config.URL)
 	return config
