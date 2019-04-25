@@ -76,6 +76,9 @@ func ToMap(p interface{}) Map {
 
 // CombineMaps ...
 func CombineMaps(p Map, m ...Map) Map {
+	if p == nil {
+		p = make(Map)
+	}
 	if m == nil {
 		return p
 	}
