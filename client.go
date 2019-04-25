@@ -50,7 +50,7 @@ type Client struct {
 	BodyType  BodyType
 	//useSafe   bool
 	//safeCert    *SafeCertProperty
-	//accessToken *AccessToken
+	accessToken *AccessToken
 	//timeout     int64
 	//keepAlive   int64
 }
@@ -88,9 +88,18 @@ func (obj *Client) parse(options ...ClientOption) {
 	}
 }
 
+// AccessToken ...
+func (obj *Client) AccessToken() util.Map {
+	if obj.accessToken != nil {
+		return obj.accessToken.KeyMap()
+	}
+	return nil
+}
+
 // Post ...
 func (obj *Client) Post(ctx context.Context, url string, query util.Map, body interface{}) Responder {
 	log.Debug("post ", url, body)
+	query.ReplaceJoin(obj.AccessToken())
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
@@ -102,6 +111,7 @@ func (obj *Client) Post(ctx context.Context, url string, query util.Map, body in
 // Get ...
 func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responder {
 	log.Debug("get ", url)
+	query.ReplaceJoin(obj.AccessToken())
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
@@ -159,22 +169,20 @@ func PostXML(url string, query util.Map, xml interface{}) Responder {
 	return client.Post(context.Background(), url, query, xml)
 }
 
+// Upload upload请求
+func Upload(url string, query, multi util.Map) Responder {
+	client := &Client{
+		BodyType: BodyTypeMultipart,
+	}
+
+	return client.Post(context.Background(), url, query, multi)
+}
+
 // Get get请求
 func Get(url string, query util.Map) Responder {
 	log.Println("get request:", url, query)
 	client := NewClient()
 	return client.Get(context.Background(), url, query)
-}
-
-// Upload upload请求
-func Upload(url string, query, multi util.Map) Responder {
-	client := NewClient()
-	return client.do(context.Background(), &RequestContent{
-		Method: POST,
-		URL:    url,
-		Query:  query,
-		Body:   buildBody(multi, BodyTypeMultipart),
-	})
 }
 
 // Context ...

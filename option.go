@@ -153,6 +153,20 @@ func ClientContext(ctx context.Context) ClientOption {
 	}
 }
 
+// ClientAccessToken ...
+func ClientAccessToken(token *AccessToken) ClientOption {
+	return func(obj *Client) {
+		obj.accessToken = token
+	}
+}
+
+// ClientAccessToken ...
+func ClientAccessTokenProperty(property *AccessTokenProperty) ClientOption {
+	return func(obj *Client) {
+		obj.accessToken = NewAccessToken(property)
+	}
+}
+
 // ClientSafeCert ...
 func ClientSafeCert(property *SafeCertProperty) ClientOption {
 	return func(obj *Client) {
