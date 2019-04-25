@@ -99,11 +99,10 @@ func (obj *Client) AccessToken() util.Map {
 // Post ...
 func (obj *Client) Post(ctx context.Context, url string, query util.Map, body interface{}) Responder {
 	log.Debug("post ", url, body)
-	query.ReplaceJoin(obj.AccessToken())
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
-		Query:  query,
+		Query:  util.CombineMaps(query, obj.AccessToken()),
 		Body:   buildBody(body, obj.BodyType),
 	})
 }
@@ -111,11 +110,10 @@ func (obj *Client) Post(ctx context.Context, url string, query util.Map, body in
 // Get ...
 func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responder {
 	log.Debug("get ", url)
-	query.ReplaceJoin(obj.AccessToken())
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
-		Query:  query,
+		Query:  util.CombineMaps(query, obj.AccessToken()),
 		Body:   buildBody(nil, obj.BodyType),
 	})
 }

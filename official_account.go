@@ -2,6 +2,7 @@ package wego
 
 import (
 	"bytes"
+	"context"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -22,6 +23,7 @@ type OfficialAccount struct {
 func NewOfficialAccount(config *OfficialAccountProperty, options ...OfficialAccountOption) *OfficialAccount {
 	officialAccount := &OfficialAccount{
 		OfficialAccountProperty: config,
+		BodyType:                BodyTypeJSON,
 	}
 	officialAccount.parse(options...)
 
@@ -40,7 +42,7 @@ func (obj *OfficialAccount) parse(options ...OfficialAccountOption) {
 // Client ...
 func (obj *OfficialAccount) Client() *Client {
 	if obj.client == nil {
-		obj.client = NewClient(ClientBodyType(obj.BodyType))
+		obj.client = NewClient(ClientBodyType(obj.BodyType), ClientAccessToken(obj.accessToken))
 	}
 	return obj.client
 }
@@ -194,8 +196,7 @@ HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_T
 */
 func (obj *OfficialAccount) GetCallbackIP() Responder {
 	url := util.URL(obj.RemoteURL(), getCallbackIPURLSuffix)
-	token := obj.accessToken.GetToken()
-	return Get(url, token.KeyMap())
+	return obj.Client().Get(context.Background(), url, nil)
 }
 
 //Send 根据OpenID列表群发【订阅号不可用，服务号认证后可用】
@@ -204,8 +205,7 @@ func (obj *OfficialAccount) GetCallbackIP() Responder {
 //https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) Send(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassSend)
-	token := obj.accessToken.GetToken()
-	return PostJSON(url, token.KeyMap(), msg)
+	return obj.Client().Post(context.Background(), url, nil, msg)
 }
 
 //SendAll 根据标签进行群发【订阅号与服务号认证后均可用】
@@ -214,8 +214,7 @@ func (obj *OfficialAccount) Send(msg util.Map) Responder {
 //https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) SendAll(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassSendall)
-	token := obj.accessToken.GetToken()
-	return PostJSON(url, token.KeyMap(), msg)
+	return obj.Client().Post(context.Background(), url, nil, msg)
 }
 
 //Preview 预览接口【订阅号与服务号认证后均可用】
@@ -225,8 +224,7 @@ func (obj *OfficialAccount) SendAll(msg util.Map) Responder {
 //https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) Preview(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassPreview)
-	token := obj.accessToken.GetToken()
-	return PostJSON(url, token.KeyMap(), msg)
+	return obj.Client().Post(context.Background(), url, nil, msg)
 
 }
 
