@@ -321,3 +321,23 @@ func (obj *OfficialAccount) CardGetHTML(cardID string) Responder {
 		"card_id": cardID,
 	})
 }
+
+//CardSetTestWhiteListByID 设置测试白名单(by openid)
+func (obj *OfficialAccount) CardSetTestWhiteListByID(list ...string) Responder {
+	return obj.CardSetTestWhiteList("openid", list)
+}
+
+//CardSetTestWhiteListByName 设置测试白名单(by username)
+func (obj *OfficialAccount) CardSetTestWhiteListByName(list ...string) Responder {
+	return obj.CardSetTestWhiteList("username", list)
+}
+
+//CardSetTestWhiteList 设置测试白名单
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/testwhitelist/set?access_token=TOKEN
+func (obj *OfficialAccount) CardSetTestWhiteList(typ string, list []string) Responder {
+	url := util.URL(obj.RemoteURL(), cardTestWhiteListSet)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		typ: list,
+	})
+}
