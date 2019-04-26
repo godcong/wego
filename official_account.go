@@ -419,3 +419,16 @@ func (obj *OfficialAccount) CardBatchGet(offset, count int, statusList []CardSta
 	url := util.URL(obj.RemoteURL(), cardBatchget)
 	return obj.Client().Post(context.Background(), url, nil, p)
 }
+
+//CardUpdate 更改卡券信息接口
+//	接口说明
+//	支持更新所有卡券类型的部分通用字段及特殊卡券（会员卡、飞机票、电影票、会议门票）中特定字段的信息。
+//	接口调用请求说明
+//	HTTP请求方式: POST URL:https://api.weixin.qq.com/card/update?access_token=TOKEN
+func (obj *OfficialAccount) CardUpdate(cardID string, p util.Map) Responder {
+	p = util.CombineMaps(util.Map{
+		"card_id": cardID,
+	}, p)
+	url := util.URL(obj.RemoteURL(), cardUpdate)
+	return obj.Client().Post(context.Background(), url, nil, p)
+}
