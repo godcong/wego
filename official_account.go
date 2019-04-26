@@ -375,3 +375,11 @@ func (obj *OfficialAccount) CardGetApplyProtocol() Responder {
 	url := util.URL(obj.RemoteURL(), cardGetApplyProtocol)
 	return obj.Client().Get(context.Background(), url, nil)
 }
+
+//CardGetColors 卡券开放类目查询接口
+//	HTTP请求方式: GET
+//	URL:https://api.weixin.qq.com/card/getcolors?access_token=TOKEN
+func (obj *OfficialAccount) CardGetColors() Responder {
+	url := util.URL(obj.RemoteURL(), cardGetColors)
+	return obj.Client().Get(context.Background(), url, nil)
+}
