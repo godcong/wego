@@ -383,3 +383,12 @@ func (obj *OfficialAccount) CardGetColors() Responder {
 	url := util.URL(obj.RemoteURL(), cardGetColors)
 	return obj.Client().Get(context.Background(), url, nil)
 }
+
+//CardCheckin 更新飞机票信息接口
+//	接口调用请求说明
+//	http请求方式: POST
+//	URL:https://api.weixin.qq.com/card/boardingpass/checkin?access_token=TOKEN
+func (obj *OfficialAccount) CardCheckin(p util.Map) Responder {
+	url := util.URL(obj.RemoteURL(), cardBoardingpassCheckin)
+	return obj.Client().Post(context.Background(), url, nil, p)
+}
