@@ -469,3 +469,13 @@ func (obj *OfficialAccount) CardModifyStock(cardID string, option util.Map) Resp
 		"card_id": cardID,
 	})
 }
+
+//CardGetCardAPITicket get ticket
+func (obj *OfficialAccount) CardGetCardAPITicket(refresh bool) {
+	obj.jssdk.GetTicket("wx_card", refresh)
+}
+
+// JSSDK ...
+func (obj *OfficialAccount) JSSDK() *JSSDK {
+	return obj.jssdk
+}
