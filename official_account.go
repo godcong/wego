@@ -298,3 +298,16 @@ func (obj *OfficialAccount) CardCheckCode(cardID string, code []string) Responde
 		"code":    code,
 	})
 }
+
+//CardGetCode 查询Code接口
+//	HTTP请求方式: POST
+//	HTTP调用:https://api.weixin.qq.com/card/code/get?access_token=TOKEN
+//	参数说明:
+//	参数名	必填	类型	示例值	描述
+//	code	是	string(20)	110201201245	单张卡券的唯一标准。
+//	card_id	否	string(32)	pFS7Fjg8kV1I dDz01r4SQwMkuCKc	卡券ID代表一类卡券。自定义code卡券必填。
+//	check_consume	否	bool	true	是否校验code核销状态，填入true和false时的code异常状态返回数据不同。
+func (obj *OfficialAccount) CardGetCode(p util.Map) Responder {
+	url := util.URL(obj.RemoteURL(), cardCodeGet)
+	return obj.Client().Post(context.Background(), url, nil, p)
+}
