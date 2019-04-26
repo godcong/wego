@@ -167,7 +167,7 @@ func ClientAccessToken(token *AccessToken) ClientOption {
 	}
 }
 
-// ClientAccessToken ...
+// ClientAccessTokenProperty ...
 func ClientAccessTokenProperty(property *AccessTokenProperty) ClientOption {
 	return func(obj *Client) {
 		obj.accessToken = NewAccessToken(property)
