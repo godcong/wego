@@ -341,3 +341,11 @@ func (obj *OfficialAccount) CardSetTestWhiteList(typ string, list []string) Resp
 		typ: list,
 	})
 }
+
+//CardCreateQrCode 创建二维码
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/qrcode/create?access_token=TOKEN
+func (obj *OfficialAccount) CardCreateQrCode(action *QrCodeAction) Responder {
+	url := util.URL(obj.RemoteURL(), cardQrcodeCreate)
+	return obj.Client().Post(context.Background(), url, nil, action)
+}
