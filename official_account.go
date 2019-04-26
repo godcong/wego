@@ -349,3 +349,12 @@ func (obj *OfficialAccount) CardCreateQrCode(action *QrCodeAction) Responder {
 	url := util.URL(obj.RemoteURL(), cardQrcodeCreate)
 	return obj.Client().Post(context.Background(), url, nil, action)
 }
+
+//CardCreate 创建卡券
+//	HTTP请求方式: POST
+//	URL: https://api.weixin.qq.com/card/create?access_token=ACCESS_TOKEN
+//	type *OneCard or Map
+func (obj *OfficialAccount) CardCreate(maps util.MapAble) Responder {
+	url := util.URL(obj.RemoteURL(), cardCreate)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"card": maps})
+}
