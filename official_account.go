@@ -203,7 +203,7 @@ func (obj *OfficialAccount) GetCallbackIP() Responder {
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) Send(msg util.Map) Responder {
+func (obj *OfficialAccount) MessageSend(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassSend)
 	return obj.Client().Post(context.Background(), url, nil, msg)
 }
@@ -212,7 +212,7 @@ func (obj *OfficialAccount) Send(msg util.Map) Responder {
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) SendAll(msg util.Map) Responder {
+func (obj *OfficialAccount) MessageSendAll(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassSendall)
 	return obj.Client().Post(context.Background(), url, nil, msg)
 }
@@ -222,7 +222,7 @@ func (obj *OfficialAccount) SendAll(msg util.Map) Responder {
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) Preview(msg util.Map) Responder {
+func (obj *OfficialAccount) MessagePreview(msg util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), messageMassPreview)
 	return obj.Client().Post(context.Background(), url, nil, msg)
 
@@ -233,10 +233,9 @@ func (obj *OfficialAccount) Preview(msg util.Map) Responder {
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) Delete(msgID string) Responder {
-	url := util.URL(obj.RemoteURL(), messageMassPreview)
-	token := obj.accessToken.GetToken()
-	return PostJSON(url, token.KeyMap(), util.Map{"msg_id": msgID})
+func (obj *OfficialAccount) MessageDelete(msgID string) Responder {
+	url := util.URL(obj.RemoteURL(), messageMassDelete)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"msg_id": msgID})
 
 }
 
@@ -244,14 +243,13 @@ func (obj *OfficialAccount) Delete(msgID string) Responder {
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) Status(msgID string) Responder {
-	url := util.URL(obj.RemoteURL(), messageMassPreview)
-	token := obj.accessToken.GetToken()
-	return PostJSON(url, token.KeyMap(), util.Map{"msg_id": msgID})
+func (obj *OfficialAccount) MessageStatus(msgID string) Responder {
+	url := util.URL(obj.RemoteURL(), messageMassGet)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"msg_id": msgID})
 
 }
 
 // SendText ...
-func (obj *OfficialAccount) SendText() {
+func (obj *OfficialAccount) MessageSendText() {
 
 }
