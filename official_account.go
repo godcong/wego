@@ -264,3 +264,15 @@ func (obj *OfficialAccount) CardCreateLandingPage(p util.Map) Responder {
 	return obj.Client().Post(context.Background(), url, nil, p)
 
 }
+
+//CardDeposit 导入code接口
+//	HTTP请求方式: POST
+//	URL:http://api.weixin.qq.com/card/code/deposit?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) CardDeposit(cardID string, code []string) Responder {
+	url := util.URL(obj.RemoteURL(), cardCodeDeposit)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"card_id": cardID,
+		"code":    code,
+	})
+
+}
