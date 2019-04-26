@@ -461,3 +461,11 @@ func (obj *OfficialAccount) CardSetPayCell(cardID string, isOpen bool) Responder
 		"card_id": cardID,
 	})
 }
+
+// CardModifyStock ...
+func (obj *OfficialAccount) CardModifyStock(cardID string, option util.Map) Responder {
+	url := util.URL(obj.RemoteURL(), cardModifystock)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"card_id": cardID,
+	})
+}
