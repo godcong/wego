@@ -311,3 +311,13 @@ func (obj *OfficialAccount) CardGetCode(p util.Map) Responder {
 	url := util.URL(obj.RemoteURL(), cardCodeGet)
 	return obj.Client().Post(context.Background(), url, nil, p)
 }
+
+//CardGetHTML 图文消息群发卡券
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/mpnews/gethtml?access_token=TOKEN
+func (obj *OfficialAccount) CardGetHTML(cardID string) Responder {
+	url := util.URL(obj.RemoteURL(), cardMPNewsGetHTML)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"card_id": cardID,
+	})
+}
