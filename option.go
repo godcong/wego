@@ -108,6 +108,13 @@ func OfficialAccountOauth(oauth *OAuthProperty) OfficialAccountOption {
 	}
 }
 
+// OfficialAccountJSSDK ...
+func OfficialAccountJSSDK(jssdk *JSSDK) OfficialAccountOption {
+	return func(obj *OfficialAccount) {
+		obj.jssdk = jssdk
+	}
+}
+
 // OfficialAccountAccessTokenProperty ...
 func OfficialAccountAccessTokenProperty(property *AccessTokenProperty) OfficialAccountOption {
 	return func(obj *OfficialAccount) {

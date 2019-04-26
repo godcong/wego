@@ -23,7 +23,6 @@ type JSSDK struct {
 func NewJSSDK(property *JSSDKProperty, options ...JSSDKOption) *JSSDK {
 	jssdk := &JSSDK{
 		JSSDKProperty: property,
-		//accessToken:   NewAccessToken(property.AccessToken),
 	}
 	jssdk.parse(options...)
 	return jssdk
