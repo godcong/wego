@@ -276,3 +276,14 @@ func (obj *OfficialAccount) CardDeposit(cardID string, code []string) Responder 
 	})
 
 }
+
+//CardGetDepositCount 查询导入code数目
+//
+//  HTTP请求方式: POST
+//  URL:http://api.weixin.qq.com/card/code/getdepositcount?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) CardGetDepositCount(cardID string) Responder {
+	url := util.URL(obj.RemoteURL(), cardCodeGetDepositCount)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"card_id": cardID,
+	})
+}
