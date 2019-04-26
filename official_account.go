@@ -358,3 +358,12 @@ func (obj *OfficialAccount) CardCreate(maps util.MapAble) Responder {
 	url := util.URL(obj.RemoteURL(), cardCreate)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{"card": maps})
 }
+
+//CardGet 查看卡券详情
+//	开发者可以调用该接口查询某个card_id的创建信息、审核状态以及库存数量。
+//	接口调用请求说明
+//	HTTP请求方式: POSTURL:https://api.weixin.qq.com/card/get?access_token=TOKEN
+func (obj *OfficialAccount) CardGet(cardID string) Responder {
+	url := util.URL(obj.RemoteURL(), cardGet)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"card_id": cardID})
+}
