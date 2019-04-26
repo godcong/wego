@@ -287,3 +287,14 @@ func (obj *OfficialAccount) CardGetDepositCount(cardID string) Responder {
 		"card_id": cardID,
 	})
 }
+
+//CardCheckCode 核查code接口
+//	HTTP请求方式: POST
+//	HTTP调用:http://api.weixin.qq.com/card/code/checkcode?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) CardCheckCode(cardID string, code []string) Responder {
+	url := util.URL(obj.RemoteURL(), cardCodeCheckCode)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"card_id": cardID,
+		"code":    code,
+	})
+}
