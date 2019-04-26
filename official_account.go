@@ -452,3 +452,12 @@ func (obj *OfficialAccount) CardGetUserCards(openID, cardID string) Responder {
 		"card_id": cardID,
 	})
 }
+
+// CardSetPayCell ...
+func (obj *OfficialAccount) CardSetPayCell(cardID string, isOpen bool) Responder {
+	url := util.URL(obj.RemoteURL(), cardPaycellSet)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"is_open": isOpen,
+		"card_id": cardID,
+	})
+}
