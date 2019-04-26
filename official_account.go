@@ -14,6 +14,7 @@ type OfficialAccount struct {
 	BodyType    BodyType
 	oauth       OAuthProperty
 	client      *Client
+	jssdk       *JSSDK
 	accessToken *AccessToken
 	remoteURL   string
 	localHost   string
@@ -199,7 +200,7 @@ func (obj *OfficialAccount) GetCallbackIP() Responder {
 	return obj.Client().Get(context.Background(), url, nil)
 }
 
-//Send 根据OpenID列表群发【订阅号不可用，服务号认证后可用】
+//MessageSend 根据OpenID列表群发【订阅号不可用，服务号认证后可用】
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN
@@ -208,7 +209,7 @@ func (obj *OfficialAccount) MessageSend(msg util.Map) Responder {
 	return obj.Client().Post(context.Background(), url, nil, msg)
 }
 
-//SendAll 根据标签进行群发【订阅号与服务号认证后均可用】
+//MessageSendAll 根据标签进行群发【订阅号与服务号认证后均可用】
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN
@@ -217,7 +218,7 @@ func (obj *OfficialAccount) MessageSendAll(msg util.Map) Responder {
 	return obj.Client().Post(context.Background(), url, nil, msg)
 }
 
-//Preview 预览接口【订阅号与服务号认证后均可用】
+//MessagePreview 预览接口【订阅号与服务号认证后均可用】
 //开发者可通过该接口发送消息给指定用户，在手机端查看消息的样式和排版。为了满足第三方平台开发者的需求，在保留对openID预览能力的同时，增加了对指定微信号发送预览的能力，但该能力每日调用次数有限制（100次），请勿滥用。
 //接口调用请求说明
 //http请求方式: POST
@@ -228,7 +229,7 @@ func (obj *OfficialAccount) MessagePreview(msg util.Map) Responder {
 
 }
 
-//Delete 删除群发【订阅号与服务号认证后均可用】
+//MessageDelete 删除群发【订阅号与服务号认证后均可用】
 //群发之后，随时可以通过该接口删除群发。
 //接口调用请求说明
 //http请求方式: POST
@@ -239,7 +240,7 @@ func (obj *OfficialAccount) MessageDelete(msgID string) Responder {
 
 }
 
-//Status 查询群发消息发送状态【订阅号与服务号认证后均可用】
+//MessageStatus 查询群发消息发送状态【订阅号与服务号认证后均可用】
 //接口调用请求说明
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN
@@ -249,7 +250,17 @@ func (obj *OfficialAccount) MessageStatus(msgID string) Responder {
 
 }
 
-// SendText ...
+// MessageSendText ...
 func (obj *OfficialAccount) MessageSendText() {
+
+}
+
+//CardCreateLandingPage 创建货架接口
+//	HTTP请求方式: POST
+//	URL:https://api.weixin.qq.com/card/landingpage/create?access_token=$TOKEN
+//	func (c *OfficialAccount) CreateLandingPage(page *CardLandingPage) Responder {
+func (obj *OfficialAccount) CardCreateLandingPage(p util.Map) Responder {
+	url := util.URL(obj.RemoteURL(), cardLandingPageCreate)
+	return obj.Client().Post(context.Background(), url, nil, p)
 
 }
