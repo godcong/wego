@@ -406,3 +406,16 @@ func (obj *OfficialAccount) CardCategories() Responder {
 	url := util.URL(obj.RemoteURL(), cardGetapplyprotocol)
 	return obj.Client().Get(context.Background(), url, nil)
 }
+
+//CardBatchGet 批量查询卡券列表
+//	接口调用请求说明
+//	HTTP请求方式: POST URL:https://api.weixin.qq.com/card/batchget?access_token=TOKEN
+func (obj *OfficialAccount) CardBatchGet(offset, count int, statusList []CardStatus) Responder {
+	p := util.Map{
+		"offset":      offset,
+		"count":       count,
+		"status_list": statusList,
+	}
+	url := util.URL(obj.RemoteURL(), cardBatchget)
+	return obj.Client().Post(context.Background(), url, nil, p)
+}
