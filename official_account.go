@@ -367,3 +367,11 @@ func (obj *OfficialAccount) CardGet(cardID string) Responder {
 	url := util.URL(obj.RemoteURL(), cardGet)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{"card_id": cardID})
 }
+
+//CardGetApplyProtocol 卡券开放类目查询接口
+//	HTTP请求方式: GET
+//	URL:https://api.weixin.qq.com/card/getapplyprotocol?access_token=TOKEN
+func (obj *OfficialAccount) CardGetApplyProtocol() Responder {
+	url := util.URL(obj.RemoteURL(), cardGetApplyProtocol)
+	return obj.Client().Get(context.Background(), url, nil)
+}
