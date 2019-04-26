@@ -5,6 +5,7 @@ import (
 	"context"
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/xerrors"
 	"strings"
 )
 
@@ -470,15 +471,21 @@ func (obj *OfficialAccount) CardModifyStock(cardID string, option util.Map) Resp
 	})
 }
 
-//CardGetCardAPITicket get ticket
-func (obj *OfficialAccount) CardGetCardAPITicket(refresh bool) {
-	obj.jssdk.GetTicket("wx_card", refresh)
+//GetCardAPITicket get ticket
+func (obj *OfficialAccount) GetCardAPITicket(refresh bool) (string, error) {
+	jssdk, err := obj.JSSDK()
+	if err != nil {
+		return "", err
+	}
+	return jssdk.GetTicket("wx_card", refresh), nil
 }
 
 // JSSDK ...
-func (obj *OfficialAccount) JSSDK() *JSSDK {
-	//TODO:need fix
-	return obj.jssdk
+func (obj *OfficialAccount) JSSDK() (*JSSDK, error) {
+	if obj.jssdk == nil {
+		return nil, xerrors.New("must add jssdk on new")
+	}
+	return obj.jssdk, nil
 }
 
 /*
