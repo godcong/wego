@@ -477,5 +477,36 @@ func (obj *OfficialAccount) CardGetCardAPITicket(refresh bool) {
 
 // JSSDK ...
 func (obj *OfficialAccount) JSSDK() *JSSDK {
+	//TODO:need fix
 	return obj.jssdk
+}
+
+/*
+CommentOpen 打开文章评论
+ https 请求方式: POST
+ https://api.weixin.qq.com/cgi-bin/comment/open?access_token=ACCESS_TOKEN
+ 失败:
+  {"errcode":88000,"errmsg":"without comment privilege"}
+*/
+func (obj *OfficialAccount) CommentOpen(id, index int) Responder {
+	url := util.URL(obj.RemoteURL(), commentOpenURLSuffix)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"msg_data_id": id,
+		"index":       index,
+	})
+}
+
+/*
+CommentClose 关闭评论
+ https 请求方式: POST
+ https://api.weixin.qq.com/cgi-bin/comment/close?access_token=ACCESS_TOKEN
+ 失败:
+ {"errcode":88000,"errmsg":"without comment privilege"}
+*/
+func (obj *OfficialAccount) CommentClose(id, index int) Responder {
+	url := util.URL(obj.RemoteURL(), commentCloseURLSuffix)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"msg_data_id": id,
+		"index":       index,
+	})
 }
