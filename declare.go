@@ -208,29 +208,3 @@ const POST = "POST"
 
 // GET ...
 const GET = "GET"
-
-// CardScene ...
-type CardScene string
-
-// CardSceneNearBy ...
-const (
-	CardSceneNearBy         CardScene = "SCENE_NEAR_BY"          //CardSceneNearBy 附近
-	CardSceneMenu           CardScene = "SCENE_MENU"             //CardSceneMenu 自定义菜单
-	CardSceneQrcode         CardScene = "SCENE_QRCODE"           //CardSceneQrcode 二维码
-	CardSceneArticle        CardScene = "SCENE_ARTICLE"          //CardSceneArticle 公众号文章
-	CardSceneH5             CardScene = "SCENE_H5"               //CardSceneH5 H5页面
-	CardSceneIvr            CardScene = "SCENE_IVR"              //CardSceneIvr 自动回复
-	CardSceneCardCustomCell CardScene = "SCENE_CARD_CUSTOM_CELL" //CardSceneCardCustomCell 卡券自定义cell
-)
-
-//支持开发者拉出指定状态的卡券列表
-type CardStatus string
-
-// CARD_STATUS_NOT_VERIFY ...
-const (
-	CARD_STATUS_NOT_VERIFY  CardStatus = "CARD_STATUS_NOT_VERIFY"  //待审核
-	CARD_STATUS_VERIFY_FAIL CardStatus = "CARD_STATUS_VERIFY_FAIL" //审核失败
-	CARD_STATUS_VERIFY_OK   CardStatus = "CARD_STATUS_VERIFY_OK"   //通过审核
-	CARD_STATUS_DELETE      CardStatus = "CARD_STATUS_DELETE"      //卡券被商户删除
-	CARD_STATUS_DISPATCH    CardStatus = "CARD_STATUS_DISPATCH"    //在公众平台投放过的卡券；
-)
