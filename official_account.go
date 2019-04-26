@@ -443,3 +443,12 @@ func (obj *OfficialAccount) CardDelete(cardID string) Responder {
 		"card_id": cardID,
 	})
 }
+
+// CardGetUserCards ...
+func (obj *OfficialAccount) CardGetUserCards(openID, cardID string) Responder {
+	url := util.URL(obj.RemoteURL(), cardUserGetcardlist)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"openid":  openID,
+		"card_id": cardID,
+	})
+}
