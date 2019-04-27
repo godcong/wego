@@ -567,3 +567,20 @@ func (obj *OfficialAccount) CommentUnmarkElect(id, index, userCommentID int) Res
 		"user_comment_id": userCommentID,
 	})
 }
+
+/*CommentDelete 删除评论
+https 请求方式: POST
+https://api.weixin.qq.com/cgi-bin/comment/delete?access_token=ACCESS_TOKEN
+参数	是否必须	类型	说明
+id	是	int	群发返回的msg_data_id
+index	否	int	多图文时，用来指定第几篇图文，从0开始，不带默认操作该msg_data_id的第一篇图文
+user_comment_id	是	int	用户评论id
+*/
+func (obj *OfficialAccount) CommentDelete(id, index, userCommentID int) Responder {
+	url := util.URL(obj.RemoteURL(), commentDeleteURLSuffix)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"msg_data_id":     id,
+		"index":           index,
+		"user_comment_id": userCommentID,
+	})
+}
