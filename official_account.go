@@ -612,11 +612,29 @@ id	是	int	群发返回的msg_data_id
 index	否	int	多图文时，用来指定第几篇图文，从0开始，不带默认操作该msg_data_id的第一篇图文
 user_comment_id	是	int	评论id
 */
-func (obj *OfficialAccount) CommentReplyDelete(id, index, userCommentID int) core.Responder {
+func (obj *OfficialAccount) CommentReplyDelete(id, index, userCommentID int) Responder {
 	url := util.URL(obj.RemoteURL(), commentReplyDeleteURLSuffix)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
 		"user_comment_id": userCommentID,
 	})
+}
+
+/*CurrentAutoReplyInfo ...
+http请求方式: GET（请使用https协议）
+https://api.weixin.qq.com/cgi-bin/get_current_autoreply_info?access_token=ACCESS_TOKEN
+*/
+func (obj *OfficialAccount) CurrentAutoReplyInfo() Responder {
+	url := util.URL(obj.RemoteURL(), getCurrentAutoReplyInfo)
+	return obj.Client().Get(context.Background(), url, nil)
+}
+
+/*CurrentSelfMenuInfo ...
+http请求方式: GET（请使用https协议）
+https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN
+*/
+func (obj *OfficialAccount) CurrentSelfMenuInfo() Responder {
+	url := util.URL(obj.RemoteURL(), getCurrentSelfMenuInfo)
+	return obj.Client().Get(context.Background(), url, nil)
 }
