@@ -679,3 +679,14 @@ func (obj *OfficialAccount) DataCubeGetArticleSummary(beginDate, endDate time.Ti
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//DataCubeGetArticleTotal 获取图文群发总数据（getarticletotal）	1
+// https://api.weixin.qq.com/datacube/getarticletotal?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetArticleTotal(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetArticleTotal", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetArticleTotalURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
