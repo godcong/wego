@@ -644,8 +644,9 @@ func (obj *OfficialAccount) dataCubeGet(uri, beginDate, endDate string) Responde
 	return obj.Client().Post(context.Background(), url, nil, util.Map{"begin_date": beginDate, "end_date": endDate})
 }
 
-//DataCubeGetUserSummary 获取用户增减数据（getusersummary）	7
-// https://api.weixin.qq.com/datacube/getusersummary?access_token=ACCESS_TOKEN
+/*DataCubeGetUserSummary 获取用户增减数据（getusersummary）	7
+https://api.weixin.qq.com/datacube/getusersummary?access_token=ACCESS_TOKEN
+*/
 func (obj *OfficialAccount) DataCubeGetUserSummary(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserSummary", beginDate, endDate)
 	return obj.dataCubeGet(
@@ -655,12 +656,25 @@ func (obj *OfficialAccount) DataCubeGetUserSummary(beginDate, endDate time.Time)
 	)
 }
 
-//GetUserCumulate 获取累计用户数据（getusercumulate）	7
-// https://api.weixin.qq.com/datacube/getusercumulate?access_token=ACCESS_TOKEN
+/*DataCubeGetUserCumulate 获取累计用户数据（getusercumulate）	7
+https://api.weixin.qq.com/datacube/getusercumulate?access_token=ACCESS_TOKEN
+*/
 func (obj *OfficialAccount) DataCubeGetUserCumulate(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserCumulate", beginDate, endDate)
 	return obj.dataCubeGet(
 		dataCubeGetUserCumulateURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+/*DataCubeGetArticleSummary 获取图文群发每日数据（getarticlesummary）	1
+https://api.weixin.qq.com/datacube/getarticlesummary?access_token=ACCESS_TOKEN
+*/
+func (obj *OfficialAccount) DataCubeGetArticleSummary(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetArticleSummary", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetArticleSummaryURLSuffix,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
