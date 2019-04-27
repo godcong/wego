@@ -704,8 +704,9 @@ func (obj *OfficialAccount) DataCubeGetUserRead(beginDate, endDate time.Time) Re
 	)
 }
 
-//DataCubeGetUserReadHour 获取图文统计分时数据（getuserreadhour）	1
-// https://api.weixin.qq.com/datacube/getuserreadhour?access_token=ACCESS_TOKEN
+/*DataCubeGetUserReadHour 获取图文统计分时数据（getuserreadhour）	1
+https://api.weixin.qq.com/datacube/getuserreadhour?access_token=ACCESS_TOKEN
+*/
 func (obj *OfficialAccount) DataCubeGetUserReadHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
@@ -715,8 +716,9 @@ func (obj *OfficialAccount) DataCubeGetUserReadHour(beginDate, endDate time.Time
 	)
 }
 
-//DataCubeGetUserShare 获取图文分享转发数据（getusershare）	7
-// https://api.weixin.qq.com/datacube/getusershare?access_token=ACCESS_TOKEN
+/*DataCubeGetUserShare 获取图文分享转发数据（getusershare）	7
+https://api.weixin.qq.com/datacube/getusershare?access_token=ACCESS_TOKEN
+*/
 func (obj *OfficialAccount) DataCubeGetUserShare(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
@@ -726,12 +728,25 @@ func (obj *OfficialAccount) DataCubeGetUserShare(beginDate, endDate time.Time) R
 	)
 }
 
-//DataCubeGetUserShareHour 获取图文分享转发分时数据（getusersharehour）	1
-// https://api.weixin.qq.com/datacube/getusersharehour?access_token=ACCESS_TOKEN
+/*DataCubeGetUserShareHour 获取图文分享转发分时数据（getusersharehour）	1
+https://api.weixin.qq.com/datacube/getusersharehour?access_token=ACCESS_TOKEN
+*/
 func (obj *OfficialAccount) DataCubeGetUserShareHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
 		dataCubeGetUserShareHourURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+/*DataCubeGetUpstreamMsg 获取消息发送概况数据（getupstreammsg）	7
+https://api.weixin.qq.com/datacube/getupstreammsg?access_token=ACCESS_TOKEN
+*/
+func (obj *OfficialAccount) DataCubeGetUpstreamMsg(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgURLSuffix,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
