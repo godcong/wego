@@ -654,3 +654,14 @@ func (obj *OfficialAccount) DataCubeGetUserSummary(beginDate, endDate time.Time)
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//GetUserCumulate 获取累计用户数据（getusercumulate）	7
+// https://api.weixin.qq.com/datacube/getusercumulate?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUserCumulate(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUserCumulate", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUserCumulateURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
