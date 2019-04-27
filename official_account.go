@@ -751,3 +751,14 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsg(beginDate, endDate time.Time)
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//DataCubeGetUpstreamMsgHour 获取消息分送分时数据（getupstreammsghour）	1
+// https://api.weixin.qq.com/datacube/getupstreammsghour?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUpstreamMsgHour(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgHourURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
