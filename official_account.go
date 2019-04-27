@@ -725,3 +725,14 @@ func (obj *OfficialAccount) DataCubeGetUserShare(beginDate, endDate time.Time) R
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//DataCubeGetUserShareHour 获取图文分享转发分时数据（getusersharehour）	1
+// https://api.weixin.qq.com/datacube/getusersharehour?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUserShareHour(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUserShareHourURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
