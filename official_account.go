@@ -703,3 +703,14 @@ func (obj *OfficialAccount) DataCubeGetUserRead(beginDate, endDate time.Time) Re
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//DataCubeGetUserReadHour 获取图文统计分时数据（getuserreadhour）	1
+// https://api.weixin.qq.com/datacube/getuserreadhour?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUserReadHour(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUserReadHourURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
