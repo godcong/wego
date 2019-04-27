@@ -603,3 +603,20 @@ func (obj *OfficialAccount) CommentReplyAdd(id, index, userCommentID int, conten
 		"content":         content,
 	})
 }
+
+/*CommentReplyDelete 删除回复
+https 请求方式: POST
+https://api.weixin.qq.com/cgi-bin/comment/reply/delete?access_token=ACCESS_TOKEN
+参数	是否必须	类型	说明
+id	是	int	群发返回的msg_data_id
+index	否	int	多图文时，用来指定第几篇图文，从0开始，不带默认操作该msg_data_id的第一篇图文
+user_comment_id	是	int	评论id
+*/
+func (obj *OfficialAccount) CommentReplyDelete(id, index, userCommentID int) core.Responder {
+	url := util.URL(obj.RemoteURL(), commentReplyDeleteURLSuffix)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
+		"msg_data_id":     id,
+		"index":           index,
+		"user_comment_id": userCommentID,
+	})
+}
