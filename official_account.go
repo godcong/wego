@@ -762,3 +762,79 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgHour(beginDate, endDate time.T
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
+
+//DataCubeGetUpstreamMsgWeek 获取消息发送周数据（getupstreammsgweek）	30
+// https://api.weixin.qq.com/datacube/getupstreammsgweek?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUpstreamMsgWeek(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgWeekURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+//DataCubeGetUpstreamMsgDist 获取消息发送分布数据（getupstreammsgdist）	15
+// https://api.weixin.qq.com/datacube/getupstreammsgdist?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUpstreamMsgDist(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgDistURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+//DataCubeGetUpstreamMsgDistWeek 获取消息发送分布周数据（getupstreammsgdistweek）	30
+// https://api.weixin.qq.com/datacube/getupstreammsgdistweek?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistWeek(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgDistWeekURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+// DataCubeGetUpstreamMsgDistMonth 获取消息发送分布月数据（getupstreammsgdistmonth）	30
+// https://api.weixin.qq.com/datacube/getupstreammsgdistmonth?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistMonth(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUpstreamMsgDistMonthURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+//DataCubeGetInterfaceSummary 获取接口分析数据（getinterfacesummary）	30
+// https://api.weixin.qq.com/datacube/getinterfacesummary?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetInterfaceSummary(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetInterfaceSummary", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetInterfaceSummaryURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+//DataCubeGetInterfaceSummaryHour 获取接口分析分时数据（getinterfacesummaryhour）	1
+// https://api.weixin.qq.com/datacube/getinterfacesummaryhour?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetInterfaceSummaryHour(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetInterfaceSummaryHour", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetInterfaceSummaryHourURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
+}
+
+// DataCubeget ...
+func (obj *OfficialAccount) DataCubeget(url, beginDate, endDate string) Responder {
+	key := d.accessToken.GetToken().KeyMap()
+	resp := core.PostJSON(
+		Link(url),
+		key,
+		util.Map{"begin_date": beginDate, "end_date": endDate})
+	return resp
+}
