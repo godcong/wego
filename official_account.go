@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"strings"
+	"time"
 )
 
 // OfficialAccount ...
@@ -637,4 +638,19 @@ https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_
 func (obj *OfficialAccount) CurrentSelfMenuInfo() Responder {
 	url := util.URL(obj.RemoteURL(), getCurrentSelfMenuInfo)
 	return obj.Client().Get(context.Background(), url, nil)
+}
+func (obj *OfficialAccount) dataCubeGet(uri, beginDate, endDate string) Responder {
+	url := util.URL(obj.RemoteURL(), uri)
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"begin_date": beginDate, "end_date": endDate})
+}
+
+//DataCubeGetUserSummary 获取用户增减数据（getusersummary）	7
+// https://api.weixin.qq.com/datacube/getusersummary?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) DataCubeGetUserSummary(beginDate, endDate time.Time) Responder {
+	log.Debug("DataCube|GetUserSummary", beginDate, endDate)
+	return obj.dataCubeGet(
+		dataCubeGetUserSummaryURLSuffix,
+		beginDate.Format(DatacubeTimeLayout),
+		endDate.Format(DatacubeTimeLayout),
+	)
 }
