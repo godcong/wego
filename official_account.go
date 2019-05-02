@@ -872,7 +872,7 @@ func (obj *OfficialAccount) MaterialAddMaterial(filePath string, mediaType Media
 		util.Map{"media": filePath})
 }
 
-//UploadVideo 新增其他类型永久素材
+//MaterialUploadVideo 新增其他类型永久素材
 // http请求方式: POST，需使用https
 // https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
 func (obj *OfficialAccount) MaterialUploadVideo(filePath string, title, introduction string) Responder {
@@ -889,5 +889,20 @@ func (obj *OfficialAccount) MaterialUploadVideo(filePath string, title, introduc
 				"title":        title,
 				"introduction": introduction,
 			},
+		})
+}
+
+//MaterialGet 获取永久素材
+// http请求方式: POST,https协议
+// https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) MaterialGet(mediaID string) Responder {
+	log.Debug("Material|Get", mediaID)
+	url := util.URL(obj.RemoteURL(), materialGetMaterial)
+	return obj.client.Post(
+		context.Background(),
+		url,
+		nil,
+		util.Map{
+			"media_id": mediaID,
 		})
 }
