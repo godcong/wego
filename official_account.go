@@ -829,6 +829,22 @@ func (obj *OfficialAccount) DataCubeGetInterfaceSummaryHour(beginDate, endDate t
 	)
 }
 
+/*MediaType MediaType */
+type MediaType string
+
+/*media types */
+const (
+	MediaTypeImage MediaType = "image"
+	MediaTypeVoice MediaType = "voice"
+	MediaTypeVideo MediaType = "video"
+	MediaTypeThumb MediaType = "thumb"
+)
+
+/*String transfer MediaType to string */
+func (m MediaType) String() string {
+	return string(m)
+}
+
 //MaterialAddNews 新增永久素材
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
@@ -837,4 +853,21 @@ func (obj *OfficialAccount) MaterialAddNews(p util.Map) Responder {
 	log.Debug("Material|AddNews", p)
 	url := util.URL(obj.RemoteURL(), materialAddNewsURLSuffix)
 	return obj.Client().Post(context.Background(), url, nil, p)
+}
+
+//MaterialAddMaterial 新增其他类型永久素材
+// http请求方式: POST，需使用https
+// https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
+func (obj *OfficialAccount) MaterialAddMaterial(filePath string, mediaType MediaType) Responder {
+	log.Debug("Material|AddMaterial", filePath, mediaType)
+	if mediaType == MediaTypeVideo {
+		log.Error("please use MaterialUploadVideo() function")
+	}
+	url := util.URL(obj.RemoteURL(), materialAddNewsURLSuffix)
+	p := obj.accessToken.KeyMap()
+	p.Set("type", mediaType)
+	return Upload(
+		url,
+		p,
+		util.Map{"media": filePath})
 }
