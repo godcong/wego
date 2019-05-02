@@ -828,13 +828,3 @@ func (obj *OfficialAccount) DataCubeGetInterfaceSummaryHour(beginDate, endDate t
 		endDate.Format(DatacubeTimeLayout),
 	)
 }
-
-// DataCubeget ...
-func (obj *OfficialAccount) DataCubeget(url, beginDate, endDate string) Responder {
-	key := d.accessToken.GetToken().KeyMap()
-	resp := core.PostJSON(
-		Link(url),
-		key,
-		util.Map{"begin_date": beginDate, "end_date": endDate})
-	return resp
-}
