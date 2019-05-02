@@ -833,8 +833,8 @@ func (obj *OfficialAccount) DataCubeGetInterfaceSummaryHour(beginDate, endDate t
 // http请求方式: POST，https协议
 // https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=ACCESS_TOKEN
 //func (m *Material) AddNews(articles []*media.Article) core.Responder {
-func (obj *OfficialAccount) MaterialAddNews(maps util.Map) Responder {
-	log.Debug("Material|AddNews", maps)
+func (obj *OfficialAccount) MaterialAddNews(p util.Map) Responder {
+	log.Debug("Material|AddNews", p)
 	url := util.URL(obj.RemoteURL(), materialAddNewsURLSuffix)
-	return obj.Client().Post(context.Background(), url, nil, maps)
+	return obj.Client().Post(context.Background(), url, nil, p)
 }
