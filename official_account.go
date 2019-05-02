@@ -183,7 +183,7 @@ HTTP请求方式:POST
 HTTP调用: https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
 */
 func (obj *OfficialAccount) ClearQuota() Responder {
-	url := util.URL(obj.RemoteURL(), clearQuotaURLSuffix)
+	url := util.URL(obj.RemoteURL(), clearQuota)
 	token := obj.accessToken.GetToken()
 
 	params := util.Map{
@@ -198,7 +198,7 @@ HTTP请求方式: GET
 HTTP调用:https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
 */
 func (obj *OfficialAccount) GetCallbackIP() Responder {
-	url := util.URL(obj.RemoteURL(), getCallbackIPURLSuffix)
+	url := util.URL(obj.RemoteURL(), getCallbackIP)
 	return obj.Client().Get(context.Background(), url, nil)
 }
 
@@ -496,7 +496,7 @@ https://api.weixin.qq.com/cgi-bin/comment/open?access_token=ACCESS_TOKEN
  {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (obj *OfficialAccount) CommentOpen(id, index int) Responder {
-	url := util.URL(obj.RemoteURL(), commentOpenURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentOpen)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id": id,
 		"index":       index,
@@ -510,7 +510,7 @@ https://api.weixin.qq.com/cgi-bin/comment/close?access_token=ACCESS_TOKEN
 {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (obj *OfficialAccount) CommentClose(id, index int) Responder {
-	url := util.URL(obj.RemoteURL(), commentCloseURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentClose)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id": id,
 		"index":       index,
@@ -524,7 +524,7 @@ https://api.weixin.qq.com/cgi-bin/comment/list?access_token=ACCESS_TOKEN
 {"errcode":88000,"errmsg":"without comment privilege"}
 */
 func (obj *OfficialAccount) CommentList(id, index, begin, count, typ int) Responder {
-	url := util.URL(obj.RemoteURL(), commentListURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentList)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id": id,
 		"index":       index,
@@ -544,7 +544,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	用户评论id
 */
 func (obj *OfficialAccount) CommentMarkElect(id, index, userCommentID int) Responder {
-	url := util.URL(obj.RemoteURL(), commentMarkelectURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentMarkelect)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
@@ -561,7 +561,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	用户评论id
 */
 func (obj *OfficialAccount) CommentUnmarkElect(id, index, userCommentID int) Responder {
-	url := util.URL(obj.RemoteURL(), commentUnmarkelectURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentUnmarkelect)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
@@ -578,7 +578,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	用户评论id
 */
 func (obj *OfficialAccount) CommentDelete(id, index, userCommentID int) Responder {
-	url := util.URL(obj.RemoteURL(), commentDeleteURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentDelete)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
@@ -596,7 +596,7 @@ user_comment_id	是	int	评论id
 content	是	string	回复内容
 */
 func (obj *OfficialAccount) CommentReplyAdd(id, index, userCommentID int, content string) Responder {
-	url := util.URL(obj.RemoteURL(), commentReplyAddURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentReplyAdd)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
@@ -614,7 +614,7 @@ index	否	int	多图文时，用来指定第几篇图文，从0开始，不带�
 user_comment_id	是	int	评论id
 */
 func (obj *OfficialAccount) CommentReplyDelete(id, index, userCommentID int) Responder {
-	url := util.URL(obj.RemoteURL(), commentReplyDeleteURLSuffix)
+	url := util.URL(obj.RemoteURL(), commentReplyDelete)
 	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"msg_data_id":     id,
 		"index":           index,
@@ -650,7 +650,7 @@ https://api.weixin.qq.com/datacube/getusersummary?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserSummary(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserSummary", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserSummaryURLSuffix,
+		dataCubeGetUserSummary,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -662,7 +662,7 @@ https://api.weixin.qq.com/datacube/getusercumulate?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserCumulate(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserCumulate", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserCumulateURLSuffix,
+		dataCubeGetUserCumulate,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -674,7 +674,7 @@ https://api.weixin.qq.com/datacube/getarticlesummary?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetArticleSummary(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetArticleSummary", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetArticleSummaryURLSuffix,
+		dataCubeGetArticleSummary,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -686,7 +686,7 @@ https://api.weixin.qq.com/datacube/getarticletotal?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetArticleTotal(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetArticleTotal", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetArticleTotalURLSuffix,
+		dataCubeGetArticleTotal,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -698,7 +698,7 @@ https://api.weixin.qq.com/datacube/getuserread?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserRead(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserRead", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserReadURLSuffix,
+		dataCubeGetUserRead,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -710,7 +710,7 @@ https://api.weixin.qq.com/datacube/getuserreadhour?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserReadHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserReadHourURLSuffix,
+		dataCubeGetUserReadHour,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -722,7 +722,7 @@ https://api.weixin.qq.com/datacube/getusershare?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserShare(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserShareURLSuffix,
+		dataCubeGetUserShare,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -734,7 +734,7 @@ https://api.weixin.qq.com/datacube/getusersharehour?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUserShareHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUserReadHour", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUserShareHourURLSuffix,
+		dataCubeGetUserShareHour,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -746,7 +746,7 @@ https://api.weixin.qq.com/datacube/getupstreammsg?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) DataCubeGetUpstreamMsg(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsg", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgURLSuffix,
+		dataCubeGetUpstreamMsg,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -757,7 +757,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsg(beginDate, endDate time.Time)
 func (obj *OfficialAccount) DataCubeGetUpstreamMsgHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsgHour", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgHourURLSuffix,
+		dataCubeGetUpstreamMsgHour,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -768,7 +768,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgHour(beginDate, endDate time.T
 func (obj *OfficialAccount) DataCubeGetUpstreamMsgWeek(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsgWeek", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgWeekURLSuffix,
+		dataCubeGetUpstreamMsgWeek,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -779,7 +779,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgWeek(beginDate, endDate time.T
 func (obj *OfficialAccount) DataCubeGetUpstreamMsgDist(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsgDist", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgDistURLSuffix,
+		dataCubeGetUpstreamMsgDist,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -790,7 +790,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgDist(beginDate, endDate time.T
 func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistWeek(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsgDistWeek", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgDistWeekURLSuffix,
+		dataCubeGetUpstreamMsgDistWeek,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -801,7 +801,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistWeek(beginDate, endDate ti
 func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistMonth(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetUpstreamMsgDistMonth", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetUpstreamMsgDistMonthURLSuffix,
+		dataCubeGetUpstreamMsgDistMonth,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -812,7 +812,7 @@ func (obj *OfficialAccount) DataCubeGetUpstreamMsgDistMonth(beginDate, endDate t
 func (obj *OfficialAccount) DataCubeGetInterfaceSummary(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetInterfaceSummary", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetInterfaceSummaryURLSuffix,
+		dataCubeGetInterfaceSummary,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -823,7 +823,7 @@ func (obj *OfficialAccount) DataCubeGetInterfaceSummary(beginDate, endDate time.
 func (obj *OfficialAccount) DataCubeGetInterfaceSummaryHour(beginDate, endDate time.Time) Responder {
 	log.Debug("DataCube|GetInterfaceSummaryHour", beginDate, endDate)
 	return obj.dataCubeGet(
-		dataCubeGetInterfaceSummaryHourURLSuffix,
+		dataCubeGetInterfaceSummaryHour,
 		beginDate.Format(DatacubeTimeLayout),
 		endDate.Format(DatacubeTimeLayout),
 	)
@@ -851,7 +851,7 @@ func (m MediaType) String() string {
 //func (m *Material) AddNews(articles []*media.Article) core.Responder {
 func (obj *OfficialAccount) MaterialAddNews(p util.Map) Responder {
 	log.Debug("Material|AddNews", p)
-	url := util.URL(obj.RemoteURL(), materialAddNewsURLSuffix)
+	url := util.URL(obj.RemoteURL(), materialAddNews)
 	return obj.Client().Post(context.Background(), url, nil, p)
 }
 
@@ -863,11 +863,31 @@ func (obj *OfficialAccount) MaterialAddMaterial(filePath string, mediaType Media
 	if mediaType == MediaTypeVideo {
 		log.Error("please use MaterialUploadVideo() function")
 	}
-	url := util.URL(obj.RemoteURL(), materialAddNewsURLSuffix)
+	url := util.URL(obj.RemoteURL(), materialAddMaterial)
 	p := obj.accessToken.KeyMap()
 	p.Set("type", mediaType)
 	return Upload(
 		url,
 		p,
 		util.Map{"media": filePath})
+}
+
+//UploadVideo 新增其他类型永久素材
+// http请求方式: POST，需使用https
+// https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN&type=TYPE
+func (obj *OfficialAccount) MaterialUploadVideo(filePath string, title, introduction string) Responder {
+	log.Debug("Media|UploadVideo", filePath, title, introduction)
+	url := util.URL(obj.RemoteURL(), materialAddMaterial)
+	p := obj.accessToken.KeyMap()
+	p.Set("type", MediaTypeVideo)
+	return Upload(
+		url,
+		p,
+		util.Map{
+			"media": filePath,
+			"description": util.Map{
+				"title":        title,
+				"introduction": introduction,
+			},
+		})
 }
