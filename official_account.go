@@ -946,3 +946,21 @@ func (obj *OfficialAccount) MaterialGetCount() Responder {
 	url := util.URL(obj.RemoteURL(), materialGetMaterialcount)
 	return obj.client.Get(context.Background(), url, nil)
 }
+
+//MaterialBatchGet 获取素材列表
+// http请求方式: POST
+// https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=ACCESS_TOKEN
+//参数说明
+//参数	是否必须	说明
+//type	是	素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+//offset	是	从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
+//count	是	返回素材的数量，取值在1到20之间
+func (obj *OfficialAccount) MaterialBatchGet(mediaType MediaType, offset, count int) Responder {
+	log.Debug("Material|BatchGet", mediaType, offset, count)
+	url := util.URL(obj.RemoteURL(), materialBatchgetMaterial)
+	return obj.client.Post(context.Background(), url, nil, util.Map{
+		"type":   mediaType.String(),
+		"offset": offset,
+		"count":  count,
+	})
+}
