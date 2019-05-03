@@ -937,3 +937,12 @@ func (obj *OfficialAccount) MaterialUpdateNews(mediaID string, index int, articl
 		"articles": articles,
 	})
 }
+
+//MaterialGetCount 获取素材总数
+// http请求方式: GET
+// https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) MaterialGetCount() Responder {
+	log.Debug("Material|GetMaterialCount")
+	url := util.URL(obj.RemoteURL(), materialGetMaterialcount)
+	return obj.client.Get(context.Background(), url, nil)
+}
