@@ -268,7 +268,7 @@ func (obj *Payment) AuthCodeToOpenid(authCode string) Responder {
 	m := make(util.Map)
 	m.Set("appid", obj.AppID)
 	m.Set("auth_code", authCode)
-	return obj.Request(authCodeToOpenidURLSuffix, m)
+	return obj.Request(authCodeToOpenid, m)
 }
 
 //BillDownload 下载对账单

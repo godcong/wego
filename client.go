@@ -88,12 +88,21 @@ func (obj *Client) parse(options ...ClientOption) {
 	}
 }
 
-// AccessToken ...
-func (obj *Client) AccessToken() util.Map {
+// GetToken ...
+func (obj *Client) GetToken() (util.Map, error) {
 	if obj.accessToken != nil {
-		return obj.accessToken.KeyMap()
+		return obj.accessToken.KeyMap(), nil
 	}
-	return nil
+	return nil, xerrors.New("nil accessToken")
+}
+
+// MustToken ...
+func (obj *Client) MustToken() (token util.Map) {
+	token, err := obj.GetToken()
+	if err != nil {
+		panic(err)
+	}
+	return token
 }
 
 // Post ...
@@ -102,7 +111,7 @@ func (obj *Client) Post(ctx context.Context, url string, query util.Map, body in
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
-		Query:  util.CombineMaps(query, obj.AccessToken()),
+		Query:  util.CombineMaps(query, obj.MustToken()),
 		Body:   buildBody(body, obj.BodyType),
 	})
 }
@@ -113,7 +122,7 @@ func (obj *Client) Get(ctx context.Context, url string, query util.Map) Responde
 	return obj.do(ctx, &RequestContent{
 		Method: POST,
 		URL:    url,
-		Query:  util.CombineMaps(query, obj.AccessToken()),
+		Query:  util.CombineMaps(query, obj.MustToken()),
 		Body:   buildBody(nil, obj.BodyType),
 	})
 }

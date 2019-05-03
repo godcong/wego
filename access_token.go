@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-/*AccessToken AccessToken */
+/*AccessToken GetToken */
 type AccessToken struct {
 	*AccessTokenProperty
 	remoteURL string
@@ -37,7 +37,7 @@ func tokenURL(obj *AccessToken) string {
 	if obj != nil && obj.tokenURL != "" {
 		return obj.tokenURL
 	}
-	return accessTokenURLSuffix
+	return accessToken
 }
 
 /*NewAccessToken NewAccessToken*/
@@ -60,14 +60,14 @@ func (obj *AccessToken) parse(options ...AccessTokenOption) {
 
 /*Refresh 刷新AccessToken */
 func (obj *AccessToken) Refresh() *AccessToken {
-	log.Debug("AccessToken|Refresh")
+	log.Debug("GetToken|Refresh")
 	obj.getToken(true)
 	return obj
 }
 
 /*GetRefreshToken 获取刷新token */
 func (obj *AccessToken) GetRefreshToken() *Token {
-	log.Debug("AccessToken|GetRefreshedToken")
+	log.Debug("GetToken|GetRefreshedToken")
 	return obj.getToken(true)
 }
 

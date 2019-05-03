@@ -118,7 +118,7 @@ func OfficialAccountJSSDK(jssdk *JSSDK) OfficialAccountOption {
 // OfficialAccountAccessTokenProperty ...
 func OfficialAccountAccessTokenProperty(property *AccessTokenProperty) OfficialAccountOption {
 	return func(obj *OfficialAccount) {
-		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessTokenURLSuffix))
+		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessToken))
 	}
 }
 
@@ -219,7 +219,7 @@ type JSSDKOption func(obj *JSSDK)
 // JSSDKAccessTokenProperty ...
 func JSSDKAccessTokenProperty(property *AccessTokenProperty) JSSDKOption {
 	return func(obj *JSSDK) {
-		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessTokenURLSuffix))
+		obj.accessToken = NewAccessToken(property, AccessTokenKey(accessTokenKey), AccessTokenURL(accessToken))
 	}
 }
 
