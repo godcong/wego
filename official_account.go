@@ -898,11 +898,16 @@ func (obj *OfficialAccount) MaterialUploadVideo(filePath string, title, introduc
 func (obj *OfficialAccount) MaterialGet(mediaID string) Responder {
 	log.Debug("Material|Get", mediaID)
 	url := util.URL(obj.RemoteURL(), materialGetMaterial)
-	return obj.client.Post(
-		context.Background(),
-		url,
-		nil,
-		util.Map{
-			"media_id": mediaID,
-		})
+	return obj.client.Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
+}
+
+//MaterialDel 删除永久素材
+// http请求方式: POST
+// https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) MaterialDel(mediaID string) Responder {
+	log.Debug("Material|Del", mediaID)
+	url := util.URL(obj.RemoteURL(), materialDelMaterial)
+	resp := obj.client.Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
+	return resp
+
 }
