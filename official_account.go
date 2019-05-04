@@ -1033,3 +1033,11 @@ func (obj *OfficialAccount) MediaGetJSSDK(mediaID string) Responder {
 	url := util.URL(obj.RemoteURL(), mediaGetJssdk)
 	return obj.client.Get(context.Background(), url, util.Map{"media_id": mediaID})
 }
+func (obj *OfficialAccount) mediaUploadImg(name string, filePath string) Responder {
+	log.Debug("Media|UploadImg", name, filePath)
+	url := util.URL(obj.RemoteURL(), mediaUploadImg)
+	p := obj.accessToken.KeyMap()
+	return Upload(url, p, util.Map{
+		name: filePath,
+	})
+}
