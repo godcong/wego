@@ -1012,3 +1012,15 @@ see Upload
 func (obj *OfficialAccount) MediaUploadImage(filePath string) Responder {
 	return obj.MediaUpload(filePath, MediaTypeImage)
 }
+
+/*MediaGet 获取临时素材
+http请求方式: GET,https调用
+https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
+请求示例（示例为通过curl命令获取多媒体文件）
+curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID"
+*/
+func (obj *OfficialAccount) MediaGet(mediaID string) Responder {
+	log.Debug("Media|Get", mediaID)
+	url := util.URL(obj.RemoteURL(), mediaGet)
+	return obj.client.Get(context.Background(), url, util.Map{"media_id": mediaID})
+}
