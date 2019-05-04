@@ -1058,3 +1058,15 @@ func (obj *OfficialAccount) MediaUploadImg(filePath string) Responder {
 func (obj *OfficialAccount) MediaUploadImgBuffer(filePath string) Responder {
 	return obj.mediaUploadImg("buffer", filePath)
 }
+
+//MenuCreate 创建菜单
+//个性化创建
+//https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) MenuCreate(buttons *Button) Responder {
+	log.Debug("Media|MenuCreate", buttons)
+	url := util.URL(obj.RemoteURL(), menuAddConditional)
+	if buttons.GetMatchRule() == nil {
+		url = util.URL(obj.RemoteURL(), menuCreate)
+	}
+	return obj.client.Post(context.Background(), url, nil, buttons)
+}
