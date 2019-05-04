@@ -984,3 +984,31 @@ func (obj *OfficialAccount) MediaUpload(filePath string, mediaType MediaType) Re
 			"media": filePath,
 		})
 }
+
+/*MediaUploadThumb UploadVoice
+see Upload
+*/
+func (obj *OfficialAccount) MediaUploadThumb(filePath string) Responder {
+	return obj.MediaUpload(filePath, MediaTypeThumb)
+}
+
+/*MediaUploadVoice UploadVoice
+see Upload
+*/
+func (obj *OfficialAccount) MediaUploadVoice(filePath string) Responder {
+	return obj.MediaUpload(filePath, MediaTypeVoice)
+}
+
+/*MediaUploadVideo UploadVideo
+see Upload
+*/
+func (obj *OfficialAccount) MediaUploadVideo(filePath string) Responder {
+	return obj.MediaUpload(filePath, MediaTypeVideo)
+}
+
+/*MediaUploadImage UploadImage
+see Upload
+*/
+func (obj *OfficialAccount) MediaUploadImage(filePath string) Responder {
+	return obj.MediaUpload(filePath, MediaTypeImage)
+}
