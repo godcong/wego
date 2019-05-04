@@ -1041,3 +1041,20 @@ func (obj *OfficialAccount) mediaUploadImg(name string, filePath string) Respond
 		name: filePath,
 	})
 }
+
+// MediaUploadImg 上传图文消息内的图片获取URL
+// http请求方式: POST，https协议
+// https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
+// 调用示例（使用curl命令，用FORM表单方式上传一个图片）:
+// curl -F media=@test.jpg "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN"
+func (obj *OfficialAccount) MediaUploadImg(filePath string) Responder {
+	return obj.mediaUploadImg("media", filePath)
+}
+
+// MediaUploadImgBuffer 上传图片接口
+// HTTP请求方式: POST/FROM
+// URL:https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN
+// 调用示例（使用curl命令，用FORM表单方式上传一个图片）:curl –Fbuffer=@test.jpg
+func (obj *OfficialAccount) MediaUploadImgBuffer(filePath string) Responder {
+	return obj.mediaUploadImg("buffer", filePath)
+}
