@@ -964,3 +964,23 @@ func (obj *OfficialAccount) MaterialBatchGet(mediaType MediaType, offset, count 
 		"count":  count,
 	})
 }
+
+/*MediaUpload 媒体文件上传接口
+https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE
+参数	是否必须	说明
+access_token	是	调用接口凭证
+type	是	媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
+media	是	form-data中媒体文件标识，有filename、filelength、content-type等信息
+*/
+func (obj *OfficialAccount) MediaUpload(filePath string, mediaType MediaType) Responder {
+	log.Debug("Media|Upload", filePath, mediaType)
+	url := util.URL(obj.RemoteURL(), mediaUpload)
+	p := obj.accessToken.KeyMap()
+	p.Set("type", mediaType)
+	return Upload(
+		url,
+		p,
+		util.Map{
+			"media": filePath,
+		})
+}
