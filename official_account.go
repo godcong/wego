@@ -1131,3 +1131,21 @@ func (obj *OfficialAccount) MenuTryMatch(userID string) Responder {
 	url := util.URL(obj.RemoteURL(), menuTryMatch)
 	return obj.client.Post(context.Background(), url, nil, util.Map{"user_id": userID})
 }
+
+/*MenuDelete 自定义菜单删除接口
+请求说明
+http请求方式:GET
+https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN
+返回说明
+对应创建接口，正确的Json返回结果:
+{"errcode":0,"errmsg":"ok"}
+*/
+func (obj *OfficialAccount) MenuDelete(menuID int) Responder {
+	log.Debug("Media|MenuDelete")
+	url := util.URL(obj.RemoteURL(), menuDeleteConditional)
+	if menuID == 0 {
+		url = util.URL(obj.RemoteURL(), menuDelete)
+		return obj.client.Get(context.Background(), url, nil)
+	}
+	return obj.client.Post(context.Background(), url, nil, util.Map{"menuid": menuID})
+}
