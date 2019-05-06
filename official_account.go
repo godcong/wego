@@ -1070,3 +1070,16 @@ func (obj *OfficialAccount) MenuCreate(buttons *Button) Responder {
 	}
 	return obj.client.Post(context.Background(), url, nil, buttons)
 }
+
+/*MenuList 自定义菜单查询接口
+请求说明
+http请求方式:GET
+https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
+返回说明（无个性化菜单时）
+参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141014
+*/
+func (obj *OfficialAccount) MenuList() Responder {
+	log.Debug("Media|MenuList")
+	url := util.URL(obj.RemoteURL(), menuGet)
+	return Get(url, nil)
+}
