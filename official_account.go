@@ -1149,3 +1149,14 @@ func (obj *OfficialAccount) MenuDelete(menuID int) Responder {
 	}
 	return obj.client.Post(context.Background(), url, nil, util.Map{"menuid": menuID})
 }
+
+/*POIAdd 创建门店
+http请求方式	POST/FORM
+请求Url	https://api.weixin.qq.com/cgi-bin/poi/addpoi?access_token=ACCESS_TOKEN
+POST数据格式	buffer
+*/
+func (obj *OfficialAccount) POIAdd(biz *PoiBaseInfo) Responder {
+	log.Debug("Poi|Add", *biz)
+	url := util.URL(obj.RemoteURL(), poiAddPoi)
+	return obj.client.Post(context.Background(), url, nil, util.Map{"business": biz})
+}
