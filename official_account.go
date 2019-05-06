@@ -1081,5 +1081,17 @@ https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) MenuList() Responder {
 	log.Debug("Media|MenuList")
 	url := util.URL(obj.RemoteURL(), menuGet)
-	return Get(url, nil)
+	return obj.client.Get(context.Background(), url, nil)
+}
+
+/*MenuCurrent 获取自定义菜单配置接口
+接口调用请求说明
+http请求方式: GET（请使用https协议）https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN
+返回结果说明
+参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695
+*/
+func (obj *OfficialAccount) MenuCurrent() Responder {
+	log.Debug("Media|MenuList")
+	url := util.URL(obj.RemoteURL(), getCurrentSelfMenuInfo)
+	return obj.client.Get(context.Background(), url, nil)
 }
