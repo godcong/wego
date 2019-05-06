@@ -1091,7 +1091,43 @@ http请求方式: GET（请使用https协议）https://api.weixin.qq.com/cgi-bin
 参考URL:https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434698695
 */
 func (obj *OfficialAccount) MenuCurrent() Responder {
-	log.Debug("Media|MenuList")
+	log.Debug("Media|MenuCurrent")
 	url := util.URL(obj.RemoteURL(), getCurrentSelfMenuInfo)
 	return obj.client.Get(context.Background(), url, nil)
+}
+
+/*MenuTryMatch 测试个性化菜单匹配结果
+http请求方式:POST（请使用https协议）
+https://api.weixin.qq.com/cgi-bin/menu/trymatch?access_token=ACCESS_TOKEN
+请求示例
+{"user_id":"weixin"}
+user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
+返回结果 该接口将返回菜单配置，示例如下:
+{
+    "button": [
+        {
+            "type": "view",
+            "name": "tx",
+            "url": "http://www.qq.com/",
+            "sub_button": [ ]
+        },
+        {
+            "type": "view",
+            "name": "tx",
+            "url": "http://www.qq.com/",
+            "sub_button": [ ]
+        },
+        {
+            "type": "view",
+            "name": "tx",
+            "url": "http://www.qq.com/",
+            "sub_button": [ ]
+        }
+    ]
+}
+*/
+func (obj *OfficialAccount) MenuTryMatch(userID string) Responder {
+	log.Debug("Media|MenuTryMatch")
+	url := util.URL(obj.RemoteURL(), menuTryMatch)
+	return obj.client.Post(context.Background(), url, nil, util.Map{"user_id": userID})
 }
