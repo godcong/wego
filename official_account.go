@@ -1160,3 +1160,14 @@ func (obj *OfficialAccount) POIAdd(biz *PoiBaseInfo) Responder {
 	url := util.URL(obj.RemoteURL(), poiAddPoi)
 	return obj.client.Post(context.Background(), url, nil, util.Map{"business": biz})
 }
+
+/*POIGet 查询门店信息
+http请求方式	POST
+请求Url	http://api.weixin.qq.com/cgi-bin/poi/getpoi?access_token=TOKEN
+POST数据格式	json
+*/
+func (obj *OfficialAccount) POIGet(id string) Responder {
+	log.Debug("Poi|Get", id)
+	url := util.URL(obj.RemoteURL(), poiAddPoi)
+	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": id})
+}
