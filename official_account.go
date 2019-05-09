@@ -1286,13 +1286,11 @@ func (obj *OfficialAccount) POIGetList(begin int, limit int) Responder {
 
 }
 
-/*
-Del 删除门店
+/*POIDel 删除门店
 协议	https
 http请求方式	POST/FROM
 请求Url	https://api.weixin.qq.com/cgi-bin/poi/delpoi?access_token=TOKEN
 POST数据格式	buffer
-
 */
 func (obj *OfficialAccount) POIDel(poiID string) Responder {
 	log.Debug("Poi|Del", poiID)
@@ -1300,8 +1298,7 @@ func (obj *OfficialAccount) POIDel(poiID string) Responder {
 	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": poiID})
 }
 
-/*
-GetCategory 门店类目表
+/*POIGetCategory 门店类目表
 http请求方式	GET
 请求Url	http://api.weixin.qq.com/cgi-bin/poi/getwxcategory?access_token=TOKEN
 成功返回:
