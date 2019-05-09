@@ -84,6 +84,7 @@ func (n *authorizeNotify) hookUserInfo(w http.ResponseWriter, req *http.Request,
 	log.Debug("hookUserInfo", token)
 	info, e := n.GetUserInfo(token)
 	if e != nil {
+		log.Error("hookUserInfo err:", e.Error())
 		return nil
 	}
 	if n.UserHook != nil {
