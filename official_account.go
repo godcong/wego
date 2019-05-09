@@ -1285,3 +1285,17 @@ func (obj *OfficialAccount) POIGetList(begin int, limit int) Responder {
 	return obj.client.Post(context.Background(), url, nil, util.Map{"begin": begin, "limit": limit})
 
 }
+
+/*
+Del 删除门店
+协议	https
+http请求方式	POST/FROM
+请求Url	https://api.weixin.qq.com/cgi-bin/poi/delpoi?access_token=TOKEN
+POST数据格式	buffer
+
+*/
+func (obj *OfficialAccount) POIDel(poiID string) Responder {
+	log.Debug("Poi|Del", poiID)
+	url := util.URL(obj.RemoteURL(), poiDelPoi)
+	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": poiID})
+}
