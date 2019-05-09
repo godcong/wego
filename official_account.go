@@ -1349,3 +1349,14 @@ func (obj *OfficialAccount) TagCreate(name string) Responder {
 	u := util.URL(obj.RemoteURL(), tagsCreate)
 	return obj.Client().Post(context.Background(), u, nil, util.Map{"tag": util.Map{"name": name}})
 }
+
+//TagGet 获取公众号已创建的标签
+// http请求方式:GET（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN
+// 成功:
+// {"tags":[{"id":2,"name":"星标组","count":0},{"id":100,"name":"testtag","count":0}]}
+func (obj *OfficialAccount) TagGet() Responder {
+	log.Debug("Tag|TagGet")
+	u := util.URL(obj.RemoteURL(), tagsGet)
+	return obj.Client().Get(context.Background(), u, nil)
+}
