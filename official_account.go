@@ -45,10 +45,10 @@ func (obj *OfficialAccount) parse(options ...OfficialAccountOption) {
 
 // Client ...
 func (obj *OfficialAccount) Client() *Client {
-	if obj.client == nil {
-		obj.client = NewClient(ClientBodyType(obj.BodyType), ClientAccessToken(obj.accessToken))
+	if obj.Client() == nil {
+		obj.Client() = NewClient(ClientBodyType(obj.BodyType), ClientAccessToken(obj.accessToken))
 	}
-	return obj.client
+	return obj.Client()
 }
 
 // HandleAuthorizeNotify ...
@@ -185,13 +185,7 @@ HTTP调用: https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TO
 */
 func (obj *OfficialAccount) ClearQuota() Responder {
 	url := util.URL(obj.RemoteURL(), clearQuota)
-	token := obj.accessToken.GetToken()
-
-	params := util.Map{
-		"appid": obj.AppID,
-	}
-	return PostJSON(url, token.KeyMap(), params)
-
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"appid": obj.AppID})
 }
 
 /*GetCallbackIP 请求微信的服务器IP列表
@@ -899,7 +893,7 @@ func (obj *OfficialAccount) MaterialUploadVideo(filePath string, title, introduc
 func (obj *OfficialAccount) MaterialGet(mediaID string) Responder {
 	log.Debug("Material|Get", mediaID)
 	url := util.URL(obj.RemoteURL(), materialGetMaterial)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
 }
 
 //MaterialDel 删除永久素材
@@ -908,7 +902,7 @@ func (obj *OfficialAccount) MaterialGet(mediaID string) Responder {
 func (obj *OfficialAccount) MaterialDel(mediaID string) Responder {
 	log.Debug("Material|Del", mediaID)
 	url := util.URL(obj.RemoteURL(), materialDelMaterial)
-	resp := obj.client.Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
+	resp := obj.Client().Post(context.Background(), url, nil, util.Map{"media_id": mediaID})
 	return resp
 
 }
@@ -932,7 +926,7 @@ type Article struct {
 func (obj *OfficialAccount) MaterialUpdateNews(mediaID string, index int, articles []*Article) Responder {
 	log.Debug("Material|UpdateNews", mediaID)
 	url := util.URL(obj.RemoteURL(), materialUpdateNews)
-	return obj.client.Post(context.Background(), url, nil, util.Map{
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"media_id": mediaID,
 		"index":    index,
 		"articles": articles,
@@ -945,7 +939,7 @@ func (obj *OfficialAccount) MaterialUpdateNews(mediaID string, index int, articl
 func (obj *OfficialAccount) MaterialGetCount() Responder {
 	log.Debug("Material|GetMaterialCount")
 	url := util.URL(obj.RemoteURL(), materialGetMaterialcount)
-	return obj.client.Get(context.Background(), url, nil)
+	return obj.Client().Get(context.Background(), url, nil)
 }
 
 //MaterialBatchGet 获取素材列表
@@ -959,7 +953,7 @@ func (obj *OfficialAccount) MaterialGetCount() Responder {
 func (obj *OfficialAccount) MaterialBatchGet(mediaType MediaType, offset, count int) Responder {
 	log.Debug("Material|BatchGet", mediaType, offset, count)
 	url := util.URL(obj.RemoteURL(), materialBatchgetMaterial)
-	return obj.client.Post(context.Background(), url, nil, util.Map{
+	return obj.Client().Post(context.Background(), url, nil, util.Map{
 		"type":   mediaType.String(),
 		"offset": offset,
 		"count":  count,
@@ -1023,7 +1017,7 @@ curl -I -G "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKE
 func (obj *OfficialAccount) MediaGet(mediaID string) Responder {
 	log.Debug("Media|Get", mediaID)
 	url := util.URL(obj.RemoteURL(), mediaGet)
-	return obj.client.Get(context.Background(), url, util.Map{"media_id": mediaID})
+	return obj.Client().Get(context.Background(), url, util.Map{"media_id": mediaID})
 }
 
 // MediaGetJSSDK 高清语音素材获取接口
@@ -1032,7 +1026,7 @@ func (obj *OfficialAccount) MediaGet(mediaID string) Responder {
 func (obj *OfficialAccount) MediaGetJSSDK(mediaID string) Responder {
 	log.Debug("Media|GetJSSDK", mediaID)
 	url := util.URL(obj.RemoteURL(), mediaGetJssdk)
-	return obj.client.Get(context.Background(), url, util.Map{"media_id": mediaID})
+	return obj.Client().Get(context.Background(), url, util.Map{"media_id": mediaID})
 }
 func (obj *OfficialAccount) mediaUploadImg(name string, filePath string) Responder {
 	log.Debug("Media|UploadImg", name, filePath)
@@ -1069,7 +1063,7 @@ func (obj *OfficialAccount) MenuCreate(buttons *Button) Responder {
 	if buttons.GetMatchRule() == nil {
 		url = util.URL(obj.RemoteURL(), menuCreate)
 	}
-	return obj.client.Post(context.Background(), url, nil, buttons)
+	return obj.Client().Post(context.Background(), url, nil, buttons)
 }
 
 /*MenuList 自定义菜单查询接口
@@ -1082,7 +1076,7 @@ https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) MenuList() Responder {
 	log.Debug("Media|MenuList")
 	url := util.URL(obj.RemoteURL(), menuGet)
-	return obj.client.Get(context.Background(), url, nil)
+	return obj.Client().Get(context.Background(), url, nil)
 }
 
 /*MenuCurrent 获取自定义菜单配置接口
@@ -1094,7 +1088,7 @@ http请求方式: GET（请使用https协议）https://api.weixin.qq.com/cgi-bin
 func (obj *OfficialAccount) MenuCurrent() Responder {
 	log.Debug("Media|MenuCurrent")
 	url := util.URL(obj.RemoteURL(), getCurrentSelfMenuInfo)
-	return obj.client.Get(context.Background(), url, nil)
+	return obj.Client().Get(context.Background(), url, nil)
 }
 
 /*MenuTryMatch 测试个性化菜单匹配结果
@@ -1130,7 +1124,7 @@ user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
 func (obj *OfficialAccount) MenuTryMatch(userID string) Responder {
 	log.Debug("Media|MenuTryMatch")
 	url := util.URL(obj.RemoteURL(), menuTryMatch)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"user_id": userID})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"user_id": userID})
 }
 
 /*MenuDelete 自定义菜单删除接口
@@ -1146,9 +1140,9 @@ func (obj *OfficialAccount) MenuDelete(menuID int) Responder {
 	url := util.URL(obj.RemoteURL(), menuDeleteConditional)
 	if menuID == 0 {
 		url = util.URL(obj.RemoteURL(), menuDelete)
-		return obj.client.Get(context.Background(), url, nil)
+		return obj.Client().Get(context.Background(), url, nil)
 	}
-	return obj.client.Post(context.Background(), url, nil, util.Map{"menuid": menuID})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"menuid": menuID})
 }
 
 /*POIAdd 创建门店
@@ -1159,7 +1153,7 @@ POST数据格式	buffer
 func (obj *OfficialAccount) POIAdd(biz *PoiBaseInfo) Responder {
 	log.Debug("Poi|Add", *biz)
 	url := util.URL(obj.RemoteURL(), poiAddPoi)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"business": biz})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"business": biz})
 }
 
 /*POIGet 查询门店信息
@@ -1170,7 +1164,7 @@ POST数据格式	json
 func (obj *OfficialAccount) POIGet(id string) Responder {
 	log.Debug("Poi|Get", id)
 	url := util.URL(obj.RemoteURL(), poiAddPoi)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": id})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"poi_id": id})
 }
 
 /*POIUpdate 修改门店服务信息
@@ -1190,7 +1184,7 @@ POST数据格式	buffer
 func (obj *OfficialAccount) POIUpdate(biz *PoiBaseInfo) Responder {
 	log.Debug("Poi|POIUpdate", *biz)
 	url := util.URL(obj.RemoteURL(), poiUpdatePoi)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"business": biz})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"business": biz})
 
 }
 
@@ -1283,7 +1277,7 @@ func (obj *OfficialAccount) POIGetList(begin int, limit int) Responder {
 	log.Debug("Poi|POIGetList", begin, limit)
 
 	url := util.URL(obj.RemoteURL(), poiGetListPoi)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"begin": begin, "limit": limit})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"begin": begin, "limit": limit})
 
 }
 
@@ -1296,7 +1290,7 @@ POST数据格式	buffer
 func (obj *OfficialAccount) POIDel(poiID string) Responder {
 	log.Debug("Poi|Del", poiID)
 	url := util.URL(obj.RemoteURL(), poiDelPoi)
-	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": poiID})
+	return obj.Client().Post(context.Background(), url, nil, util.Map{"poi_id": poiID})
 }
 
 /*POIGetCategory 门店类目表
@@ -1311,7 +1305,7 @@ http请求方式	GET
 func (obj *OfficialAccount) POIGetCategory() Responder {
 	log.Debug("Poi|GetCategory")
 	url := util.URL(obj.RemoteURL(), poiGetWXCategory)
-	return obj.client.Get(context.Background(), url, nil)
+	return obj.Client().Get(context.Background(), url, nil)
 }
 
 //QrCodeCreate 创建二维码ticket
@@ -1333,7 +1327,7 @@ func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
 	//TODO: need fix
 	log.Debug("QrCode|QrCodeCreate", action)
 	url := util.URL(obj.RemoteURL(), qrcodeCreate)
-	return obj.client.Post(context.Background(), url, nil, action)
+	return obj.Client().Post(context.Background(), url, nil, action)
 }
 
 //QrCodeShow 显示二维码
@@ -1342,5 +1336,16 @@ func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
 func (obj *OfficialAccount) QrCodeShow(ticket string) Responder {
 	log.Debug("QrCode|QrCodeShow", ticket)
 	u := util.URL(obj.RemoteURL(), showQrcode)
-	return obj.client.Post(context.Background(), u, nil, util.Map{"ticket": url.QueryEscape(ticket)})
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"ticket": url.QueryEscape(ticket)})
+}
+
+//TagCreate 创建标签
+// http请求方式:POST（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN
+// 成功:
+// {"tag":{"id":100,"name":"testtag"}}
+func (obj *OfficialAccount) TagCreate(name string) Responder {
+	log.Debug("Tag|TagCreate", name)
+	u := util.URL(obj.RemoteURL(), tagsCreate)
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"tag": util.Map{"name": name}})
 }
