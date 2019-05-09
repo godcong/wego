@@ -1299,3 +1299,19 @@ func (obj *OfficialAccount) POIDel(poiID string) Responder {
 	url := util.URL(obj.RemoteURL(), poiDelPoi)
 	return obj.client.Post(context.Background(), url, nil, util.Map{"poi_id": poiID})
 }
+
+/*
+GetCategory 门店类目表
+http请求方式	GET
+请求Url	http://api.weixin.qq.com/cgi-bin/poi/getwxcategory?access_token=TOKEN
+成功返回:
+{
+"category_list":
+["美食,江浙菜,上海菜","美食,江浙菜,淮扬菜","美食,江浙菜,浙江菜","美食,江浙菜,南京菜 ","美食,江浙菜,苏帮菜…"]
+}
+*/
+func (obj *OfficialAccount) POIGetCategory() Responder {
+	log.Debug("Poi|GetCategory")
+	url := util.URL(obj.RemoteURL(), poiGetWXCategory)
+	return obj.client.Get(context.Background(), url, nil)
+}
