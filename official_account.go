@@ -1312,3 +1312,27 @@ func (obj *OfficialAccount) POIGetCategory() Responder {
 	url := util.URL(obj.RemoteURL(), poiGetWXCategory)
 	return obj.client.Get(context.Background(), url, nil)
 }
+
+
+//QrCodeCreate 创建二维码ticket
+//	http请求方式: POST
+//	URL: https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
+//	POST数据格式:json
+//	POST数据例子:{"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+//	或者也可以使用以下POST数据创建字符串形式的二维码参数:
+//	{"expire_seconds": 604800, "action_name": "QR_STR_SCENE", "action_info": {"scene": {"scene_str": "test"}}}
+//	http请求方式: POST
+//	URL: https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
+//	POST数据格式:json
+//	POST数据例子:{"action_name": "QR_LIMIT_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+//	或者也可以使用以下POST数据创建字符串形式的二维码参数:
+//	{"action_name": "QR_LIMIT_STR_SCENE", "action_info": {"scene": {"scene_str": "test"}}}
+//	成功:
+//	{"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
+func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
+	//TODO: need fix
+	log.Debug("QrCode|QrCodeCreate", action)
+
+	url := util.URL(obj.RemoteURL(), qrcodeCreate)
+	return obj.Client().Post(context.Background(),url,nil,action)
+}
