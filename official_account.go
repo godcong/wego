@@ -6,6 +6,7 @@ import (
 	"github.com/godcong/wego/util"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -1313,7 +1314,6 @@ func (obj *OfficialAccount) POIGetCategory() Responder {
 	return obj.client.Get(context.Background(), url, nil)
 }
 
-
 //QrCodeCreate 创建二维码ticket
 //	http请求方式: POST
 //	URL: https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
@@ -1331,8 +1331,18 @@ func (obj *OfficialAccount) POIGetCategory() Responder {
 //	{"ticket":"gQFy7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyOE1nSDFvTHdkeWkxeVNqTnhxMTcAAgR6E7FaAwQ8AAAA","expire_seconds":60,"url":"http:\/\/weixin.qq.com\/q\/028MgH1oLwdyi1ySjNxq17"}
 func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
 	//TODO: need fix
-	log.Debug("QrCode|QrCodeCreate", action)
+	log.Debug("OfficialAccount|QrCodeCreate", action)
 
 	url := util.URL(obj.RemoteURL(), qrcodeCreate)
-	return obj.Client().Post(context.Background(),url,nil,action)
+	return obj.Client().Post(context.Background(), url, nil, action)
+}
+
+//QrCodeShow 显示二维码
+// HTTP GET请求（请使用https协议）https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET
+// 提醒:使用core.SaveTo保存文件
+func (obj *OfficialAccount) QrCodeShow(ticket string) Responder {
+	log.Debug("OfficialAccount|QrCodeShow", ticket)
+
+	u := util.URL(obj.RemoteURL(), showQrcode)
+	return Get(u, util.Map{"ticket": url.QueryEscape(ticket),})
 }
