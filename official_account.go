@@ -45,10 +45,10 @@ func (obj *OfficialAccount) parse(options ...OfficialAccountOption) {
 
 // Client ...
 func (obj *OfficialAccount) Client() *Client {
-	if obj.Client() == nil {
-		obj.Client() = NewClient(ClientBodyType(obj.BodyType), ClientAccessToken(obj.accessToken))
+	if obj.client == nil {
+		obj.client = NewClient(ClientBodyType(obj.BodyType), ClientAccessToken(obj.accessToken))
 	}
-	return obj.Client()
+	return obj.client
 }
 
 // HandleAuthorizeNotify ...

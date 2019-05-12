@@ -45,10 +45,10 @@ type BridgeConfig struct {
 	TimeStamp string `json:"timeStamp"`
 }
 
-/*BridgeConfig bridge 设置 */
-func (obj *JSSDK) BridgeConfig(pid string) *BridgeConfig {
+/*BuildBridgeConfig bridge 设置 */
+func BuildBridgeConfig(id, key, pid string) *BridgeConfig {
 	config := &BridgeConfig{
-		AppID:     obj.getID(),
+		AppID:     id,
 		NonceStr:  util.GenerateNonceStr(),
 		Package:   strings.Join([]string{"prepay_id", pid}, "="),
 		SignType:  "MD5",
@@ -60,7 +60,7 @@ func (obj *JSSDK) BridgeConfig(pid string) *BridgeConfig {
 		"nonceStr":  config.NonceStr,
 		"package":   config.Package,
 		"signType":  config.SignType,
-	}, obj.Key)
+	}, key)
 	return config
 }
 
@@ -74,17 +74,23 @@ type SDKConfig struct {
 	TimeStamp string `json:"timestamp"`
 }
 
-/*SDKConfig sdk 设置 */
-func (obj *JSSDK) SDKConfig(pid string) *SDKConfig {
-	config := obj.BridgeConfig(pid)
-	return &SDKConfig{
-		AppID:     config.AppID,
-		NonceStr:  config.NonceStr,
-		Package:   config.PaySign,
-		PaySign:   config.PaySign,
-		SignType:  config.SignType,
-		TimeStamp: config.TimeStamp,
+/*BuildSDKConfig sdk 设置 */
+func BuildSDKConfig(id, key, pid string) *SDKConfig {
+	config := &SDKConfig{
+		AppID:     id,
+		NonceStr:  util.GenerateNonceStr(),
+		Package:   strings.Join([]string{"prepay_id", pid}, "="),
+		SignType:  "MD5",
+		TimeStamp: util.Time(),
 	}
+	config.PaySign = util.GenSign(util.Map{
+		"appId":     config.AppID,
+		"timeStamp": config.TimeStamp,
+		"nonceStr":  config.NonceStr,
+		"package":   config.Package,
+		"signType":  config.SignType,
+	}, key)
+	return config
 }
 
 // AppConfig ...
@@ -98,13 +104,13 @@ type AppConfig struct {
 	TimeStamp string `json:"timestamp"`
 }
 
-/*AppConfig app 设置 */
-func (obj *JSSDK) AppConfig(pid string) *AppConfig {
+/*BuildAppConfig app 设置 */
+func BuildAppConfig(id, mch, key, pid string) *AppConfig {
 	config := &AppConfig{
-		AppID:     obj.getID(),
+		AppID:     id,
 		NonceStr:  util.GenerateNonceStr(),
 		Package:   "Sign=WXPay",
-		PartnerID: obj.MchID,
+		PartnerID: mch,
 		PrepayID:  pid,
 		TimeStamp: util.Time(),
 	}
@@ -116,7 +122,7 @@ func (obj *JSSDK) AppConfig(pid string) *AppConfig {
 		"noncestr":  config.NonceStr,
 		"timestamp": config.TimeStamp,
 		"package":   config.Package,
-	}, obj.Key)
+	}, key)
 	return config
 }
 
@@ -130,27 +136,24 @@ type ShareAddressConfig struct {
 	TimeStamp string `json:"timeStamp"`
 }
 
-// ShareAddressConfig ...
+// BuildShareAddressConfig ...
 //	参数:token
 //	类型:string或*core.AccessToken
-func (obj *JSSDK) ShareAddressConfig(token interface{}) *ShareAddressConfig {
+func BuildShareAddressConfig(id, url, token string) *ShareAddressConfig {
 	config := &ShareAddressConfig{
-		AppID:     obj.getID(),
+		AppID:     id,
 		NonceStr:  util.GenerateNonceStr(),
 		Scope:     "jsapi_address",
 		SignType:  "SHA1",
 		TimeStamp: util.Time(),
 	}
 
-	if token == nil {
-		token = obj.accessToken.GetToken()
-	}
 	signMsg := util.Map{
 		"appid":       config.AppID,
-		"url":         obj.getURL(),
+		"url":         url,
 		"timestamp":   config.TimeStamp,
 		"noncestr":    config.NonceStr,
-		"accesstoken": parseAccessToken(token),
+		"accesstoken": token,
 	}
 
 	config.AddrSign = util.GenSHA1(signMsg.URLEncode())
