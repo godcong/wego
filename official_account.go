@@ -1339,9 +1339,8 @@ func (obj *OfficialAccount) TagGet() Responder {
 func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
 	//TODO: need fix
 	log.Debug("OfficialAccount|QrCodeCreate", action)
-
-	url := util.URL(obj.RemoteURL(), qrcodeCreate)
-	return obj.Client().Post(context.Background(), url, nil, action)
+	u := util.URL(obj.RemoteURL(), qrcodeCreate)
+	return obj.Client().Post(context.Background(), u, nil, action)
 }
 
 //QrCodeShow 显示二维码
@@ -1349,7 +1348,6 @@ func (obj *OfficialAccount) QrCodeCreate(action *QrCodeAction) Responder {
 // 提醒:使用core.SaveTo保存文件
 func (obj *OfficialAccount) QrCodeShow(ticket string) Responder {
 	log.Debug("OfficialAccount|QrCodeShow", ticket)
-
 	u := util.URL(obj.RemoteURL(), showQrcode)
 	return Get(u, util.Map{"ticket": url.QueryEscape(ticket)})
 }
