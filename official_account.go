@@ -3,8 +3,8 @@ package wego
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"github.com/godcong/wego/util"
+	jsoniter "github.com/json-iterator/go"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"net/url"
@@ -1495,7 +1495,7 @@ func (obj *OfficialAccount) UserInfo(openid, lang string) (info *UserInfo, e err
 		return nil, e
 	}
 	info = new(UserInfo)
-	e = json.Unmarshal(resp.Bytes(), info)
+	e = jsoniter.Unmarshal(resp.Bytes(), info)
 	if e != nil {
 		return nil, e
 	}
@@ -1526,7 +1526,7 @@ func (obj *OfficialAccount) UserBatchGet(openids []string, lang string) (infos [
 		return nil, e
 	}
 	infoList := UserInfoList{}
-	e = json.Unmarshal(resp.Bytes(), &infoList)
+	e = jsoniter.Unmarshal(resp.Bytes(), &infoList)
 	if e != nil {
 		return nil, e
 	}
