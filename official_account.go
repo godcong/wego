@@ -1506,7 +1506,7 @@ func (obj *OfficialAccount) UserInfo(openid, lang string) (info *UserInfo, e err
 // http请求方式: POST
 // https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN
 // 成功:
-// {"user_info_list":[{"subscribe":1,"openid":"oLyBi0tDnybg0WFkhKsn5HRetX1I","nickname":"sean","sex":1,"language":"zh_CN","city":"浦东新区","province":"上海","country":"中国","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/anblvjPKYbMGjBnTVxw5gEZiasF6LiaMHheNxN4vWJcfCLRl8gEX0L6M7sNjtMkFYx8PJRCS1lr9RGxadkFlBibpA\/132","subscribe_time":1521022410,"remark":"nishi123","groupid":101,"tagid_list":[101],"subscribe_scene":"ADD_SCENE_PROFILE_CARD","qr_scene":0,"qr_scene_str":""},{"subscribe":1,"openid":"oLyBi0lCK5rQPuo0_cHJrjQ4J9XE","nickname":"🎀曉青青💋baby💞","sex":2,"language":"zh_CN","city":"浦东新区","province":"上海","country":"中国","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/ajNVdqHZLLAiae3G7CGiaF8I6nxDiczQIHSpEFSXwFQoP2v923ficqHdxnRoeZC1BAibXcQNkBOFsibBicMydnLE0UnKw\/132","subscribe_time":1521012452,"remark":"","groupid":0,"tagid_list":[],"subscribe_scene":"ADD_SCENE_QR_CODE","qr_scene":0,"qr_scene_str":""}]}
+// {"user_info_list":[{"subscribe":1,"openid":"oLyBi0tDnybg0WFkhKsn5HRetX1I","nickname":"sean","sex":1,"language":"zh_CN","city":"浦东新区","province":"上海","country":"中国","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/anblvjPKYbMGjBnTVxw5gEZiasF6LiaMHheNxN4vWJcfCLRl8gEX0L6M7sNjtMkFYx8PJRCS1lr9RGxadkFlBibpA\/132","subscribe_time":1521022410,"remark":"nishi123","groupid":101,"tagid_list":[101],"subscribe_scene":"ADD_SCENE_PROFILE_CARD","qr_scene":0,"qr_scene_str":""}]}
 // 失败:
 // {"errcode":40013,"errmsg":"invalid appid"}
 func (obj *OfficialAccount) UserBatchGet(openids []string, lang string) (infos []*UserInfo, e error) {
@@ -1531,4 +1531,16 @@ func (obj *OfficialAccount) UserBatchGet(openids []string, lang string) (infos [
 		return nil, e
 	}
 	return infoList.UserInfoList, nil
+}
+
+//UserGet 获取用户列表
+// http请求方式: GET（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
+func (obj *OfficialAccount) UserGet(nextOpenid string) Responder {
+	log.Debug("OfficialAccount|UserGet", nextOpenid)
+	u := util.URL(userGet)
+	if nextOpenid == "" {
+		return obj.Client().Get(context.Background(), u, nil)
+	}
+	return obj.Client().Get(context.Background(), u, util.Map{"next_openid": nextOpenid})
 }
