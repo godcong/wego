@@ -1351,3 +1351,14 @@ func (obj *OfficialAccount) QrCodeShow(ticket string) Responder {
 	u := util.URL(obj.RemoteURL(), showQrcode)
 	return Get(u, util.Map{"ticket": url.QueryEscape(ticket)})
 }
+
+//Create 创建标签
+// http请求方式:POST（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN
+// 成功:
+// {"tag":{"id":100,"name":"testtag"}}
+func (obj *OfficialAccount) Create(name string) Responder {
+	log.Debug("Tag|Create", name)
+	u := util.URL(tagsCreate)
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"tag": util.Map{"name": name}})
+}
