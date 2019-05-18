@@ -1439,9 +1439,20 @@ func (obj *OfficialAccount) TemplateGetAllPrivate() Responder {
 	return obj.Client().Get(context.Background(), u, nil)
 }
 
-//DelAllPrivate 删除模板
+//TemplateDelAllPrivate 删除模板
 // url:https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) TemplateDelAllPrivate(templateID string) Responder {
 	u := util.URL(templateDelPrivateTemplate)
 	return obj.Client().Post(context.Background(), u, nil, util.Map{"template_id": templateID})
+}
+
+//TicketGet 获取api_ticket
+// http请求方式: GET
+// https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=wx_card
+// 成功:
+// {"errcode":0,"errmsg":"ok","ticket":"9KwiourQPRN3vx3Nn1c_iX9qGaI3Cf8dwVy7qqYeYKcd3BK4Zd_jSlol7E7baUfgOY0E2ybaw2OrlhkChKaS7w","expires_in":7200}
+func (obj *OfficialAccount) TicketGet(typ string) Responder {
+	log.Debug("OfficialAccount|TicketGet", typ)
+	u := util.URL(ticketGetTicket)
+	return obj.Client().Get(context.Background(), u, util.Map{"type": typ})
 }
