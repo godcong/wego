@@ -1402,3 +1402,11 @@ func (obj *OfficialAccount) TemplateSetIndustry(id1, id2 string) Responder {
 	u := util.URL(templateAPISetIndustry)
 	return obj.Client().Post(context.Background(), u, nil, util.Map{"industry_id1": id1, "industry_id2": id2})
 }
+
+//TemplateGetIndustry 获取设置的行业信息
+// http请求方式:GET
+// https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) TemplateGetIndustry() Responder {
+	u := util.URL(templateGetIndustry)
+	return obj.Client().Get(context.Background(), u, nil)
+}
