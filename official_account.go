@@ -1426,6 +1426,7 @@ func (obj *OfficialAccount) TemplateAdd(shortID string) Responder {
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) TemplateSend(template *Template) Responder {
+	log.Debug("OfficialAccount|TemplateSend", template)
 	u := util.URL(messageTemplateSend)
 	return obj.Client().Post(context.Background(), u, nil, template)
 }
@@ -1433,6 +1434,7 @@ func (obj *OfficialAccount) TemplateSend(template *Template) Responder {
 //TemplateGetAllPrivate 获取模板列表
 // url:https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) TemplateGetAllPrivate() Responder {
+	log.Debug("OfficialAccount|TemplateGetAllPrivate")
 	u := util.URL(templateGetAllPrivateTemplate)
 	return obj.Client().Get(context.Background(), u, nil)
 }
