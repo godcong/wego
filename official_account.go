@@ -1436,3 +1436,10 @@ func (obj *OfficialAccount) TemplateGetAllPrivate() Responder {
 	u := util.URL(templateGetAllPrivateTemplate)
 	return obj.Client().Get(context.Background(), u, nil)
 }
+
+//DelAllPrivate 删除模板
+// url:https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) TemplateDelAllPrivate(templateID string) Responder {
+	u := util.URL(templateDelPrivateTemplate)
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"template_id": templateID})
+}
