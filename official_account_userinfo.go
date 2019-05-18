@@ -27,3 +27,8 @@ type UserID struct {
 	OpenID string `json:"openid"`
 	Lang   string `json:"lang,omitempty"`
 }
+
+// UserInfoList ...
+type UserInfoList struct {
+	UserInfoList []*UserInfo `json:"user_info_list"`
+}
