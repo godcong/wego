@@ -1407,6 +1407,7 @@ func (obj *OfficialAccount) TemplateSetIndustry(id1, id2 string) Responder {
 // http请求方式:GET
 // https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN
 func (obj *OfficialAccount) TemplateGetIndustry() Responder {
+	log.Debug("OfficialAccount|TemplateGetIndustry")
 	u := util.URL(templateGetIndustry)
 	return obj.Client().Get(context.Background(), u, nil)
 }
