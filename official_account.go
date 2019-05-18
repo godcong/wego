@@ -1422,14 +1422,10 @@ func (obj *OfficialAccount) TemplateAdd(shortID string) Responder {
 	return obj.Client().Post(context.Background(), u, nil, util.Map{"template_id_short": shortID})
 }
 
-//Send 发送模板消息
+//TemplateSend 发送模板消息
 //http请求方式: POST
 //https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
-func (obj *OfficialAccount) TemplateSend(template *message.Template) Responder {
-	resp := core.PostJSON(
-		Link(messageTemplateSendURLSuffix),
-		t.accessToken.GetToken().KeyMap(),
-		template,
-	)
-	return resp
+func (obj *OfficialAccount) TemplateSend(template *Template) Responder {
+	u := util.URL(messageTemplateSend)
+	return obj.Client().Post(context.Background(), u, nil, template)
 }
