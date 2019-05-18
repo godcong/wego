@@ -1429,3 +1429,10 @@ func (obj *OfficialAccount) TemplateSend(template *Template) Responder {
 	u := util.URL(messageTemplateSend)
 	return obj.Client().Post(context.Background(), u, nil, template)
 }
+
+//TemplateGetAllPrivate 获取模板列表
+// url:https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) TemplateGetAllPrivate() Responder {
+	u := util.URL(templateGetAllPrivateTemplate)
+	return obj.Client().Get(context.Background(), u, nil)
+}
