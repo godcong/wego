@@ -1411,3 +1411,13 @@ func (obj *OfficialAccount) TemplateGetIndustry() Responder {
 	u := util.URL(templateGetIndustry)
 	return obj.Client().Get(context.Background(), u, nil)
 }
+
+//TemplateAdd 获得模板ID
+// 获取模板:https://mp.weixin.qq.com/advanced/tmplmsg?action=list&t=tmplmsg/list&token=93895307&lang=zh_CN
+// http请求方式: POST
+// https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
+func (obj *OfficialAccount) TemplateAdd(shortID string) Responder {
+	log.Debug("OfficialAccount|TemplateAdd", shortID)
+	u := util.URL(templateAPIAddTemplate)
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"template_id_short": shortID})
+}
