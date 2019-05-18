@@ -1456,3 +1456,22 @@ func (obj *OfficialAccount) TicketGet(typ string) Responder {
 	u := util.URL(ticketGetTicket)
 	return obj.Client().Get(context.Background(), u, util.Map{"type": typ})
 }
+
+//UserUpdateRemark 设置用户备注名
+// http请求方式: POST（请使用https协议）
+// https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN
+// POST数据格式:JSON
+// POST数据例子:
+// {
+// "openid":"oDF3iY9ffA-hqb2vVvbr7qxf6A0Q",
+// "remark":"pangzi"
+// }
+// 成功:
+// {"errcode":0,"errmsg":"ok"}
+// 失败:
+// {"errcode":40013,"errmsg":"invalid appid"}
+func (obj *OfficialAccount) UserUpdateRemark(openid, remark string) Responder {
+	log.Debug("OfficialAccount|UserUpdateRemark", openid, remark)
+	u := util.URL(userInfoUpdateRemark)
+	return obj.Client().Post(context.Background(), u, nil, util.Map{"openid": openid, "remark": remark})
+}
