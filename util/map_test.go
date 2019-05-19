@@ -3,7 +3,6 @@ package util_test
 import (
 	"encoding/xml"
 	"github.com/godcong/wego/util"
-	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -226,7 +225,6 @@ func BenchmarkMap_ToXML(b *testing.B) {
 	x := m.ToXML()
 	b.Log(string(x))
 	b.ResetTimer()
-	log.DebugOff()
 	for i := 0; i < 1000; i++ {
 		m2 := util.Map{}
 		_ = xml.Unmarshal(x, &m2)
@@ -240,4 +238,22 @@ func TestMap_MarshalXML(t *testing.T) {
 	json := []byte(`{"appid":"wx1ad61aeef1903b93","bank_type":"CMB_DEBIT","cash_fee":"200","fee_type":"CNY","is_subscribe":"N","mch_id":"1498009232","nonce_str":"7cda1edf536f11e88cb200163e04155d","openid":"oE_gl0bQ7iJ2g3OBMQPWRiBSoiks","out_trade_no":"8195400821515968","result_code":"SUCCESS","return_code":"SUCCESS","sign":"BE9EA07614C09FA73A683071877D9DDB","time_end":"20180509175821","total_fee":"200","trade_type":"JSAPI","transaction_id":"4200000155201805096015992498"}`)
 	m := util.JSONToMap(json)
 	t.Log(string(m.ToXML()))
+}
+
+// TestStructToMap ...
+func TestStructToMap(t *testing.T) {
+	src := struct {
+		One   string
+		Two   string
+		Three int
+		Four  uint64
+	}{
+		One:   "a",
+		Two:   "b",
+		Three: 10,
+		Four:  100,
+	}
+	p := util.Map{}
+	e := util.StructToMap(src, p)
+	t.Log(p, e)
 }

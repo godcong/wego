@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"encoding/xml"
 	"errors"
 	jsoniter "github.com/json-iterator/go"
@@ -53,6 +54,23 @@ type Map map[string]interface{}
 /*String transfer map to JSON string */
 func (m Map) String() string {
 	return string(m.ToJSON())
+}
+
+// StructToMap ...
+func StructToMap(s interface{}, p Map) error {
+	var err error
+	buf := bytes.NewBuffer(nil)
+	enc := jsoniter.NewEncoder(buf)
+	err = enc.Encode(s)
+	if err != nil {
+		return err
+	}
+	dec := jsoniter.NewDecoder(buf)
+	err = dec.Decode(&p)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 /*MapMake make new map only if m is nil result a new map with nothing */

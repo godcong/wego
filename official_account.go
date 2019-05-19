@@ -31,7 +31,7 @@ func NewOfficialAccount(config *OfficialAccountProperty, options ...OfficialAcco
 		BodyType:                BodyTypeJSON,
 	}
 	officialAccount.parse(options...)
-
+	officialAccount.client = officialAccount.Client()
 	return officialAccount
 }
 

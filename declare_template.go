@@ -1,8 +1,8 @@
 package wego
 
 import (
-	"encoding/json"
 	"github.com/godcong/wego/util"
+	jsoniter "github.com/json-iterator/go"
 )
 
 /*ValueColor ValueColor */
@@ -36,11 +36,11 @@ type Template struct {
 func (t Template) ToMap() util.Map {
 	var err error
 	m := util.Map{}
-	b, err := json.Marshal(t)
+	b, err := jsoniter.Marshal(t)
 	if err != nil {
 		return nil
 	}
-	err = json.Unmarshal(b, &m)
+	err = jsoniter.Unmarshal(b, &m)
 	if err != nil {
 		return nil
 	}
