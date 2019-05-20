@@ -1549,10 +1549,6 @@ func (obj *OfficialAccount) UserGet(nextOpenid string) Responder {
 // 请求方式：GET（请使用https协议）
 // https://api.weixin.qq.com/wxa/get_merchant_category?access_token=TOKEN
 func (obj *OfficialAccount) MerchantGetCategory(nextOpenid string) Responder {
-	log.Debug("OfficialAccount|UserGet", nextOpenid)
-	u := util.URL(userGet)
-	if nextOpenid == "" {
-		return obj.Client().Get(context.Background(), u, nil)
-	}
-	return obj.Client().Get(context.Background(), u, util.Map{"next_openid": nextOpenid})
+	//TODO
+	panic("todo")
 }
