@@ -6,7 +6,6 @@ import (
 	"encoding/binary"
 	"encoding/xml"
 	"github.com/godcong/wego/util"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 )
 

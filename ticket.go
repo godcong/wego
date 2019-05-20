@@ -2,7 +2,6 @@ package wego
 
 import (
 	"github.com/godcong/wego/util"
-	log "github.com/sirupsen/logrus"
 )
 
 // TicketRes ticket response data

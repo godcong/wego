@@ -3,7 +3,6 @@ package wego
 import (
 	"context"
 	"crypto/tls"
-	"github.com/sirupsen/logrus"
 )
 
 // PaymentOption ...
@@ -179,7 +178,7 @@ func ClientSafeCert(property *SafeCertProperty) ClientOption {
 	return func(obj *Client) {
 		cfg, e := property.Config()
 		if e != nil {
-			logrus.Errorf("ClientSafeCert err:%+v", e)
+			log.Errorf("ClientSafeCert err:%+v", e)
 			return
 		}
 		obj.TLSConfig = cfg

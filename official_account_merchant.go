@@ -49,9 +49,25 @@ type MerchantApplyInfo struct {
 	FirstCatID        int64  `json:"first_catid"`
 	SecondCatID       int64  `json:"second_catid"`
 	QualificationList string `json:"qualification_list"`
-	HeadimgMediaID    string `json:"headimg_mediaid"`
+	HeadImgMediaID    string `json:"headimg_mediaid"`
 	Nickname          string `json:"nickname"`
 	Intro             string `json:"intro"`
 	OrgCode           string `json:"org_code"`
 	OtherFiles        string `json:"other_files,omitempty"`
+}
+
+// MerchantGetCategory 拉取门店小程序类目
+// 请求方式：GET（请使用https协议）
+// https://api.weixin.qq.com/wxa/get_merchant_category?access_token=TOKEN
+func (obj *OfficialAccount) MerchantGetCategory(info *MerchantCategoryInfo) Responder {
+	//TODO
+	panic("todo")
+}
+
+//MerchantApply 创建门店小程序
+// 请求方式: POST（请使用https协议）
+// https://api.weixin.qq.com/wxa/apply_merchant?access_token=TOKEN
+func (obj *OfficialAccount) MerchantApply(info *MerchantApplyInfo) Responder {
+	//TODO
+	panic("todo")
 }

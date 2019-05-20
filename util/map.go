@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	jsoniter "github.com/json-iterator/go"
-	log "github.com/sirupsen/logrus"
 	"net/url"
 	"sort"
 	"strconv"

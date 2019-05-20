@@ -2,7 +2,6 @@ package wego
 
 import (
 	"github.com/pelletier/go-toml"
-	"log"
 )
 
 // Config 配置文件，用来生成Property各种属性
@@ -30,15 +29,15 @@ func LoadConfig(path string) *Config {
 	cfg := DefaultConfig()
 	t, e := toml.LoadFile(path)
 	if e != nil {
-		log.Println("filepath: " + path)
-		log.Println(e.Error())
+		log.Info("filepath: " + path)
+		log.Info(e.Error())
 		return DefaultConfig()
 	}
 
 	e = t.Unmarshal(cfg)
 	if e != nil {
-		log.Println("filepath: " + path)
-		log.Println(e.Error())
+		log.Info("filepath: " + path)
+		log.Info(e.Error())
 		return DefaultConfig()
 	}
 

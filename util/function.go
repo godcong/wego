@@ -11,7 +11,6 @@ import (
 	"github.com/json-iterator/go"
 	"github.com/juju/errors"
 	"github.com/satori/go.uuid"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"hash/crc32"
 	"io"

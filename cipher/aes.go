@@ -3,7 +3,6 @@ package cipher
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 )
 

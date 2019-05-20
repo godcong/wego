@@ -5,7 +5,6 @@ import (
 	"github.com/godcong/wego/cipher"
 	"github.com/godcong/wego/util"
 	"github.com/json-iterator/go"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"

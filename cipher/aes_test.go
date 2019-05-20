@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/xml"
 	"github.com/godcong/wego/util"
-	log "github.com/sirupsen/logrus"
 	"strings"
 	"testing"
 )

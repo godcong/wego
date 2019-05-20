@@ -3,6 +3,7 @@ module github.com/godcong/wego
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/go-redis/redis v6.14.2+incompatible
+	github.com/godcong/go-trait v0.0.0-20190517051917-1198fdb7648c
 	github.com/json-iterator/go v1.1.5
 	github.com/juju/errors v0.0.0-20181118221551-089d3ea4e4d5
 	github.com/juju/loggo v0.0.0-20180524022052-584905176618 // indirect
@@ -14,8 +15,8 @@ require (
 	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/pelletier/go-toml v1.2.0
 	github.com/satori/go.uuid v1.2.0
-	github.com/sirupsen/logrus v1.3.0
 	github.com/stretchr/testify v1.3.0 // indirect; indirectgo
+	go.uber.org/zap v1.10.0
 	golang.org/x/text v0.3.0
 	golang.org/x/xerrors v0.0.0-20190212162355-a5947ffaace3
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
