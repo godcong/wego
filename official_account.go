@@ -1548,7 +1548,15 @@ func (obj *OfficialAccount) UserGet(nextOpenid string) Responder {
 // MerchantGetCategory 拉取门店小程序类目
 // 请求方式：GET（请使用https协议）
 // https://api.weixin.qq.com/wxa/get_merchant_category?access_token=TOKEN
-func (obj *OfficialAccount) MerchantGetCategory(nextOpenid string) Responder {
+func (obj *OfficialAccount) MerchantGetCategory(info *MerchantCategoryInfo) Responder {
+	//TODO
+	panic("todo")
+}
+
+//MerchantApply 创建门店小程序
+// 请求方式: POST（请使用https协议）
+// https://api.weixin.qq.com/wxa/apply_merchant?access_token=TOKEN
+func (obj *OfficialAccount) MerchantApply(info ApplyMerchantInfo) Responder {
 	//TODO
 	panic("todo")
 }

@@ -44,8 +44,8 @@ type InnerList struct {
 	Name string `json:"name"`
 }
 
-// ApplyMerchantInfo ...
-type ApplyMerchantInfo struct {
+// MerchantApplyInfo ...
+type MerchantApplyInfo struct {
 	FirstCatID        int64  `json:"first_catid"`
 	SecondCatID       int64  `json:"second_catid"`
 	QualificationList string `json:"qualification_list"`
