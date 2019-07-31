@@ -63,11 +63,11 @@
 
 ## Readme
 
-> [微信支付](https://github.com/godcong/wego/blob/master/app/payment/README.md)
+> [微信支付](https://github.com/godcong/wego/blob/v1.1.7/app/payment/README.md)
 
-> [公众号](https://github.com/godcong/wego/blob/master/app/official/README.md) 文档待更新
+> [公众号](https://github.com/godcong/wego/blob/v1.1.7/app/official/README.md) 文档待更新
 
-> [小程序](https://github.com/godcong/wego/blob/master/app/mini/README.md) 文档待更新
+> [小程序](https://github.com/godcong/wego/blob/v1.1.7/app/mini/README.md) 文档待更新
 
 > 开放平台 //TODO:
 
